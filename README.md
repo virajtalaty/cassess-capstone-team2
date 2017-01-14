@@ -23,5 +23,5 @@ Test Branch code:
       1/12/2017
       Either package as runnable JAR with Maven, or Run as a Spring Boot App.
       Following execution, you will see that the Logger has been written to 
-      at a particualr line, with the tempalted data from the slack api for "users".
+      at a particular line, with the templated data from the slack api for "users".
       This is currently a string returned value but will be changed shortly to json
