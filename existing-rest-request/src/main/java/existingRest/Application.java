@@ -31,12 +31,18 @@ public class Application {
 
 	@Bean
 	public CommandLineRunner run(RestTemplate restTemplate) throws Exception, JsonParseException, IOException {
-		return args -> { String result = restTemplate.getForObject("https://slack.com/api/users.list?token=xoxp-83385818629-83396174567-123161160469-710d4bbb79ee564ee258650e455f9a7f&pretty=1", String.class);
-	 
-	    		ObjectMapper mapper = new ObjectMapper();
-	    		JsonNode actualObj = mapper.readTree(result);
+		return args -> { 
+			
+			String result = restTemplate.getForObject("https://slack.com/api/users.list?token=xoxp-83385818629-83396174567-123161160469-710d4bbb79ee564ee258650e455f9a7f&pretty=1", String.class);
+			Users slackUsersObj2 = restTemplate.getForObject("https://slack.com/api/users.list?token=xoxp-83385818629-83396174567-123161160469-710d4bbb79ee564ee258650e455f9a7f&pretty=1", Users.class);
 	    	
-	    		System.out.print(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(actualObj));
+			ObjectMapper mapper = new ObjectMapper();
+	    		JsonNode slackUsersObj1 = mapper.readTree(result);
+	 
+	    		//assertNotNull(actualObj);
+	    	
+	    		System.out.print(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(slackUsersObj1));
+	    		System.out.print(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(slackUsersObj2));
 		};
 	}
 }
