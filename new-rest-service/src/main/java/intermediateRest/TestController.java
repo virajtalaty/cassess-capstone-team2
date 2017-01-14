@@ -12,7 +12,7 @@ public class TestController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/intermediateRest")
+    @RequestMapping(value = "/intermediateRest", method = RequestMethod.GET, produces = "application/json")
     public TestResource greeting(@RequestParam(value="name", defaultValue="No Name") String name) {
         return new TestResource(counter.incrementAndGet(),
                             String.format(template, name));
