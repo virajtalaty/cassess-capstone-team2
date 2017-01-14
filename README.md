@@ -28,3 +28,7 @@ Test Branch code:
       *Update 1/14/2017
       Application class now takes the returned json formatted string and converts to a
       JSON object, also system console prints the object data in pretty print format
+      Currently there is shown and utilized, returning the entire json object using simply the String class, 
+      and also a customized result using the Users and Members classes to extract specific data from the
+      result and then encoding into a JSON object.
+      Both results pretty print formatted in strings are displayed to the console
