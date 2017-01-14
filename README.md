@@ -25,3 +25,6 @@ Test Branch code:
       Following execution, you will see that the Logger has been written to 
       at a particular line, with the templated data from the slack api for "users".
       This is currently a string returned value but will be changed shortly to json
+      *Update 1/14/2017
+      Application class now takes the returned json formatted string and converts to a
+      JSON object, also system console prints the object data in pretty print format
