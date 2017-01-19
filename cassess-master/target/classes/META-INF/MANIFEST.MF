@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: cassess-master
+Implementation-Version: 0.1.0
+Built-By: Jessica
+Implementation-Vendor-Id: org.springframework
+Build-Jdk: 1.8.0_31
+Implementation-URL: http://projects.spring.io/spring-boot/cassess-mast
+ er/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
