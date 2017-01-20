@@ -48,7 +48,7 @@ jdbc-mysql:
       Then ensure you have a database schema created and named "dbtest", following this, run the script to
       craete the user table and instantiate the columns properly:
       
-      CREATE TABLE `customer` (
+      CREATE TABLE `user` (
       `ID` varchar(10) NOT NULL,
       `NAME` varchar(100) NOT NULL,
       `TEAM_ID` varchar(10) NOT NULL,
