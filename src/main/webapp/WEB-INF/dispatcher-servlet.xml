@@ -13,7 +13,7 @@
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx.xsd">
-
+<!-- 
     <!-- Add support for component scanning -->
     <context:component-scan base-package="com.cassess" />
 
@@ -59,10 +59,11 @@
           class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+   
 
     <!-- Enable configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="myTransactionManager" />
-
+-->
 </beans>
 
 

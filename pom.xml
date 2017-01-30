@@ -42,12 +42,21 @@
             <artifactId>spring-orm</artifactId>
             <version>4.3.5.RELEASE</version>
         </dependency>
-
+        
+        <!-- REST Template -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        
+        <!-- H2 database not being used once MySQL enabled
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+        -->
+        
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -58,6 +67,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Google generic DAO -->
+        <dependency>
+            <groupId>com.googlecode.genericdao</groupId>
+            <artifactId>dao</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.genericdao</groupId>
+            <artifactId>search</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+		
 
         <!--Hibernate-->
         <dependency>
@@ -70,6 +92,11 @@
             <artifactId>hibernate-c3p0</artifactId>
             <version>5.2.7.Final</version>
         </dependency>
+        <dependency>
+        	<groupId>commons-dbcp</groupId>
+        	<artifactId>commons-dbcp</artifactId>
+        </dependency>
+        
 
         <dependency>
             <groupId>javax.servlet</groupId>
