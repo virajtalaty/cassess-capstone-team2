@@ -33,8 +33,8 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost/cassess" />
-		<property name="username" value="root" />
-		<property name="password" value="root123" />
+		<property name="username" value="TestAccount" />
+		<property name="password" value="TestAccount!23" />
 	</bean>
 	
 	<!-- 

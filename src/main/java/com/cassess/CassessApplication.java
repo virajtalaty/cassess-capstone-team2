@@ -1,5 +1,6 @@
 package com.cassess;
 
+import com.cassess.model.taiga.ConsumeTaigaAuthUser;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -66,6 +67,8 @@ public class CassessApplication {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		consumeUsers.getUserInfo("U2G79FELT");
+            ConsumeTaigaAuthUser consumeTaigaAuthUser = (ConsumeTaigaAuthUser) ctx.getBean("consumeTaigaAuthUser");
+            System.out.println("Token: " + consumeTaigaAuthUser.getToken());
         };
     }
     
