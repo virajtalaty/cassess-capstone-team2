@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -16,12 +17,19 @@ import java.util.ArrayList;
 @Service
 @Transactional
 public class GatherGitHubData implements GatherData {
+
     @Autowired
     private GitHubCommitDataDao dao;
-    private String urlPath;
+    private RestTemplate restTemplate;
+    private String accessToken;
+    private String url;
+
 
     public GatherGitHubData() {
-        this.urlPath = "tjjohn1/cassess-capstone-team2";
+        restTemplate = new RestTemplate();
+        url = "https://api.github.com/repos/tjjohn1/cassess-capstone-team2/";
+        GitHubProperties gitHubProperties = new GitHubProperties();
+        accessToken = gitHubProperties.getAccessToken();
     }
 
     /**
@@ -29,24 +37,60 @@ public class GatherGitHubData implements GatherData {
      */
     @Override
     public void fetchData(){
-        getAllCommits();
+        getBranches();
+    }
+
+    private void getBranches(){
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "branches")
+                .queryParam("access_token", accessToken);
+
+        String urlPath = builder.build().toUriString();
+
+        String json = restTemplate.getForObject(urlPath, String.class);
+        ArrayList<GitHubBranches> branches = null;
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try{
+            branches = mapper.readValue(json, new TypeReference<ArrayList<GitHubBranches>>(){});
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        getAllCommits(branches);
     }
 
     /**
      * Gathers all commits to the repository, gathers their Sha IDs, and passes them to the getCommit method
      */
-    private void getAllCommits(){
-        RestTemplate restTemplate = new RestTemplate();
-        String json = restTemplate.getForObject("https://api.github.com/repos/"+ urlPath + "/commits", String.class);
+    private void getAllCommits(ArrayList<GitHubBranches> branches){
         ArrayList<GitHubSha> gitHubAllCommits = null;
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            gitHubAllCommits = mapper.readValue(json, new TypeReference<ArrayList<GitHubSha>>(){});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        for(GitHubBranches branch: branches) {
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "commits")
+                    .queryParam("sha", branch.getName())
+                    .queryParam("access_token", accessToken);
 
+            String urlPath = builder.build().toUriString();
+
+            String json = restTemplate.getForObject(urlPath, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+
+
+            ArrayList<GitHubSha> tempCommitList = null;
+            try {
+                tempCommitList = mapper.readValue(json, new TypeReference<ArrayList<GitHubSha>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(gitHubAllCommits == null){
+                gitHubAllCommits = tempCommitList;
+            }else{
+                gitHubAllCommits.addAll(tempCommitList);
+            }
+
+        }
 
         getCommit(gitHubAllCommits);
     }
@@ -56,10 +100,13 @@ public class GatherGitHubData implements GatherData {
      * @param gitHubCommits     Arraylist full of Sha Keys
      */
     private void getCommit(ArrayList<GitHubSha> gitHubCommits){
-        RestTemplate restTemplate = new RestTemplate();
-
         for (GitHubSha sha: gitHubCommits) {
-            GitHubCommitData json = restTemplate.getForObject("https://api.github.com/repos/"+ urlPath + "/commits/" + sha.getSha(), GitHubCommitData.class);
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "commits/" + sha.getSha() + "?access_token=" + accessToken);
+
+            String urlPath = builder.build().toUriString();
+
+            GitHubCommitData json = restTemplate.getForObject(urlPath, GitHubCommitData.class);
 
             String commitId = sha.getSha();
             Date date = json.getCommit().getAuthor().getDate();
@@ -69,9 +116,8 @@ public class GatherGitHubData implements GatherData {
 
             CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted);
 
-            System.out.println(commitData);
 
-            //dao.save(commitData);
+            dao.save(commitData);
         }
 
     }
