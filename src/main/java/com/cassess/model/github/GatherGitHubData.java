@@ -69,7 +69,9 @@ public class GatherGitHubData implements GatherData {
 
             CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted);
 
-            dao.save(commitData);
+            System.out.println(commitData);
+
+            //dao.save(commitData);
         }
 
     }
