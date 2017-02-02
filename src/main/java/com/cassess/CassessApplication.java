@@ -1,5 +1,6 @@
 package com.cassess;
 
+import com.cassess.model.slack.UserObject;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,26 +17,39 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import com.cassess.model.slack.ConsumeUsers;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootApplication
 @RestController
 @ImportResource({"classpath*:applicationContext.xml"})
 public class CassessApplication {
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping("/resource")
     public Map<String, Object> home(){
-        Map<String, Object> model = new HashMap<String, Object>();
+        List<String> members = new ArrayList<>();
+        Map<String, Object> model = new HashMap<>();
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        ConsumeUsers consumeUsers = (ConsumeUsers) context.getBean("consumeUsers");
+        List<UserObject> users = consumeUsers.getUserList().getMembers();
+        System.out.println("These are the people in the list: ");
+        for ( UserObject member : users) {
+            System.out.println(member.getName());
+            String teamMember = member.getName();
+            members.add(teamMember);
+        }
         model.put("id", UUID.randomUUID().toString());
-        model.put("content", "Hello World");
+        model.put("content", members);
         return model;
     }
+
 
     @RequestMapping("/user")
     public Principal user(Principal user){

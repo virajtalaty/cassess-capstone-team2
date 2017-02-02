@@ -44,7 +44,7 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
                 callback && callback(false);
             });
 
-        }
+        };
 
         authenticate();
 
@@ -52,12 +52,12 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
         self.login = function() {
             authenticate(self.credentials, function(authenticated) {
                 if (authenticated) {
-                    console.log("Login succeeded")
+                    console.log("Login succeeded");
                     $location.path("/");
                     self.error = false;
                     $rootScope.authenticated = true;
                 } else {
-                    console.log("Login failed")
+                    console.log("Login failed");
                     $location.path("/login");
                     self.error = true;
                     $rootScope.authenticated = false;
