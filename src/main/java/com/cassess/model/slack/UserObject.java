@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(schema = "slack_user")
+@Table(name = "slack_user")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserObject {
 	

@@ -1,17 +1,17 @@
-package com.cassess.model.slack;
+package com.cassess.model;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
- 
+
+import com.googlecode.genericdao.dao.jpa.GeneralDAOImpl;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 
 @Component
-public class UserDaoImpl extends GenericDAOImpl<UserObject, Long> {
-	
+public class CAssessDAO extends GeneralDAOImpl
+{
     @Override
     @Autowired(required=true)
     public void setSearchProcessor(JPASearchProcessor searchProcessor) {

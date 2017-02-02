@@ -1,12 +1,14 @@
 package com.cassess.model.slack;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelsList {
 
 	private boolean ok;
-	private ChannelObject[] channels;
+	private List<ChannelObject> channels;
 	private String warning;
 	private String error;
 	
@@ -27,14 +29,14 @@ public class ChannelsList {
 	/**
 	 * @return the channels
 	 */
-	public ChannelObject[] getChannels() {
+	public List<ChannelObject> getChannels() {
 		return channels;
 	}
 
 	/**
 	 * @param channels the channels to set
 	 */
-	public void setChannels(ChannelObject[] channels) {
+	public void setChannels(List<ChannelObject> channels) {
 		this.channels = channels;
 	}
 

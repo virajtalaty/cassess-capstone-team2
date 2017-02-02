@@ -1,10 +1,21 @@
 package com.cassess.model.slack;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Entity
+@Table(name="slack_messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackMessage {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 	private String type;
 	private String user;
 	private String text;
@@ -12,6 +23,20 @@ public class SlackMessage {
 
 	public SlackMessage() {
 		
+	}
+
+	/**
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	/**

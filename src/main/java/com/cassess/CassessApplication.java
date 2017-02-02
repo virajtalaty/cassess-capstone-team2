@@ -17,6 +17,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cassess.model.slack.ConsumeChannels;
 import com.cassess.model.slack.ConsumeUsers;
 
 import java.security.Principal;
@@ -66,6 +67,8 @@ public class CassessApplication {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		consumeUsers.getUserInfo("U2G79FELT");
+    		ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
+    		consumeChannels.getChannelsList();
         };
     }
     

@@ -1,10 +1,26 @@
 package com.cassess.model.slack;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Entity
+@Table(name="slack_group")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupObject {
 	
+	@Id
 	private String id;
 	private String name;
 	private String is_group;
@@ -12,10 +28,26 @@ public class GroupObject {
 	private String creator;
 	private boolean is_archived;
 	private boolean is_mpim;
+	@OrderColumn(name = "slack_group_members_sequence")
+	@ElementCollection
 	private String[] members;
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="value", column=@Column(name="topic_value")),
+		@AttributeOverride(name="creator", column=@Column(name="topic_creator")),
+		@AttributeOverride(name="last_set", column=@Column(name="topic_last_set"))
+	})
 	private SlackGroupObject topic;
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="value", column=@Column(name="purpose_value")),
+		@AttributeOverride(name="creator", column=@Column(name="purpose_creator")),
+		@AttributeOverride(name="last_set", column=@Column(name="purpose_last_set"))
+	})
 	private SlackGroupObject purpose;
 	private String last_read;
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id")
 	private SlackMessage latest;
 	private long unread_count;
 	private long unread_count_display;

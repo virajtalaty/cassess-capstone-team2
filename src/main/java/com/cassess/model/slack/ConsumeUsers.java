@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.cassess.model.CAssessDAO;
+
 @Service
 @Transactional
 public class ConsumeUsers {
@@ -12,16 +14,15 @@ public class ConsumeUsers {
 	private RestTemplate restTemplate;
 	private String baseURL;
 	private String token;
-	private SlackProperties props;
+	private SlackAuth auth;
 	
 	@Autowired
-	private UserDaoImpl dao;
+	private CAssessDAO dao;
 	
 	public ConsumeUsers() {
-		props = new SlackProperties();
 		restTemplate = new RestTemplate();
 		baseURL = "https://slack.com/api/";
-		token = props.getToken();
+		auth = new SlackAuth();
 	}
 	
 	public UserList getUserList() {
@@ -31,6 +32,8 @@ public class ConsumeUsers {
 	}
 	
 	public UserObject getUserInfo(String userID) {
+		auth = dao.find(SlackAuth.class, 1);
+		token = auth.getToken();
 		String uidURL = baseURL + "users.info" + token + "&user=" + userID;
 		System.out.println("Fetching from " + uidURL);
 		UserInfo retUser = restTemplate.getForObject(uidURL, UserInfo.class);
