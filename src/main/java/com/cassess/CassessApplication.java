@@ -49,10 +49,10 @@ public class CassessApplication {
         @Override
         protected void configure(HttpSecurity http) throws Exception{
             http
-                .httpBasic()
-                .and()
+                .httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/index.html", "/login.html", "/")
+                .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
+                        "/partials/login.html", "/")
                 .permitAll().anyRequest().authenticated()
                 .and()
                 .csrf()
