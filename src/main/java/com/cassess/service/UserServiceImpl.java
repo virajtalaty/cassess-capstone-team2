@@ -14,6 +14,12 @@ import java.util.*;
 @ImportResource({"classpath*:applicationContext.xml"})
 public class UserServiceImpl implements UserService {
 
+    //private ConsumeUsers consumeUsers;
+    private List<UserObject> users;
+
+    UserServiceImpl(){
+    }
+
     @Override
     public List<String> getTeamMembers(){
         List<String> members = new ArrayList<>();
@@ -22,8 +28,9 @@ public class UserServiceImpl implements UserService {
         // Get Bean from container
         ConsumeUsers consumeUsers = context.getBean("consumeUsers", ConsumeUsers.class);
         // Get a list of users using consumeUsers Methods
-        List<UserObject> users = consumeUsers.getUserList().getMembers();
+        users = consumeUsers.getUserList().getMembers();
         // Add the names of the members to a list
+        //teamMember = users.get(0);
         for ( UserObject member : users) {
             members.add( member.getName());
         }
@@ -33,4 +40,15 @@ public class UserServiceImpl implements UserService {
         //Return the list of members names
         return members;
     }
+
+    @Override
+    public List<String> getIds(){
+        List<String> Ids = new ArrayList<>();
+        for ( UserObject member : users) {
+            Ids.add( member.getId());
+        }
+        return Ids;
+    }
+
+
 }
