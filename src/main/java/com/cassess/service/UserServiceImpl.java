@@ -14,7 +14,6 @@ import java.util.*;
 @ImportResource({"classpath*:applicationContext.xml"})
 public class UserServiceImpl implements UserService {
 
-    //private ConsumeUsers consumeUsers;
     private List<UserObject> users;
 
     UserServiceImpl(){
@@ -30,7 +29,6 @@ public class UserServiceImpl implements UserService {
         // Get a list of users using consumeUsers Methods
         users = consumeUsers.getUserList().getMembers();
         // Add the names of the members to a list
-        //teamMember = users.get(0);
         for ( UserObject member : users) {
             members.add( member.getName());
         }

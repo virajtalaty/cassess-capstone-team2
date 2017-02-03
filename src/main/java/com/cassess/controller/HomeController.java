@@ -25,7 +25,7 @@ public class HomeController {
         ///return content (team member names)  and id for response
         model.put("id", UUID.randomUUID().toString());
         model.put("content", userService.getTeamMembers());
-
+        model.put("teamIDs", userService.getIds());
         return model;
     }
 }
