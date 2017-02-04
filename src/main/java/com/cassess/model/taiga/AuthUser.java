@@ -2,46 +2,66 @@ package com.cassess.model.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
-@Table(schema = "taiga_user")
+@Table(name = "taiga_user")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TaigaAuthUser {
+public class AuthUser {
 
     @Id
+    @Column(name = "auth_token")
     private String auth_token;
+    @Column(name = "big_photo")
     private String big_photo;
+    @Column(name = "bio")
     private String bio;
+    @Column(name = "color")
     private String color;
+    @Column(name = "email")
     private String email;
+    @Column(name = "full_name")
     private String full_name;
+    @Column(name = "full_name_display")
     private String full_name_display;
+    @Column(name = "gravatar_id")
     private String gravatar_id;
-    private String id;
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "username")
     private String username;
-    @Transient
+    @Column(name = "is_active")
     private boolean is_active;
+    @Column(name = "lang")
     private String lang;
+    @Column(name = "max_memberships_private_projects")
     private String max_memberships_private_projects;
+    @Column(name = "max_memberships_public_projects")
     private String max_memberships_public_projects;
+    @Column(name = "max_private_projects")
     private String max_private_projects;
+    @Column(name = "max_public_projects")
     private String max_public_projects;
+    @Column(name = "photo")
     private String photo;
+    @Column(name = "projects_with_me")
     private String[] projects_with_me;
+    @Column(name = "roles")
     private String[] roles;
+    @Column(name = "theme")
     private String theme;
+    @Column(name = "timezone")
     private String timezone;
+    @Column(name = "total_private_projects")
     private String total_private_projects;
+    @Column(name = "total_public_projects")
     private String total_public_projects;
 
 
-
-
-    public TaigaAuthUser() {
+    public AuthUser() {
 
     }
 
@@ -109,11 +129,11 @@ public class TaigaAuthUser {
         this.gravatar_id = gravatar_id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

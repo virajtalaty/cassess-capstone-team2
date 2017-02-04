@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Component
-public class TaigaAuthUserDaoImpl extends GenericDAOImpl<TaigaAuthUser, Long> {
+public class ProjectStoreDaoImpl extends GenericDAOImpl<Project, Long> {
 
     @Override
     @Autowired(required = true)
@@ -22,4 +22,5 @@ public class TaigaAuthUserDaoImpl extends GenericDAOImpl<TaigaAuthUser, Long> {
     public void setEntityManager(EntityManager entityManager) {
         super.setEntityManager(entityManager);
     }
+
 }
