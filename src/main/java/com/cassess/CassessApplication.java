@@ -65,8 +65,8 @@ public class CassessApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
-            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
+            //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
+    		//consumeUsers.getUserInfo("U2G79FELT");
 
             ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
             consumeAuthUser.getUserInfo();
