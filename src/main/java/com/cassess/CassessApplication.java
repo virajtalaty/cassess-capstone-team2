@@ -1,5 +1,7 @@
 package com.cassess;
 
+import com.cassess.model.taiga.ConsumeAuthUser;
+import com.cassess.model.taiga.ConsumeProjectList;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,8 +47,20 @@ public class CassessApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
-            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
+            //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
+    		//consumeUsers.getUserInfo("U2G79FELT");
+
+            ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
+            consumeAuthUser.getUserInfo();
+            String token = consumeAuthUser.getToken("TaigaTestUser@gmail.com");
+            System.out.println("Taiga Token: " + token);
+            Long id = consumeAuthUser.getID("TaigaTestUser@gmail.com");
+            System.out.println("Taiga Member ID: " + id);
+
+            ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
+            consumeProjectList.getProjectInfo(token, id);
+            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
+
         };
     }
     

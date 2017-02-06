@@ -82,6 +82,12 @@
 	
 	<bean id="consumeUsers" class="com.cassess.model.slack.ConsumeUsers">
 	</bean>
+
+	<bean id="consumeProjectList" class="com.cassess.model.taiga.ConsumeProjectList">
+	</bean>
+
+    <bean id="consumeAuthUser" class="com.cassess.model.taiga.ConsumeAuthUser">
+    </bean>
 	
 	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>
