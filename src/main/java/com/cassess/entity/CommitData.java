@@ -34,12 +34,14 @@ public class CommitData {
     public CommitData() {
     }
 
-    public CommitData(String commitID, Date date, String email, int linesOfCodeAdded, int linesOfCodeDeleted) {
+    public CommitData(String commitID, Date date, String email, int linesOfCodeAdded, int linesOfCodeDeleted, String projectName, String courseName) {
         this.commitID = commitID;
         this.date = date;
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
+        this.projectName = projectName;
+        this.courseName = courseName;
     }
 
     public String getCommitID() {

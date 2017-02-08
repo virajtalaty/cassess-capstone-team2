@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -20,14 +21,19 @@ public class GatherGitHubData implements GatherData {
 
     @Autowired
     private GitHubCommitDataDao dao;
+
     private RestTemplate restTemplate;
     private String accessToken;
     private String url;
+    private String projectName;
+    private String courseName;
 
 
     public GatherGitHubData() {
         restTemplate = new RestTemplate();
-        url = "https://api.github.com/repos/tjjohn1/cassess-capstone-team2/";
+        projectName = "cassess-capstone-team2/";
+        courseName = "tjjohn1/";
+        url = "https://api.github.com/repos/" + courseName + projectName;
         GitHubProperties gitHubProperties = new GitHubProperties();
         accessToken = gitHubProperties.getAccessToken();
     }
@@ -40,6 +46,9 @@ public class GatherGitHubData implements GatherData {
         getBranches();
     }
 
+    /**
+     * Gathers each branch in order to gather each commit data from them
+     */
     private void getBranches(){
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "branches")
                 .queryParam("access_token", accessToken);
@@ -101,24 +110,31 @@ public class GatherGitHubData implements GatherData {
      */
     private void getCommit(ArrayList<GitHubSha> gitHubCommits){
         for (GitHubSha sha: gitHubCommits) {
+            if(dao.getCommit(sha.getSha()) == null){
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "commits/" + sha.getSha() + "?access_token=" + accessToken);
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "commits/" + sha.getSha() + "?access_token=" + accessToken);
+                String urlPath = builder.build().toUriString();
 
-            String urlPath = builder.build().toUriString();
+                GitHubCommitData json = restTemplate.getForObject(urlPath, GitHubCommitData.class);
 
-            GitHubCommitData json = restTemplate.getForObject(urlPath, GitHubCommitData.class);
+                String commitId = sha.getSha();
+                Date date = json.getCommit().getAuthor().getDate();
+                String email = json.getCommit().getAuthor().getEmail();
+                int linesOfCodeAdded = json.getStats().getAdditions();
+                int linesOfCodeDeleted = json.getStats().getDeletions();
 
-            String commitId = sha.getSha();
-            Date date = json.getCommit().getAuthor().getDate();
-            String email = json.getCommit().getAuthor().getEmail();
-            int linesOfCodeAdded = json.getStats().getAdditions();
-            int linesOfCodeDeleted = json.getStats().getDeletions();
+                CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted, projectName, courseName);
 
-            CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted);
-
-
-            dao.save(commitData);
+                dao.save(commitData);
+            }
         }
+    }
 
+    /**
+     * Gathers all the rows in the commit_data table
+     * @return      A list of CommitData Objects
+     */
+    public List<CommitData> getCommitList(){
+        return dao.getAllCommitData();
     }
 }

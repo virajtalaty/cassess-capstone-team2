@@ -70,6 +70,8 @@ public class CassessApplication {
 
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData();
+            //get commit List returns all commits there are
+            System.out.println(gatherGitHubData.getCommitList());
         };
     }
     
