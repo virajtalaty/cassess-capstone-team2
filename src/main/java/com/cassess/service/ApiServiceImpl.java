@@ -1,5 +1,6 @@
 package com.cassess.service;
 
+import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.slack.ConsumeUsers;
 import com.cassess.model.slack.UserObject;
 import com.cassess.model.taiga.AuthUserQueryDao;
@@ -7,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-
 
 @Service
 public class ApiServiceImpl implements ApiService{
@@ -21,6 +20,8 @@ public class ApiServiceImpl implements ApiService{
     @Autowired
     private AuthUserQueryDao authUserQueryDao;
 
+    @Autowired
+    private GatherGitHubData gatherGitHubData;
 
     ApiServiceImpl(){
     }
@@ -48,11 +49,14 @@ public class ApiServiceImpl implements ApiService{
     @Override
     public List<String> getUserInfo(){
         List<String> Info = new ArrayList<>();
-
         Info.add(authUserQueryDao.getUser("TaigaTestUser@gmail.com").getFull_name());
         Info.add(authUserQueryDao.getUser("TaigaTestUser@gmail.com").getEmail());
-
         return Info;
+    }
+
+    @Override
+    public String getGitHubCommitList(){
+        return gatherGitHubData.getCommitList().toString();
     }
 
 }

@@ -26,13 +26,19 @@ public class HomeController {
     @GetMapping(value = "/resource")
     public Map<String, Object> homeResource(){
         Map<String, Object> model = new HashMap<>();
-        ///return content (team member names)  and id for response
         model.put("id", UUID.randomUUID().toString());
         model.put("content", apiService.getTeamMembers());
         model.put("teamIDs", apiService.getIds());
         model.put("token", dataBaseService.getTaigaToken());
         model.put("taigaID", dataBaseService.getTaigaID());
         model.put("Info", apiService.getUserInfo());
+        model.put("Slug", dataBaseService.getTaigaProjectSlug());
+        model.put("ProjectCreate", dataBaseService.getProjectCreationDay());
+        model.put("slackTeamId", dataBaseService.getSlackTeamId());
+        model.put("slackTimeZone", dataBaseService.getSlackTimeZone());
+        model.put("gitHubCommitId", dataBaseService.getGitHubCommitId());
+        model.put("gitHubEmail", dataBaseService.getGitHubCommitEmail());
+        model.put("gitHubCommitList", apiService.getGitHubCommitList());
         return model;
     }
 
