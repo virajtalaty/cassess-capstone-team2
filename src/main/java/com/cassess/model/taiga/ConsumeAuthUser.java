@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 @Service
 @Transactional
-public class ConsumeAuthUser {
+public class ConsumeAuthUser{
 
 	private RestTemplate restTemplate;
 	private String authURL;
@@ -80,9 +80,7 @@ public class ConsumeAuthUser {
 		return authQueryDao.getUser(email).getAuth_token();
 	}
 
-	public Long getID(String email){
-		return authQueryDao.getUser(email).getId();
-	}
+	public Long getID(String email){return authQueryDao.getUser(email).getId();}
 
 }
 

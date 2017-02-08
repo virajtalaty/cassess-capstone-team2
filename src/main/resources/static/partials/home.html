@@ -1,6 +1,11 @@
 <h1>Welcome to CAssess!</h1>
 <div ng-controller="home as home" ng-show="authenticated">
     <p>You are logged in as {{home.greeting.id}}!  Have a look around...</p>
+    <p> The slack team member are: {{home.greeting.content}}</p>
+    <p> The slack team members IDs are: {{home.greeting.teamIDs}}</p>
+    <p> The Taiga token is: {{home.greeting.token}}</p>
+    <p> The Taiga ID is: {{home.greeting.taigaID}}</p>
+    <p> The Taiga info gathered from API is : {{home.greeting.Info}}</p>
 </div>
 <div  ng-controller="home as home" ng-show="!authenticated">
     <p>You are not logged in! Please login to enjoy the site...</p>

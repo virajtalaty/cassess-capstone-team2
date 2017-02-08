@@ -2,40 +2,37 @@ package com.cassess.service;
 
 import com.cassess.model.slack.ConsumeUsers;
 import com.cassess.model.slack.UserObject;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.cassess.model.taiga.AuthUserQueryDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-//Uses
+
 
 @Service
-@ImportResource({"classpath*:applicationContext.xml"})
-public class UserServiceImpl implements UserService {
+public class ApiServiceImpl implements ApiService{
 
     private List<UserObject> users;
 
-    UserServiceImpl(){
+    @Autowired
+    private ConsumeUsers consumeUsers;
+
+    @Autowired
+    private AuthUserQueryDao authUserQueryDao;
+
+
+    ApiServiceImpl(){
     }
 
     @Override
     public List<String> getTeamMembers(){
         List<String> members = new ArrayList<>();
-        // Load Beans from configuration file
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        // Get Bean from container
-        ConsumeUsers consumeUsers = context.getBean("consumeUsers", ConsumeUsers.class);
-        // Get a list of users using consumeUsers Methods
         users = consumeUsers.getUserList().getMembers();
         // Add the names of the members to a list
         for ( UserObject member : users) {
             members.add( member.getName());
         }
-        //Close the Context
-        context.close();
-
-        //Return the list of members names
         return members;
     }
 
@@ -48,5 +45,14 @@ public class UserServiceImpl implements UserService {
         return Ids;
     }
 
+    @Override
+    public List<String> getUserInfo(){
+        List<String> Info = new ArrayList<>();
+
+        Info.add(authUserQueryDao.getUser("TaigaTestUser@gmail.com").getFull_name());
+        Info.add(authUserQueryDao.getUser("TaigaTestUser@gmail.com").getEmail());
+
+        return Info;
+    }
 
 }

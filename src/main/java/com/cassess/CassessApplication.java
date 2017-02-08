@@ -1,5 +1,6 @@
 package com.cassess;
 
+
 import com.cassess.model.taiga.ConsumeAuthUser;
 import com.cassess.model.taiga.ConsumeProjectList;
 import org.springframework.boot.CommandLineRunner;
@@ -15,10 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-
-import com.cassess.model.slack.ConsumeUsers;
-
 
 
 @SpringBootApplication
@@ -50,7 +47,7 @@ public class CassessApplication {
             //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		//consumeUsers.getUserInfo("U2G79FELT");
 
-            ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
+            /*ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
             consumeAuthUser.getUserInfo();
             String token = consumeAuthUser.getToken("TaigaTestUser@gmail.com");
             System.out.println("Taiga Token: " + token);
@@ -59,7 +56,7 @@ public class CassessApplication {
 
             ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
             consumeProjectList.getProjectInfo(token, id);
-            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
+            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));*/
 
         };
     }
