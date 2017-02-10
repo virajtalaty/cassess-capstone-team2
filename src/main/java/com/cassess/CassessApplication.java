@@ -1,5 +1,6 @@
 package com.cassess;
 
+import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.taiga.ConsumeAuthUser;
 import com.cassess.model.taiga.ConsumeProjectList;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -67,6 +69,7 @@ public class CassessApplication {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
 <<<<<<< HEAD
+<<<<<<< HEAD
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		consumeUsers.getUserInfo("U2G79FELT");
     		ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
@@ -74,6 +77,10 @@ public class CassessApplication {
 =======
             //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		//consumeUsers.getUserInfo("U2G79FELT");
+=======
+            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
+    		consumeUsers.getUserInfo("U2G79FELT");
+>>>>>>> master
 
             ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
             consumeAuthUser.getUserInfo();
@@ -86,6 +93,13 @@ public class CassessApplication {
             consumeProjectList.getProjectInfo(token, id);
             System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
+            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
+            gatherGitHubData.fetchData();
+            //get commit List returns all commits there are
+            System.out.println(gatherGitHubData.getCommitList());
 >>>>>>> master
         };
     }
