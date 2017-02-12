@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Thomas on 2/10/2017.
@@ -44,6 +46,9 @@ import javax.persistence.Table;
         @Column(name="tasksOpen")
         private int tasks_open;
 
+        @Column(name="retrievalDate")
+        private String retrievalDate;
+
         public TaskTotals(){
 
         }
@@ -58,6 +63,9 @@ import javax.persistence.Table;
             this.tasks_in_progress = tasks_in_progress;
             this.tasks_ready_for_test = tasks_ready_for_test;
             this.tasks_open = tasks_open;
+            Date date = new Date();
+            String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+            this.retrievalDate = dateString;
         }
 
     public int getId() { return id; }
@@ -95,6 +103,19 @@ import javax.persistence.Table;
     public int getTasks_open() { return tasks_open; }
 
     public void setTasks_open(int tasks_open) { this.tasks_open = tasks_open; }
+
+    public String getRetrievalDate() {
+        return retrievalDate;
+    }
+
+    public void setRetrievalDate(String retrievalDate) {
+
+        Date date = new Date();
+        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        this.retrievalDate = dateString;
+    }
+
 
 
 }

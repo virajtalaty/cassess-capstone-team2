@@ -72,9 +72,11 @@ public class ApiServiceImpl implements ApiService{
             taskTotalsList.add("\n{ Member: " + taskTotals.getId() + ", Name: "
                     + taskTotals.getFull_name() + ", Project: "
                     + taskTotals.getProject_name() + ", Role: "
-                    + taskTotals.getRole_name() + ", Closed Tasks: "
+                    + taskTotals.getRole_name() + ", Retrieval Date: "
+                    + taskTotals.getRetrievalDate() + ", Closed Tasks: "
                     + taskTotals.getTasks_closed() + ", New Tasks: "
                     + taskTotals.getTasks_new() + ", In Progress Tasks: "
+                    + taskTotals.getTasks_in_progress() + ", Ready For Test Tasks: "
                     + taskTotals.getTasks_ready_for_test() + ", Tasks Open: "
                     + taskTotals.getTasks_open() + " }");
         }

@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name = "projects")
@@ -22,8 +24,8 @@ public class Project {
     @Column(name = "slug")
     private String slug;
 
-    @Column(name="created_date")
-    private String created_date;
+    @Column(name="retrievalDate")
+    private String retrievalDate;
 
     public Project() {
     }
@@ -34,12 +36,16 @@ public class Project {
 
     public void setId(Long id) { this.id = id; }
 
-    public String getCreatedDate() {
-        return created_date;
+    public String getRetrievalDate() {
+        return retrievalDate;
     }
 
-    public void setCreatedDate(String created_date) {
-        this.created_date = created_date;
+    public void setRetrievalDate() {
+
+        Date date = new Date();
+        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        this.retrievalDate = dateString;
     }
 
     public String getName() {

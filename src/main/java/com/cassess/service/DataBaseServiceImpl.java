@@ -56,7 +56,7 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Override
     public String getProjectCreationDay(){
-        return projectQueryDao.getProject().getCreatedDate();
+        return projectQueryDao.getProject().getRetrievalDate();
     }
 
     @Override

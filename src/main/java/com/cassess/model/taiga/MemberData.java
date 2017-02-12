@@ -22,7 +22,15 @@ public class MemberData {
     @Column(name="roleName")
     private String role_name;
 
-    public MemberData() {
+    public MemberData(){
+
+    }
+
+    public MemberData(int id, String full_name, String project_name, String role_name) {
+        this.id = id;
+        this.full_name = full_name;
+        this.project_name = project_name;
+        this.role_name = role_name;
     }
 
     public int getId() {

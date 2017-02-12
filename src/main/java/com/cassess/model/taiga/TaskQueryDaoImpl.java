@@ -28,7 +28,7 @@ public class TaskQueryDaoImpl{
         query.setParameter(1, full_name);
         List<TaskCount> taskCount =  query.getResultList();
         int result = taskCount.get(0).getTotal();
-        Query dropQuery = getEntityManager().createNativeQuery("DROP TABLE 'taskcount'");
+        getEntityManager().createNativeQuery("DROP TABLE IF EXISTS taskcount;").executeUpdate();
         return result;
     }
 
@@ -38,7 +38,7 @@ public class TaskQueryDaoImpl{
         query.setParameter(1, full_name);
         List<TaskCount> taskCount =  query.getResultList();
         int result = taskCount.get(0).getTotal();
-        Query dropQuery = getEntityManager().createNativeQuery("DROP TABLE 'taskcount'");
+        getEntityManager().createNativeQuery("DROP TABLE IF EXISTS taskcount;").executeUpdate();
         return result;
     }
 
@@ -48,7 +48,7 @@ public class TaskQueryDaoImpl{
         query.setParameter(1, full_name);
         List<TaskCount> taskCount =  query.getResultList();
         int result = taskCount.get(0).getTotal();
-        Query dropQuery = getEntityManager().createNativeQuery("DROP TABLE 'taskcount'");
+        getEntityManager().createNativeQuery("DROP TABLE IF EXISTS taskcount;").executeUpdate();
         return result;
     }
 
@@ -58,7 +58,7 @@ public class TaskQueryDaoImpl{
         query.setParameter(1, full_name);
         List<TaskCount> taskCount =  query.getResultList();
         int result = taskCount.get(0).getTotal();
-        Query dropQuery = getEntityManager().createNativeQuery("DROP TABLE 'taskcount'");
+        getEntityManager().createNativeQuery("DROP TABLE IF EXISTS taskcount;").executeUpdate();
         return result;
     }
 
