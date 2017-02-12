@@ -1,0 +1,19 @@
+<h1>Welcome to CAssess!</h1>
+<div ng-controller="home as home" ng-show="authenticated">
+    <p>You are logged in as {{home.greeting.id}}!  Have a look around...</p>
+    <p> The slack team members are accessed from API are: {{home.greeting.content}}</p>
+    <p> The slack team members IDs access from API are: {{home.greeting.teamIDs}}</p>
+    <p> The Taiga token accessed from database is: {{home.greeting.token}}</p>
+    <p> The Taiga ID accessed from database is: {{home.greeting.taigaID}}</p>
+    <p> The Taiga info gathered from API is : {{home.greeting.Info}}</p>
+    <p> The Taiga slug for the project accessed from database is: {{home.greeting.Slug}}</p>
+    <p> The Taiga Task Totals accessed from database are: {{home.greeting.TaskTotals}}</p>
+    <p> The Slack time zone accessed from database is: {{home.greeting.slackTimeZone}}</p>
+    <p> The Slack teamId accessed from database is: {{home.greeting.slackTeamId}}</p>
+    <p> The GitHub Commit Id accessed from database is: {{home.greeting.gitHubCommitId}}</p>
+    <p> The GitHub Commit Id accessed from database is: {{home.greeting.gitHubEmail}}</p>
+    <p> The GitHub Commit commit list accessed from API is: {{home.greeting.gitHubCommitList}}</p>
+</div>
+<div  ng-controller="home as home" ng-show="!authenticated">
+    <p>You are not logged in! Please login to enjoy the site...</p>
+</div>
