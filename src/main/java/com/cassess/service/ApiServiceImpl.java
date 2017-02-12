@@ -69,14 +69,14 @@ public class ApiServiceImpl implements ApiService{
         List<String> taskTotalsList = new ArrayList<>();
         List<TaskTotals> taskTotalsObj = taskTotalsQueryDao.getTaskTotals();
         for(TaskTotals taskTotals: taskTotalsObj){
-            taskTotalsList.add("\nMember: " + taskTotals.getId() + ", Name: "
+            taskTotalsList.add("\n{ Member: " + taskTotals.getId() + ", Name: "
                     + taskTotals.getFull_name() + ", Project: "
                     + taskTotals.getProject_name() + ", Role: "
                     + taskTotals.getRole_name() + ", Closed Tasks: "
                     + taskTotals.getTasks_closed() + ", New Tasks: "
                     + taskTotals.getTasks_new() + ", In Progress Tasks: "
                     + taskTotals.getTasks_ready_for_test() + ", Tasks Open: "
-                    + taskTotals.getTasks_open());
+                    + taskTotals.getTasks_open() + " }");
         }
         Set<String> hs = new HashSet<>();
         hs.addAll(taskTotalsList);
