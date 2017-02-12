@@ -22,3 +22,7 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Temp ###
+src/main/java/com/cassess/model/slack/slack.properties
+src/main/java/com/cassess/model/github/github.properties

@@ -18,6 +18,10 @@ After cloning the repository, you will need to ensure you have a few items downl
 ### Baseline Installation Procedure ###
 After cloning the project start a new Maven project and select the pom.xml file to begin the Project.
 
+Before running the software the first time you need to run the command
+
+    mvn package 
+
 You can either run the CassessApplication.java file to run the server or you can use the terminal command "mvn spring-boot:run"
 
 After completing this step navigate to:
