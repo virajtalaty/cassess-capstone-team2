@@ -32,7 +32,7 @@ import java.util.UUID;
 @ImportResource({"classpath*:applicationContext.xml"})
 public class CassessApplication {
 
-    @RequestMapping("/resource")
+   /* @RequestMapping("/resource")
     public Map<String, Object> home(){
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("id", UUID.randomUUID().toString());
@@ -43,7 +43,7 @@ public class CassessApplication {
     @RequestMapping("/user")
     public Principal user(Principal user){
         return user;
-    }
+    }*/
 
     @Configuration
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
@@ -52,14 +52,14 @@ public class CassessApplication {
         @Override
         protected void configure(HttpSecurity http) throws Exception{
             http
-                .httpBasic().and()
-                .authorizeRequests()
-                .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
-                        "/partials/login.html", "/")
-                .permitAll().anyRequest().authenticated()
-                .and()
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                    .httpBasic().and()
+                    .authorizeRequests()
+                    .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
+                            "/partials/login.html", "/")
+                    .permitAll().anyRequest().authenticated()
+                    .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }
 
@@ -68,7 +68,7 @@ public class CassessApplication {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
+            consumeUsers.getUserInfo("U2G79FELT");
 
             ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
             consumeAuthUser.getUserInfo();
@@ -87,9 +87,9 @@ public class CassessApplication {
             System.out.println(gatherGitHubData.getCommitList());
         };
     }
-    
-	public static void main(String[] args) {
-		//ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-		SpringApplication.run(CassessApplication.class, args);
-	}
+
+    public static void main(String[] args) {
+        //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        SpringApplication.run(CassessApplication.class, args);
+    }
 }
