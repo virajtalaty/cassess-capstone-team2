@@ -98,33 +98,5 @@ public class CassessApplication {
         //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         SpringApplication.run(CassessApplication.class, args);
     }
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> {
-            System.out.println("Let's inspect the beans provided by Spring Boot:");
-            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-            consumeUsers.getUserInfo("U2G79FELT");
 
-            ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
-            consumeAuthUser.getUserInfo();
-            String token = consumeAuthUser.getToken("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Token: " + token);
-            Long id = consumeAuthUser.getID("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Member ID: " + id);
-
-            ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
-            consumeProjectList.getProjectInfo(token, id);
-            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
-
-            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
-            gatherGitHubData.fetchData();
-            //get commit List returns all commits there are
-            System.out.println(gatherGitHubData.getCommitList());
-        };
-    }
-
-    public static void main(String[] args) {
-        //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        SpringApplication.run(CassessApplication.class, args);
-    }
 }
