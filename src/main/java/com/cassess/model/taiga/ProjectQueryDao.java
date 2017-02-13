@@ -8,6 +8,6 @@ public interface ProjectQueryDao {
 
     public List<Project> getProjects() throws DataAccessException;
 
-    public Project getProject(String username) throws DataAccessException;
+    public Project getProject() throws DataAccessException;
 
 }

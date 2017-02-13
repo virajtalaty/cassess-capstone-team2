@@ -4,6 +4,9 @@ import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.taiga.ConsumeAuthUser;
 import com.cassess.model.taiga.ConsumeProjectList;
 import org.springframework.boot.CommandLineRunner;
+import com.cassess.model.github.GatherGitHubData;
+import com.cassess.model.taiga.*;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -33,7 +36,7 @@ import java.util.UUID;
 @ImportResource({"classpath*:applicationContext.xml"})
 public class CassessApplication {
 
-    @RequestMapping("/resource")
+   /* @RequestMapping("/resource")
     public Map<String, Object> home(){
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("id", UUID.randomUUID().toString());
@@ -44,7 +47,7 @@ public class CassessApplication {
     @RequestMapping("/user")
     public Principal user(Principal user){
         return user;
-    }
+    }*/
 
     @Configuration
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
@@ -53,14 +56,14 @@ public class CassessApplication {
         @Override
         protected void configure(HttpSecurity http) throws Exception{
             http
-                .httpBasic().and()
-                .authorizeRequests()
-                .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
-                        "/partials/login.html", "/")
-                .permitAll().anyRequest().authenticated()
-                .and()
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                    .httpBasic().and()
+                    .authorizeRequests()
+                    .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
+                            "/partials/login.html", "/")
+                    .permitAll().anyRequest().authenticated()
+                    .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }
 
@@ -68,44 +71,33 @@ public class CassessApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
-<<<<<<< HEAD
-<<<<<<< HEAD
-            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
+
     		ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
     		consumeChannels.getChannelsList();
-=======
-            //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		//consumeUsers.getUserInfo("U2G79FELT");
-=======
+
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		consumeUsers.getUserInfo("U2G79FELT");
->>>>>>> master
 
             ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
-            consumeAuthUser.getUserInfo();
-            String token = consumeAuthUser.getToken("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Token: " + token);
-            Long id = consumeAuthUser.getID("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Member ID: " + id);
+            AuthUser auth = consumeAuthUser.getUserInfo();
 
             ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
-            consumeProjectList.getProjectInfo(token, id);
-            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
+            Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
 
-<<<<<<< HEAD
->>>>>>> master
-=======
+            GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
+            getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getTaskTotals();
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData();
             //get commit List returns all commits there are
             System.out.println(gatherGitHubData.getCommitList());
->>>>>>> master
         };
     }
-    
-	public static void main(String[] args) {
-		//ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-		SpringApplication.run(CassessApplication.class, args);
-	}
+
+    public static void main(String[] args) {
+        //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        SpringApplication.run(CassessApplication.class, args);
+    }
+
 }

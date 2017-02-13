@@ -10,7 +10,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class ProjectQueryDaoImpl implements ProjectQueryDao {
+public class MemberQueryDaoImpl{
 
     protected EntityManager entityManager;
 
@@ -23,15 +23,11 @@ public class ProjectQueryDaoImpl implements ProjectQueryDao {
     }
 
     @Transactional
-    public List<Project> getProjects() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects");
-        List<Project> resultList = query.getResultList();
+    public List<MemberData> getMembersByRole(String roleName) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM memberdata WHERE roleName = ?1", MemberData.class);
+        query.setParameter(1, roleName);
+        List<MemberData> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
-    public Project getProject() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects", Project.class);
-        return (Project) query.getSingleResult();
-    }
 }

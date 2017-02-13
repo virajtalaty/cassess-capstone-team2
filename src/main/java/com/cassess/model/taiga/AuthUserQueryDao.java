@@ -7,5 +7,5 @@ import java.util.List;
 public interface AuthUserQueryDao {
     public List<AuthUser> getUsers() throws DataAccessException;
 
-    public AuthUser getUser(String email) throws DataAccessException;
+    public AuthUser getUser(String username) throws DataAccessException;
 }

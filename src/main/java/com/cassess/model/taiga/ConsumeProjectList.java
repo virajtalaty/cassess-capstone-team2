@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.MediaType;
 
@@ -36,14 +34,9 @@ public class ConsumeProjectList {
 
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-
-        headers.set("Authorization", "Bearer " + token);
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-
-        //Console Output for testing purposes
-        //System.out.println("Request " + request);
 
         projectListURL = projectListURL + "?member=" + id;
 
@@ -54,12 +47,13 @@ public class ConsumeProjectList {
 
         Project[] projects = projectList.getBody();
 
+        projects[0].setRetrievalDate();
         return projectStoreDao.save(projects[0]);
     }
 
-    public String getName(String username){
+    public String getName(){
         Project testProject;
-        testProject = projectQueryDao.getProject(username);
+        testProject = projectQueryDao.getProject();
         return testProject.getName();
     }
 }
