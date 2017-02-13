@@ -3,6 +3,7 @@ package com.cassess.service;
 import com.cassess.model.github.GitHubCommitDataDao;
 import com.cassess.model.taiga.AuthUserQueryDao;
 import com.cassess.model.taiga.ProjectQueryDao;
+import com.cassess.model.taiga.TaskTotalsQueryDaoImpl;
 import com.cassess.service.DAO.SlackServiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,12 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Override
     public String getTaigaToken(){
-        return authUserQueryDao.getUser("TaigaTestUser@gmail.com").getAuth_token();
+        return authUserQueryDao.getUser("taigaTestUser").getAuth_token();
     }
 
     @Override
     public Long getTaigaID(){
-        return  authUserQueryDao.getUser("TaigaTestUser@gmail.com").getId();
+        return  authUserQueryDao.getUser("taigaTestUser").getId();
     }
 
     @Override
@@ -55,12 +56,13 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Override
     public String getProjectCreationDay(){
-        return projectQueryDao.getProject("tjjohn1").getCreated_date();
+        return projectQueryDao.getProject().getRetrievalDate();
     }
 
     @Override
     public String getTaigaProjectSlug(){
-        return projectQueryDao.getProject("tjjohn1").getSlug();
+        return projectQueryDao.getProject().getSlug();
     }
+
 
 }

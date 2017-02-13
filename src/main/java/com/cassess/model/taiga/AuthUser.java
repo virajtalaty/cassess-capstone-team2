@@ -15,12 +15,6 @@ public class AuthUser {
     @Id
     @Column(name = "auth_token")
     private String auth_token;
-    @Column(name = "big_photo")
-    private String big_photo;
-    @Column(name = "bio")
-    private String bio;
-    @Column(name = "color")
-    private String color;
     @Column(name = "email")
     private String email;
     @Column(name = "full_name")
@@ -35,30 +29,6 @@ public class AuthUser {
     private String username;
     @Column(name = "is_active")
     private boolean is_active;
-    @Column(name = "lang")
-    private String lang;
-    @Column(name = "max_memberships_private_projects")
-    private String max_memberships_private_projects;
-    @Column(name = "max_memberships_public_projects")
-    private String max_memberships_public_projects;
-    @Column(name = "max_private_projects")
-    private String max_private_projects;
-    @Column(name = "max_public_projects")
-    private String max_public_projects;
-    @Column(name = "photo")
-    private String photo;
-    @Column(name = "projects_with_me")
-    private String[] projects_with_me;
-    @Column(name = "roles")
-    private String[] roles;
-    @Column(name = "theme")
-    private String theme;
-    @Column(name = "timezone")
-    private String timezone;
-    @Column(name = "total_private_projects")
-    private String total_private_projects;
-    @Column(name = "total_public_projects")
-    private String total_public_projects;
 
 
     public AuthUser() {
@@ -71,30 +41,6 @@ public class AuthUser {
 
     public void setAuth_token(String auth_token) {
         this.auth_token = auth_token;
-    }
-
-    public String getBig_photo() {
-        return big_photo;
-    }
-
-    public void setBig_photo(String big_photo) {
-        this.big_photo = big_photo;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public String getEmail() {
@@ -143,102 +89,6 @@ public class AuthUser {
 
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;
-    }
-
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public String getMax_memberships_private_projects() {
-        return max_memberships_private_projects;
-    }
-
-    public void setMax_memberships_private_projects(String max_memberships_private_projects) {
-        this.max_memberships_private_projects = max_memberships_private_projects;
-    }
-
-    public String getMax_memberships_public_projects() {
-        return max_memberships_public_projects;
-    }
-
-    public void setMax_memberships_public_projects(String max_memberships_public_projects) {
-        this.max_memberships_public_projects = max_memberships_public_projects;
-    }
-
-    public String getMax_private_projects() {
-        return max_private_projects;
-    }
-
-    public void setMax_private_projects(String max_private_projects) {
-        this.max_private_projects = max_private_projects;
-    }
-
-    public String getMax_public_projects() {
-        return max_public_projects;
-    }
-
-    public void setMax_public_projects(String max_public_projects) {
-        this.max_public_projects = max_public_projects;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public String[] getProjects_with_me() {
-        return projects_with_me;
-    }
-
-    public void setProjects_with_me(String[] projects_with_me) {
-        this.projects_with_me = projects_with_me;
-    }
-
-    public String[] getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String[] roles) {
-        this.roles = roles;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public String getTotal_private_projects() {
-        return total_private_projects;
-    }
-
-    public void setTotal_private_projects(String total_private_projects) {
-        this.total_private_projects = total_private_projects;
-    }
-
-    public String getTotal_public_projects() {
-        return total_public_projects;
-    }
-
-    public void setTotal_public_projects(String total_public_projects) {
-        this.total_public_projects = total_public_projects;
     }
 
     public String getUsername() {

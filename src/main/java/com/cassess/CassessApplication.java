@@ -4,6 +4,9 @@ import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.taiga.ConsumeAuthUser;
 import com.cassess.model.taiga.ConsumeProjectList;
 import org.springframework.boot.CommandLineRunner;
+import com.cassess.model.github.GatherGitHubData;
+import com.cassess.model.taiga.*;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -71,20 +74,23 @@ public class CassessApplication {
             consumeUsers.getUserInfo("U2G79FELT");
 
             ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
-            consumeAuthUser.getUserInfo();
-            String token = consumeAuthUser.getToken("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Token: " + token);
-            Long id = consumeAuthUser.getID("TaigaTestUser@gmail.com");
-            System.out.println("Taiga Member ID: " + id);
+            AuthUser auth = consumeAuthUser.getUserInfo();
 
             ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
-            consumeProjectList.getProjectInfo(token, id);
-            System.out.println("Taiga Project Name: " + consumeProjectList.getName("tjjohn1"));
+            Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
+
+            GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
+            getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getTaskTotals();
 
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData();
             //get commit List returns all commits there are
             System.out.println(gatherGitHubData.getCommitList());
+
+
+
         };
     }
 
@@ -92,4 +98,5 @@ public class CassessApplication {
         //ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         SpringApplication.run(CassessApplication.class, args);
     }
+
 }

@@ -30,9 +30,9 @@ public class AuthUserQueryDaoImpl implements AuthUserQueryDao {
     }
 
     @Transactional
-    public AuthUser getUser(String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM taiga_user WHERE email = ?1", AuthUser.class);
-        query.setParameter(1, email);
+    public AuthUser getUser(String username) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM taiga_user WHERE username = ?1", AuthUser.class);
+        query.setParameter(1, username);
         return (AuthUser) query.getSingleResult();
     }
 }
