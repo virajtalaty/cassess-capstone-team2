@@ -35,4 +35,11 @@ public class AuthUserQueryDaoImpl implements AuthUserQueryDao {
         query.setParameter(1, username);
         return (AuthUser) query.getSingleResult();
     }
+    
+    @Transactional
+    public void removeDuplicateUser(Long id) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("DELETE FROM taiga_user WHERE id = ?1");
+        query.setParameter(1, id);
+        query.executeUpdate();
+    }
 }
