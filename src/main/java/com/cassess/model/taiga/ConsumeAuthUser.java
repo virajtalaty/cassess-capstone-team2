@@ -72,6 +72,10 @@ public class ConsumeAuthUser{
 
 		//Console Output for testing purposes
 		System.out.println("Fetching from " + authURL);
+		
+		Long idCheck = response.getBody().getId();
+
+        	authQueryDao.removeDuplicateUser(idCheck);
 
 		return authStoreDao.save(response.getBody());
 	}
