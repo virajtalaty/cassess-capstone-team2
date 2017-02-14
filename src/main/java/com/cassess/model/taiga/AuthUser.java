@@ -11,8 +11,12 @@ import javax.persistence.Table;
 @Table(name = "taiga_user")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthUser {
-
+    
     @Id
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "username")
+    private String username;
     @Column(name = "auth_token")
     private String auth_token;
     @Column(name = "email")
@@ -23,10 +27,6 @@ public class AuthUser {
     private String full_name_display;
     @Column(name = "gravatar_id")
     private String gravatar_id;
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "username")
-    private String username;
     @Column(name = "is_active")
     private boolean is_active;
 
