@@ -15,7 +15,7 @@ public class SlackMessage {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private String id;
 	private String type;
 	private String user;
 	private String text;
@@ -28,14 +28,14 @@ public class SlackMessage {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
