@@ -1,7 +1,9 @@
 package com.cassess.model.slack;
 
+import javax.persistence.Embeddable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Embeddable
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackIcon {
 	private String image_34;

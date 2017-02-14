@@ -1,10 +1,26 @@
 package com.cassess.model.slack;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Entity
+@Table(name="slack_channel")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelObject {
 
+	@Id
 	private String id;
 	private String name;
 	private boolean is_channel;
@@ -13,9 +29,31 @@ public class ChannelObject {
 	private boolean is_archived;
 	private boolean is_general;
 	private boolean is_member;
+	private String last_read;
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="id")
+	private SlackMessage latest;
+	private int unread_count;
+	private int unread_count_display;
+	@OrderColumn(name = "slack_channel_member_sequence")
+	@ElementCollection
 	private String[] members;
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="value", column=@Column(name="topic_value")),
+		@AttributeOverride(name="creator", column=@Column(name="topic_creator")),
+		@AttributeOverride(name="last_set", column=@Column(name="topic_last_set"))
+	})
 	private SlackGroupObject topic;
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name="value", column=@Column(name="purpose_value")),
+		@AttributeOverride(name="creator", column=@Column(name="purpose_creator")),
+		@AttributeOverride(name="last_set", column=@Column(name="purpose_last_set"))
+	})
 	private SlackGroupObject purpose;
+	@OrderColumn(name = "slack_channel_pn_sequence")
+	@ElementCollection
 	private String[] previous_names;
 	private long num_members;
 	
@@ -133,6 +171,62 @@ public class ChannelObject {
 	 */
 	public void setIs_member(boolean is_member) {
 		this.is_member = is_member;
+	}
+
+	/**
+	 * @return the last_read
+	 */
+	public String getLast_read() {
+		return last_read;
+	}
+
+	/**
+	 * @param last_read the last_read to set
+	 */
+	public void setLast_read(String last_read) {
+		this.last_read = last_read;
+	}
+
+	/**
+	 * @return the latest
+	 */
+	public SlackMessage getLatest() {
+		return latest;
+	}
+
+	/**
+	 * @param latest the latest to set
+	 */
+	public void setLatest(SlackMessage latest) {
+		this.latest = latest;
+	}
+
+	/**
+	 * @return the unread_count
+	 */
+	public int getUnread_count() {
+		return unread_count;
+	}
+
+	/**
+	 * @param unread_count the unread_count to set
+	 */
+	public void setUnread_count(int unread_count) {
+		this.unread_count = unread_count;
+	}
+
+	/**
+	 * @return the unread_count_display
+	 */
+	public int getUnread_count_display() {
+		return unread_count_display;
+	}
+
+	/**
+	 * @param unread_count_display the unread_count_display to set
+	 */
+	public void setUnread_count_display(int unread_count_display) {
+		this.unread_count_display = unread_count_display;
 	}
 
 	/**

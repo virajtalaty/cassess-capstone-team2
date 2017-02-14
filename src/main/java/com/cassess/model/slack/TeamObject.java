@@ -1,14 +1,23 @@
 package com.cassess.model.slack;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Entity
+@Table(name="slack_team")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TeamObject {
 
+	@Id
 	private String id;
 	private String name;
 	private String domain;
 	private String email_domain;
+	@Embedded
 	private SlackIcon icon;
 	
 	public TeamObject() {

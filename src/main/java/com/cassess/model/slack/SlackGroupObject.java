@@ -1,12 +1,19 @@
 package com.cassess.model.slack;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Embeddable
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackGroupObject {
 	
+	@Column(name="sub_value")
 	private String value;
+	@Column(name="sub_creator")
 	private String creator;
+	@Column(name="sub_last_set")
 	private long last_set;
 	
 	public SlackGroupObject() {
