@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * Created by Thomas on 2/11/2017.
  */
 @Entity
-@Table(name="taskCount")
+@Subselect("SELECT * FROM taskdata")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskCount {
 
