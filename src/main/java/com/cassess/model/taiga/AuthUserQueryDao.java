@@ -8,4 +8,6 @@ public interface AuthUserQueryDao {
     public List<AuthUser> getUsers() throws DataAccessException;
 
     public AuthUser getUser(String username) throws DataAccessException;
+    
+    public void removeDuplicateUser(Long id) throws DataAccessException;
 }
