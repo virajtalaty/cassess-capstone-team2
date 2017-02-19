@@ -1,18 +1,13 @@
-package com.cassess.model.slack;
+package com.cassess.entity.slack;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class GroupList {
-
+public class UserInfo {
 	private boolean ok;
-	private List<GroupObject> groups;
+	private UserObject user;
 	private String warning;
 	private String error;
+	private long cache_ts; //time stamp of retrieval
 	
-	public GroupList() {
+	public UserInfo() {
 		
 	}
 	
@@ -29,16 +24,16 @@ public class GroupList {
 		this.ok = ok;
 	}
 	/**
-	 * @return the groups
+	 * @return the user
 	 */
-	public List<GroupObject> getGroups() {
-		return groups;
+	public UserObject getUser() {
+		return user;
 	}
 	/**
-	 * @param groups the groups to set
+	 * @param user the user to set
 	 */
-	public void setGroups(List<GroupObject> groups) {
-		this.groups = groups;
+	public void setUser(UserObject user) {
+		this.user = user;
 	}
 	/**
 	 * @return the warning
@@ -63,5 +58,17 @@ public class GroupList {
 	 */
 	public void setError(String error) {
 		this.error = error;
+	}
+	/**
+	 * @return the cache_ts
+	 */
+	public long getCache_ts() {
+		return cache_ts;
+	}
+	/**
+	 * @param cache_ts the cache_ts to set
+	 */
+	public void setCache_ts(long cache_ts) {
+		this.cache_ts = cache_ts;
 	}
 }

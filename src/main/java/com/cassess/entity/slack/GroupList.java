@@ -1,72 +1,67 @@
-package com.cassess.model.slack;
+package com.cassess.entity.slack;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TeamInfo {
+public class GroupList {
 
 	private boolean ok;
-	private TeamObject team;
-	private String error;
+	private List<GroupObject> groups;
 	private String warning;
+	private String error;
 	
-	public TeamInfo() {
+	public GroupList() {
 		
 	}
-
+	
 	/**
 	 * @return the ok
 	 */
 	public boolean isOk() {
 		return ok;
 	}
-
 	/**
 	 * @param ok the ok to set
 	 */
 	public void setOk(boolean ok) {
 		this.ok = ok;
 	}
-
 	/**
-	 * @return the team
+	 * @return the groups
 	 */
-	public TeamObject getTeam() {
-		return team;
+	public List<GroupObject> getGroups() {
+		return groups;
 	}
-
 	/**
-	 * @param team the team to set
+	 * @param groups the groups to set
 	 */
-	public void setTeam(TeamObject team) {
-		this.team = team;
+	public void setGroups(List<GroupObject> groups) {
+		this.groups = groups;
 	}
-
-	/**
-	 * @return the error
-	 */
-	public String getError() {
-		return error;
-	}
-
-	/**
-	 * @param error the error to set
-	 */
-	public void setError(String error) {
-		this.error = error;
-	}
-
 	/**
 	 * @return the warning
 	 */
 	public String getWarning() {
 		return warning;
 	}
-
 	/**
 	 * @param warning the warning to set
 	 */
 	public void setWarning(String warning) {
 		this.warning = warning;
+	}
+	/**
+	 * @return the error
+	 */
+	public String getError() {
+		return error;
+	}
+	/**
+	 * @param error the error to set
+	 */
+	public void setError(String error) {
+		this.error = error;
 	}
 }

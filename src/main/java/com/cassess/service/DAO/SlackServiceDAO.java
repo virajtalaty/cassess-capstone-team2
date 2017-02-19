@@ -1,7 +1,8 @@
 package com.cassess.service.DAO;
 
-import com.cassess.model.slack.UserObject;
 import org.springframework.dao.DataAccessException;
+
+import com.cassess.entity.slack.UserObject;
 
 import javax.persistence.Query;
 import java.util.List;

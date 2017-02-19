@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Subselect;
+
 /**
  * Created by Thomas on 2/11/2017.
  */
