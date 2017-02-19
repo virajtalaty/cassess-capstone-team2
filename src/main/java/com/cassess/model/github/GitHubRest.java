@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="github_auth")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GitHubAuth {
+public class GitHubRest {
 
     @Id
     @Column(name = "id")
@@ -19,11 +19,11 @@ public class GitHubAuth {
     @Column(name = "token")
     private String token;
 
-    public GitHubAuth() {
+    public GitHubRest() {
 
     }
 
-    public GitHubAuth(int id, String token) {
+    public GitHubRest(int id, String token) {
         this.id = id;
         this.token = token;
     }

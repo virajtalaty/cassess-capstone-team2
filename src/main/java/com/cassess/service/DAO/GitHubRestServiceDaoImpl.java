@@ -1,6 +1,5 @@
-package com.cassess.dao;
-import com.cassess.model.github.GitHubAuth;
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
+package com.cassess.service.DAO;
+import com.cassess.model.github.GitHubRest;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Component
-public class GitHubAuthDaoImpl extends GenericDAOImpl<GitHubAuth, Long> {
+public class GitHubRestServiceDaoImpl extends GitHubRestServiceDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -28,12 +27,12 @@ public class GitHubAuthDaoImpl extends GenericDAOImpl<GitHubAuth, Long> {
     }
 
     @Transactional
-    public GitHubAuth save(GitHubAuth gitHubAuth) {
-        if(em.find(GitHubAuth.class, gitHubAuth.getId()) != null){
-            em.merge(gitHubAuth);
+    public GitHubRest save(GitHubRest gitHubRest) {
+        if(em.find(GitHubRest.class, gitHubRest.getId()) != null){
+            em.merge(gitHubRest);
         }else{
-            em.persist(gitHubAuth);
+            em.persist(gitHubRest);
         }
-        return gitHubAuth;
+        return gitHubRest;
     }
 }

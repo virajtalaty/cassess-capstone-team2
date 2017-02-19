@@ -1,7 +1,9 @@
 package com.cassess.controller;
 
-import com.cassess.dao.GitHubAuthDaoImpl;
-import com.cassess.model.github.GitHubAuth;
+import com.cassess.service.DAO.GitHubRestServiceDao;
+import com.cassess.model.github.GitHubRest;
+import com.cassess.service.IGitHubRestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,18 +14,22 @@ import javax.ejb.EJB;
 public class GitHubController {
 
     @EJB
-    private GitHubAuthDaoImpl gitHubAuthDao;
+    private GitHubRestServiceDao gitHubAuthDao;
+
+    @Autowired
+    private IGitHubRestService gitHubRestService;
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public  @ResponseBody GitHubAuth newGitHubAuth( @RequestBody GitHubAuth gitHubAuth){
+    public  @ResponseBody
+    GitHubRest newGitHubAuth(@RequestBody GitHubRest gitHubRest){
 
-        System.out.println("ID: " + gitHubAuth.getId());
-        System.out.println("Token: " + gitHubAuth.getToken());
-        if(gitHubAuth == null){
+        System.out.println("ID: " + gitHubRest.getId());
+        System.out.println("Token: " + gitHubRest.getToken());
+        if(gitHubRest == null){
             return null;
         }else{
-            return gitHubAuthDao.save(gitHubAuth);
+            return gitHubRestService.updateGitHubAuth(gitHubRest);
         }
     }
 }
