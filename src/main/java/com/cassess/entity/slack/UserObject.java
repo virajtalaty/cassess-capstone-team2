@@ -1,4 +1,4 @@
-package com.cassess.model.slack;
+package com.cassess.entity.slack;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -34,10 +34,6 @@ public class UserObject {
 	private boolean is_admin;
 	private boolean is_owner;
 	private boolean has_2fa;
-	
-	public UserObject(){
-		
-	}
 	
 	/**
 	 * @return the ok

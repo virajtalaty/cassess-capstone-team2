@@ -1,15 +1,16 @@
-package com.cassess.model.slack;
+package com.cassess.entity.slack;
 
-public class UserInfo {
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ChannelsList {
+
 	private boolean ok;
-	private UserObject user;
+	private List<ChannelObject> channels;
 	private String warning;
 	private String error;
-	private long cache_ts; //time stamp of retrieval
-	
-	public UserInfo() {
-		
-	}
 	
 	/**
 	 * @return the ok
@@ -17,58 +18,58 @@ public class UserInfo {
 	public boolean isOk() {
 		return ok;
 	}
+
 	/**
 	 * @param ok the ok to set
 	 */
 	public void setOk(boolean ok) {
 		this.ok = ok;
 	}
+
 	/**
-	 * @return the user
+	 * @return the channels
 	 */
-	public UserObject getUser() {
-		return user;
+	public List<ChannelObject> getChannels() {
+		return channels;
 	}
+
 	/**
-	 * @param user the user to set
+	 * @param channels the channels to set
 	 */
-	public void setUser(UserObject user) {
-		this.user = user;
+	public void setChannels(List<ChannelObject> channels) {
+		this.channels = channels;
 	}
+
 	/**
 	 * @return the warning
 	 */
 	public String getWarning() {
 		return warning;
 	}
+
 	/**
 	 * @param warning the warning to set
 	 */
 	public void setWarning(String warning) {
 		this.warning = warning;
 	}
+
 	/**
 	 * @return the error
 	 */
 	public String getError() {
 		return error;
 	}
+
 	/**
 	 * @param error the error to set
 	 */
 	public void setError(String error) {
 		this.error = error;
 	}
-	/**
-	 * @return the cache_ts
-	 */
-	public long getCache_ts() {
-		return cache_ts;
+
+	public ChannelsList() {
+		
 	}
-	/**
-	 * @param cache_ts the cache_ts to set
-	 */
-	public void setCache_ts(long cache_ts) {
-		this.cache_ts = cache_ts;
-	}
+	
 }

@@ -1,9 +1,10 @@
 package com.cassess.service.DAO;
 
-import com.cassess.model.slack.UserObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.cassess.entity.slack.UserObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,14 +26,14 @@ public class SlackServiceDAOImpl implements SlackServiceDAO {
 
     @Transactional
     public List<UserObject> getUsers() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM UserObject");
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM slack_user");
         List<UserObject> resultList = query.getResultList();
         return resultList;
     }
 
     @Transactional
     public UserObject getUser(String id) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM UserObject WHERE id = ?1", UserObject.class);
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM slack_user WHERE id = ?1", UserObject.class);
         query.setParameter(1, id);
         return (UserObject) query.getSingleResult();
     }

@@ -1,8 +1,8 @@
 package com.cassess.service;
 
+import com.cassess.dao.slack.ConsumeUsers;
+import com.cassess.entity.slack.UserObject;
 import com.cassess.model.github.GatherGitHubData;
-import com.cassess.model.slack.ConsumeUsers;
-import com.cassess.model.slack.UserObject;
 import com.cassess.model.taiga.AuthUserQueryDao;
 import com.cassess.model.taiga.TaskTotals;
 import com.cassess.model.taiga.TaskTotalsQueryDaoImpl;

@@ -61,12 +61,12 @@ public class ConsumeAuthUser{
 		content = content.replaceAll("\\[", "").replaceAll("\\]","");
 
 		//Console Output for testing purposes
-		//System.out.println("Content " + content);
+		System.out.println("Content " + content);
 
 		HttpEntity<String> request = new HttpEntity<>(content, headers);
 
 		//Console Output for testing purposes
-		//System.out.println("Request " + request);
+		System.out.println("Request " + request);
 
 		ResponseEntity<AuthUser> response = restTemplate.postForEntity(authURL, request , AuthUser.class );
 

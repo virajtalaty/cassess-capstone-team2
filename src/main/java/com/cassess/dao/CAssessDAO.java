@@ -1,4 +1,4 @@
-package com.cassess.model;
+package com.cassess.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

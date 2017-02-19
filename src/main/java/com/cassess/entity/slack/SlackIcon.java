@@ -1,4 +1,4 @@
-package com.cassess.model.slack;
+package com.cassess.entity.slack;
 
 import javax.persistence.Embeddable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

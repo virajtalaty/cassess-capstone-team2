@@ -16,6 +16,10 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
         templateUrl : 'partials/about.html',
         controller : 'about',
         controllerAs: 'controller'
+    }).when('/slack', {
+    	templateUrl : 'partials/slack-user.html',
+    	controller : 'slack',
+    	controllerAs : 'controller'
     }).otherwise('/');
 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -70,5 +74,9 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
         var self = this;
         $http.get('/resource/').then(function(response) {
             self.greeting = response.data;
-    })
-});
+        })
+    }).controller('slack', function($scope, $http) {
+    	$http.get('/slack_resource/').then(function(response){
+    		$scope.slackData = response.data;
+    	})
+    });
