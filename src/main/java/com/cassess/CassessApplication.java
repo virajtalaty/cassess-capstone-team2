@@ -43,7 +43,7 @@ public class CassessApplication {
     @RequestMapping("/user")
     public Principal user(Principal user){
         return user;
-    }*/
+    }
 
     @Configuration
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
@@ -61,7 +61,7 @@ public class CassessApplication {
                     .csrf()
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
-    }
+    }*/
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {

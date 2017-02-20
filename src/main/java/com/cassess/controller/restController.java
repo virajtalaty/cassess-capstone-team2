@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.ejb.EJB;
 
 @RestController
-@RequestMapping(value = "/github")
-public class GitHubController {
+@RequestMapping(value = "/rest")
+public class restController {
 
     @EJB
     private GitHubRestServiceDao gitHubAuthDao;
@@ -20,7 +20,7 @@ public class GitHubController {
     private IGitHubRestService gitHubRestService;
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/github", method = RequestMethod.POST)
     public  @ResponseBody
     GitHubRest newGitHubAuth(@RequestBody GitHubRest gitHubRest){
 
