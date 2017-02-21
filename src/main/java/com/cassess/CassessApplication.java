@@ -10,6 +10,7 @@ import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.taiga.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.ApplicationContext;
@@ -31,19 +32,6 @@ import java.util.UUID;
 @SpringBootApplication
 @RestController
 public class CassessApplication {
-
-   /* @RequestMapping("/resource")
-    public Map<String, Object> home(){
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("id", UUID.randomUUID().toString());
-        model.put("content", "Hello World");
-        return model;
-    }
-
-    @RequestMapping("/user")
-    public Principal user(Principal user){
-        return user;
-    }*/
 
     @Configuration
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
@@ -67,8 +55,8 @@ public class CassessApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
-            /*
-    		ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
+
+           /*ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
     		consumeChannels.getChannelsList();
 
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");

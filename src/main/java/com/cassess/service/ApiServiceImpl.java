@@ -1,6 +1,7 @@
 package com.cassess.service;
 
 import com.cassess.dao.slack.ConsumeUsers;
+import com.cassess.entity.slack.UserList;
 import com.cassess.entity.slack.UserObject;
 import com.cassess.model.github.GatherGitHubData;
 import com.cassess.model.taiga.AuthUserQueryDao;
@@ -28,16 +29,19 @@ public class ApiServiceImpl implements ApiService{
     @Autowired
     private TaskTotalsQueryDaoImpl taskTotalsQueryDao;
 
+    @Autowired
+    SlackService slackService;
+
     ApiServiceImpl(){
     }
 
     @Override
     public List<String> getTeamMembers(){
         List<String> members = new ArrayList<>();
-        users = consumeUsers.getUserList().getMembers();
+        users = slackService.getAllUsers();
         // Add the names of the members to a list
         for ( UserObject member : users) {
-            members.add( member.getName());
+            members.add(member.getName());
         }
         return members;
     }
@@ -46,7 +50,7 @@ public class ApiServiceImpl implements ApiService{
     public List<String> getIds(){
         List<String> Ids = new ArrayList<>();
         for ( UserObject member : users) {
-            Ids.add( member.getId());
+            Ids.add(member.getId());
         }
         return Ids;
     }
