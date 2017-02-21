@@ -2,6 +2,7 @@ package com.cassess.controller;
 
 import com.cassess.service.ApiService;
 import com.cassess.service.DataBaseService;
+import com.cassess.service.SlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,9 @@ public class HomeController {
     @Autowired
     private DataBaseService dataBaseService;
 
+    @Autowired
+    SlackService slackService;
+
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/resource")
@@ -28,6 +32,7 @@ public class HomeController {
         Map<String, Object> model = new HashMap<>();
         model.put("id", UUID.randomUUID().toString());
         model.put("content", apiService.getTeamMembers());
+        model.put("SlackService", slackService.getAllUsers());
         model.put("teamIDs", apiService.getIds());
         model.put("token", dataBaseService.getTaigaToken());
         model.put("taigaID", dataBaseService.getTaigaID());

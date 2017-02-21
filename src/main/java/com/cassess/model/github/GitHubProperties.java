@@ -1,9 +1,7 @@
 package com.cassess.model.github;
 
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class GitHubProperties {
@@ -12,16 +10,17 @@ public class GitHubProperties {
     public GitHubProperties() {
         Properties properties = new Properties();
 
-        InputStream input = null;
+        BufferedReader reader = null;
         try {
-            input = new FileInputStream("src/main/java/com/cassess/model/github/github.properties");
-            properties.load(input);
+            InputStream in = getClass().getResourceAsStream("/github.properties");
+            reader = new BufferedReader(new InputStreamReader(in));
+            properties.load(reader);
             accessToken = properties.getProperty("access_token");
         } catch (Exception e) {
             e.printStackTrace();
         }finally{
             try {
-                input.close();
+                reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

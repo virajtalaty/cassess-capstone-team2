@@ -1,13 +1,11 @@
 package com.cassess.model.taiga;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class TaigaProperties {
 	Properties taigaprop;
-	InputStream input;
+	BufferedReader reader;
 	String username;
 	String password;
 
@@ -17,9 +15,10 @@ public class TaigaProperties {
 		
 		try {
 
-			input = new FileInputStream("src/main/java/com/cassess/model/taiga/taiga.properties");
+			InputStream in = getClass().getResourceAsStream("/taiga.properties");
+			reader = new BufferedReader(new InputStreamReader(in));
 			
-			taigaprop.load(input);
+			taigaprop.load(reader);
 			
 			username = taigaprop.getProperty("username");
 			password = taigaprop.getProperty("password");
@@ -27,9 +26,9 @@ public class TaigaProperties {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} finally {
-			if (input != null) {
+			if (reader != null) {
 				try {
-					input.close();
+					reader.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
