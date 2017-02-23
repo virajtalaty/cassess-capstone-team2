@@ -2,10 +2,7 @@ package com.cassess.model.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,9 +15,8 @@ import java.util.Date;
     @JsonIgnoreProperties(ignoreUnknown = true)
     public class TaskTotals {
 
-        @Id
-        @Column(name="id")
-        public int id;
+        @EmbeddedId
+        TaskTotalsID compositeId;
 
         @Column(name="fullName")
         private String full_name;
@@ -46,15 +42,14 @@ import java.util.Date;
         @Column(name="tasksOpen")
         private int tasks_open;
 
-        @Column(name="retrievalDate")
-        private String retrievalDate;
+
 
         public TaskTotals(){
 
         }
 
-        public TaskTotals(int id, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
-            this.id = id;
+        public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+            this.compositeId = compositeId;
             this.full_name = full_name;
             this.project_name = project_name;
             this.role_name = role_name;
@@ -63,14 +58,11 @@ import java.util.Date;
             this.tasks_in_progress = tasks_in_progress;
             this.tasks_ready_for_test = tasks_ready_for_test;
             this.tasks_open = tasks_open;
-            Date date = new Date();
-            String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
-            this.retrievalDate = dateString;
         }
 
-    public int getId() { return id; }
+    public TaskTotalsID getCompositeId() { return compositeId; }
 
-    public void setId(int id) { this.id = id; }
+    public void setCompositeId(TaskTotalsID compositeId) { this.compositeId = compositeId; }
 
     public String getFull_name() { return full_name; }
 
@@ -104,18 +96,12 @@ import java.util.Date;
 
     public void setTasks_open(int tasks_open) { this.tasks_open = tasks_open; }
 
+
+    public int getId() { return compositeId.getId(); }
+
     public String getRetrievalDate() {
-        return retrievalDate;
+        return compositeId.getRetrievalDate();
     }
-
-    public void setRetrievalDate(String retrievalDate) {
-
-        Date date = new Date();
-        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
-
-        this.retrievalDate = dateString;
-    }
-
 
 
 }

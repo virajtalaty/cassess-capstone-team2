@@ -128,7 +128,8 @@ public class GetTaskData {
             int inProgressTasks = TaskQueryDao.getInProgressTasks(name);
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
-            TaskTotalsDao.save(new TaskTotals(member.getId(), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+
+            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
     }
