@@ -1,29 +1,31 @@
-package com.cassess.entity;
+package com.cassess.entity.github;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
 @Table(name="commit_data")
 public class CommitData {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="commit_id")
-    private String commitID;
+    private int commitID;
+
 
     @Column(name="date")
     private Date date;
 
-    @Column(name="email")
-    private String email;
+    @Column(name="username")
+    private String username;
 
     @Column(name="lines_of_code_added")
     private int linesOfCodeAdded;
 
     @Column(name="lines_of_code_deleted")
     private int linesOfCodeDeleted;
+
+    @Column(name="commits")
+    private int commits;
 
     @Column(name="project_name")
     private String projectName;
@@ -34,21 +36,21 @@ public class CommitData {
     public CommitData() {
     }
 
-    public CommitData(String commitID, Date date, String email, int linesOfCodeAdded, int linesOfCodeDeleted, String projectName, String courseName) {
-        this.commitID = commitID;
+    public CommitData(Date date, String username, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
         this.date = date;
-        this.email = email;
+        this.username = username;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
+        this.commits = commits;
         this.projectName = projectName;
         this.courseName = courseName;
     }
 
-    public String getCommitID() {
+    public int getCommitID() {
         return commitID;
     }
 
-    public void setCommitID(String commitID) {
+    public void setCommitID(int commitID) {
         this.commitID = commitID;
     }
 
@@ -60,12 +62,12 @@ public class CommitData {
         this.date = date;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getLinesOfCodeAdded() {
@@ -103,9 +105,9 @@ public class CommitData {
     @Override
     public String toString() {
         return "CommitData{" +
-                "commitID='" + commitID + '\'' +
+//                "commitID='" + commitID + '\'' +
                 ", date=" + date +
-                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", linesOfCodeAdded=" + linesOfCodeAdded +
                 ", linesOfCodeDeleted=" + linesOfCodeDeleted +
                 ", projectName='" + projectName + '\'' +

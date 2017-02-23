@@ -71,11 +71,11 @@ public class CassessApplication {
             GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
             getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
             getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
-            getTaskData.getTaskTotals();
+            getTaskData.getTaskTotals();*/
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData();
             //get commit List returns all commits there are
-            System.out.println(gatherGitHubData.getCommitList());*/
+            //System.out.println(gatherGitHubData.getCommitList());
         };
     }
 

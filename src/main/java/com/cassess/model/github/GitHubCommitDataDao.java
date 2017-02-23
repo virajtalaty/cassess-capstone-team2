@@ -1,6 +1,6 @@
 package com.cassess.model.github;
 
-import com.cassess.entity.CommitData;
+import com.cassess.entity.github.CommitData;
 import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

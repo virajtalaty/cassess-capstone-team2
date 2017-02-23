@@ -1,6 +1,6 @@
 package com.cassess.model.github;
 
-import com.cassess.entity.CommitData;
+import com.cassess.entity.github.CommitData;
 import com.cassess.model.GatherData;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,46 @@ public class GatherGitHubData implements GatherData {
      */
     @Override
     public void fetchData(){
-        getBranches();
+        //getBranches();
+        getStats();
+    }
+
+
+    private void getStats(){
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
+                .queryParam("access_token", accessToken);
+        String urlPath = builder.build().toUriString();
+
+        String json = restTemplate.getForObject(urlPath, String.class);
+
+        ArrayList<GitHubContributors> contributors = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try{
+            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {});
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        storeStats(contributors);
+    }
+
+    private void storeStats(ArrayList<GitHubContributors> contributors){
+        for(GitHubContributors contributor: contributors){
+            ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
+
+            for(GitHubContributors.Weeks week: weeks){
+                Date date = new Date(week.getW() * 1000L);
+                int linesAdded = week.getA();
+                int linesDeleted = week.getD();
+                int commits = week.getC();
+                String userName = contributor.getAuthor().getLogin();
+
+                CommitData commitData = new CommitData(date, userName, linesAdded, linesDeleted, commits, projectName, courseName);
+                dao.save(commitData);
+            }
+        }
+
     }
 
     /**
@@ -112,20 +151,22 @@ public class GatherGitHubData implements GatherData {
         for (GitHubSha sha: gitHubCommits) {
             if(dao.getCommit(sha.getSha()) == null){
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "commits/" + sha.getSha() + "?access_token=" + accessToken);
-
                 String urlPath = builder.build().toUriString();
-
                 GitHubCommitData json = restTemplate.getForObject(urlPath, GitHubCommitData.class);
 
-                String commitId = sha.getSha();
-                Date date = json.getCommit().getAuthor().getDate();
-                String email = json.getCommit().getAuthor().getEmail();
-                int linesOfCodeAdded = json.getStats().getAdditions();
-                int linesOfCodeDeleted = json.getStats().getDeletions();
+                String message = json.getCommit().getMessage().toLowerCase();
 
-                CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted, projectName, courseName);
+                if(!message.contains("merge")){
+                    String commitId = sha.getSha();
+                    Date date = json.getCommit().getAuthor().getDate();
+                    String email = json.getCommit().getAuthor().getEmail();
+                    int linesOfCodeAdded = json.getStats().getAdditions();
+                    int linesOfCodeDeleted = json.getStats().getDeletions();
 
-                dao.save(commitData);
+                    //CommitData commitData = new CommitData(commitId, date, email,linesOfCodeAdded,linesOfCodeDeleted, projectName, courseName);
+
+                    //dao.save(commitData);
+                }
             }
         }
     }
