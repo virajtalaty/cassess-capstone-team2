@@ -6,7 +6,7 @@
 	<groupId>com.cassess</groupId>
 	<artifactId>cassess</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>cassess</name>
 	<description>A continuous assessment of an Agile project</description>
