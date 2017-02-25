@@ -17,7 +17,7 @@ public class TaigaProperties {
 
 			InputStream in = getClass().getResourceAsStream("/taiga.properties");
 			reader = new BufferedReader(new InputStreamReader(in));
-
+			
 			taigaprop.load(reader);
 
 			username = taigaprop.getProperty("username");

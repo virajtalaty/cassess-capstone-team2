@@ -10,22 +10,22 @@ public class GitHubProperties {
     public GitHubProperties() {
     Properties properties = new Properties();
 
-    BufferedReader reader = null;
+        BufferedReader reader = null;
         try {
-        InputStream in = getClass().getResourceAsStream("/github.properties");
-        reader = new BufferedReader(new InputStreamReader(in));
-        properties.load(reader);
-        accessToken = properties.getProperty("access_token");
-    } catch (Exception e) {
-        e.printStackTrace();
-    }finally{
-        try {
-            reader.close();
-        } catch (IOException e) {
+            InputStream in = getClass().getResourceAsStream("/github.properties");
+            reader = new BufferedReader(new InputStreamReader(in));
+            properties.load(reader);
+            accessToken = properties.getProperty("access_token");
+        } catch (Exception e) {
             e.printStackTrace();
+        }finally{
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
     public String getAccessToken() {
         return accessToken;

@@ -2,6 +2,7 @@
 <div ng-controller="home as home" ng-show="authenticated">
     <p>You are logged in as {{home.greeting.id}}!  Have a look around...</p>
     <p> The slack team members are accessed from API are: {{home.greeting.content}}</p>
+    <p> The slack team members using the slack service are: {{home.greeting.SlackService}}</p>
     <p> The slack team members IDs access from API are: {{home.greeting.teamIDs}}</p>
     <p> The Taiga token accessed from database is: {{home.greeting.token}}</p>
     <p> The Taiga ID accessed from database is: {{home.greeting.taigaID}}</p>
