@@ -131,5 +131,30 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
         return returnList;
     }
 
+    @Transactional
+    public <T> Object deleteByCourse(String course) {
+        Student student = em.find(Student.class, course);
+        if(student != null){
+            Query query = em.createNativeQuery("DELETE FROM students WHERE course = ?1");
+            query.setParameter(1, course);
+            query.executeUpdate();
+            return new RestResponse("All students in course " + course + " have been removed from the database");
+        }else{
+            return new RestResponse("No students in course " + course + " exist in the database");
+        }
+    }
+
+    @Transactional
+    public <T> Object deleteByProject(String project_name) {
+        Student student = em.find(Student.class, project_name);
+        if(student != null){
+            Query query = em.createNativeQuery("DELETE FROM students WHERE project_name = ?1");
+            query.setParameter(1, project_name);
+            query.executeUpdate();
+            return new RestResponse("All students in project " + project_name + " have been removed from the database");
+        }else{
+            return new RestResponse("No students in project " + project_name + " exist in the database");
+        }
+    }
 
 }

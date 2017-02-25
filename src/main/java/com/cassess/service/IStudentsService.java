@@ -23,4 +23,8 @@ public interface IStudentsService {
     <T> List<Object> listUpdate(List<Student> students);
 
     <T> List<Object> listCreate(List<Student> students);
+
+    <T> Object deleteByCourse(String project_name);
+
+    <T> Object deleteByProject(String project_name);
 }

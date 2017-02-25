@@ -63,4 +63,17 @@ public class StudentsService implements IStudentsService{
         return studentsDao.listCreate(students);
 
     }
+
+    public <T> Object deleteByCourse(String course){
+
+        return studentsDao.delete(course);
+
+    }
+
+    public <T> Object deleteByProject(String project_name){
+
+        return studentsDao.delete(project_name);
+
+    }
+
 }
