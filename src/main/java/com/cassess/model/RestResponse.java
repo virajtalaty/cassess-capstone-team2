@@ -1,10 +1,5 @@
 package com.cassess.model;
-import org.json.JSONObject;
-import org.springframework.util.MultiValueMap;
 
-/**
- * Created by Thomas on 2/23/2017.
- */
 public class RestResponse {
 
     public String response;

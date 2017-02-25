@@ -46,25 +46,25 @@ public class CassessApplication extends SpringBootServletInitializer {
         return args -> {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
 
-           /*ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
-    		consumeChannels.getChannelsList();
-            ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
+            //ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
+    		//consumeChannels.getChannelsList();
+            //ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
+    		//consumeUsers.getUserInfo("U2G79FELT");
     		
-            ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
-            AuthUser auth = consumeAuthUser.getUserInfo();
+            //ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
+            //AuthUser auth = consumeAuthUser.getUserInfo();
         	
-            ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
-            Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
+            //ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
+            //Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
             
-            GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
-            getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
-            getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
-            getTaskData.getTaskTotals();
-            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
-            gatherGitHubData.fetchData();
+            //GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
+            //getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
+            //getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
+            //getTaskData.getTaskTotals();
+            //GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
+            //gatherGitHubData.fetchData();
             //get commit List returns all commits there are
-            System.out.println(gatherGitHubData.getCommitList());*/
+            //System.out.println(gatherGitHubData.getCommitList());
         };
     }
 
