@@ -1,6 +1,5 @@
 package com.cassess.service.DAO;
 
-import com.cassess.entity.Course;
 import com.cassess.entity.Student;
 import com.cassess.model.RestResponse;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
@@ -36,6 +35,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object create(Student student) {
+        System.out.println("Got into create");
         if(em.find(Student.class, student.getEmail()) != null){
             return new RestResponse(student.getEmail() + " already exists in database");
         }else{
@@ -46,6 +46,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object update(Student student) {
+        System.out.println("Got into update");
         if(em.find(Student.class, student.getEmail()) != null){
             em.merge(student);
             return student;
@@ -56,6 +57,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object find(String email) {
+        System.out.println("Got into email");
         Student student = em.find(Student.class, email);
         if(student != null){
             return student;
@@ -66,6 +68,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object delete(String email) {
+        System.out.println("Got into delete");
         Student student = em.find(Student.class, email);
         if(student != null){
             em.remove(student);
@@ -77,14 +80,16 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadAll() throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM students");
+        System.out.println("Got into listReadAll");
+        Query query = em.createNativeQuery("SELECT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
     @Transactional
     public List<Student> listReadByCourse(String course) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM students WHERE course = ?1");
+        System.out.println("Got into listReadByCourse");
+        Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1", Student.class);
         query.setParameter(1, course);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -92,17 +97,20 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadByProject(String project_name) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM students WHERE project_name = ?1");
+        System.out.println("Got into listReadByProject");
+        Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1", Student.class);
+        query.setParameter(1, project_name);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
     @Transactional
     public List<Object> listCreate(List<Student> students) {
+        System.out.println("Got into listCreate");
         List<Student> returnStudents = new ArrayList<Student>();
         List<RestResponse> returnResponses = new ArrayList<RestResponse>();
         for(Student student:students)
-            if(em.find(Course.class, student.getEmail()) != null){
+            if(em.find(Student.class, student.getEmail()) != null){
                 returnResponses.add(new RestResponse(student.getEmail() + " already exists in database"));
             }else{
                 em.persist(student);
@@ -116,10 +124,11 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Object> listUpdate(List<Student> students) {
+        System.out.println("Got into listUpdate");
         List<Student> returnStudents = new ArrayList<Student>();
         List<RestResponse> returnResponses = new ArrayList<RestResponse>();
         for(Student student:students)
-            if(em.find(Course.class, student.getEmail()) == null){
+            if(em.find(Student.class, student.getEmail()) == null){
                 returnResponses.add(new RestResponse(student.getCourse() + " does not exist in database"));
             }else{
                 em.merge(student);
@@ -133,9 +142,12 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object deleteByCourse(String course) {
-        Student student = em.find(Student.class, course);
+        Query preQuery = em.createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 LIMIT 1", Student.class);
+        preQuery.setParameter(1, course);
+        Student student = (Student) preQuery.getSingleResult();
+        System.out.println("Got into deleteByCourse: " + student.getCourse());
         if(student != null){
-            Query query = em.createNativeQuery("DELETE FROM students WHERE course = ?1");
+            Query query = em.createNativeQuery("DELETE FROM cassess.students WHERE course = ?1");
             query.setParameter(1, course);
             query.executeUpdate();
             return new RestResponse("All students in course " + course + " have been removed from the database");
@@ -146,9 +158,12 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object deleteByProject(String project_name) {
-        Student student = em.find(Student.class, project_name);
+        Query preQuery = em.createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1 LIMIT 1", Student.class);
+        preQuery.setParameter(1, project_name);
+        Student student = (Student) preQuery.getSingleResult();
+        System.out.println("Got into deleteByProject");
         if(student != null){
-            Query query = em.createNativeQuery("DELETE FROM students WHERE project_name = ?1");
+            Query query = em.createNativeQuery("DELETE FROM cassess.students WHERE project_name = ?1");
             query.setParameter(1, project_name);
             query.executeUpdate();
             return new RestResponse("All students in project " + project_name + " have been removed from the database");

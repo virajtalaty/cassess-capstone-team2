@@ -40,9 +40,9 @@ public class StudentsService implements IStudentsService{
 
     }
 
-    public <T> List<Student> listReadByCourse(String project_name){
+    public <T> List<Student> listReadByCourse(String course){
 
-        return studentsDao.listReadByCourse(project_name);
+        return studentsDao.listReadByCourse(course);
 
     }
 
@@ -66,13 +66,13 @@ public class StudentsService implements IStudentsService{
 
     public <T> Object deleteByCourse(String course){
 
-        return studentsDao.delete(course);
+        return studentsDao.deleteByCourse(course);
 
     }
 
     public <T> Object deleteByProject(String project_name){
 
-        return studentsDao.delete(project_name);
+        return studentsDao.deleteByProject(project_name);
 
     }
 

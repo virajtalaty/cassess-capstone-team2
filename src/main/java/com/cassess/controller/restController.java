@@ -56,10 +56,10 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course?course={course}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/course", params = "course", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object getCourse(@PathVariable("course") String course, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object getCourse(@RequestParam("course") String course, HttpServletRequest request, HttpServletResponse response) {
 
         if (course == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -71,10 +71,10 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course?course={course}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/course", params = "course", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object deleteCourse(@PathVariable("course") String course, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object deleteCourse(@RequestParam("course") String course, HttpServletRequest request, HttpServletResponse response) {
 
         if (course == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -158,10 +158,10 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student?email={email}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/student", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object getStudent(@PathVariable("email") String email, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object getStudent(@RequestParam(name = "email", required = true) String email, HttpServletRequest request, HttpServletResponse response) {
 
         if (email == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -169,21 +169,6 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             return studentsService.find(email);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student?email={email}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> Object deleteStudent(@PathVariable("email") String email, HttpServletRequest request, HttpServletResponse response) {
-
-        if (email == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.delete(email);
         }
     }
 
@@ -206,7 +191,7 @@ public class restController {
     @RequestMapping(value = "/student_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Object> newStudent(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
+    <T> List<Object> newStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
 
         if (students == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -221,71 +206,44 @@ public class restController {
     @RequestMapping(value = "/student_list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Student> getAllStudents(HttpServletRequest request, HttpServletResponse response) {
+    <T> List<Student> getStudents(@RequestParam(name = "course", required = false) String course,
+                                  @RequestParam(name = "project", required = false) String project, HttpServletRequest request, HttpServletResponse response) {
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        return studentsService.listReadAll();
-    }
-
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list?course={course}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> List<Student> getStudentsByCourse(@PathVariable("course") String course, HttpServletRequest request, HttpServletResponse response) {
-
-        if (course == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
+        if(course != null){
             response.setStatus(HttpServletResponse.SC_OK);
             return studentsService.listReadByCourse(course);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list?project={project_name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> List<Student> getStudentsByProject(@PathVariable("project_name") String project_name, HttpServletRequest request, HttpServletResponse response) {
-
-        if (project_name == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
+        }else if(project != null){
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadByProject(project_name);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student?course={course}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> Object deleteStudentsByCourse(@PathVariable("course") String course, HttpServletRequest request, HttpServletResponse response) {
-
-        if (course == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
+            return studentsService.listReadByProject(project);
+        }else{
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.deleteByCourse(course);
+            return studentsService.listReadAll();
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student?project={project}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/students", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object deleteStudentsByProject(@PathVariable("project") String project, HttpServletRequest request, HttpServletResponse response) {
-
-        if (project == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
+    <T> Object delete(@RequestParam(name = "project", required = false) String project, @RequestParam(name = "email", required = false) String email,
+                                       @RequestParam(name = "course", required = false) String course, HttpServletRequest request, HttpServletResponse response) {
+        if(project != null){
+            System.out.println("Project: " + project);
             response.setStatus(HttpServletResponse.SC_OK);
             return studentsService.deleteByProject(project);
+        }else if(course != null){
+            System.out.println("Course: " + course);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return studentsService.deleteByCourse(course);
+        }else if(email != null){
+            System.out.println("Email: " + email);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return studentsService.delete(email);
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
         }
     }
+
 }
 

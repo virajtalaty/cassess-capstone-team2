@@ -16,7 +16,7 @@ public interface IStudentsService {
 
     <T> List<Student> listReadAll();
 
-    <T> List<Student> listReadByCourse(String project_name);
+    <T> List<Student> listReadByCourse(String course);
 
     <T> List<Student> listReadByProject(String project_name);
 
@@ -24,7 +24,7 @@ public interface IStudentsService {
 
     <T> List<Object> listCreate(List<Student> students);
 
-    <T> Object deleteByCourse(String project_name);
+    <T> Object deleteByCourse(String course);
 
     <T> Object deleteByProject(String project_name);
 }
