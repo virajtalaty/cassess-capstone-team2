@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-public class UserController {
+public class BackEndUserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/user")
