@@ -20,6 +20,8 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
     	templateUrl : 'partials/slack-user.html',
     	controller : 'slack',
     	controllerAs : 'controller'
+    }).when('/timer', {
+    	templateUrl : 'partials/timer.html'
     }).otherwise('/');
 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

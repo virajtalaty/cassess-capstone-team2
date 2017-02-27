@@ -65,7 +65,7 @@ public class CassessApplication extends SpringBootServletInitializer {
                     .httpBasic().and()
                     .authorizeRequests()
                     .antMatchers("/index.html", "/partials/home.html", "/partials/dashboard.html",
-                            "/partials/login.html", "/")
+                            "/partials/login.html", "/partials/timer.html", "/")
                     .permitAll().anyRequest().authenticated()
                     .and()
                     .csrf()
