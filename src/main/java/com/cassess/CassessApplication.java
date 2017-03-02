@@ -73,7 +73,7 @@ public class CassessApplication {
             getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
             getTaskData.getTaskTotals();*/
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
-            gatherGitHubData.fetchData();
+            gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
             //get commit List returns all commits there are
             //System.out.println(gatherGitHubData.getCommitList());
         };
