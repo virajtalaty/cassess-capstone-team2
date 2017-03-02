@@ -2,6 +2,7 @@ package com.cassess.service;
 
 import com.cassess.entity.Course;
 import com.cassess.service.DAO.CourseServiceDaoImpl;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.ejb.EJB;
@@ -39,12 +40,12 @@ public class CourseService implements ICourseService {
         return courseServiceDao.listRead();
     }
 
-    public <T> List<Object> listCreate(List<Course> courses){
+    public JSONObject listCreate(List<Course> courses){
 
         return courseServiceDao.listCreate(courses);
     }
 
-    public <T> List<Object> listUpdate(List<Course> courses){
+    public JSONObject listUpdate(List<Course> courses){
 
         return courseServiceDao.listUpdate(courses);
     }

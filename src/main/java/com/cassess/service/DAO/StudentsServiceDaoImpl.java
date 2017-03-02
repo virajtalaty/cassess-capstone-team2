@@ -2,7 +2,12 @@ package com.cassess.service.DAO;
 
 import com.cassess.entity.Student;
 import com.cassess.model.RestResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
@@ -11,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -46,7 +50,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object update(Student student) {
-        System.out.println("Got into update");
         if(em.find(Student.class, student.getEmail()) != null){
             em.merge(student);
             return student;
@@ -57,7 +60,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object find(String email) {
-        System.out.println("Got into email");
         Student student = em.find(Student.class, email);
         if(student != null){
             return student;
@@ -68,7 +70,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public <T> Object delete(String email) {
-        System.out.println("Got into delete");
         Student student = em.find(Student.class, email);
         if(student != null){
             em.remove(student);
@@ -80,7 +81,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadAll() throws DataAccessException {
-        System.out.println("Got into listReadAll");
         Query query = em.createNativeQuery("SELECT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -88,7 +88,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadByCourse(String course) throws DataAccessException {
-        System.out.println("Got into listReadByCourse");
         Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1", Student.class);
         query.setParameter(1, course);
         List<Student> resultList = query.getResultList();
@@ -97,7 +96,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadByProject(String project_name) throws DataAccessException {
-        System.out.println("Got into listReadByProject");
         Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1", Student.class);
         query.setParameter(1, project_name);
         List<Student> resultList = query.getResultList();
@@ -105,39 +103,56 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
     }
 
     @Transactional
-    public List<Object> listCreate(List<Student> students) {
-        System.out.println("Got into listCreate");
-        List<Student> returnStudents = new ArrayList<Student>();
-        List<RestResponse> returnResponses = new ArrayList<RestResponse>();
+    public JSONObject listCreate(List<Student> students) {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        JSONArray successArray = new JSONArray();
+        JSONArray failureArray = new JSONArray();
         for(Student student:students)
             if(em.find(Student.class, student.getEmail()) != null){
-                returnResponses.add(new RestResponse(student.getEmail() + " already exists in database"));
+                try {
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " already exists in database"))));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }else{
                 em.persist(student);
-                returnStudents.add(student);
+                try {
+                    successArray.put(new JSONObject(ow.writeValueAsString(student)));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
-        List returnList = new ArrayList<Object>();
-        returnList.add(returnStudents);
-        returnList.add(returnResponses);
-        return returnList;
+        JSONObject returnJSON = new JSONObject();
+        returnJSON.put("success", successArray);
+        returnJSON.put("failure", failureArray);
+        return returnJSON;
     }
 
     @Transactional
-    public List<Object> listUpdate(List<Student> students) {
-        System.out.println("Got into listUpdate");
-        List<Student> returnStudents = new ArrayList<Student>();
-        List<RestResponse> returnResponses = new ArrayList<RestResponse>();
-        for(Student student:students)
-            if(em.find(Student.class, student.getEmail()) == null){
-                returnResponses.add(new RestResponse(student.getCourse() + " does not exist in database"));
-            }else{
+    public JSONObject listUpdate(List<Student> students) {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        JSONArray successArray = new JSONArray();
+        JSONArray failureArray = new JSONArray();
+        for (Student student : students) {
+            if (em.find(Student.class, student.getEmail()) == null) {
+                try {
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " does not exist in database"))));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            } else {
                 em.merge(student);
-                returnStudents.add(student);
+                try {
+                    successArray.put(new JSONObject(ow.writeValueAsString(student)));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
-        List returnList = new ArrayList<Object>();
-        returnList.add(returnStudents);
-        returnList.add(returnResponses);
-        return returnList;
+        }
+        JSONObject returnJSON = new JSONObject();
+        returnJSON.put("success", successArray);
+        returnJSON.put("failure", failureArray);
+        return returnJSON;
     }
 
     @Transactional
@@ -145,7 +160,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
         Query preQuery = em.createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, course);
         Student student = (Student) preQuery.getSingleResult();
-        System.out.println("Got into deleteByCourse: " + student.getCourse());
         if(student != null){
             Query query = em.createNativeQuery("DELETE FROM cassess.students WHERE course = ?1");
             query.setParameter(1, course);
@@ -161,7 +175,6 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
         Query preQuery = em.createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, project_name);
         Student student = (Student) preQuery.getSingleResult();
-        System.out.println("Got into deleteByProject");
         if(student != null){
             Query query = em.createNativeQuery("DELETE FROM cassess.students WHERE project_name = ?1");
             query.setParameter(1, project_name);

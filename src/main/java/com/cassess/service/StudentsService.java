@@ -2,6 +2,7 @@ package com.cassess.service;
 
 import com.cassess.entity.Student;
 import com.cassess.service.DAO.StudentsServiceDaoImpl;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.ejb.EJB;
@@ -52,13 +53,13 @@ public class StudentsService implements IStudentsService{
 
     }
 
-    public <T> List<Object> listUpdate(List<Student> students){
+    public JSONObject listUpdate(List<Student> students){
 
         return studentsDao.listUpdate(students);
 
     }
 
-    public <T> List<Object> listCreate(List<Student> students){
+    public JSONObject listCreate(List<Student> students){
 
         return studentsDao.listCreate(students);
 

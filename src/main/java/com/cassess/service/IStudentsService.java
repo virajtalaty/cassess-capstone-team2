@@ -1,6 +1,7 @@
 package com.cassess.service;
 
 import com.cassess.entity.Student;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ public interface IStudentsService {
 
     <T> List<Student> listReadByProject(String project_name);
 
-    <T> List<Object> listUpdate(List<Student> students);
+    JSONObject listUpdate(List<Student> students);
 
-    <T> List<Object> listCreate(List<Student> students);
+    JSONObject listCreate(List<Student> students);
 
     <T> Object deleteByCourse(String course);
 

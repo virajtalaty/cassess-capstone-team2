@@ -1,6 +1,7 @@
 package com.cassess.service;
 
 import com.cassess.entity.Course;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface ICourseService {
 
     <T> List<Course> listRead();
 
-    <T> List<Object> listCreate(List<Course> courses);
+    JSONObject listCreate(List<Course> courses);
 
-    <T> List<Object> listUpdate(List<Course> courses);
+    JSONObject listUpdate(List<Course> courses);
 }

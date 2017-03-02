@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class restController {
     private IStudentsService studentsService;
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/course", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     <T> Object updateCourse(@RequestBody Course course, HttpServletRequest request, HttpServletResponse response) {
@@ -87,32 +88,33 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course_list", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/course_list", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Object> updateCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) {
+    String updateCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         if (courses == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return courseService.listUpdate(courses);
+                return courseService.listUpdate(courses).toString();
         }
+
     }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/course_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Object> newCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) {
+    String newCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) {
 
         if (courses == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return courseService.listCreate(courses);
+            return courseService.listCreate(courses).toString();
         }
     }
 
@@ -128,7 +130,7 @@ public class restController {
 
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/student", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     <T> Object updateStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
@@ -173,17 +175,17 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/student_list", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Object> updateStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
+    String updateStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
 
         if (students == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listUpdate(students);
+            return studentsService.listUpdate(students).toString();
         }
     }
 
@@ -191,14 +193,14 @@ public class restController {
     @RequestMapping(value = "/student_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Object> newStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
+    String newStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
 
         if (students == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listCreate(students);
+            return studentsService.listCreate(students).toString();
         }
     }
 
@@ -222,7 +224,7 @@ public class restController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/students", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/student", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     <T> Object delete(@RequestParam(name = "project", required = false) String project, @RequestParam(name = "email", required = false) String email,
