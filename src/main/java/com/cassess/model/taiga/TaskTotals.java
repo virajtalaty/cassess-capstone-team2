@@ -3,9 +3,6 @@ package com.cassess.model.taiga;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-/**
- * Created by Thomas on 2/10/2017.
- */
 
 @Entity
 @Table(name="tasktotals")
@@ -15,12 +12,12 @@ public class TaskTotals {
     @EmbeddedId
     TaskTotalsID compositeId;
 
+
     @Column(name="fullName")
     private String full_name;
 
     @Column(name="project")
     private String project_name;
-
     @Column(name="roleName")
     private String role_name;
 

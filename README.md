@@ -32,4 +32,9 @@ To log into the system just user the credentials:
 
     username: user / password: password
 
- 
+To run WAR file from Tomcat locally, do the following:
+1. Delete the content of your Tomcat webapps folder
+2. Place the "cassess-0.0.1-SNAPSHOT.war" file into the webapps folder
+3. Rename "cassess-0.0.1-SNAPSHOT.war" to "ROOT.war" 
+4. Start your Tomcat from the bin directory (startup.bat)
+5. Navigate to http://localhost:8080/
