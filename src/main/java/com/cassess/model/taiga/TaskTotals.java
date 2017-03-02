@@ -3,62 +3,56 @@ package com.cassess.model.taiga;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-/**
- * Created by Thomas on 2/10/2017.
- */
+@Entity
+@Table(name="tasktotals")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TaskTotals {
 
-    @Entity
-    @Table(name="tasktotals")
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public class TaskTotals {
+    @EmbeddedId
+    TaskTotalsID compositeId;
 
-        @EmbeddedId
-        TaskTotalsID compositeId;
 
-        @Column(name="fullName")
-        private String full_name;
+    @Column(name="fullName")
+    private String full_name;
 
-        @Column(name="project")
-        private String project_name;
+    @Column(name="project")
+    private String project_name;
+    @Column(name="roleName")
+    private String role_name;
 
-        @Column(name="roleName")
-        private String role_name;
+    @Column(name="tasksClosed")
+    private int tasks_closed;
 
-        @Column(name="tasksClosed")
-        private int tasks_closed;
+    @Column(name="tasksNew")
+    private int tasks_new;
 
-        @Column(name="tasksNew")
-        private int tasks_new;
+    @Column(name="tasksInProgress")
+    private int tasks_in_progress;
 
-        @Column(name="tasksInProgress")
-        private int tasks_in_progress;
+    @Column(name="tasksReadyForTest")
+    private int tasks_ready_for_test;
 
-        @Column(name="tasksReadyForTest")
-        private int tasks_ready_for_test;
-
-        @Column(name="tasksOpen")
-        private int tasks_open;
+    @Column(name="tasksOpen")
+    private int tasks_open;
 
 
 
-        public TaskTotals(){
+    public TaskTotals(){
 
-        }
+    }
 
-        public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
-            this.compositeId = compositeId;
-            this.full_name = full_name;
-            this.project_name = project_name;
-            this.role_name = role_name;
-            this.tasks_closed = tasks_closed;
-            this.tasks_new = tasks_new;
-            this.tasks_in_progress = tasks_in_progress;
-            this.tasks_ready_for_test = tasks_ready_for_test;
-            this.tasks_open = tasks_open;
-        }
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+        this.compositeId = compositeId;
+        this.full_name = full_name;
+        this.project_name = project_name;
+        this.role_name = role_name;
+        this.tasks_closed = tasks_closed;
+        this.tasks_new = tasks_new;
+        this.tasks_in_progress = tasks_in_progress;
+        this.tasks_ready_for_test = tasks_ready_for_test;
+        this.tasks_open = tasks_open;
+    }
 
     public TaskTotalsID getCompositeId() { return compositeId; }
 

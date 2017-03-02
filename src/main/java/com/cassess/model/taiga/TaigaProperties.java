@@ -12,14 +12,14 @@ public class TaigaProperties {
 
 	public TaigaProperties() {
 		taigaprop = new Properties();
-		
+
 		try {
 
 			InputStream in = getClass().getResourceAsStream("/taiga.properties");
 			reader = new BufferedReader(new InputStreamReader(in));
 			
 			taigaprop.load(reader);
-			
+
 			username = taigaprop.getProperty("username");
 			password = taigaprop.getProperty("password");
 
@@ -34,17 +34,16 @@ public class TaigaProperties {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
-    public String getPassword() {
-        return password;
-    }
-	
+	public String getPassword() {
+		return password;
+	}
 
 
-  }
 
+}
