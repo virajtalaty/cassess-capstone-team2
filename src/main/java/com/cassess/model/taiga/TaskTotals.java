@@ -2,75 +2,61 @@ package com.cassess.model.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.persistence.*;
 
-/**
- * Created by Thomas on 2/10/2017.
- */
+@Entity
+@Table(name="tasktotals")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TaskTotals {
 
-    @Entity
-    @Table(name="tasktotals")
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public class TaskTotals {
+    @EmbeddedId
+    TaskTotalsID compositeId;
 
-        @Id
-        @Column(name="id")
-        public int id;
 
-        @Column(name="fullName")
-        private String full_name;
+    @Column(name="fullName")
+    private String full_name;
 
-        @Column(name="project")
-        private String project_name;
+    @Column(name="project")
+    private String project_name;
+    @Column(name="roleName")
+    private String role_name;
 
-        @Column(name="roleName")
-        private String role_name;
+    @Column(name="tasksClosed")
+    private int tasks_closed;
 
-        @Column(name="tasksClosed")
-        private int tasks_closed;
+    @Column(name="tasksNew")
+    private int tasks_new;
 
-        @Column(name="tasksNew")
-        private int tasks_new;
+    @Column(name="tasksInProgress")
+    private int tasks_in_progress;
 
-        @Column(name="tasksInProgress")
-        private int tasks_in_progress;
+    @Column(name="tasksReadyForTest")
+    private int tasks_ready_for_test;
 
-        @Column(name="tasksReadyForTest")
-        private int tasks_ready_for_test;
+    @Column(name="tasksOpen")
+    private int tasks_open;
 
-        @Column(name="tasksOpen")
-        private int tasks_open;
 
-        @Column(name="retrievalDate")
-        private String retrievalDate;
 
-        public TaskTotals(){
+    public TaskTotals(){
 
-        }
+    }
 
-        public TaskTotals(int id, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
-            this.id = id;
-            this.full_name = full_name;
-            this.project_name = project_name;
-            this.role_name = role_name;
-            this.tasks_closed = tasks_closed;
-            this.tasks_new = tasks_new;
-            this.tasks_in_progress = tasks_in_progress;
-            this.tasks_ready_for_test = tasks_ready_for_test;
-            this.tasks_open = tasks_open;
-            Date date = new Date();
-            String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
-            this.retrievalDate = dateString;
-        }
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+        this.compositeId = compositeId;
+        this.full_name = full_name;
+        this.project_name = project_name;
+        this.role_name = role_name;
+        this.tasks_closed = tasks_closed;
+        this.tasks_new = tasks_new;
+        this.tasks_in_progress = tasks_in_progress;
+        this.tasks_ready_for_test = tasks_ready_for_test;
+        this.tasks_open = tasks_open;
+    }
 
-    public int getId() { return id; }
+    public TaskTotalsID getCompositeId() { return compositeId; }
 
-    public void setId(int id) { this.id = id; }
+    public void setCompositeId(TaskTotalsID compositeId) { this.compositeId = compositeId; }
 
     public String getFull_name() { return full_name; }
 
@@ -104,18 +90,12 @@ import java.util.Date;
 
     public void setTasks_open(int tasks_open) { this.tasks_open = tasks_open; }
 
+
+    public int getId() { return compositeId.getId(); }
+
     public String getRetrievalDate() {
-        return retrievalDate;
+        return compositeId.getRetrievalDate();
     }
-
-    public void setRetrievalDate(String retrievalDate) {
-
-        Date date = new Date();
-        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
-
-        this.retrievalDate = dateString;
-    }
-
 
 
 }
