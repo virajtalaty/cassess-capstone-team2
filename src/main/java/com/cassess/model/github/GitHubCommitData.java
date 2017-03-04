@@ -50,6 +50,7 @@ public class GitHubCommitData {
     @JsonIgnoreProperties(ignoreUnknown = true)
     class GitHubCommit {
         private GitHubAuthor author;
+        private String message;
 
         public GitHubCommit() {
         }
@@ -62,10 +63,19 @@ public class GitHubCommitData {
             this.author = author;
         }
 
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
         @Override
         public String toString() {
             return "GitHubCommit{" +
                     "author=" + author +
+                    ", message='" + message + '\'' +
                     '}';
         }
 

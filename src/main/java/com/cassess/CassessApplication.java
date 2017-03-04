@@ -57,12 +57,12 @@ public class CassessApplication extends SpringBootServletInitializer {
             //ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
             //Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
             
-            //GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
-            //getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
-            //getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
-            //getTaskData.getTaskTotals();
-            //GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
-            //gatherGitHubData.fetchData();
+            GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
+            getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
+            getTaskData.getTaskTotals();*/
+            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
+            gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
             //get commit List returns all commits there are
             //System.out.println(gatherGitHubData.getCommitList());
         };

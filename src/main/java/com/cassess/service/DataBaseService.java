@@ -10,7 +10,7 @@ public interface DataBaseService {
 
     public String getSlackTeamId();
 
-    public String getGitHubCommitId();
+    public int getGitHubCommitId();
 
     public String getGitHubCommitEmail();
 
