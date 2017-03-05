@@ -1,12 +1,11 @@
 package com.cassess.entity.github;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
 @Table(name="commit_data")
-public class CommitData {
+public class CommitData{
     @EmbeddedId
     private CommitDataPK commitDataPK;
 
@@ -95,20 +94,5 @@ public class CommitData {
                 ", projectName='" + projectName + '\'' +
                 ", courseName='" + courseName + '\'' +
                 '}';
-    }
-
-    @Embeddable
-    public class CommitDataPK implements Serializable{
-        protected Date date;
-        protected String username;
-
-        public CommitDataPK(){
-
-        }
-
-        public CommitDataPK(Date date, String username) {
-            this.date = date;
-            this.username = username;
-        }
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Date;
 import java.util.List;
 
 @Component
@@ -31,13 +32,14 @@ public class GitHubCommitDataDao extends GenericDAOImpl<CommitData, Long>{
     }
 
     @Transactional
-    public CommitData getCommit(String sha) throws DataAccessException{
+    public CommitData getCommit(String username, Date date) throws DataAccessException{
 
         CommitData commitData;
         try{
             commitData = (CommitData) entityManager
-                    .createQuery("SELECT c FROM CommitData c  WHERE c.commitID = ?1")
-                    .setParameter(1, sha)
+                    .createQuery("SELECT c FROM CommitData c  WHERE c.username = ?1 AND c.date = ?2")
+                    .setParameter(1, username)
+                    .setParameter(2, date)
                     .getSingleResult();
         }catch(Exception e){
             commitData = null;
