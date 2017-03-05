@@ -10,10 +10,6 @@ public interface DataBaseService {
 
     public String getSlackTeamId();
 
-    public int getGitHubCommitId();
-
-    public String getGitHubCommitEmail();
-
     public String getProjectCreationDay();
 
     public String getTaigaProjectSlug();

@@ -5,18 +5,9 @@ import java.sql.Date;
 
 @Entity
 @Table(name="commit_data")
-public class CommitData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="commit_id")
-    private int commitID;
-
-
-    @Column(name="date")
-    private Date date;
-
-    @Column(name="username")
-    private String username;
+public class CommitData{
+    @EmbeddedId
+    private CommitDataPK commitDataPK;
 
     @Column(name="lines_of_code_added")
     private int linesOfCodeAdded;
@@ -37,8 +28,7 @@ public class CommitData {
     }
 
     public CommitData(Date date, String username, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
-        this.date = date;
-        this.username = username;
+        this.commitDataPK = new CommitDataPK(date, username);
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
         this.commits = commits;
@@ -46,28 +36,12 @@ public class CommitData {
         this.courseName = courseName;
     }
 
-    public int getCommitID() {
-        return commitID;
+    public CommitDataPK getCommitDataPK() {
+        return commitDataPK;
     }
 
-    public void setCommitID(int commitID) {
-        this.commitID = commitID;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCommitDataPK(CommitDataPK commitDataPK) {
+        this.commitDataPK = commitDataPK;
     }
 
     public int getLinesOfCodeAdded() {
@@ -84,6 +58,14 @@ public class CommitData {
 
     public void setLinesOfCodeDeleted(int linesOfCodeDeleted) {
         this.linesOfCodeDeleted = linesOfCodeDeleted;
+    }
+
+    public int getCommits() {
+        return commits;
+    }
+
+    public void setCommits(int commits) {
+        this.commits = commits;
     }
 
     public String getProjectName() {
@@ -105,11 +87,10 @@ public class CommitData {
     @Override
     public String toString() {
         return "CommitData{" +
-//                "commitID='" + commitID + '\'' +
-                ", date=" + date +
-                ", username='" + username + '\'' +
+                "commitDataPK=" + commitDataPK +
                 ", linesOfCodeAdded=" + linesOfCodeAdded +
                 ", linesOfCodeDeleted=" + linesOfCodeDeleted +
+                ", commits=" + commits +
                 ", projectName='" + projectName + '\'' +
                 ", courseName='" + courseName + '\'' +
                 '}';

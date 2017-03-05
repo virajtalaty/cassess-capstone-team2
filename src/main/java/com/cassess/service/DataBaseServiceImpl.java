@@ -45,16 +45,6 @@ public class DataBaseServiceImpl implements DataBaseService {
     }
 
     @Override
-    public int getGitHubCommitId(){
-        return gitHubCommitDataDao.getCommit("05be0c1b24e9ca67ae8a3a85cb5176c8196c31c7").getCommitID();
-    }
-
-    @Override
-    public String getGitHubCommitEmail(){
-        return gitHubCommitDataDao.getCommit("05be0c1b24e9ca67ae8a3a85cb5176c8196c31c7").getUsername();
-    }
-
-    @Override
     public String getProjectCreationDay(){
         return projectQueryDao.getProject().getRetrievalDate();
     }

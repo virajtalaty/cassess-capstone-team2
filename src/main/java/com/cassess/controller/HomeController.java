@@ -42,8 +42,6 @@ public class HomeController {
         //model.put("ProjectCreate", dataBaseService.getProjectCreationDay());
         model.put("slackTeamId", dataBaseService.getSlackTeamId());
         model.put("slackTimeZone", dataBaseService.getSlackTimeZone());
-        model.put("gitHubCommitId", dataBaseService.getGitHubCommitId());
-        model.put("gitHubEmail", dataBaseService.getGitHubCommitEmail());
         model.put("gitHubCommitList", apiService.getGitHubCommitList());
         return model;
     }
