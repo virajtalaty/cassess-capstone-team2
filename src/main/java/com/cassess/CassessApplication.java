@@ -2,12 +2,12 @@ package com.cassess;
 
 import com.cassess.dao.slack.ConsumeChannels;
 import com.cassess.dao.slack.ConsumeUsers;
+import com.cassess.entity.taiga.AuthUser;
+import com.cassess.entity.taiga.Project;
 import com.cassess.model.github.GatherGitHubData;
-import com.cassess.model.taiga.ConsumeAuthUser;
-import com.cassess.model.taiga.ConsumeProjectList;
-import org.springframework.boot.CommandLineRunner;
-import com.cassess.model.github.GatherGitHubData;
-import com.cassess.model.taiga.*;
+import com.cassess.service.taiga.AuthUserService;
+import com.cassess.service.taiga.ProjectListService;
+import com.cassess.service.taiga.TaskDataService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -51,16 +51,16 @@ public class CassessApplication extends SpringBootServletInitializer {
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
     		consumeUsers.getUserInfo("U2G79FELT");
     		
-            ConsumeAuthUser consumeAuthUser = (ConsumeAuthUser) ctx.getBean("consumeAuthUser");
-            AuthUser auth = consumeAuthUser.getUserInfo();
+            AuthUserService authUserService = (AuthUserService) ctx.getBean("authUserService");
+            AuthUser auth = authUserService.getUserInfo();
         	
-            ConsumeProjectList consumeProjectList = (ConsumeProjectList) ctx.getBean("consumeProjectList");
-            Project proj = consumeProjectList.getProjectInfo(auth.getAuth_token(), auth.getId());
+            ProjectListService projectListService = (ProjectListService) ctx.getBean("projectListService");
+            Project proj = projectListService.getProjectInfo(auth.getAuth_token(), auth.getId());
             
-            GetTaskData getTaskData = (GetTaskData) ctx.getBean("getTaskData");
-            getTaskData.getTasks(proj.getId(), auth.getAuth_token(), 1);
-            getTaskData.getMembers(proj.getId(), auth.getAuth_token(), 1);
-            getTaskData.getTaskTotals();
+            TaskDataService taskDataService = (TaskDataService) ctx.getBean("taskDataService");
+            taskDataService.getTasks(proj.getId(), auth.getAuth_token(), 1);
+            taskDataService.getMembers(proj.getId(), auth.getAuth_token(), 1);
+            taskDataService.getTaskTotals();
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
         };

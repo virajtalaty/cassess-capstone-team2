@@ -1,9 +1,8 @@
 package com.cassess.service;
 
 import com.cassess.model.github.GitHubCommitDataDao;
-import com.cassess.model.taiga.AuthUserQueryDao;
-import com.cassess.model.taiga.ProjectQueryDao;
-import com.cassess.model.taiga.TaskTotalsQueryDaoImpl;
+import com.cassess.dao.taiga.AuthUserQueryDao;
+import com.cassess.dao.taiga.ProjectQueryDao;
 import com.cassess.service.DAO.SlackServiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

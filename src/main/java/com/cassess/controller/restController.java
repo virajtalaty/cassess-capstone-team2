@@ -1,9 +1,9 @@
 package com.cassess.controller;
 
-import com.cassess.entity.Course;
-import com.cassess.entity.Student;
-import com.cassess.service.ICourseService;
-import com.cassess.service.IStudentsService;
+import com.cassess.entity.rest.Course;
+import com.cassess.entity.rest.Student;
+import com.cassess.service.rest.ICourseService;
+import com.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

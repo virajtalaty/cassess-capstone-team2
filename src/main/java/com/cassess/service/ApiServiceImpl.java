@@ -1,12 +1,11 @@
 package com.cassess.service;
 
 import com.cassess.dao.slack.ConsumeUsers;
-import com.cassess.entity.slack.UserList;
 import com.cassess.entity.slack.UserObject;
 import com.cassess.model.github.GatherGitHubData;
-import com.cassess.model.taiga.AuthUserQueryDao;
-import com.cassess.model.taiga.TaskTotals;
-import com.cassess.model.taiga.TaskTotalsQueryDaoImpl;
+import com.cassess.dao.taiga.AuthUserQueryDao;
+import com.cassess.entity.taiga.TaskTotals;
+import com.cassess.dao.taiga.TaskTotalsQueryDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
