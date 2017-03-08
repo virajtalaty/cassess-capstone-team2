@@ -16,7 +16,8 @@ public class UserController {
 
     @Autowired
     private UserRepo userRepo;
-
+    
+    /*
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public @ResponseBody List<User> usersList() {
         logger.debug("get users list");
@@ -34,6 +35,6 @@ public class UserController {
         logger.debug("save user");
         userRepo.save(user);
         return user;
-    }
+    }*/
 
 }

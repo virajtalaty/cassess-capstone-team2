@@ -6,7 +6,7 @@
 	<groupId>com.cassess</groupId>
 	<artifactId>cassess</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 
 	<name>cassess</name>
 	<description>A continuous assessment of an Agile project</description>
@@ -138,7 +138,12 @@
             <version>${springsecurity.version}</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+        	<groupId>org.aspectj</groupId>
+        	<artifactId>aspectjweaver</artifactId>
+        	<version>1.8.10</version>
+        </dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
