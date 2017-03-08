@@ -138,8 +138,12 @@
             <version>${springsecurity.version}</version>
         </dependency>
 
+<<<<<<< HEAD
 
     </dependencies>
+=======
+	</dependencies>
+>>>>>>> master
 
 	<build>
 		<plugins>

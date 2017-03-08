@@ -1,9 +1,8 @@
 package com.cassess.service;
 
 import com.cassess.model.github.GitHubCommitDataDao;
-import com.cassess.model.taiga.AuthUserQueryDao;
-import com.cassess.model.taiga.ProjectQueryDao;
-import com.cassess.model.taiga.TaskTotalsQueryDaoImpl;
+import com.cassess.dao.taiga.AuthUserQueryDao;
+import com.cassess.dao.taiga.ProjectQueryDao;
 import com.cassess.service.DAO.SlackServiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,16 +41,6 @@ public class DataBaseServiceImpl implements DataBaseService {
     @Override
     public String getSlackTeamId(){
         return slackServiceDAO.getUser("U2G79FELT").getTeam_id();
-    }
-
-    @Override
-    public String getGitHubCommitId(){
-        return gitHubCommitDataDao.getCommit("05be0c1b24e9ca67ae8a3a85cb5176c8196c31c7").getCommitID();
-    }
-
-    @Override
-    public String getGitHubCommitEmail(){
-        return gitHubCommitDataDao.getCommit("05be0c1b24e9ca67ae8a3a85cb5176c8196c31c7").getEmail();
     }
 
     @Override
