@@ -22,7 +22,7 @@ import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 @EnableTransactionManagement(proxyTargetClass=true)
 public class DBConfig {
 
-	@Bean
+	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
 	        BasicDataSource dataSource = new BasicDataSource();
 	        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -32,7 +32,7 @@ public class DBConfig {
 	        return dataSource;
 	}
 	
-	@Bean
+	@Bean(name = "entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 		emf.setDataSource(getDataSource());
@@ -69,7 +69,7 @@ public class DBConfig {
 	
 	Properties additionalProperties() {
 		Properties properties = new Properties();
-		properties.setProperty("hibernate.hbm2ddl.auto", "validate");
+		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 	  	return properties;
 	}

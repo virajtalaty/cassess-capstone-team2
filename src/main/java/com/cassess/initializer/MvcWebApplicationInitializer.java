@@ -1,6 +1,6 @@
 package com.cassess.initializer;
 
-import com.cassess.config.JPAConfig;
+import com.cassess.config.DBConfig;
 import com.cassess.config.MvcConfig;
 import com.cassess.config.SecurityConfig;
 import com.cassess.config.ServiceConfig;
@@ -10,7 +10,7 @@ public class MvcWebApplicationInitializer  extends AbstractAnnotationConfigDispa
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SecurityConfig.class, ServiceConfig.class, JPAConfig.class};
+        return new Class[]{SecurityConfig.class, ServiceConfig.class, DBConfig.class};
     }
 
     @Override
