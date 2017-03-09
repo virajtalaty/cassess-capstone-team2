@@ -1,11 +1,17 @@
 package com.cassess.persist.repo;
 
+
 import com.cassess.persist.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 
-//public interface UserRepo extends JpaRepository<User, Long> {
 public interface UserRepo {
     User findByLogin(String login);
 
+    List<User> findAll();
+
+    User findOne(Long userId);
+
+    User save(User user);
 }
+

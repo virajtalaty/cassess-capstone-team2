@@ -7,12 +7,9 @@ import java.util.List;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public class GenericServiceImpl<T, D, ID extends Serializable> implements GenericService<T, D, ID> {
-
-    @Autowired
-    private JpaRepository<T, ID> repository;
+/*
 
     @Autowired
     private DozerBeanMapper mapper;
@@ -43,5 +40,5 @@ public class GenericServiceImpl<T, D, ID extends Serializable> implements Generi
     public void save(D dto) {
         repository.saveAndFlush(mapper.map(dto, entityClass));
     }
-
+*/
 }
