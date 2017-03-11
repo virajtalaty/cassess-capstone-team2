@@ -35,11 +35,24 @@ public class CassessApplication extends SpringBootServletInitializer {
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/resources/static/");
+        resolver.setPrefix("/webapp/");
         resolver.setSuffix(".html");
         resolver.setExposeContextBeansAsAttributes(true);
         return resolver;
     }
+
+//    @Bean
+//    public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+//        return new ResourceUrlEncodingFilter();
+//    }
+//
+//    @Bean(name = "messageSource")
+//    public ReloadableResourceBundleMessageSource getMessageSource() {
+//        ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
+//        resource.setBasename("classpath:messages");
+//        resource.setDefaultEncoding("UTF-8");
+//        return resource;
+//    }
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
@@ -47,16 +60,16 @@ public class CassessApplication extends SpringBootServletInitializer {
             System.out.println("Let's inspect the beans provided by Spring Boot:");
 
             ConsumeChannels consumeChannels = (ConsumeChannels) ctx.getBean("consumeChannels");
-    		consumeChannels.getChannelsList();
+            consumeChannels.getChannelsList();
             ConsumeUsers consumeUsers = (ConsumeUsers) ctx.getBean("consumeUsers");
-    		consumeUsers.getUserInfo("U2G79FELT");
-    		
+            consumeUsers.getUserInfo("U2G79FELT");
+
             AuthUserService authUserService = (AuthUserService) ctx.getBean("authUserService");
             AuthUser auth = authUserService.getUserInfo();
-        	
+
             ProjectListService projectListService = (ProjectListService) ctx.getBean("projectListService");
             Project proj = projectListService.getProjectInfo(auth.getAuth_token(), auth.getId());
-            
+
             TaskDataService taskDataService = (TaskDataService) ctx.getBean("taskDataService");
             taskDataService.getTasks(proj.getId(), auth.getAuth_token(), 1);
             taskDataService.getMembers(proj.getId(), auth.getAuth_token(), 1);

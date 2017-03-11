@@ -1,0 +1,51 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/">Continuous Assessment</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse"  ng-controller="navigation as nav">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#/about">About</a></li>
+              </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img class="img-circle profile-image"
+                             ng-src="http://i.forbesimg.com/media/lists/people/{{account.firstName | lowercase}}-{{account.lastName | lowercase}}_50x50.jpg" >
+                        {{account.firstName}} {{account.lastName}}
+                        <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#/logout"><i class="glyphicon glyphicon-off"></i> Sign out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar" ng-controller="navigation as nav">
+            <ul class="nav nav-sidebar">
+                <li class="active">
+                    <a href="#/login">Login<span class="sr-only">(current)</span></a></li>
+                <li><a href="#/dashboard" access="admin">Dashboard</a></li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li ng-show="authenticated"><a href="#/logout">Logout</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ng-view ng-show="authenticated">
+            <!-- Main content -->
+        </div>
+    </div>
+</div>

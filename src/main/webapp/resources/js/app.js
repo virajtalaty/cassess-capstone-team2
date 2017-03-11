@@ -11,40 +11,49 @@ myapp.constant('USER_ROLES', {
 
 myapp.config(function($routeProvider, USER_ROLES) {
 
-    $routeProvider.when('/', {
-        templateUrl : 'partials/home.html',
-        controller : 'HomeController',
+    $routeProvider.when('/home', {
+        templateUrl: 'partials/home.html',
+        controller: 'HomeController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
         }
+    }).when('/', {
+        redirectTo: '/home'
     }).when('/login', {
         templateUrl : 'partials/login.html',
-        controller : 'navigation',
+        controller : 'LoginController',
         access: {
-            loginRequired: true,
+            loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/dashboard', {
         templateUrl : 'partials/dashboard.html',
-        controller : 'dashboard',
+        controller : 'DashboardController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.admin]
         }
     }).when('/about', {
         templateUrl : 'partials/about.html',
-        controller : 'about',
+        controller : 'AboutController',
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/slack', {
     	templateUrl : 'partials/slack-user.html',
-    	controller : 'slack',
+    	controller : 'SlackController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.admin]
+        }
+    }).when("/error/:code", {
+        templateUrl: "partials/error.html",
+        controller: "ErrorController",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
         }
     }).otherwise({
         redirectTo: '/error/404',

@@ -1,6 +1,5 @@
 'use strict';
 
-
 myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedService) {
     $scope.rememberMe = true;
     $scope.login = function () {
@@ -17,17 +16,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     })
     .controller('UsersController', function ($scope, $log, UsersService) {
         $scope.users = UsersService.getAll();
-    })
-    .controller('ApiDocController', function ($scope) {
-        // init form
-        $scope.isLoading = false;
-        $scope.url = $scope.swaggerUrl = 'v2/api-docs';
-        // error management
-        $scope.myErrorHandler = function (data, status) {
-            console.log('failed to load swagger: ' + status + '   ' + data);
-        };
-
-        $scope.infos = false;
     })
     .controller('TokensController', function ($scope, UsersService, TokensService, $q) {
 
@@ -67,14 +55,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         switch ($scope.code) {
             case "403" :
-                $scope.message = "Oops! you have come to unauthorised page."
+                $scope.message = "Oops! You have come to unauthorized page."
                 break;
             case "404" :
                 $scope.message = "Page not found."
                 break;
             default:
                 $scope.code = 500;
-                $scope.message = "Oops! unexpected error"
+                $scope.message = "Oops! Unexpected error."
         }
 
     });

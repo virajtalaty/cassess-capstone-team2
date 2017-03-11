@@ -50,8 +50,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "burth_date")
-    private Date burthDate;
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @Column(name = "enabled")
     private Boolean enabled;
@@ -100,12 +100,12 @@ public class User {
         this.password = password;
     }
 
-    public Date getBurthDate() {
-        return burthDate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBurthDate(Date burthDate) {
-        this.burthDate = burthDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Set<Authority> getAuthorities() {

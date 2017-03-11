@@ -1,23 +1,40 @@
-<form>
-    <div class="form-group"
-         ng-class="{'has-error is-focused' : authenticationError}">
-        <input id="login" ng-model="username" type="text" class="form-control"
-               required="required" placeholder="login"/>
-        <span ng-show="authenticationError" class="help-block">
-            Please check your credentials and try again.
-        </span>
+<div class="bg-extended">
+    <div class="align-vertical-center">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="well col-sm-offset-3 col-sm-6">
+
+                    <div class="well-heading well-primary">
+                        <h1>Sign in your account</h1>
+                    </div>
+                    <form>
+                        <div class="form-group label-floating"
+                             ng-class="{'has-error is-focused' : authenticationError}">
+                            <input id="login" ng-model="username" type="text" class="form-control"
+                                   required="required" placeholder="login"/>
+                            <span ng-show="authenticationError" class="help-block">
+                                Please check your credentials and try again.
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <input id="password" ng-model="password" type="password" class="form-control"
+                                   required="required" placeholder="password"/>
+                        </div>
+
+                        <input type="checkbox" ng-model="rememberMe"/><span> Remember me</span>
+
+                        <button ng-click="login()" >Login</button>
+                    </form>
+
+                    <span ng-show="authenticationError" class="help-block">
+                        Please check your credentials and try again.
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <input id="password" ng-model="password" type="password" class="form-control"
-               required="required" placeholder="password"/>
-    </div>
-
-    <input type="checkbox" ng-model="rememberMe"/><span> Remember me</span>
-
-    <button ng-click="login()" >Login</button>
-</form>
-
-<span ng-show="authenticationError" class="help-block">
-    Please check your credentials and try again.
-</span>
+</div>
