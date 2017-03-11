@@ -12,26 +12,22 @@ import org.springframework.http.MediaType;
 
 @Service
 @Transactional
-public class ProjectListService {
+public class ProjectService {
 
     private RestTemplate restTemplate;
-    private String projectListURL;
-    private AuthUserService testUser;
+    private String projectURL;
 
 
     @Autowired
     private ProjectStoreDaoImpl projectStoreDao;
 
-    @Autowired
-    private ProjectQueryDaoImpl projectQueryDao;
-
-    public ProjectListService() {
+    public ProjectService() {
         restTemplate = new RestTemplate();
-        projectListURL = "https://api.taiga.io/api/v1/projects";
+        projectURL = "https://api.taiga.io/api/v1/projects/by_slug";
 
     }
 
-    public Project getProjectInfo(String token, Long id) {
+    public Project getProjectInfo(String token, String slug) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -41,22 +37,13 @@ public class ProjectListService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        projectListURL = projectListURL + "?member=" + id;
+        projectURL = projectURL + "?slug=" + slug;
 
         //Console Output for testing purposes
-        System.out.println("Fetching from " + projectListURL);
+        System.out.println("Fetching from " + projectURL);
 
-        ResponseEntity<Project[]> projectList = restTemplate.getForEntity(projectListURL, Project[].class, request);
+        ResponseEntity<Project> project = restTemplate.getForEntity(projectURL, Project.class, request);
 
-        Project[] projects = projectList.getBody();
-
-        projects[0].setRetrievalDate();
-        return projectStoreDao.save(projects[0]);
-    }
-
-    public String getName(){
-        Project testProject;
-        testProject = projectQueryDao.getProject();
-        return testProject.getName();
+        return projectStoreDao.save(project.getBody());
     }
 }

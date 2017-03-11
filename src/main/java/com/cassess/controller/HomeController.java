@@ -37,9 +37,9 @@ public class HomeController {
         model.put("token", dataBaseService.getTaigaToken());
         model.put("taigaID", dataBaseService.getTaigaID());
         model.put("Info", apiService.getUserInfo());
-        model.put("Slug", dataBaseService.getTaigaProjectSlug());
+        model.put("Projects", dataBaseService.getTaigaProjects());
+        model.put("Members", dataBaseService.getTaigaMembers());
         model.put("TaskTotals", apiService.getTaskTotals());
-        //model.put("ProjectCreate", dataBaseService.getProjectCreationDay());
         model.put("slackTeamId", dataBaseService.getSlackTeamId());
         model.put("slackTimeZone", dataBaseService.getSlackTimeZone());
         model.put("gitHubCommitList", apiService.getGitHubCommitList());

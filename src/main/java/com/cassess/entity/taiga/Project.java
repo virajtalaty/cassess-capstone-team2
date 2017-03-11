@@ -6,11 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "project")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
 
@@ -24,10 +23,14 @@ public class Project {
     @Column(name = "slug")
     private String slug;
 
-    @Column(name="retrievalDate")
-    private String retrievalDate;
-
     public Project() {
+    }
+
+    public Project(Long id, String name, String slug){
+        this.id = id;
+        this.name = name;
+        this.slug = slug;
+        Date date = new Date();
     }
 
     public Long getId() {
@@ -35,18 +38,6 @@ public class Project {
     }
 
     public void setId(Long id) { this.id = id; }
-
-    public String getRetrievalDate() {
-        return retrievalDate;
-    }
-
-    public void setRetrievalDate() {
-
-        Date date = new Date();
-        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(date);
-
-        this.retrievalDate = dateString;
-    }
 
     public String getName() {
         return name;

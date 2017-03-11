@@ -25,14 +25,15 @@ public class ProjectQueryDaoImpl implements ProjectQueryDao {
 
     @Transactional
     public List<Project> getProjects() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects");
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM project");
         List<Project> resultList = query.getResultList();
         return resultList;
     }
 
     @Transactional
-    public Project getProject() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects", Project.class);
+    public Project getProject(String slug) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM project WHERE slug = ?1", Project.class);
+        query.setParameter(1, slug);
         return (Project) query.getSingleResult();
     }
 }
