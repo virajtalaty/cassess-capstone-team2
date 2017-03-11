@@ -24,8 +24,8 @@ public class MemberQueryDaoImpl{
     }
 
     @Transactional
-    public List<MemberData> getMembersByRole(String roleName) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM memberdata WHERE roleName = ?1", MemberData.class);
+    public List<MemberData> getMembers(String roleName) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM memberdata WHERE roleName != ?1", MemberData.class);
         query.setParameter(1, roleName);
         List<MemberData> resultList = query.getResultList();
         return resultList;

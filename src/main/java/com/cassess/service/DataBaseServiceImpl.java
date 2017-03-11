@@ -1,11 +1,17 @@
 package com.cassess.service;
 
+import com.cassess.dao.taiga.MemberQueryDaoImpl;
+import com.cassess.dao.taiga.MembersDaoImpl;
+import com.cassess.entity.taiga.MemberData;
+import com.cassess.entity.taiga.Project;
 import com.cassess.model.github.GitHubCommitDataDao;
 import com.cassess.dao.taiga.AuthUserQueryDao;
 import com.cassess.dao.taiga.ProjectQueryDao;
 import com.cassess.service.DAO.SlackServiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -22,6 +28,9 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Autowired
     private ProjectQueryDao projectQueryDao;
+
+    @Autowired
+    private MemberQueryDaoImpl memberQueryDao;
 
     @Override
     public String getTaigaToken(){
@@ -44,13 +53,13 @@ public class DataBaseServiceImpl implements DataBaseService {
     }
 
     @Override
-    public String getProjectCreationDay(){
-        return projectQueryDao.getProject().getRetrievalDate();
+    public List<MemberData> getTaigaMembers(){
+        return memberQueryDao.getMembers("Product Owner");
     }
 
     @Override
-    public String getTaigaProjectSlug(){
-        return projectQueryDao.getProject().getSlug();
+    public List<Project> getTaigaProjects(){
+        return projectQueryDao.getProjects();
     }
 
 

@@ -9,6 +9,6 @@ public interface ProjectQueryDao {
 
     public List<Project> getProjects() throws DataAccessException;
 
-    public Project getProject() throws DataAccessException;
+    public Project getProject(String slug) throws DataAccessException;
 
 }
