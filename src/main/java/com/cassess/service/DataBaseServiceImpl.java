@@ -1,12 +1,11 @@
 package com.cassess.service;
 
-import com.cassess.dao.taiga.MemberQueryDaoImpl;
-import com.cassess.dao.taiga.MembersDaoImpl;
+import com.cassess.dao.taiga.MemberQueryDao;
 import com.cassess.entity.taiga.MemberData;
 import com.cassess.entity.taiga.Project;
 import com.cassess.model.github.GitHubCommitDataDao;
-import com.cassess.dao.taiga.AuthUserQueryDao;
-import com.cassess.dao.taiga.ProjectQueryDao;
+import com.cassess.dao.taiga.IAuthQueryDao;
+import com.cassess.dao.taiga.IProjectQueryDao;
 import com.cassess.service.DAO.SlackServiceDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.List;
 public class DataBaseServiceImpl implements DataBaseService {
 
     @Autowired
-    private AuthUserQueryDao authUserQueryDao;
+    private IAuthQueryDao IAuthQueryDao;
 
     @Autowired
     private SlackServiceDAO slackServiceDAO;
@@ -27,19 +26,19 @@ public class DataBaseServiceImpl implements DataBaseService {
     private GitHubCommitDataDao gitHubCommitDataDao;
 
     @Autowired
-    private ProjectQueryDao projectQueryDao;
+    private IProjectQueryDao IProjectQueryDao;
 
     @Autowired
-    private MemberQueryDaoImpl memberQueryDao;
+    private MemberQueryDao memberQueryDao;
 
     @Override
     public String getTaigaToken(){
-        return authUserQueryDao.getUser("taigaTestUser").getAuth_token();
+        return IAuthQueryDao.getUser("taigaTestUser").getAuth_token();
     }
 
     @Override
     public Long getTaigaID(){
-        return  authUserQueryDao.getUser("taigaTestUser").getId();
+        return  IAuthQueryDao.getUser("taigaTestUser").getId();
     }
 
     @Override
@@ -59,7 +58,7 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Override
     public List<Project> getTaigaProjects(){
-        return projectQueryDao.getProjects();
+        return IProjectQueryDao.getProjects();
     }
 
 

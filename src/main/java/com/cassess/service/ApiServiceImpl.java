@@ -3,9 +3,9 @@ package com.cassess.service;
 import com.cassess.dao.slack.ConsumeUsers;
 import com.cassess.entity.slack.UserObject;
 import com.cassess.model.github.GatherGitHubData;
-import com.cassess.dao.taiga.AuthUserQueryDao;
+import com.cassess.dao.taiga.IAuthQueryDao;
 import com.cassess.entity.taiga.TaskTotals;
-import com.cassess.dao.taiga.TaskTotalsQueryDaoImpl;
+import com.cassess.dao.taiga.TaskTotalsQueryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,13 @@ public class ApiServiceImpl implements ApiService{
     private ConsumeUsers consumeUsers;
 
     @Autowired
-    private AuthUserQueryDao authUserQueryDao;
+    private IAuthQueryDao IAuthQueryDao;
 
     @Autowired
     private GatherGitHubData gatherGitHubData;
 
     @Autowired
-    private TaskTotalsQueryDaoImpl taskTotalsQueryDao;
+    private TaskTotalsQueryDao taskTotalsQueryDao;
 
     @Autowired
     SlackService slackService;
@@ -57,8 +57,8 @@ public class ApiServiceImpl implements ApiService{
     @Override
     public List<String> getUserInfo(){
         List<String> Info = new ArrayList<>();
-        Info.add(authUserQueryDao.getUser("taigaTestUser").getFull_name());
-        Info.add(authUserQueryDao.getUser("taigaTestUser").getEmail());
+        Info.add(IAuthQueryDao.getUser("taigaTestUser").getFull_name());
+        Info.add(IAuthQueryDao.getUser("taigaTestUser").getEmail());
         return Info;
     }
 

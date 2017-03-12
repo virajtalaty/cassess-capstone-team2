@@ -11,21 +11,25 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class MemberQueryDaoImpl{
+public class MemberQueryDao implements IMemberQueryDao{
 
     protected EntityManager entityManager;
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
     public List<MemberData> getMembers(String roleName) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM memberdata WHERE roleName != ?1", MemberData.class);
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.memberdata WHERE roleName != ?1", MemberData.class);
         query.setParameter(1, roleName);
         List<MemberData> resultList = query.getResultList();
         return resultList;

@@ -1,9 +1,8 @@
 package com.cassess.service.taiga;
 
+import com.cassess.dao.CAssessDAO;
 import com.cassess.entity.taiga.AuthUser;
-import com.cassess.dao.taiga.AuthUserQueryDao;
-import com.cassess.dao.taiga.AuthUserStoreDaoImpl;
-import com.cassess.dao.taiga.ProjectStoreDaoImpl;
+import com.cassess.dao.taiga.IAuthQueryDao;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -28,13 +27,10 @@ public class AuthUserService {
 
 
 	@Autowired
-	private AuthUserStoreDaoImpl authStoreDao;
+	private CAssessDAO authStoreDao;
 
 	@Autowired
-	private AuthUserQueryDao authQueryDao;
-
-	@Autowired
-	private ProjectStoreDaoImpl projectsStoreDao;
+	private IAuthQueryDao authQueryDao;
 
 	public AuthUserService() {
 		props = new TaigaProperties();

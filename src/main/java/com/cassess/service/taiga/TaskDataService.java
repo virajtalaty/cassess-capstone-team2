@@ -1,4 +1,5 @@
 package com.cassess.service.taiga;
+import com.cassess.dao.CAssessDAO;
 import com.cassess.entity.taiga.MemberData;
 import com.cassess.entity.taiga.TaskData;
 import com.cassess.entity.taiga.TaskTotals;
@@ -24,17 +25,14 @@ public class TaskDataService {
     private String tasksListURL;
 
     @Autowired
-    private TasksDaoImpl TaskDao;
+    private CAssessDAO TaskDao;
 
 
     @Autowired
-    private TaskQueryDaoImpl TaskQueryDao;
+    private TaskQueryDao TaskQueryDao;
 
     @Autowired
-    private MemberQueryDaoImpl MemberQueryDao;
-
-    @Autowired
-    private TaskTotalsDaoImpl TaskTotalsDao;
+    private MemberQueryDao MemberQueryDao;
 
 
 
@@ -90,7 +88,7 @@ public class TaskDataService {
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
 
-            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+            TaskDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
     }
