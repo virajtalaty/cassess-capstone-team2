@@ -1,5 +1,6 @@
 package com.cassess.service.taiga;
 
+import com.cassess.dao.CAssessDAO;
 import com.cassess.dao.taiga.*;
 import com.cassess.entity.taiga.MemberData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class MembersService {
     private String membershipListURL;
 
     @Autowired
-    private MembersDaoImpl MemberDao;
+    private CAssessDAO MemberDao;
 
     public MembersService(){
         restTemplate = new RestTemplate();

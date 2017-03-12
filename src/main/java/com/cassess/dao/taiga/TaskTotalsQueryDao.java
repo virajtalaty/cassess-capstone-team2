@@ -11,21 +11,25 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class TaskTotalsQueryDaoImpl{
+public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     protected EntityManager entityManager;
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
     public List<TaskTotals> getTaskTotals() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM tasktotals", TaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals", TaskTotals.class);
         List<TaskTotals> resultList = query.getResultList();
         return resultList;
     }

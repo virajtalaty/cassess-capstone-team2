@@ -1,8 +1,7 @@
 package com.cassess.service.taiga;
 
+import com.cassess.dao.CAssessDAO;
 import com.cassess.entity.taiga.Project;
-import com.cassess.dao.taiga.ProjectQueryDaoImpl;
-import com.cassess.dao.taiga.ProjectStoreDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class ProjectService {
 
 
     @Autowired
-    private ProjectStoreDaoImpl projectStoreDao;
+    private CAssessDAO projectStoreDao;
 
     public ProjectService() {
         restTemplate = new RestTemplate();
