@@ -32,14 +32,14 @@ public class CassessApplication extends SpringBootServletInitializer {
         return builder.sources(CassessApplication.class);
     }
 
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/webapp/");
-        resolver.setSuffix(".html");
-        resolver.setExposeContextBeansAsAttributes(true);
-        return resolver;
-    }
+//    @Bean
+//    public ViewResolver viewResolver() {
+//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+//        resolver.setPrefix("/webapp/");
+//        resolver.setSuffix(".html");
+//        resolver.setExposeContextBeansAsAttributes(true);
+//        return resolver;
+//    }
 
 //    @Bean
 //    public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {

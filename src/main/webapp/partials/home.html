@@ -1,5 +1,5 @@
 <h1>Welcome to CAssess!</h1>
-<div ng-controller="home as home" ng-show="authenticated">
+<div>
     <p>You are logged in as {{home.greeting.id}}!  Have a look around...</p>
     <p> The slack team members are accessed from API are: {{home.greeting.content}}</p>
     <p> The slack team members using the slack service are: {{home.greeting.SlackService}}</p>
@@ -12,7 +12,4 @@
     <p> The Slack time zone accessed from database is: {{home.greeting.slackTimeZone}}</p>
     <p> The Slack teamId accessed from database is: {{home.greeting.slackTeamId}}</p>
     <p> The GitHub Commit commit list accessed from API is: {{home.greeting.gitHubCommitList}}</p>
-</div>
-<div  ng-controller="home as home" ng-show="!authenticated">
-    <p>You are not logged in! Please login to enjoy the site...</p>
 </div>

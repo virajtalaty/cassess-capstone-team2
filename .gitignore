@@ -23,6 +23,11 @@ dist/
 nbdist/
 .nb-gradle/
 
+### Front-end Dependencies ###
+bower_components/
+node/
+node_modules/
+
 ### Temp ###
 src/main/java/com/cassess/model/slack/slack.properties
 src/main/java/com/cassess/model/github/github.properties
