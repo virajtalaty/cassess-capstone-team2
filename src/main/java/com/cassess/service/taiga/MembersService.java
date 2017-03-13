@@ -2,7 +2,12 @@ package com.cassess.service.taiga;
 
 import com.cassess.dao.CAssessDAO;
 import com.cassess.dao.taiga.*;
+import com.cassess.entity.rest.Course;
 import com.cassess.entity.taiga.MemberData;
+import com.cassess.entity.taiga.ProjectIDSlug;
+import com.cassess.entity.taiga.Slugs;
+import com.cassess.service.rest.ICourseService;
+import com.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,6 +29,12 @@ public class MembersService {
 
     @Autowired
     private CAssessDAO MemberDao;
+
+    @Autowired
+    private ICourseService courseService;
+
+    @Autowired
+    private ProjectQueryDao projectDao;
 
     public MembersService(){
         restTemplate = new RestTemplate();
@@ -56,6 +69,18 @@ public class MembersService {
         } else {
 
             return members;
+        }
+    }
+
+    /* Method to provide single operation on
+    updating the member_data table based on the course, student and project tables
+     */
+    public void updateMembership(String course){
+        Course tempCourse = (Course) courseService.read(course);
+        String token = tempCourse.getTaiga_token();
+        List<ProjectIDSlug> idSlugList = projectDao.listGetProjectIDSlug(course);
+        for(ProjectIDSlug idSlug:idSlugList){
+            getMembers(idSlug.getId(), token, 1);
         }
     }
 }

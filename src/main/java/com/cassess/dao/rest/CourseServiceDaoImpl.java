@@ -2,6 +2,7 @@ package com.cassess.dao.rest;
 
 import com.cassess.entity.rest.Course;
 import com.cassess.entity.rest.RestResponse;
+import com.cassess.entity.taiga.CourseList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -82,6 +83,13 @@ public class CourseServiceDaoImpl extends CourseServiceDao {
     public List<Course> listRead() throws DataAccessException {
         Query query = em.createNativeQuery("SELECT * FROM cassess.courses", Course.class);
         List<Course> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Transactional
+    public List<CourseList> listGetCourses() throws DataAccessException {
+        Query query = em.createNativeQuery("SELECT course AS 'course' FROM cassess.students", CourseList.class);
+        List<CourseList> resultList = query.getResultList();
         return resultList;
     }
 

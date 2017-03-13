@@ -28,9 +28,10 @@ public class MemberQueryDao implements IMemberQueryDao{
 
     @Override
     @Transactional
-    public List<MemberData> getMembers(String roleName) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.memberdata WHERE roleName != ?1", MemberData.class);
+    public List<MemberData> getMembers(String roleName, String project_slug) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.memberdata WHERE roleName != ?1 AND project_slug = ?2", MemberData.class);
         query.setParameter(1, roleName);
+        query.setParameter(2, project_slug);
         List<MemberData> resultList = query.getResultList();
         return resultList;
     }

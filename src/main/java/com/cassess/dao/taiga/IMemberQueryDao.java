@@ -12,5 +12,5 @@ public interface IMemberQueryDao {
 
     void setEntityManager(EntityManager entityManager);
 
-    List<MemberData> getMembers(String roleName) throws DataAccessException;
+    List<MemberData> getMembers(String roleName, String project_slug) throws DataAccessException;
 }
