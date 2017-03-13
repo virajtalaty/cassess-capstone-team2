@@ -1,6 +1,7 @@
 package com.cassess.service.rest;
 
 import com.cassess.entity.rest.Student;
+import com.cassess.entity.taiga.Slugs;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface IStudentsService {
     <T> Object deleteByCourse(String course);
 
     <T> Object deleteByProject(String project_name);
+
+    List<Slugs> listGetSlugs(String course);
 }

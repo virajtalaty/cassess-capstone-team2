@@ -1,6 +1,7 @@
 package com.cassess.dao.taiga;
 
 import com.cassess.entity.taiga.Project;
+import com.cassess.entity.taiga.ProjectIDSlug;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,16 @@ public class ProjectQueryDao implements IProjectQueryDao {
 
     @Override
     @Transactional
-    public List<Project> getProjects() throws DataAccessException {
+    public List<Project> getAllProjects() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.project");
+        List<Project> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<Project> getProjectsByCourse() throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.project WHERE ");
         List<Project> resultList = query.getResultList();
         return resultList;
     }
@@ -41,4 +50,14 @@ public class ProjectQueryDao implements IProjectQueryDao {
         query.setParameter(1, slug);
         return (Project) query.getSingleResult();
     }
+
+    @Override
+    @Transactional
+    public List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT id, slug FROM cassess.project INNER JOIN cassess.students ON cassess.project.slug=cassess.students.taiga_project_slug AND course=?1", ProjectIDSlug.class);
+        query.setParameter(1, course);
+        List<ProjectIDSlug> resultList = query.getResultList();
+        return resultList;
+    }
+
 }

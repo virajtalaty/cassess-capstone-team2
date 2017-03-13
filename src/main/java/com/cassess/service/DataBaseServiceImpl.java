@@ -53,12 +53,12 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Override
     public List<MemberData> getTaigaMembers(){
-        return memberQueryDao.getMembers("Product Owner");
+        return memberQueryDao.getMembers("Product Owner", "tjjohn1-ser-401-capstone-project-team-2");
     }
 
     @Override
     public List<Project> getTaigaProjects(){
-        return IProjectQueryDao.getProjects();
+        return IProjectQueryDao.getAllProjects();
     }
 
 

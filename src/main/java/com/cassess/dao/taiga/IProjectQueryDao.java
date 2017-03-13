@@ -1,6 +1,7 @@
 package com.cassess.dao.taiga;
 
 import com.cassess.entity.taiga.Project;
+import com.cassess.entity.taiga.ProjectIDSlug;
 import org.springframework.dao.DataAccessException;
 
 import javax.persistence.EntityManager;
@@ -12,8 +13,11 @@ public interface IProjectQueryDao {
 
     void setEntityManager(EntityManager entityManager);
 
-    List<Project> getProjects() throws DataAccessException;
+    List<Project> getAllProjects() throws DataAccessException;
+
+    List<Project> getProjectsByCourse() throws DataAccessException;
 
     Project getProject(String slug) throws DataAccessException;
 
+    List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException;
 }
