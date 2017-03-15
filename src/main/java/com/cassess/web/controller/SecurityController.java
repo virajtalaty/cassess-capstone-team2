@@ -23,7 +23,8 @@ public class SecurityController {
     @RequestMapping(value = "/security/account", method = RequestMethod.GET)
     public @ResponseBody
     User getUserAccount() {
-        User user = userRepo.findByLogin(SecurityUtils.getCurrentLogin());
+    	User user = new User();
+        user = userRepo.findByLogin(SecurityUtils.getCurrentLogin());
         user.setPassword(null);
         return user;
     }

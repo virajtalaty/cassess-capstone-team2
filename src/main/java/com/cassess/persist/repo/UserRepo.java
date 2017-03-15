@@ -10,7 +10,7 @@ public interface UserRepo {
 
     List<User> findAll();
 
-    User findOne(Long userId);
+    User findOne(Long id);
 
     User save(User user);
 }

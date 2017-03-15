@@ -80,7 +80,7 @@ public class RememberMeServices extends
         String login = token.getUserLogin();
 
         // Token also matches, so login is valid. Update the token value, keeping the *same* series number.
-        log.debug("Refreshing persistent login token for user '{}', series '{}'", login, token.getSeries());
+        log.info("Refreshing persistent login token for user '{}', series '{}'", login, token.getSeries());
         token.setDate(new Date());
         token.setValue(generateTokenData());
         token.setIpAddress(request.getRemoteAddr());
@@ -97,6 +97,7 @@ public class RememberMeServices extends
 
     @Override
     protected void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication successfulAuthentication) {
+    	log.info("made it here");
         String login = successfulAuthentication.getName();
 
         log.debug("Creating new persistent login for user {}", login);
