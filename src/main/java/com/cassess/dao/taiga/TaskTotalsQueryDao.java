@@ -1,6 +1,6 @@
 package com.cassess.dao.taiga;
 
-import com.cassess.entity.taiga.Project;
+import com.cassess.entity.taiga.TaskTotals;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,28 +11,27 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class ProjectQueryDaoImpl implements ProjectQueryDao {
+public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     protected EntityManager entityManager;
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
-    public List<Project> getProjects() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects");
-        List<Project> resultList = query.getResultList();
+    public List<TaskTotals> getTaskTotals() throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals", TaskTotals.class);
+        List<TaskTotals> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
-    public Project getProject() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM projects", Project.class);
-        return (Project) query.getSingleResult();
-    }
 }

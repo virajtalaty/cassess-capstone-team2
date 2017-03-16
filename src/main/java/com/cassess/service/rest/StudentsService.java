@@ -2,6 +2,7 @@ package com.cassess.service.rest;
 
 import com.cassess.entity.rest.Student;
 import com.cassess.dao.rest.StudentsServiceDaoImpl;
+import com.cassess.entity.taiga.Slugs;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,11 @@ public class StudentsService implements IStudentsService {
 
         return studentsDao.deleteByProject(project_name);
 
+    }
+
+    public List<Slugs> listGetSlugs(String course) {
+
+        return studentsDao.listGetSlugs(course);
     }
 
 }

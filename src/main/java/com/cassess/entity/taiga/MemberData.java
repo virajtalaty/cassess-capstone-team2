@@ -19,6 +19,9 @@ public class MemberData {
     @Column(name="project")
     private String project_name;
 
+    @Column(name="project_slug")
+    private String project_slug;
+
     @Column(name="roleName")
     private String role_name;
 
@@ -26,10 +29,11 @@ public class MemberData {
 
     }
 
-    public MemberData(int id, String full_name, String project_name, String role_name) {
+    public MemberData(int id, String full_name, String project_name, String project_slug, String role_name) {
         this.id = id;
         this.full_name = full_name;
         this.project_name = project_name;
+        this.project_slug = project_slug;
         this.role_name = role_name;
     }
 
@@ -48,6 +52,10 @@ public class MemberData {
     public String getProject_name() { return project_name; }
 
     public void setProject_name(String project_name) { this.project_name = project_name; }
+
+    public String getProject_slug() { return project_slug; }
+
+    public void setProject_slug(String project_slug) { this.project_slug = project_slug; }
 
     public String getRole_name() { return role_name; }
 

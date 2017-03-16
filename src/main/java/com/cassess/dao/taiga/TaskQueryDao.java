@@ -11,18 +11,22 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class TaskQueryDaoImpl{
+public class TaskQueryDao implements ITaskQueryDao {
 
     protected EntityManager entityManager;
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
     public int getClosedTasks(String full_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.taskdata WHERE status = 'Closed' AND full_name = ?1", TaskCount.class);
@@ -33,6 +37,7 @@ public class TaskQueryDaoImpl{
         return result;
     }
 
+    @Override
     @Transactional
     public int getNewTasks(String full_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.taskdata WHERE status = 'New' AND full_name = ?1", TaskCount.class);
@@ -43,6 +48,7 @@ public class TaskQueryDaoImpl{
         return result;
     }
 
+    @Override
     @Transactional
     public int getInProgressTasks(String full_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.taskdata WHERE status = 'In Progress' AND full_name = ?1", TaskCount.class);
@@ -53,6 +59,7 @@ public class TaskQueryDaoImpl{
         return result;
     }
 
+    @Override
     @Transactional
     public int getReadyForTestTasks(String full_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.taskdata WHERE status = 'Ready For Test' AND full_name = ?1", TaskCount.class);

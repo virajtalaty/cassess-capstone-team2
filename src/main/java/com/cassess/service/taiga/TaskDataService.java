@@ -1,9 +1,12 @@
 package com.cassess.service.taiga;
-import com.cassess.entity.taiga.MemberData;
-import com.cassess.entity.taiga.TaskData;
-import com.cassess.entity.taiga.TaskTotals;
-import com.cassess.entity.taiga.TaskTotalsID;
+import com.cassess.dao.CAssessDAO;
+import com.cassess.dao.rest.StudentsServiceDaoImpl;
+import com.cassess.entity.rest.Course;
+import com.cassess.entity.rest.Student;
+import com.cassess.entity.taiga.*;
 import com.cassess.dao.taiga.*;
+import com.cassess.service.rest.CourseService;
+import com.cassess.service.rest.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,48 +18,36 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-
-/**
- * Created by Thomas on 2/9/2017.
- */
-
 @Service
 @Transactional
 public class TaskDataService {
 
     private RestTemplate restTemplate;
 
-    private String membershipListURL;
-    private String membershipDetailURL;
     private String tasksListURL;
 
     @Autowired
-    private TasksDaoImpl TaskDao;
+    private CAssessDAO TaskDao;
+
 
     @Autowired
-    private MembersDaoImpl MemberDao;
+    private TaskQueryDao TaskQueryDao;
 
     @Autowired
-    private TaskQueryDaoImpl TaskQueryDao;
+    private MemberQueryDao MemberQueryDao;
 
     @Autowired
-    private MemberQueryDaoImpl MemberQueryDao;
+    private ICourseService courseService;
 
     @Autowired
-    private TaskTotalsDaoImpl TaskTotalsDao;
-
-
+    private ProjectQueryDao projectsDao;
 
     public TaskDataService() {
         restTemplate = new RestTemplate();
-        membershipListURL = "https://api.taiga.io/api/v1/memberships?project=";
         tasksListURL = "https://api.taiga.io/api/v1/tasks?project=";
-        membershipDetailURL = "https://api.taiga.io/api/v1/memberships/";
-
-
     }
 
-    public TaskData[] getTasks(Long projectId, String token, int page) {
+    public TaskData[] getTasks(Long id, String token, int page) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -70,7 +61,7 @@ public class TaskDataService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        tasksListURL = tasksListURL + projectId + "&page=" + page;
+        tasksListURL = tasksListURL + id + "&page=" + page;
 
         ResponseEntity<TaskData[]> taskList = restTemplate.getForEntity(tasksListURL, TaskData[].class, request);
 
@@ -86,46 +77,15 @@ public class TaskDataService {
 
         if (taskList.getHeaders().containsKey("x-pagination-next")) {
             page++;
-            return getTasks(projectId, token, page);
+            return getTasks(id, token, page);
         } else {
 
             return tasks;
         }
     }
 
-    public MemberData[] getMembers(Long projectId, String token, int page) {
-
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        headers.set("Authorization", "Bearer " + token);
-
-        System.out.println("Headers: " + headers);
-
-        HttpEntity<String> request = new HttpEntity<>(headers);
-
-        membershipListURL = membershipListURL + projectId + "&page=" + page;
-
-        ResponseEntity<MemberData[]> memberList = restTemplate.getForEntity(membershipListURL, MemberData[].class, request);
-
-        MemberData[] members = memberList.getBody();
-
-        for (int i = 0; i < members.length; i++) {
-            MemberDao.save(members[i]);
-        }
-
-        if (memberList.getHeaders().containsKey("x-pagination-next")) {
-            page++;
-            return getMembers(projectId, token, page);
-        } else {
-
-            return members;
-        }
-    }
-
-    public void getTaskTotals() {
-        List<MemberData> memberNames = MemberQueryDao.getMembersByRole("Back");
+    public void getTaskTotals(String slug) {
+        List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member: memberNames) {
             String name = member.getFull_name();
             int closedTasks = TaskQueryDao.getClosedTasks(name);
@@ -134,12 +94,22 @@ public class TaskDataService {
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
 
-            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+            TaskDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
     }
 
-
-
+    /* Method to obtain all task totals for members of a particular course,
+        occurring on a schedule
+     */
+    public void updateTaskTotals(String course){
+        Course tempCourse = (Course) courseService.read(course);
+        String token = tempCourse.getTaiga_token();
+        List<ProjectIDSlug> idSlugList = projectsDao.listGetProjectIDSlug(course);
+        for(ProjectIDSlug idSlug:idSlugList){
+            getTasks(idSlug.getId(), token, 1);
+            getTaskTotals(idSlug.getSlug());
+        }
+    }
 }
 

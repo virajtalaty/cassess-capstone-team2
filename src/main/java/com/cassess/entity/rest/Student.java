@@ -28,8 +28,8 @@ public class Student {
     @Column(name="github_repo_id")
     private String github_repo_id;
 
-    @Column(name="taiga_project_id")
-    private String taiga_project_id;
+    @Column(name="taiga_project_slug")
+    private String taiga_project_slug;
 
     public Student(){
 
@@ -83,12 +83,12 @@ public class Student {
         this.github_repo_id = github_repo_id;
     }
 
-    public String getTaiga_project_id() {
-        return taiga_project_id;
+    public String getTaiga_project_slug() {
+        return taiga_project_slug;
     }
 
-    public void setTaiga_project_id(String taiga_project_id) {
-        this.taiga_project_id = taiga_project_id;
+    public void setTaiga_project_slug(String taiga_project_slug) {
+        this.taiga_project_slug = taiga_project_slug;
     }
 
 }
