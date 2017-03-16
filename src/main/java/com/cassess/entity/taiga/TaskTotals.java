@@ -12,12 +12,12 @@ public class TaskTotals {
     @EmbeddedId
     TaskTotalsID compositeId;
 
-
     @Column(name="fullName")
     private String full_name;
 
     @Column(name="project")
     private String project_name;
+
     @Column(name="roleName")
     private String role_name;
 
