@@ -62,10 +62,12 @@ public class ProjectService {
     updating the projects table based on the course and student tables
      */
     public void updateProjects(String course){
+        System.out.println("Updating Projects");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<Slugs> slugList = studentsService.listGetSlugs(course);
         for(Slugs slug:slugList){
+            System.out.println("Slug: " + slug);
             getProjectInfo(token, slug.getSlug());
         }
     }

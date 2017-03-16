@@ -8,15 +8,16 @@
 </style>
 <div ng-controller="taiga">
     <h1>Taiga Progress Page</h1>
-    <form ng-submit="updateTaigaProjects()">
-        <button type="submit" class="btn pull-right">Update Projects</button>
+    <form ng-submit="updateTaigaTaskTotals()">
+        <button type="submit" class="btn pull-right">Update Task Totals</button>
     </form>
     <form ng-submit="updateTaigaMemberships()">
         <button type="submit" class="btn pull-right">Update Memberships</button>
     </form>
-    <form ng-submit="updateTaigaTaskTotals()">
-        <button type="submit" class="btn pull-right">Update Task Totals</button>
+    <form ng-submit="updateTaigaProjects()">
+        <button type="submit" class="btn pull-right">Update Projects</button>
     </form>
+
     <p>Select a Course</p>
     <select ng-model="selectedCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()">
     </select>

@@ -81,7 +81,7 @@ public class CourseServiceDaoImpl extends CourseServiceDao {
 
     @Transactional
     public List<Course> listRead() throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM cassess.courses", Course.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT * FROM cassess.courses", Course.class);
         List<Course> resultList = query.getResultList();
         return resultList;
     }

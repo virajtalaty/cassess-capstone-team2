@@ -47,13 +47,11 @@ public class MembersService {
 
         headers.set("Authorization", "Bearer " + token);
 
-        System.out.println("Headers: " + headers);
+        //System.out.println("Headers: " + headers);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        membershipListURL = membershipListURL + projectId + "&page=" + page;
-
-        ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL,
+        ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
                 HttpMethod.GET,
                 request,
                 new ParameterizedTypeReference<List<MemberData>>() {});
@@ -79,10 +77,12 @@ public class MembersService {
     updating the member_data table based on the course, student and project tables
      */
     public void updateMembership(String course){
+        System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectDao.listGetProjectIDSlug(course);
         for(ProjectIDSlug idSlug:idSlugList){
+            System.out.println("Id: " + idSlug.getId());
             getMembers(idSlug.getId(), token, 1);
         }
     }

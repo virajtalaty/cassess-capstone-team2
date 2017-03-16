@@ -95,29 +95,29 @@ public class AppController {
         return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/taigaUpdateProjects", method = RequestMethod.POST)
+    @RequestMapping(value = "/taiga/Update/Projects", method = RequestMethod.POST)
     void updateProjects(HttpServletRequest request, HttpServletResponse response) {
         List<CourseList> courseList = coursesService.listGetCourses();
         for (CourseList course : courseList) {
+            System.out.print("Course: " + course.getCourse());
             projects.updateProjects(course.getCourse());
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/taigaUpdateMemberships", method = RequestMethod.POST)
+    @RequestMapping(value = "/taiga/Update/Memberships", method = RequestMethod.POST)
     void updateMemberships(HttpServletRequest request, HttpServletResponse response) {
         List<CourseList> courseList = coursesService.listGetCourses();
         for (CourseList course : courseList) {
+            System.out.print("Course: " + course.getCourse());
             members.updateMembership(course.getCourse());
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/taigaUpdateTasks", method = RequestMethod.POST)
+    @RequestMapping(value = "/taiga/Update/Tasks", method = RequestMethod.POST)
     void updateTasks(HttpServletRequest request, HttpServletResponse response) {
         List<CourseList> courseList = coursesService.listGetCourses();
         for (CourseList course : courseList) {
+            System.out.print("Course: " + course.getCourse());
             taskService.updateTaskTotals(course.getCourse());
         }
     }
