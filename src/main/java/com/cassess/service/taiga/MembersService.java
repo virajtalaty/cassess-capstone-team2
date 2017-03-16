@@ -9,10 +9,8 @@ import com.cassess.entity.taiga.Slugs;
 import com.cassess.service.rest.ICourseService;
 import com.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -41,7 +39,7 @@ public class MembersService {
         membershipListURL = "https://api.taiga.io/api/v1/memberships?project=";
     }
 
-    public MemberData[] getMembers(Long projectId, String token, int page) {
+    public List<MemberData> getMembers(Long projectId, String token, int page) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -55,12 +53,17 @@ public class MembersService {
 
         membershipListURL = membershipListURL + projectId + "&page=" + page;
 
-        ResponseEntity<MemberData[]> memberList = restTemplate.getForEntity(membershipListURL, MemberData[].class, request);
+        ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL,
+                HttpMethod.GET,
+                request,
+                new ParameterizedTypeReference<List<MemberData>>() {});
 
-        MemberData[] members = memberList.getBody();
+        //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
 
-        for (int i = 0; i < members.length; i++) {
-            MemberDao.save(members[i]);
+        List<MemberData> members = memberList.getBody();
+
+        for (int i = 0; i < members.size(); i++) {
+            MemberDao.save(members.get(i));
         }
 
         if (memberList.getHeaders().containsKey("x-pagination-next")) {

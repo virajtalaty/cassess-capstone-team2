@@ -1,12 +1,15 @@
 package com.cassess.controller;
 
+import com.cassess.dao.taiga.ITaskTotalsQueryDao;
 import com.cassess.entity.rest.Course;
 import com.cassess.entity.rest.Student;
+import com.cassess.entity.taiga.WeeklyTotals;
 import com.cassess.service.rest.ICourseService;
 import com.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,9 @@ public class restController {
 
     @Autowired
     private IStudentsService studentsService;
+
+    @Autowired
+    ITaskTotalsQueryDao taskTotalService;
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/course", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -245,6 +251,15 @@ public class restController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @RequestMapping(value = "/taigaTasks", method = RequestMethod.POST)
+    ResponseEntity<List<WeeklyTotals>> getTasks(@RequestHeader(name = "name", required = true) String name, HttpServletRequest request, HttpServletResponse response) {
+        System.out.print("Name is: " + name);
+        List<WeeklyTotals> tasksList = (List<WeeklyTotals>) taskTotalService.getWeeklyTasks(name);
+        return new ResponseEntity<List<WeeklyTotals>>(tasksList, HttpStatus.OK);
     }
 
 }

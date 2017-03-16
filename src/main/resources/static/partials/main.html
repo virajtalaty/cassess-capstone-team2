@@ -1,0 +1,62 @@
+<!doctype html>
+<style>
+    table, td  {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+</style>
+<div ng-controller="taiga">
+    <h1>Taiga Progress Page</h1>
+    <form ng-submit="updateTaigaProjects()">
+        <button type="submit" class="btn pull-right">Update Projects</button>
+    </form>
+    <form ng-submit="updateTaigaMemberships()">
+        <button type="submit" class="btn pull-right">Update Memberships</button>
+    </form>
+    <form ng-submit="updateTaigaTaskTotals()">
+        <button type="submit" class="btn pull-right">Update Task Totals</button>
+    </form>
+    <p>Select a Course</p>
+    <select ng-model="selectedCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()">
+    </select>
+    <br><br ng-repeat-end />
+    <p>Select a Team</p>
+    <select ng-model="selectedTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()">
+    </select>
+    <br><br ng-repeat-end />
+    <p>Select a Student</p>
+    <select ng-model="selectedStudent.value" ng-options="x.full_name for x in students" ng-change="selectedStudentChanged()">
+    </select>
+    <br><br ng-repeat-end />
+    <form ng-submit="sendPost()">
+        <button type="submit">Get Tasks Totals</button>
+    </form>
+    <p>Message from servlet: {{message}}</p>
+    <br><br ng-repeat-end />
+    <h2>Taiga Task Totals for {{selectedStudent.value.full_name}}</h2>
+    <table class="table table-bordered" fixed-header>
+        <thead>
+        <tr>
+            <th>Interval Ending</th>
+            <th># Closed</th>
+            <th># New</th>
+            <th># In Progress</th>
+            <th># Ready For Test</th>
+            <th># Open</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="x in tasks">
+                <td>{{ x.weekEnding }}</td>
+                <td>{{ x.closedTasks }}</td>
+                <td>{{ x.newTasks }}</td>
+                <td>{{ x.inProgressTasks }}</td>
+                <td>{{ x.readyForTestTasks }}</td>
+                <td>{{ x.openTasks }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+</html>
