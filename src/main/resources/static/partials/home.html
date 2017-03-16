@@ -1,19 +1,54 @@
-<h1>Welcome to CAssess!</h1>
-<div ng-controller="home as home" ng-show="authenticated">
-    <p>You are logged in as {{home.greeting.id}}!  Have a look around...</p>
-    <p> The slack team members are accessed from API are: {{home.greeting.content}}</p>
-    <p> The slack team members using the slack service are: {{home.greeting.SlackService}}</p>
-    <p> The slack team members IDs access from API are: {{home.greeting.teamIDs}}</p>
-    <p> The Taiga token accessed from database is: {{home.greeting.token}}</p>
-    <p> The Taiga ID accessed from database is: {{home.greeting.taigaID}}</p>
-    <p> The Taiga info gathered from API is : {{home.greeting.Info}}</p>
-    <p> The Taiga projects accessed from database are: {{home.greeting.Projects}}</p>
-    <p> The Taiga members accessed from database are: {{home.greeting.Members}}</p>
-    <p> The Taiga Task Totals accessed from database are: {{home.greeting.TaskTotals}}</p>
-    <p> The Slack time zone accessed from database is: {{home.greeting.slackTimeZone}}</p>
-    <p> The Slack teamId accessed from database is: {{home.greeting.slackTeamId}}</p>
-    <p> The GitHub Commit commit list accessed from API is: {{home.greeting.gitHubCommitList}}</p>
-</div>
-<div  ng-controller="home as home" ng-show="!authenticated">
-    <p>You are not logged in! Please login to enjoy the site...</p>
+<div class="well page">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="pull-left" style="margin-left: 16px">Welcome</h1>
+
+            <div class="pull-right social-icons">
+                <a target="_blank" href="https://fr.linkedin.com/in/samerabdelkafi"><i class="fa fa-2x fa-linkedin"></i></a>
+                <a target="_blank" href="https://github.com/samer-abdelkafi"><i class="fa fa-2x fa-github"></i></a>
+                <a target="_blank" href="http://www.twitter.com/samer_abdelkafi"><i class="fa fa-2x fa-twitter"></i></a>
+                <a target="_blank" href="https://samerabdelkafi.wordpress.com"><i class="fa fa-2x fa-wordpress"></i></a>
+            </div>
+        </div>
+        <br/>
+
+        <div class="col-lg-12">
+            <blockquote style="margin-left: 16px">
+                <p>This is a demo project for securing an Angularjs project with Spring-security.</p>
+
+                <p>For more information and details you can read my Wordpress post <a
+                        href="http://wp.me/pTO1H-150" target="_blank">here</a>.</p>
+
+                <p>The source code of the project is available on GitHub <a
+                        href="https://github.com/samer-abdelkafi/ssng-project" target="_blank">here</a>.</p>
+
+                <p>This demo uses the open source frameworks and projects below:</p>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="list-group">
+
+        <div ng-repeat="techno in technos" class="list-group-item" ng-switch on="techno.logo" style="margin-top:16px">
+            <div class="row-action-primary" ng-switch-when="github">
+                <i class="fa fa-github" style="font-size: 55px; color: #009688; background-color: white"></i>
+            </div>
+            <div class="row-picture" ng-switch-default>
+                <img class="circle" ng-src="resources/img/techno/{{techno.logo}}">
+            </div>
+            <div class="row-content">
+                <h4 class="list-group-item-heading">{{techno.name}}</h4>
+
+                <p class="list-group-item-text">{{techno.description}}</p>
+
+                <p class="list-group-item-text"><a target="_blank" ng-href="http://{{techno.website}}"><i
+                        class="mdi-action-open-in-new mat-icon"></i>{{techno.website}}</a></p>
+            </div>
+        </div>
+
+
+    </div>
+
+
 </div>

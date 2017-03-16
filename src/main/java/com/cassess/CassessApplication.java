@@ -62,7 +62,7 @@ public class CassessApplication extends SpringBootServletInitializer {
     		//consumeUsers.getUserInfo("U2G79FELT");
 
             /* Old methods for utilizing Taiga calls and filling tables
-             */
+             
             AuthUserService authUserService = (AuthUserService) ctx.getBean("authUserService");
             AuthUser auth = authUserService.getUserInfo();
             ProjectService projectService = (ProjectService) ctx.getBean("projectService");
@@ -71,7 +71,7 @@ public class CassessApplication extends SpringBootServletInitializer {
             membersService.getMembers(proj.getId(), auth.getAuth_token(), 1);
             TaskDataService taskDataService = (TaskDataService) ctx.getBean("taskDataService");
             taskDataService.getTasks(proj.getId(), auth.getAuth_token(), 1);
-            taskDataService.getTaskTotals(proj.getSlug());
+            taskDataService.getTaskTotals(proj.getSlug());*/
 
             /* New single call methods to update operations using Course and Student tables
             provisioned by nicest only, for external API retrieval and internal SQL reading
@@ -95,8 +95,8 @@ public class CassessApplication extends SpringBootServletInitializer {
 
             */
 
-            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
-            gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
+            //GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
+            //gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
         };
     }
 
