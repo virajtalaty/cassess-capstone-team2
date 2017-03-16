@@ -20,7 +20,7 @@ var vendorCss;
 
 
 options = {
-    html: ['src/main/resources/static/**/*.html'],
+    html: ['src/main/webapp//**/*.html'],
 
     ignore: [
         '.show',
@@ -53,7 +53,7 @@ options = {
 //});
 
 gulp.task('clean', function () {
-    return gulp.src('src/main/resources/static/vendor', {read: false})
+    return gulp.src('src/main/webapp/resources/vendor', {read: false})
         .pipe(rimraf());
 });
 
@@ -62,11 +62,11 @@ gulp.task('lib-js-files', function () {
         .pipe(debug({title: 'lib-js-files :'}))
         .pipe(concatVendor('lib.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('src/main/resources/static/vendor/js'));
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/js'));
 
     vendorJs.pipe(clone())
         .pipe(gzip())
-        .pipe(gulp.dest('src/main/resources/static/vendor/js'));
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/js'));
 });
 
 
@@ -77,31 +77,31 @@ gulp.task('lib-css-files', function () {
         .pipe(debug({title: 'lib-css-files :'}))
         .pipe(minify())
         .pipe(concat('lib.min.css'))
-        .pipe(gulp.dest('src/main/resources/static/vendor/css'));
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
 
     vendorCss.pipe(clone())
         .pipe(clone())
         .pipe(gzip())
-        .pipe(gulp.dest('src/main/resources/static/vendor/css'));
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
 });
 
 
 gulp.task('index', function () {
-    var target = gulp.src("src/main/resources/static/index.html");
-    var jsSources = gulp.src(['src/main/resources/static/js/*.js'], {read: false})
+    var target = gulp.src("src/main/webapp/index.html");
+    var jsSources = gulp.src(['src/main/webapp/resources/js/*.js'], {read: false})
         .pipe(order(["**/security.js", "**/app.js"]));
-    var cssSources = gulp.src(['src/main/resources/static/css/*.css'], {read: false});
+    var cssSources = gulp.src(['src/main/webapp/resources/css/*.css'], {read: false});
 
 
     return target.pipe(inject(series(vendorJs, vendorCss, jsSources, cssSources), {relative: true}))
-        .pipe(gulp.dest('src/main/resources'));
+        .pipe(gulp.dest('src/main/webapp'));
 });
 
 
 gulp.task('copyFonts', function () {
     gulp.src('bower_components/**/fonts/*.{ttf,woff,woff2,eof,svg}')
         .pipe(flatten())
-        .pipe(gulp.dest('src/main/resources/static/vendor/fonts'));
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/fonts'));
 });
 
 
