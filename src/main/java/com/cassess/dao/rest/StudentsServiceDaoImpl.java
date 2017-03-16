@@ -3,6 +3,7 @@ package com.cassess.dao.rest;
 import com.cassess.entity.rest.Student;
 import com.cassess.entity.rest.RestResponse;
 import com.cassess.entity.taiga.Slugs;
+import com.cassess.entity.taiga.Teams;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -82,14 +83,14 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadAll() throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM cassess.students", Student.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
     @Transactional
     public List<Student> listReadByCourse(String course) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1", Student.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1", Student.class);
         query.setParameter(1, course);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -97,7 +98,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadByProject(String project_name) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1", Student.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE project_name = ?1", Student.class);
         query.setParameter(1, project_name);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -105,7 +106,7 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Student> listReadBySlug(String slug) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT * FROM cassess.students WHERE taiga_project_slug = ?1", Student.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE taiga_project_slug = ?1", Student.class);
         query.setParameter(1, slug);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -113,9 +114,17 @@ public class StudentsServiceDaoImpl extends StudentsServiceDao {
 
     @Transactional
     public List<Slugs> listGetSlugs(String course) throws DataAccessException {
-        Query query = em.createNativeQuery("SELECT taiga_project_slug FROM cassess.students WHERE course = ?1", Slugs.class);
+        Query query = em.createNativeQuery("SELECT DISTINCT taiga_project_slug FROM cassess.students WHERE course = ?1", Slugs.class);
         query.setParameter(1, course);
         List<Slugs> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Transactional
+    public List<Teams> listGetProjectNames(String course) throws DataAccessException {
+        Query query = em.createNativeQuery("SELECT DISTINCT project_name AS 'team' FROM cassess.students WHERE course = ?1", Teams.class);
+        query.setParameter(1, course);
+        List<Teams> resultList = query.getResultList();
         return resultList;
     }
 
