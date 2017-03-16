@@ -9,10 +9,8 @@ import com.cassess.entity.taiga.Slugs;
 import com.cassess.service.rest.ICourseService;
 import com.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -41,7 +39,7 @@ public class MembersService {
         membershipListURL = "https://api.taiga.io/api/v1/memberships?project=";
     }
 
-    public MemberData[] getMembers(Long projectId, String token, int page) {
+    public List<MemberData> getMembers(Long projectId, String token, int page) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -49,18 +47,21 @@ public class MembersService {
 
         headers.set("Authorization", "Bearer " + token);
 
-        System.out.println("Headers: " + headers);
+        //System.out.println("Headers: " + headers);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        membershipListURL = membershipListURL + projectId + "&page=" + page;
+        ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
+                HttpMethod.GET,
+                request,
+                new ParameterizedTypeReference<List<MemberData>>() {});
 
-        ResponseEntity<MemberData[]> memberList = restTemplate.getForEntity(membershipListURL, MemberData[].class, request);
+        //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
 
-        MemberData[] members = memberList.getBody();
+        List<MemberData> members = memberList.getBody();
 
-        for (int i = 0; i < members.length; i++) {
-            MemberDao.save(members[i]);
+        for (int i = 0; i < members.size(); i++) {
+            MemberDao.save(members.get(i));
         }
 
         if (memberList.getHeaders().containsKey("x-pagination-next")) {
@@ -76,10 +77,12 @@ public class MembersService {
     updating the member_data table based on the course, student and project tables
      */
     public void updateMembership(String course){
+        System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectDao.listGetProjectIDSlug(course);
         for(ProjectIDSlug idSlug:idSlugList){
+            System.out.println("Id: " + idSlug.getId());
             getMembers(idSlug.getId(), token, 1);
         }
     }

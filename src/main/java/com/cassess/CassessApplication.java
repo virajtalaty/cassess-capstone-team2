@@ -62,7 +62,11 @@ public class CassessApplication extends SpringBootServletInitializer {
     		//consumeUsers.getUserInfo("U2G79FELT");
 
             /* Old methods for utilizing Taiga calls and filling tables
+<<<<<<< HEAD
              
+=======
+
+>>>>>>> e1e42a841002b4aab95464cee4d99fce6100a0fb
             AuthUserService authUserService = (AuthUserService) ctx.getBean("authUserService");
             AuthUser auth = authUserService.getUserInfo();
             ProjectService projectService = (ProjectService) ctx.getBean("projectService");
@@ -71,12 +75,18 @@ public class CassessApplication extends SpringBootServletInitializer {
             membersService.getMembers(proj.getId(), auth.getAuth_token(), 1);
             TaskDataService taskDataService = (TaskDataService) ctx.getBean("taskDataService");
             taskDataService.getTasks(proj.getId(), auth.getAuth_token(), 1);
+<<<<<<< HEAD
             taskDataService.getTaskTotals(proj.getSlug());*/
+=======
+            taskDataService.getTaskTotals(proj.getSlug());
+            */
+>>>>>>> e1e42a841002b4aab95464cee4d99fce6100a0fb
 
             /* New single call methods to update operations using Course and Student tables
             provisioned by nicest only, for external API retrieval and internal SQL reading
             Data is retrieved only from provisioned tables, so they must be updated first
-
+            */
+/*
             List<CourseList> courseList = coursesDao.listGetCourses();
             ProjectService projectService = (ProjectService) ctx.getBean("projectService");
             for(CourseList course:courseList) {
@@ -92,11 +102,17 @@ public class CassessApplication extends SpringBootServletInitializer {
             for(CourseList course:courseList) {
                 taskDataService.updateTaskTotals(course.getCourse());
             }
+<<<<<<< HEAD
 
             */
 
             //GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             //gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
+=======
+*/
+            GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
+            gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
+>>>>>>> e1e42a841002b4aab95464cee4d99fce6100a0fb
         };
     }
 

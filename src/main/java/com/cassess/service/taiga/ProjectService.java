@@ -36,7 +36,7 @@ public class ProjectService {
 
     public ProjectService() {
         restTemplate = new RestTemplate();
-        projectURL = "https://api.taiga.io/api/v1/projects/by_slug";
+        projectURL = "https://api.taiga.io/api/v1/projects/by_slug?slug=";
 
     }
 
@@ -50,12 +50,10 @@ public class ProjectService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        projectURL = projectURL + "?slug=" + slug;
-
         //Console Output for testing purposes
         System.out.println("Fetching from " + projectURL);
 
-        ResponseEntity<Project> project = restTemplate.getForEntity(projectURL, Project.class, request);
+        ResponseEntity<Project> project = restTemplate.getForEntity(projectURL + slug, Project.class, request);
 
         return projectStoreDao.save(project.getBody());
     }
@@ -64,10 +62,12 @@ public class ProjectService {
     updating the projects table based on the course and student tables
      */
     public void updateProjects(String course){
+        System.out.println("Updating Projects");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<Slugs> slugList = studentsService.listGetSlugs(course);
         for(Slugs slug:slugList){
+            System.out.println("Slug: " + slug);
             getProjectInfo(token, slug.getSlug());
         }
     }

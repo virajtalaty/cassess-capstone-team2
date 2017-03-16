@@ -57,23 +57,21 @@ public class TaskDataService {
 
         headers.add("x-disable-pagination", "True");
 
-        System.out.println("Headers: " + headers);
+        //System.out.println("Page: " + page);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        tasksListURL = tasksListURL + id + "&page=" + page;
-
-        ResponseEntity<TaskData[]> taskList = restTemplate.getForEntity(tasksListURL, TaskData[].class, request);
+        ResponseEntity<TaskData[]> taskList = restTemplate.getForEntity(tasksListURL + id + "&page=" + page, TaskData[].class, request);
 
         TaskData[] tasks = taskList.getBody();
 
-        System.out.println("Number Results: " + tasks.length);
+        //System.out.println("Number Results: " + tasks.length);
 
         for (int i = 0; i < tasks.length - 1; i++) {
 
             TaskDao.save(tasks[i]);
         }
-        System.out.println("Headers Response" + taskList.getHeaders());
+        //System.out.println("Headers Response" + taskList.getHeaders());
 
         if (taskList.getHeaders().containsKey("x-pagination-next")) {
             page++;
@@ -103,10 +101,12 @@ public class TaskDataService {
         occurring on a schedule
      */
     public void updateTaskTotals(String course){
+        System.out.println("Updating Tasks");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectsDao.listGetProjectIDSlug(course);
         for(ProjectIDSlug idSlug:idSlugList){
+            System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
             getTasks(idSlug.getId(), token, 1);
             getTaskTotals(idSlug.getSlug());
         }
