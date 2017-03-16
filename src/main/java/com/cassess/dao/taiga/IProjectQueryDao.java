@@ -15,8 +15,6 @@ public interface IProjectQueryDao {
 
     List<Project> getAllProjects() throws DataAccessException;
 
-    List<Project> getProjectsByCourse() throws DataAccessException;
-
     Project getProject(String slug) throws DataAccessException;
 
     List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException;

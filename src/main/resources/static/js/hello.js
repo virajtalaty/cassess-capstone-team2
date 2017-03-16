@@ -154,10 +154,9 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
         };
 
     $scope.updateTaigaProjects = function() {
-        console.log($scope.name);
         $http({
-            url : './taigaUpdateTasks',
-            method : "POST",
+            url : './taiga/Update/Projects',
+            method : "POST"
         }).then(function(response) {
             console.log("Worked!");
             //console.log(response.data);
@@ -172,9 +171,8 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
     };
 
     $scope.updateTaigaMemberships = function() {
-        console.log($scope.name);
         $http({
-            url : './taigaUpdateMemberships',
+            url : './taiga/Update/Memberships',
             method : "POST"
         }).then(function(response) {
             console.log("Worked!");
@@ -190,9 +188,8 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
     };
 
     $scope.updateTaigaTaskTotals = function() {
-        console.log($scope.name);
         $http({
-            url : './taigaUpdateTasks',
+            url : './taiga/Update/Tasks',
             method : "POST"
         }).then(function(response) {
             console.log("Worked!");
