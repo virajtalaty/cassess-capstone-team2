@@ -6,7 +6,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.dozer.DozerBeanMapper;
-//import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +23,8 @@ import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 
 @Configuration
-@EnableTransactionManagement
-@ComponentScan("edu.asu.cassess")
+//@EnableTransactionManagement(proxyTargetClass=true)
+@ComponentScan({"edu.asu.cassess.dao", "edu.asu.cassess.persist", "edu.asu.cassess.service"})
 @EnableJpaRepositories("edu.asu.cassess")
 public class DBConfig {
 

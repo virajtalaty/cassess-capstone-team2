@@ -24,7 +24,7 @@ import edu.asu.cassess.security.RestUnauthorizedEntryPoint;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@ComponentScan(basePackages = {"edu.asu.cassess.security"})
+@ComponentScan("edu.asu.cassess.security")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
