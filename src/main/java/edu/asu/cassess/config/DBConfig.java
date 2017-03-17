@@ -20,13 +20,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
-//import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
+import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
+import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("com.mycompany.myproject.persist")
-@EnableJpaRepositories("com.mycompany.myproject.persist")
+@ComponentScan("edu.asu.cassess")
+@EnableJpaRepositories("edu.asu.cassess")
 public class DBConfig {
 
 	@Bean(name = "dataSource")
@@ -43,7 +43,7 @@ public class DBConfig {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 		emf.setDataSource(getDataSource());
-		emf.setPackagesToScan(new String[] { "com.mycompany.*" });
+		emf.setPackagesToScan(new String[] { "edu.asu.cassess.*" });
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		emf.setJpaVendorAdapter(vendorAdapter);
 		emf.setJpaProperties(additionalProperties());
@@ -57,7 +57,6 @@ public class DBConfig {
 	    return transactionManager;
 	}
 	
-	/*
 	@Bean
 	public JPAAnnotationMetadataUtil metadataUtil() {
 		JPAAnnotationMetadataUtil metadataUtil = new JPAAnnotationMetadataUtil();
@@ -68,7 +67,7 @@ public class DBConfig {
 	public JPASearchProcessor searchProcessor(JPAAnnotationMetadataUtil metadataUtil){
 		JPASearchProcessor searchProcessor = new JPASearchProcessor(metadataUtil);
 		return searchProcessor;
-	}*/
+	}
 	 
 	@Bean
 	public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){

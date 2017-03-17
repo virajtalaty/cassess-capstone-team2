@@ -1,6 +1,6 @@
 package edu.asu.cassess.security;
 
-import edu.asu.cassess.persist.entity.User;
+import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;

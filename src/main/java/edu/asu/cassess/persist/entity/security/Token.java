@@ -1,4 +1,4 @@
-package edu.asu.cassess.persist.entity;
+package edu.asu.cassess.persist.entity.security;
 
 
 import javax.persistence.Column;

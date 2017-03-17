@@ -1,6 +1,6 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.persist.entity.User;
+import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;

@@ -1,8 +1,8 @@
 package edu.asu.cassess.security;
 
 
-import edu.asu.cassess.persist.entity.Token;
-import edu.asu.cassess.persist.entity.User;
+import edu.asu.cassess.persist.entity.security.Token;
+import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.TokenRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
 

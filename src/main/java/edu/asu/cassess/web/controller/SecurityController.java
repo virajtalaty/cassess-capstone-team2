@@ -1,7 +1,7 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.persist.entity.Token;
-import edu.asu.cassess.persist.entity.User;
+import edu.asu.cassess.persist.entity.security.Token;
+import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.TokenRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.security.SecurityUtils;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @Api(description = "Users management API")
-public class SeurityController {
+public class SecurityController {
 
 
     @Autowired
