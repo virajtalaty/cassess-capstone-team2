@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
+@Transactional
 public class ProjectQueryDao implements IProjectQueryDao {
 
     protected EntityManager entityManager;
@@ -29,7 +30,6 @@ public class ProjectQueryDao implements IProjectQueryDao {
     }
 
     @Override
-    @Transactional
     public List<Project> getAllProjects() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.project");
         List<Project> resultList = query.getResultList();
@@ -37,7 +37,6 @@ public class ProjectQueryDao implements IProjectQueryDao {
     }
 
     @Override
-    @Transactional
     public Project getProject(String slug) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.project WHERE slug = ?1", Project.class);
         query.setParameter(1, slug);
@@ -45,7 +44,6 @@ public class ProjectQueryDao implements IProjectQueryDao {
     }
 
     @Override
-    @Transactional
     public List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT id, slug FROM cassess.project INNER JOIN cassess.students ON cassess.project.slug=cassess.students.taiga_project_slug AND course=?1", ProjectIDSlug.class);
         query.setParameter(1, course);

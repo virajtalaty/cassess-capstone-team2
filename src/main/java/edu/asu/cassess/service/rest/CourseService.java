@@ -3,7 +3,7 @@ package edu.asu.cassess.service.rest;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import edu.asu.cassess.dao.rest.CourseServiceDaoImpl;
+import edu.asu.cassess.dao.rest.CourseServiceDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 
 import javax.ejb.EJB;
@@ -13,7 +13,7 @@ import java.util.List;
 public class CourseService implements ICourseService {
 
 	@EJB
-    private CourseServiceDaoImpl courseServiceDao;
+    private CourseServiceDao courseServiceDao;
 
     public <T> Object create(Course course){
 

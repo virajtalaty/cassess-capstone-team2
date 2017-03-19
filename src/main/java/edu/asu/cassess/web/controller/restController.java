@@ -7,10 +7,12 @@ import edu.asu.cassess.persist.entity.taiga.WeeklyTotals;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/rest")
+@Api(description = "Nicest Provisioning API")
 public class restController {
 
 
@@ -252,15 +255,6 @@ public class restController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    @RequestMapping(value = "/taigaTasks", method = RequestMethod.POST)
-    ResponseEntity<List<WeeklyTotals>> getTasks(@RequestHeader(value = "name", required = true) String name, HttpServletRequest request, HttpServletResponse response) {
-        System.out.print("Name is: " + name);
-        List<WeeklyTotals> tasksList = (List<WeeklyTotals>) taskTotalService.getWeeklyTasks(name);
-        return new ResponseEntity<List<WeeklyTotals>>(tasksList, HttpStatus.OK);
     }
 
 }

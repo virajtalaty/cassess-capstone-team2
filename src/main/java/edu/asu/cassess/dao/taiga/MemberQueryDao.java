@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
+@Transactional
 public class MemberQueryDao implements IMemberQueryDao{
 
     protected EntityManager entityManager;
@@ -28,7 +29,6 @@ public class MemberQueryDao implements IMemberQueryDao{
     }
 
     @Override
-    @Transactional
     public List<MemberData> getMembers(String roleName, String project_slug) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.memberdata WHERE roleName != ?1 AND project_slug = ?2", MemberData.class);
         query.setParameter(1, roleName);

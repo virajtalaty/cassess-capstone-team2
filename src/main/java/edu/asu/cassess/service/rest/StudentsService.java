@@ -1,7 +1,7 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.persist.entity.rest.Student;
-import edu.asu.cassess.dao.rest.StudentsServiceDaoImpl;
+import edu.asu.cassess.dao.rest.StudentsServiceDao;
 import edu.asu.cassess.persist.entity.taiga.Slugs;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 public class StudentsService implements IStudentsService {
 
     @EJB
-    private StudentsServiceDaoImpl studentsDao;
+    private StudentsServiceDao studentsDao;
 
     public <T> Object create(Student student){
 

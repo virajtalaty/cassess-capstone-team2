@@ -70,6 +70,13 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
+    }).when('/taiga_admin', {
+        templateUrl : 'partials/taigaAdmin.html',
+        controller : 'TaigaAdmin',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.admin]
+        }
     }).otherwise({
         redirectTo: '/error/404',
         access: {
