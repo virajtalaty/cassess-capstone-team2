@@ -78,7 +78,7 @@ public class CassessApplication extends SpringBootServletInitializer {
             provisioned by nicest only, for external API retrieval and internal SQL reading
             Data is retrieved only from provisioned tables, so they must be updated first
             */
-/*
+
             List<CourseList> courseList = coursesDao.listGetCourses();
             ProjectService projectService = (ProjectService) ctx.getBean("projectService");
             for(CourseList course:courseList) {
@@ -94,7 +94,7 @@ public class CassessApplication extends SpringBootServletInitializer {
             for(CourseList course:courseList) {
                 taskDataService.updateTaskTotals(course.getCourse());
             }
-*/
+
             GatherGitHubData gatherGitHubData = (GatherGitHubData) ctx.getBean("gatherGitHubData");
             gatherGitHubData.fetchData("tjjohn1","cassess-capstone-team2");
         };
