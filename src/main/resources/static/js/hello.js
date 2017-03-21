@@ -24,6 +24,10 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
         templateUrl : 'partials/main.html',
         controller : 'taiga',
         controllerAs : 'controller'
+    }).when('/charts', {
+        templateUrl : 'partials/charts.html',
+        controller : 'charts',
+        controllerAs : 'controller'
     }).otherwise('/');
 
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -204,6 +208,9 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
 
     };
 
-
-
-    } ]);
+    } ]).controller('charts', function($scope, $http) {
+        var self = this;
+        $http.get("/charts/").then(function (response) {
+            self.chartData = response.data;
+        })
+    });
