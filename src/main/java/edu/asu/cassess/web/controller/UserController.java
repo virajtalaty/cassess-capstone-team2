@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserRepo userRepo;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public @ResponseBody List<User> usersList() {
@@ -34,6 +38,8 @@ public class UserController {
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public @ResponseBody User saveUser(@RequestBody User user) {
         logger.debug("save user");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //user.setAuthorities(authorities);
         userRepo.save(user);
         return user;
     }

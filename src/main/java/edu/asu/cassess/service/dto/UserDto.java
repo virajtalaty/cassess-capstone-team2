@@ -33,8 +33,8 @@ public class UserDto {
     @Mapping("password")
     private String password;
 
-    @Mapping("burthDate")
-    private Date burthDate;
+    @Mapping("birthDate")
+    private Date birthDate;
 
     @Mapping("authorities")
     private Set<AuthorityDto> authorities = new HashSet<AuthorityDto>();
@@ -85,12 +85,12 @@ public class UserDto {
         this.password = password;
     }
 
-    public Date getBurthDate() {
-        return burthDate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBurthDate(Date burthDate) {
-        this.burthDate = burthDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getEmail() {
