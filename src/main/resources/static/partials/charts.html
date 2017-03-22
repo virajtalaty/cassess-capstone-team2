@@ -7,6 +7,16 @@
     <br><br><br>
     <p> This printed at the same line: {{charts.chartData.placeholder}}</p>
 </div>
+
+<div ng-controller="MyController">
+    <div fusioncharts
+         width="600"
+         height="400"
+         type="column2d"
+         dataSource="{{myDataSource}}" >
+    </div>
+</div>
+
 <div  ng-controller="charts as charts" ng-show="!authenticated">
     <h1>You are not authorized to view these pages!</h1>
 </div>
