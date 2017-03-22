@@ -61,6 +61,21 @@ public class User {
 	@JoinTable(name = "users_authority", joinColumns = { @JoinColumn(name = "id_user", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "id_authority", table = "authority", referencedColumnName = "id") })
 	private Set<Authority> authorities = new HashSet<Authority>();
 
+	public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled) {
+		this.firstName = firstName;
+		this.familyName = familyName;
+		this.email = email;
+		this.phone = phone;
+		this.language = language;
+		this.pictureId = pictureId;
+		this.login = login;
+		this.password = password;
+		this.birthDate = birthDate;
+		this.enabled = enabled;
+	}
+
+    public User(){}
+
 	public String getFirstName() {
 		return firstName;
 	}

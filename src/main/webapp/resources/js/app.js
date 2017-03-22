@@ -26,8 +26,8 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         templateUrl: 'partials/users.html',
         controller: 'UsersController',
         access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.admin]
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
         }
     }).when('/apiDoc', {
         templateUrl: 'partials/apiDoc.html',
@@ -46,6 +46,13 @@ myapp.config(function ($routeProvider, USER_ROLES) {
     }).when('/login', {
         templateUrl: 'partials/login.html',
         controller: 'LoginController',
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/register', {
+        templateUrl: 'partials/register.html',
+        controller: 'RegistrationController',
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]

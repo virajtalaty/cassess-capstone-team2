@@ -1,9 +1,6 @@
 package edu.asu.cassess.persist.entity.rest;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="students")
@@ -16,8 +13,9 @@ public class Student {
     @Column(name="full_name")
     private String full_name;
 
-    @Column(name="course")
-    private String course;
+    @ManyToOne
+    @JoinColumn(name = "course")
+    private Course course;
 
     @Column(name="project_name")
     private String project_name;
@@ -51,13 +49,9 @@ public class Student {
         this.full_name = full_name;
     }
 
-    public String getCourse() {
-        return course;
-    }
+    public Course getCourse() { return course; }
 
-    public void setCourse(String course) {
-        this.course = course;
-    }
+    public void setCourse(Course course) { this.course = course;}
 
     public String getProject_name() {
         return project_name;

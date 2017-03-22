@@ -65,8 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**", "/index.html", "/login.html",
-                "/partials/**", "/template/**", "/", "/error/**");
+        web.ignoring().antMatchers("/resources/**", "/index.html", "/login.html", "/register.html",
+                "/partials/**", "/template/**", "/", "/error/**", "/user");
     }
 
     @Override
@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
                 .antMatchers("/failure").permitAll()
+                .antMatchers("/users").permitAll()
                 .antMatchers("/v2/api-docs").hasAnyAuthority("admin")
                 .antMatchers("/users/**").hasAnyAuthority("admin")
                 .anyRequest().authenticated()
@@ -110,7 +111,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	authProvider.setUserDetailsService(userDetailsService);
     	authProvider.setPasswordEncoder(encoder());
     	return authProvider;
-    	
     }
     
     @Bean

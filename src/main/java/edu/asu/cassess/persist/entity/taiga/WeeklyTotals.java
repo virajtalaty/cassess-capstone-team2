@@ -8,52 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
-@Subselect("SELECT\n" +
-        "    tasktotals.id,\n" +
-        "    tasktotals.fullName,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            MIN(tasktotalsmin.retrievalDate)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) AS WeekEnding,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            GREATEST(MIN(tasktotalsmin.tasksClosed) - tasktotals.tasksClosed, 0)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) AS ClosedTasks,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            GREATEST(MIN(tasktotalsmin.tasksOpen) - tasktotals.tasksOpen, 0)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) AS OpenTasks,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            GREATEST(MIN(tasktotalsmin.tasksNew) - tasktotals.tasksNew, 0)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) AS NewTasks,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            GREATEST(MIN(tasktotalsmin.tasksInProgress) - tasktotals.tasksInProgress, 0)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) AS InProgressTasks,\n" +
-        "    (\n" +
-        "        SELECT\n" +
-        "            GREATEST(MIN(tasktotalsmin.tasksReadyForTest) - tasktotals.tasksReadyForTest, 0)\n" +
-        "        FROM tasktotals AS tasktotalsmin\n" +
-        "        WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate\n" +
-        "            AND tasktotals.id = tasktotalsmin.id\n" +
-        "    ) ReadyForTestTasks\n" +
-        "FROM tasktotals WHERE fullName = = ?1")
+@Subselect("SELECT fullName, WeekEnding, COALESCE(ClosedTasks, 0) AS ClosedTasks, COALESCE(OpenTasks, 0) AS OpenTasks FROM (SELECT tasktotals1.fullName, tasktotals1.retrievalDate AS WeekEnding, tasktotals1.tasksClosed - tasktotals2.tasksClosed as ClosedTasks, IF(tasktotals1.tasksClosed - tasktotals2.tasksClosed >= 0, (tasktotals1.tasksOpen - tasktotals2.tasksOpen) + (tasktotals1.tasksClosed - tasktotals2.tasksClosed), tasktotals1.tasksOpen - tasktotals2.tasksOpen) as OpenTasks FROM tasktotals tasktotals1 LEFT JOIN tasktotals tasktotals2 ON tasktotals1.id=tasktotals2.id AND tasktotals2.retrievalDate = (SELECT MAX(tasktotals3.retrievalDate) FROM tasktotals tasktotals3 WHERE tasktotals3.retrievalDate < tasktotals1.retrievalDate AND tasktotals3.id = tasktotals1.id) WHERE tasktotals1.fullName = ?1 ) AS WeeklyTotals")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeeklyTotals {
 
@@ -67,31 +22,17 @@ public class WeeklyTotals {
     @Column(name="ClosedTasks")
     private int ClosedTasks;
 
-    @Column(name="NewTasks")
-    private int NewTasks;
-
-    @Column(name="InProgressTasks")
-    private int InProgressTasks;
-
-        @Column(name="ReadyForTestTasks")
-    private int ReadyForTestTasks;
-
     @Column(name="OpenTasks")
     private int OpenTasks;
-
-
 
     public WeeklyTotals(){
 
     }
 
-    public WeeklyTotals(String WeekEnding, String fullName, int ClosedTasks, int NewTasks, int InProgressTasks, int ReadyForTestTasks, int OpenTasks) {
+    public WeeklyTotals(String WeekEnding, String fullName, int ClosedTasks, int OpenTasks) {
         this.WeekEnding = WeekEnding;
         this.fullName = fullName;
         this.ClosedTasks = ClosedTasks;
-        this.NewTasks = NewTasks;
-        this.InProgressTasks = InProgressTasks;
-        this.ReadyForTestTasks = ReadyForTestTasks;
         this.OpenTasks = OpenTasks;
     }
 
@@ -119,30 +60,6 @@ public class WeeklyTotals {
 
     public void setClosedTasks(int ClosedTasks) {
         ClosedTasks = ClosedTasks;
-    }
-
-    public int getNewTasks() {
-        return NewTasks;
-    }
-
-    public void setNewTasks(int NewTasks) {
-        NewTasks = NewTasks;
-    }
-
-    public int getInProgressTasks() {
-        return InProgressTasks;
-    }
-
-    public void setInProgressTasks(int InProgressTasks) {
-        InProgressTasks = InProgressTasks;
-    }
-
-    public int getReadyForTestTasks() {
-        return ReadyForTestTasks;
-    }
-
-    public void setReadyForTestTasks(int ReadyForTestTasks) {
-        ReadyForTestTasks = ReadyForTestTasks;
     }
 
     public int getOpenTasks() {

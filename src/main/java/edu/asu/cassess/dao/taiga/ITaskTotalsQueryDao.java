@@ -1,5 +1,6 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.taiga.DisplayAllTasks;
 import org.springframework.dao.DataAccessException;
 
 import edu.asu.cassess.persist.entity.taiga.TaskTotals;
@@ -16,7 +17,7 @@ public interface ITaskTotalsQueryDao {
 
     List<TaskTotals> getTaskTotals() throws DataAccessException;
 
-    List<TaskTotals> getTaskTotals(String name) throws DataAccessException;
+    List<DisplayAllTasks> getTaskTotals(String name) throws DataAccessException;
 
     List<WeeklyTotals> getWeeklyTasks(String fullName) throws DataAccessException;
 }

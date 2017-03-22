@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static javafx.scene.input.KeyCode.T;
+
 @Service
 @Transactional
 public class ProjectService {
@@ -65,12 +67,15 @@ public class ProjectService {
      */
     public void updateProjects(String course){
         System.out.println("Updating Projects");
-        Course tempCourse = (Course) courseService.read(course);
-        String token = tempCourse.getTaiga_token();
-        List<Slugs> slugList = studentsService.listGetSlugs(course);
-        for(Slugs slug:slugList){
-            System.out.println("Slug: " + slug);
-            getProjectInfo(token, slug.getSlug());
+        if (courseService.read(course).getClass() == Course.class){
+            Course tempCourse = (Course) courseService.read(course);
+            String token = tempCourse.getTaiga_token();
+            List<Slugs> slugList = studentsService.listGetSlugs(course);
+            for(Slugs slug:slugList){
+                System.out.println("Slug: " + slug);
+                getProjectInfo(token, slug.getSlug());
+            }
         }
+
     }
 }

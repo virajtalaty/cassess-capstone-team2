@@ -1,5 +1,6 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.taiga.DisplayAllTasks;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +38,16 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
-    public List<TaskTotals> getTaskTotals(String name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals WHERE fullName = ?1", TaskTotals.class);
+    public List<DisplayAllTasks> getTaskTotals(String name) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate, tasksClosed, tasksOpen, tasksInProgress, tasksReadyForTest, tasksNew FROM cassess.tasktotals WHERE fullName = ?1", DisplayAllTasks.class);
         query.setParameter(1, name);
-        List<TaskTotals> resultList = query.getResultList();
+        List<DisplayAllTasks> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
     public List<WeeklyTotals> getWeeklyTasks(String fullName) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT tasktotals.id, tasktotals.fullName, (SELECT MIN(tasktotalsmin.retrievalDate) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) AS WeekEnding, (SELECT GREATEST(MIN(tasktotalsmin.tasksClosed) - tasktotals.tasksClosed, 0) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) AS ClosedTasks, ( SELECT GREATEST(MIN(tasktotalsmin.tasksOpen) - tasktotals.tasksOpen, 0) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) AS OpenTasks, ( SELECT GREATEST(MIN(tasktotalsmin.tasksNew) - tasktotals.tasksNew, 0) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) AS NewTasks, ( SELECT GREATEST(MIN(tasktotalsmin.tasksInProgress) - tasktotals.tasksInProgress, 0) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) AS InProgressTasks, ( SELECT GREATEST(MIN(tasktotalsmin.tasksReadyForTest) - tasktotals.tasksReadyForTest, 0) FROM tasktotals AS tasktotalsmin WHERE tasktotalsmin.retrievalDate > tasktotals.retrievalDate AND tasktotals.id = tasktotalsmin.id ) ReadyForTestTasks FROM tasktotals WHERE fullName = ?1", WeeklyTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT fullName, WeekEnding, COALESCE(ClosedTasks, 0) AS ClosedTasks, COALESCE(OpenTasks, 0) AS OpenTasks FROM (SELECT tasktotals1.fullName, tasktotals1.retrievalDate AS WeekEnding, tasktotals1.tasksClosed - tasktotals2.tasksClosed as ClosedTasks, IF(tasktotals1.tasksClosed - tasktotals2.tasksClosed >= 0, (tasktotals1.tasksOpen - tasktotals2.tasksOpen) + (tasktotals1.tasksClosed - tasktotals2.tasksClosed), tasktotals1.tasksOpen - tasktotals2.tasksOpen) as OpenTasks FROM tasktotals tasktotals1 LEFT JOIN tasktotals tasktotals2 ON tasktotals1.id=tasktotals2.id AND tasktotals2.retrievalDate = (SELECT MAX(tasktotals3.retrievalDate) FROM tasktotals tasktotals3 WHERE tasktotals3.retrievalDate < tasktotals1.retrievalDate AND tasktotals3.id = tasktotals1.id) WHERE tasktotals1.fullName = ?1 ) AS WeeklyTotals", WeeklyTotals.class);
         query.setParameter(1, fullName);
         List<WeeklyTotals> resultList = query.getResultList();
         System.out.print(resultList);

@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,8 @@ public class UserDetailsService implements org.springframework.security.core.use
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
 
+        BCryptPasswordEncoder passEncode = new BCryptPasswordEncoder(11);
+
         User user = userRepo.findByLogin(login);
         if (user == null) {
             throw new UsernameNotFoundException("User " + login + " was not found in the database");
@@ -51,4 +55,9 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new org.springframework.security.core.userdetails.User(login, user.getPassword(),
                 grantedAuthorities);
     }
+/*
+        return new org.springframework.security.core.userdetails.User(login, passEncode.encode(user.getPassword()),
+                grantedAuthorities);
+    }
+    */
 }

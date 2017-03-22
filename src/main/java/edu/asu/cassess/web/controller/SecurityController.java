@@ -1,18 +1,24 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.Token;
 import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.AuthorityRepo;
 import edu.asu.cassess.persist.repo.TokenRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.security.SecurityUtils;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -22,6 +28,9 @@ public class SecurityController {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private AuthorityRepo authRepo;
 
 
     @Autowired
@@ -34,7 +43,6 @@ public class SecurityController {
         user.setPassword(null);
         return user;
     }
-
 
     @PreAuthorize("hasAuthority('admin')")
     @RequestMapping(value = "/security/tokens", method = RequestMethod.GET)

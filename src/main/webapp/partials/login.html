@@ -13,15 +13,6 @@
 
                     <form class="well-body">
 
-                        <div class="alert alert-dismissible alert-info">
-                            <button type="button" class="close" data-dismiss="alert">×</button>
-                            <strong>Test users!</strong> <br/>
-                            <ul>
-                                <li><strong>steve / steve</strong> with admin role</li>
-                                <li><strong>bill / bill</strong> with user role</li>
-                            </ul>
-                        </div>
-
 
                         <div class="form-group label-floating"
                              ng-class="{'has-error is-focused' : authenticationError}">
@@ -52,6 +43,9 @@
                             <button class="btn btn-lg btn-primary btn-block" ng-click="login()">
                                 login
                             </button>
+                            <ul>
+                                <li><strong><a href="/#/register">Register</a></strong></li>
+                            </ul>
                         </div>
 
                     </form>

@@ -78,7 +78,30 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
     })
-    .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {
+    .controller('RegistrationController', [ '$scope', '$http', function($scope, $http) {
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+
+        $scope.sendRegistration = function() {
+            $http({
+            url : './user',
+            method : "POST",
+            headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email, 'phone' : $scope.phone, 'birth_date' : $scope.birthDate, 'login' : $scope.username, 'password' : $scope.password}
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.message = "User Successfully Registered";
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = "User Not Registered, Duplicate User or Incorrect Information";
+            });
+
+        };
+
+
+    } ] )
+.controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {
 
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
@@ -129,16 +152,37 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
     }
 
-    $scope.sendPost = function() {
+    $scope.taskProgress = function() {
         console.log($scope.name);
         $http({
-            url : './taigaTasks',
+            url : './taigaProgress',
             method : "POST",
             headers: {'name' : $scope.selectedStudent.value.full_name}
         }).then(function(response) {
             console.log("Worked!");
             //console.log(response.data);
-            $scope.tasks = response.data;
+            $scope.tasksRecords = null;
+            $scope.tasksProgress = response.data;
+        }, function(response) {
+            //fail case
+            console.log("didn't work");
+            //console.log(response);
+            $scope.message = response;
+        });
+
+    };
+
+    $scope.taskRecords = function() {
+        console.log($scope.name);
+        $http({
+            url : './taigaRecords',
+            method : "POST",
+            headers: {'name' : $scope.selectedStudent.value.full_name}
+        }).then(function(response) {
+            console.log("Worked!");
+            //console.log(response.data);
+            $scope.tasksProgress = null;
+            $scope.tasksRecords = response.data;
         }, function(response) {
             //fail case
             console.log("didn't work");
