@@ -5,13 +5,14 @@
     <br><br><br>
     <p>This displays the chart data response: </p>
     <br><br><br>
-    <p> This printed at the same line: {{charts.chartData.placeholder}}</p>
-</div>
-
-<div ng-controller="MyController">
+    <p> This is the data for the chart: {{charts.chartData}}</p>
+    <br><br><br>
+    <p> Here's the chart: </p>
+    <br><br>
+<div ng-controller="charts">
     <div fusioncharts
-         width="600"
-         height="400"
+         width="800"
+         height="500"
          type="column2d"
          dataSource="{{myDataSource}}" >
     </div>
