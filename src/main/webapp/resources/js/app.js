@@ -57,6 +57,19 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
+    }).when('/taiga_admin', {
+            templateUrl : 'partials/taigaAdmin.html',
+            controller : 'TaigaAdmin',
+            access: {
+                loginRequired: true,
+                authorizedRoles: [USER_ROLES.admin]
+            }
+    }).when('/about', {
+        templateUrl : 'partials/about.html',
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.admin]
+        }
     }).when('/loading', {
         templateUrl: 'partials/loading.html',
         access: {
@@ -76,13 +89,6 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
-        }
-    }).when('/taiga_admin', {
-        templateUrl : 'partials/taigaAdmin.html',
-        controller : 'TaigaAdmin',
-        access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.admin]
         }
     }).otherwise({
         redirectTo: '/error/404',

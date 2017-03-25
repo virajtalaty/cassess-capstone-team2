@@ -4,17 +4,14 @@
         <div class="container">
 
             <div class="row">
-
+                <div ng-controller="RegistrationController">
+                <div class="well col-sm-offset-3 col-sm-6">
 
                     <div class="well-heading well-primary">
-                        <div ng-controller="RegistrationController">
                         <h1>Register a new account</h1>
                     </div>
 
                     <form class="well-body">
-                        <ul>
-                            <li><strong><a href="/#/login" align="right">Back to Login</a></strong></li>
-                        </ul>
 
                         <div class="form-group label-floating">
                             <label class="control-label" for="firstName">First Name</label>
@@ -59,6 +56,7 @@
                         </div>
                         <br/>
                         <p>Message from servlet: {{message}}</p>
+                        <p>Message from servlet: {{responseData}}</p>
                         <div class="col-sm-offset-3 col-sm-6">
                             <button class="btn btn-lg btn-primary btn-block" ng-click="sendRegistration()">
                                 Register
@@ -66,7 +64,8 @@
                         </div>
 
                     </form>
-                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </div>
