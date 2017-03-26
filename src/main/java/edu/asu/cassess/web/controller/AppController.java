@@ -2,6 +2,7 @@ package edu.asu.cassess.web.controller;
 
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.taiga.*;
+import edu.asu.cassess.service.rest.TeamsService;
 import edu.asu.cassess.service.taiga.MembersService;
 import edu.asu.cassess.service.taiga.ProjectService;
 import edu.asu.cassess.service.taiga.TaskDataService;
@@ -12,7 +13,6 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +37,9 @@ public class AppController {
 
     @Autowired
     private MembersService members;
+
+    @Autowired
+    private TeamsService teamsService;
 
     @Autowired
     private StudentsServiceDao studentsService;
@@ -75,13 +78,13 @@ public class AppController {
     @ResponseBody
     @RequestMapping(value = "/taigaTeams", method = RequestMethod.GET)
     public
-    ResponseEntity<List<Teams>> getTeams(@RequestHeader(name = "course", required = true) String course, HttpServletRequest request, HttpServletResponse response) {
+    ResponseEntity<List<TeamNames>> getTeams(@RequestHeader(name = "course", required = true) String course, HttpServletRequest request, HttpServletResponse response) {
         //System.out.print("Course: " + course);
-        List<Teams> teamList = (List<Teams>) studentsService.listGetProjectNames(course);
-        //for(Teams team:teamList){
+        List<TeamNames> teamList = (List<TeamNames>) teamsService.listGetTeamNames(course);
+        //for(TeamNames team:teamList){
             //System.out.print("Team: " + team.getTeam());
         //}
-        return new ResponseEntity<List<Teams>>(teamList, HttpStatus.OK);
+        return new ResponseEntity<List<TeamNames>>(teamList, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -89,7 +92,7 @@ public class AppController {
     public
     ResponseEntity<List<Student>> getStudents(@RequestHeader(name = "team", required = true) String team, HttpServletRequest request, HttpServletResponse response) {
         //System.out.print("Team: " + team);
-        List<Student> studentList = (List<Student>) studentsService.listReadByProject(team);
+        List<Student> studentList = (List<Student>) studentsService.listReadByTeam(team);
         //for(Student student:studentList){
             //System.out.print("Student: " + student.getFull_name());
         //}

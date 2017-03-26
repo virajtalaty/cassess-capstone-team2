@@ -13,21 +13,8 @@ public class Student {
     @Column(name="full_name")
     private String full_name;
 
-    @ManyToOne
-    @JoinColumn(name = "course")
-    private Course course;
-
-    @Column(name="project_name")
-    private String project_name;
-
-    @Column(name="slack_team_id")
-    private String slack_team_id;
-
-    @Column(name="github_repo_id")
-    private String github_repo_id;
-
-    @Column(name="taiga_project_slug")
-    private String taiga_project_slug;
+    @Column(name="team_name")
+    private String team_name;
 
     public Student(){
 
@@ -49,40 +36,12 @@ public class Student {
         this.full_name = full_name;
     }
 
-    public Course getCourse() { return course; }
-
-    public void setCourse(Course course) { this.course = course;}
-
-    public String getProject_name() {
-        return project_name;
+    public String getTeam_name() {
+        return team_name;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
-    }
-
-    public String getSlack_team_id() {
-        return slack_team_id;
-    }
-
-    public void setSlack_team_id(String slack_team_id) {
-        this.slack_team_id = slack_team_id;
-    }
-
-    public String getGithub_repo_id() {
-        return github_repo_id;
-    }
-
-    public void setGithub_repo_id(String github_repo_id) {
-        this.github_repo_id = github_repo_id;
-    }
-
-    public String getTaiga_project_slug() {
-        return taiga_project_slug;
-    }
-
-    public void setTaiga_project_slug(String taiga_project_slug) {
-        this.taiga_project_slug = taiga_project_slug;
+    public void setTeam_name(String team_name) {
+        this.team_name = team_name;
     }
 
 }

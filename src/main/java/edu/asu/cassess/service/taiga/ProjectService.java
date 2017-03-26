@@ -8,6 +8,7 @@ import edu.asu.cassess.persist.repo.taiga.ProjectRepo;
 import edu.asu.cassess.service.GenericServiceImpl;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
+import edu.asu.cassess.service.rest.ITeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,9 @@ public class ProjectService {
 
     @Autowired
     private IStudentsService studentsService;
+
+    @Autowired
+    private ITeamsService teamsService;
 
 
 
@@ -70,7 +74,7 @@ public class ProjectService {
         if (courseService.read(course).getClass() == Course.class){
             Course tempCourse = (Course) courseService.read(course);
             String token = tempCourse.getTaiga_token();
-            List<Slugs> slugList = studentsService.listGetSlugs(course);
+            List<Slugs> slugList = teamsService.listGetSlugs(course);
             for(Slugs slug:slugList){
                 System.out.println("Slug: " + slug);
                 getProjectInfo(token, slug.getSlug());

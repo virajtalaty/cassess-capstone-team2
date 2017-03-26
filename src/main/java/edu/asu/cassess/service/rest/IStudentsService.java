@@ -19,17 +19,13 @@ public interface IStudentsService {
 
     <T> List<Student> listReadAll();
 
-    <T> List<Student> listReadByCourse(String course);
-
-    <T> List<Student> listReadByProject(String project_name);
+    <T> List<Student> listReadByTeam(String team_name);
 
     JSONObject listUpdate(List<Student> students);
 
     JSONObject listCreate(List<Student> students);
 
-    <T> Object deleteByCourse(String course);
+    <T> Object deleteByTeam(String team_name);
 
-    <T> Object deleteByProject(String project_name);
 
-    List<Slugs> listGetSlugs(String course);
 }

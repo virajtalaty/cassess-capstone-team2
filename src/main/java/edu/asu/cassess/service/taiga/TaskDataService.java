@@ -1,6 +1,5 @@
 package edu.asu.cassess.service.taiga;
 
-import edu.asu.cassess.dao.CAssessDAO;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.dao.taiga.*;

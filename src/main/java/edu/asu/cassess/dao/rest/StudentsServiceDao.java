@@ -1,10 +1,9 @@
 package edu.asu.cassess.dao.rest;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.taiga.Slugs;
-import edu.asu.cassess.persist.entity.taiga.Teams;
+import edu.asu.cassess.persist.entity.taiga.TeamNames;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -23,7 +22,7 @@ import java.util.List;
 
 @Component
 @Transactional
-public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
+public class StudentsServiceDao {
 
     @Autowired
     private StudentRepo studentDao;
@@ -89,42 +88,10 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
     }
 
     @Transactional
-    public List<Student> listReadByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1", Student.class);
-        query.setParameter(1, course);
+    public List<Student> listReadByTeam(String team_name) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
+        query.setParameter(1, team_name);
         List<Student> resultList = query.getResultList();
-        return resultList;
-    }
-
-    @Transactional
-    public List<Student> listReadByProject(String project_name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE project_name = ?1", Student.class);
-        query.setParameter(1, project_name);
-        List<Student> resultList = query.getResultList();
-        return resultList;
-    }
-
-    @Transactional
-    public List<Student> listReadBySlug(String slug) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE taiga_project_slug = ?1", Student.class);
-        query.setParameter(1, slug);
-        List<Student> resultList = query.getResultList();
-        return resultList;
-    }
-
-    @Transactional
-    public List<Slugs> listGetSlugs(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT taiga_project_slug FROM cassess.students WHERE course = ?1", Slugs.class);
-        query.setParameter(1, course);
-        List<Slugs> resultList = query.getResultList();
-        return resultList;
-    }
-
-    @Transactional
-    public List<Teams> listGetProjectNames(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT project_name AS 'team' FROM cassess.students WHERE course = ?1", Teams.class);
-        query.setParameter(1, course);
-        List<Teams> resultList = query.getResultList();
         return resultList;
     }
 
@@ -182,32 +149,17 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
     }
 
     @Transactional
-    public <T> Object deleteByCourse(String course) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 LIMIT 1", Student.class);
-        preQuery.setParameter(1, course);
+    public <T> Object deleteByTeam(String team_name) {
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
+        preQuery.setParameter(1, team_name);
         Student student = (Student) preQuery.getSingleResult();
         if(student != null){
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1");
-            query.setParameter(1, course);
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE team_name = ?1");
+            query.setParameter(1, team_name);
             query.executeUpdate();
-            return new RestResponse("All students in course " + course + " have been removed from the database");
+            return new RestResponse("All students in project " + team_name + " have been removed from the database");
         }else{
-            return new RestResponse("No students in course " + course + " exist in the database");
-        }
-    }
-
-    @Transactional
-    public <T> Object deleteByProject(String project_name) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1 LIMIT 1", Student.class);
-        preQuery.setParameter(1, project_name);
-        Student student = (Student) preQuery.getSingleResult();
-        if(student != null){
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE project_name = ?1");
-            query.setParameter(1, project_name);
-            query.executeUpdate();
-            return new RestResponse("All students in project " + project_name + " have been removed from the database");
-        }else{
-            return new RestResponse("No students in project " + project_name + " exist in the database");
+            return new RestResponse("No students in project " + team_name + " exist in the database");
         }
     }
 

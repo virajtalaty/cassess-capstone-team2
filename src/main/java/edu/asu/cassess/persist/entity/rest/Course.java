@@ -1,11 +1,11 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="courses")
@@ -28,16 +28,26 @@ public class Course {
     @Column(name = "taiga_token")
     private String taiga_token;
 
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.EAGER)
+    private List<Team> teams;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.EAGER)
+    private List<Admin> admins;
+
     public Course() {
 
     }
 
-    public Course(String course, String owner, String slack_token, String github_token, String taiga_token) {
+    public Course(String course, String owner, String slack_token, String github_token, String taiga_token, List<Student> students, List<Team> teams) {
         this.course = course;
         this.owner = owner;
         this.slack_token = slack_token;
         this.github_token = github_token;
         this.taiga_token = taiga_token;
+        this.teams = teams;
+        this.admins = admins;
     }
 
     public String getCourse() {
@@ -78,6 +88,28 @@ public class Course {
 
     public void setTaiga_token(String taiga_token) {
         this.taiga_token = taiga_token;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        for(Team team:teams){
+            team.setCourse(course);
+        }
+        this.teams = teams;
+    }
+
+    public List<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<Admin> admins) {
+        for(Admin admin:admins){
+            admin.setCourse(course);
+        }
+        this.admins = admins;
     }
 
 

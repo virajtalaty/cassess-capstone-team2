@@ -42,16 +42,9 @@ public class StudentsService implements IStudentsService {
 
     }
 
-    public <T> List<Student> listReadByCourse(String course){
-
-        return studentsDao.listReadByCourse(course);
-
-    }
-
-    public <T> List<Student> listReadByProject(String project_name){
-
-        return studentsDao.listReadByProject(project_name);
-
+    @Override
+    public <T> List<Student> listReadByTeam(String team_name) {
+        return null;
     }
 
     public JSONObject listUpdate(List<Student> students){
@@ -66,21 +59,10 @@ public class StudentsService implements IStudentsService {
 
     }
 
-    public <T> Object deleteByCourse(String course){
+    public <T> Object deleteByTeam(String team_name){
 
-        return studentsDao.deleteByCourse(course);
+        return studentsDao.deleteByTeam(team_name);
 
-    }
-
-    public <T> Object deleteByProject(String project_name){
-
-        return studentsDao.deleteByProject(project_name);
-
-    }
-
-    public List<Slugs> listGetSlugs(String course) {
-
-        return studentsDao.listGetSlugs(course);
     }
 
 }

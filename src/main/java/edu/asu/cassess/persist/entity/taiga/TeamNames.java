@@ -11,16 +11,16 @@ import javax.persistence.Id;
 @Entity
 @Subselect("SELECT project_name AS 'team' FROM cassess.students WHERE course = ?1")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Teams {
+public class TeamNames {
 
     @Id
     @Column(name="team")
     public String team;
 
-    public Teams(){
+    public TeamNames(){
     }
 
-    public Teams(String team){
+    public TeamNames(String team){
         this.team = team;
     }
 

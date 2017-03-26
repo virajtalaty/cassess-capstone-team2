@@ -3,16 +3,14 @@ package edu.asu.cassess.web.controller;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
-import edu.asu.cassess.persist.entity.taiga.WeeklyTotals;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
 
+import edu.asu.cassess.service.rest.ITeamsService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @RestController
 @RequestMapping(value = "/rest")
 @Api(description = "Nicest Provisioning API")
@@ -29,6 +28,9 @@ public class restController {
 
     @Autowired
     private ICourseService courseService;
+
+    @Autowired
+    private ITeamsService teamService;
 
     @Autowired
     private IStudentsService studentsService;
@@ -218,15 +220,11 @@ public class restController {
     @RequestMapping(value = "/student_list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Student> getStudents(@RequestParam(value = "course", required = false) String course,
-                                  @RequestParam(value = "project", required = false) String project, HttpServletRequest request, HttpServletResponse response) {
+    <T> List<Student> getStudents(@RequestParam(value = "team_name", required = false) String team_name, HttpServletRequest request, HttpServletResponse response) {
 
-        if(course != null){
+        if(team_name != null){
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadByCourse(course);
-        }else if(project != null){
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadByProject(project);
+            return studentsService.listReadByTeam(team_name);
         }else{
             response.setStatus(HttpServletResponse.SC_OK);
             return studentsService.listReadAll();
@@ -237,16 +235,12 @@ public class restController {
     @RequestMapping(value = "/student", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object delete(@RequestParam(value = "project", required = false) String project, @RequestParam(value = "email", required = false) String email,
-                                       @RequestParam(value = "course", required = false) String course, HttpServletRequest request, HttpServletResponse response) {
-        if(project != null){
-            System.out.println("Project: " + project);
+    <T> Object delete(@RequestParam(value = "team_name", required = false) String team_name, @RequestParam(value = "email", required = false) String email,
+                                       HttpServletRequest request, HttpServletResponse response) {
+        if(team_name != null){
+            System.out.println("Team: " + team_name);
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.deleteByProject(project);
-        }else if(course != null){
-            System.out.println("Course: " + course);
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.deleteByCourse(course);
+            return studentsService.deleteByTeam(team_name);
         }else if(email != null){
             System.out.println("Email: " + email);
             response.setStatus(HttpServletResponse.SC_OK);
@@ -254,6 +248,36 @@ public class restController {
         }else{
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/coursePackage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object newCoursePackage(@RequestBody Course coursePackage, HttpServletRequest request, HttpServletResponse response) {
+
+        if (coursePackage == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return courseService.create(coursePackage);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/coursePackage", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object updateCoursePackage(@RequestBody Course coursePackage, HttpServletRequest request, HttpServletResponse response) {
+
+        if (coursePackage == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return courseService.update(coursePackage);
         }
     }
 

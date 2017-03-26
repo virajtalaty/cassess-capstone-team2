@@ -1,7 +1,6 @@
 package edu.asu.cassess.dao.rest;
 
-import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.taiga.CourseList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +24,12 @@ public class CourseServiceDao {
     @Autowired
     private CourseRepo courseDao;
 
+    @Autowired
+    private TeamsServiceDao teamsService;
+
+    @Autowired
+    private AdminsServiceDao adminsService;
+
     protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
@@ -39,10 +44,14 @@ public class CourseServiceDao {
     @Transactional
     public <T> Object create(Course courseInput) {
         Course course = (Course) courseDao.findOne(courseInput.getCourse());
+        List<Team> teams = courseInput.getTeams();
+        List<Admin> admins = courseInput.getAdmins();
         if (course != null) {
             return new RestResponse(course.getCourse() + " already exists in database");
         } else {
             courseDao.save(courseInput);
+            teamsService.listCreate(teams);
+            adminsService.listCreate(admins);
             return courseInput;
         }
     }
@@ -50,8 +59,12 @@ public class CourseServiceDao {
     @Transactional
     public <T> Object update(Course courseInput) {
         Course course = (Course) courseDao.findOne(courseInput.getCourse());
+        List<Team> teams = courseInput.getTeams();
+        List<Admin> admins = courseInput.getAdmins();
         if (course != null) {
-            courseDao.save(course);
+            courseDao.save(courseInput);
+            teamsService.listUpdate(teams);
+            adminsService.listUpdate(admins);
             return courseInput;
         } else {
             return new RestResponse(courseInput + " does not exist in database");
@@ -88,7 +101,7 @@ public class CourseServiceDao {
 
     @Transactional
     public List<CourseList> listGetCourses() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course AS 'course' FROM cassess.students", CourseList.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.courses", CourseList.class);
         List<CourseList> resultList = query.getResultList();
         return resultList;
     }
