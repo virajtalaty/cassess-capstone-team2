@@ -81,13 +81,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller('RegistrationController', [ '$scope', '$location', '$http', '$window', function($scope, $location, $http, $window) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
+        $scope.adminCheckbox = {
+            value : true
+        };
+
         $scope.sendRegistration = function() {
             $http({
             url : './user',
             method : "POST",
             headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email,
                 'phone' : $scope.phone, 'birth_date' : $scope.birthDate, 'login' : $scope.username,
-                'password' : $scope.password}
+                'password' : $scope.password, 'admin' : $scope.adminCheckbox.value }
             }).then(function(response) {
                 console.log("Worked!");
                 $scope.responseData = console.log(response.data);
