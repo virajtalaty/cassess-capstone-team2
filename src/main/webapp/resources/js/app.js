@@ -22,26 +22,12 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         }
     }).when('/', {
         redirectTo: '/home'
-    }).when('/users', {
-        templateUrl: 'partials/users.html',
-        controller: 'UsersController',
-        access: {
-            loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
-        }
     }).when('/apiDoc', {
         templateUrl: 'partials/apiDoc.html',
         controller: 'ApiDocController',
         access: {
             loginRequired: true,
-            authorizedRoles: [USER_ROLES.all]
-        }
-    }).when('/tokens', {
-        templateUrl: 'partials/tokens.html',
-        controller: 'TokensController',
-        access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.admin]
         }
     }).when('/login', {
         templateUrl: 'partials/login.html',
@@ -53,6 +39,31 @@ myapp.config(function ($routeProvider, USER_ROLES) {
     }).when('/register', {
         templateUrl: 'partials/register.html',
         controller: 'RegistrationController',
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/taiga_admin', {
+            templateUrl : 'partials/taigaAdmin.html',
+            controller : 'TaigaAdmin',
+            access: {
+                loginRequired: true,
+                authorizedRoles: [USER_ROLES.admin]
+            }
+    }).when('/githubData', {
+        templateUrl: 'partials/githubData.html',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/slackData', {
+        templateUrl: 'partials/slackData.html',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/about', {
+        templateUrl : 'partials/about.html',
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
@@ -76,13 +87,6 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
-        }
-    }).when('/taiga_admin', {
-        templateUrl : 'partials/taigaAdmin.html',
-        controller : 'TaigaAdmin',
-        access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.admin]
         }
     }).otherwise({
         redirectTo: '/error/404',

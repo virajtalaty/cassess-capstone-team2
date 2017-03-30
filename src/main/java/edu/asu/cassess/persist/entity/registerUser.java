@@ -31,7 +31,7 @@ public class registerUser {
 
     private Boolean enabled;
 
-    public registerUser(String firstName, String familyName, String email, String phone, String login, String password, Date birthDate) {
+    public registerUser(String firstName, String familyName, String email, String phone, String login, String password /*Date birthDate*/) {
         this.firstName = firstName;
         this.familyName = familyName;
         this.email = email;
@@ -40,7 +40,7 @@ public class registerUser {
         this.pictureId = "";
         this.login = login;
         this.password = password;
-        this.birthDate = birthDate;
+        this.birthDate = null;
         this.enabled = true;
     }
 

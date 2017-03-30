@@ -4,17 +4,14 @@
         <div class="container">
 
             <div class="row">
-
+                <div ng-controller="RegistrationController">
+                <div class="well col-sm-offset-3 col-sm-6">
 
                     <div class="well-heading well-primary">
-                        <div ng-controller="RegistrationController">
                         <h1>Register a new account</h1>
                     </div>
 
                     <form class="well-body">
-                        <ul>
-                            <li><strong><a href="/#/login" align="right">Back to Login</a></strong></li>
-                        </ul>
 
                         <div class="form-group label-floating">
                             <label class="control-label" for="firstName">First Name</label>
@@ -41,24 +38,19 @@
                         </div>
 
                         <div class="form-group label-floating">
-                            <label class="control-label" for="birthDate">Birth Date</label>
-                            <input id="birthDate" type="date" class="form-control" ng-model="birthDate"
-                                   required="required"/>
-                        </div>
-
-                        <div class="form-group label-floating">
-                            <label class="control-label" for="username">Username</label>
-                            <input id="username" type="text" class="form-control" ng-model="username"
-                                   required="required"/>
-                        </div>
-
-                        <div class="form-group label-floating">
                             <label class="control-label" for="password">Password</label>
                             <input id="password" type="password" class="form-control" ng-model="password"
                                    required="required"/>
                         </div>
+
+                        <div class="form-group label-floating">
+                            <label>Admin
+                                <input id="adminCheckbox" type="checkbox" ng-model="adminCheckbox.value">
+                            </label><br/>
+                        </div>
+
                         <br/>
-                        <p>Message from servlet: {{message}}</p>
+                        <p>Message from servlet: {{responseData}}</p>
                         <div class="col-sm-offset-3 col-sm-6">
                             <button class="btn btn-lg btn-primary btn-block" ng-click="sendRegistration()">
                                 Register
@@ -66,7 +58,8 @@
                         </div>
 
                     </form>
-                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </div>

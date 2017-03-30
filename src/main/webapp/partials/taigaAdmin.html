@@ -1,84 +1,84 @@
-<!doctype html>
-<style>
-    table, td  {
-        border: 1px solid grey;
-        border-collapse: collapse;
-        padding: 5px;
-    }
-</style>
-<div ng-controller="TaigaAdmin">
-    <h1>Taiga Progress Admin Page</h1>
-    <form ng-submit="updateTaigaTaskTotals()">
-        <button type="submit" class="btn pull-right">Update Task Totals</button>
-    </form>
-    <form ng-submit="updateTaigaMemberships()">
-        <button type="submit" class="btn pull-right">Update Memberships</button>
-    </form>
-    <form ng-submit="updateTaigaProjects()">
-        <button type="submit" class="btn pull-right">Update Projects</button>
-    </form>
+<div class="well page">
+    <h1 class="page-header">Taiga Progress Admin Page</h1>
+    <style>
+        table, td  {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+    <div ng-controller="TaigaAdmin">
+        <form ng-submit="updateTaigaTaskTotals()">
+            <button type="submit" class="btn pull-right">Update Task Totals</button>
+        </form>
+        <form ng-submit="updateTaigaMemberships()">
+            <button type="submit" class="btn pull-right">Update Memberships</button>
+        </form>
+        <form ng-submit="updateTaigaProjects()">
+            <button type="submit" class="btn pull-right">Update Projects</button>
+        </form>
 
-    <p>Select a Course</p>
-    <select ng-model="selectedCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()">
-    </select>
-    <br><br ng-repeat-end />
-    <p>Select a Team</p>
-    <select ng-model="selectedTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()">
-    </select>
-    <br><br ng-repeat-end />
-    <p>Select a Student</p>
-    <select ng-model="selectedStudent.value" ng-options="x.full_name for x in students" ng-change="selectedStudentChanged()">
-    </select>
-    <br><br ng-repeat-end />
-    <form ng-submit="taskProgress()">
-        <button type="submit">Get Open/Closed Progress</button>
-    </form>
-    <form ng-submit="taskRecords()">
-        <button type="submit">Get Tasks Records</button>
-    </form>
-    <p>Message from servlet: {{message}}</p>
-    <br><br ng-repeat-end />
-    <h2>Open/Closed Task Progress for {{selectedStudent.value.full_name}}</h2>
-    <table class="table table-bordered" fixed-header>
-        <thead>
-        <tr>
-            <th>Interval Ending</th>
-            <th># Closed</th>
-            <th># Open</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="x in tasksProgress">
-            <td>{{ x.weekEnding }}</td>
-            <td>{{ x.closedTasks }}</td>
-            <td>{{ x.openTasks }}</td>
-        </tr>
-        </tbody>
-    </table>
+        <p>Select a Course</p>
+        <select ng-model="selectedCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()">
+        </select>
+        <br><br ng-repeat-end />
+        <p>Select a Team</p>
+        <select ng-model="selectedTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()">
+        </select>
+        <br><br ng-repeat-end />
+        <p>Select a Student</p>
+        <select ng-model="selectedStudent.value" ng-options="x.full_name for x in students" ng-change="selectedStudentChanged()">
+        </select>
+        <br><br ng-repeat-end />
+        <form ng-submit="taskProgress()">
+            <button type="submit">Get Open/Closed Progress</button>
+        </form>
+        <form ng-submit="taskRecords()">
+            <button type="submit">Get Tasks Records</button>
+        </form>
+        <p>Message from servlet: {{message}}</p>
+        <br><br ng-repeat-end />
+        <h2>Open/Closed Task Progress for {{selectedStudent.value.full_name}}</h2>
+        <table class="table table-bordered" fixed-header>
+            <thead>
+            <tr>
+                <th>Interval Ending</th>
+                <th># Closed</th>
+                <th># Open</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="x in tasksProgress">
+                <td>{{ x.weekEnding }}</td>
+                <td>{{ x.closedTasks }}</td>
+                <td>{{ x.openTasks }}</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <h2>Taiga Task Records for {{selectedStudent.value.full_name}}</h2>
-    <table class="table table-bordered" fixed-header>
-        <thead>
-        <tr>
-            <th>Interval Ending</th>
-            <th># Closed</th>
-            <th># Open</th>
-            <th># New</th>
-            <th># In Progress</th>
-            <th># Ready For Test</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="x in tasksRecords">
-            <td>{{ x.retrievalDate }}</td>
-            <td>{{ x.tasks_closed }}</td>
-            <td>{{ x.tasks_open }}</td>
-            <td>{{ x.tasks_new }}</td>
-            <td>{{ x.tasks_in_progress }}</td>
-            <td>{{ x.tasks_ready_for_test }}</td>
-        </tr>
-        </tbody>
-    </table>
+        <h2>Taiga Task Records for {{selectedStudent.value.full_name}}</h2>
+        <table class="table table-bordered" fixed-header>
+            <thead>
+            <tr>
+                <th>Interval Ending</th>
+                <th># Closed</th>
+                <th># Open</th>
+                <th># New</th>
+                <th># In Progress</th>
+                <th># Ready For Test</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="x in tasksRecords">
+                <td>{{ x.retrievalDate }}</td>
+                <td>{{ x.tasks_closed }}</td>
+                <td>{{ x.tasks_open }}</td>
+                <td>{{ x.tasks_new }}</td>
+                <td>{{ x.tasks_in_progress }}</td>
+                <td>{{ x.tasks_ready_for_test }}</td>
+            </tr>
+            </tbody>
+        </table>
 
+    </div>
 </div>
-</html>
