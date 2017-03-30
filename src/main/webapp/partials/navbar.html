@@ -10,20 +10,20 @@
     <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
             <li><a href="#/home" class="mdi-action-home"></a></li>
-            <li><a href="#/users">Users</a></li>
-            <li><a href="#/apiDoc">API</a></li>
-            <li><a href="#/tokens" access="admin">Sessions</a></li>
+            <li><a href="#/githubData">GitHub</a></li>
+            <li><a href="#/slackData">Slack</a></li>
             <li><a href="#/taiga_admin" access="admin">Taiga</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img class="img-circle profile-image"
-                         ng-src="http://i.forbesimg.com/media/lists/people/{{account.firstName | lowercase}}-{{account.lastName | lowercase}}_50x50.jpg" >
+                    <!--<img class="img-circle profile-image"-->
+                         <!--ng-src="http://i.forbesimg.com/media/lists/people/{{account.firstName | lowercase}}-{{account.lastName | lowercase}}_50x50.jpg" >-->
                     {{account.firstName}} {{account.lastName}}
                     <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#/about"">About CA</a></li>
+                    <li><a href="#/about">About CA</a></li>
+                    <li><a href="#/apiDoc" access="admin">API</a></li>
                     <li class="divider"></li>
                     <li><a href="#/logout"><i class="glyphicon glyphicon-off"></i> Sign out</a></li>
                 </ul>

@@ -22,26 +22,12 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         }
     }).when('/', {
         redirectTo: '/home'
-    }).when('/users', {
-        templateUrl: 'partials/users.html',
-        controller: 'UsersController',
-        access: {
-            loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
-        }
     }).when('/apiDoc', {
         templateUrl: 'partials/apiDoc.html',
         controller: 'ApiDocController',
         access: {
             loginRequired: true,
-            authorizedRoles: [USER_ROLES.all]
-        }
-    }).when('/tokens', {
-        templateUrl: 'partials/tokens.html',
-        controller: 'TokensController',
-        access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.admin]
         }
     }).when('/login', {
         templateUrl: 'partials/login.html',
@@ -64,11 +50,23 @@ myapp.config(function ($routeProvider, USER_ROLES) {
                 loginRequired: true,
                 authorizedRoles: [USER_ROLES.admin]
             }
+    }).when('/githubData', {
+        templateUrl: 'partials/githubData.html',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/slackData', {
+        templateUrl: 'partials/slackData.html',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
     }).when('/about', {
         templateUrl : 'partials/about.html',
         access: {
             loginRequired: false,
-            authorizedRoles: [USER_ROLES.admin]
+            authorizedRoles: [USER_ROLES.all]
         }
     }).when('/loading', {
         templateUrl: 'partials/loading.html',
