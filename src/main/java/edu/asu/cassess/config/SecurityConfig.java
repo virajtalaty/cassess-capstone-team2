@@ -37,7 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public SecurityConfig() {
         super();
-        logger.info("loading SecurityConfig ................................................ ");
     }
 
     @Autowired
@@ -63,12 +62,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authProvider());
     }
 
+    //new resource locations must be added here
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources/**", "/index.html", "/login.html", "/register.html",
                 "/partials/**", "/template/**", "/", "/error/**", "/user", "/register");
     }
-
+    
+    //the .formLogin() method defines the location Spring processes authentication when 
+    //a POST is received at that path
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -105,6 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
     }
     
+    //Using BCrypt password encryption
     @Bean
     public DaoAuthenticationProvider authProvider() {
     	final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

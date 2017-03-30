@@ -21,6 +21,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+
+/**
+ * REST API implementation for student-based services.
+ * 
+ * @author tjjohn1
+ *
+ */
 @Component
 @Transactional
 public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
@@ -39,6 +46,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         this.entityManager = entityManager;
     }
 
+    /**
+     * Adds this student to the database.
+     * 
+     * @param student the student to add
+     * @return the student passed or message if student already exists
+     */
     @Transactional
     public <T> Object create(Student student) {
         System.out.println("Got into create");
@@ -50,6 +63,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         }
     }
 
+    /**
+     * Update the database entry for this student with new information.
+     * 
+     * @param student the student to update
+     * @return the student passed or message if no such student exists in database
+     */
     @Transactional
     public <T> Object update(Student student) {
         if(studentDao.findOne(student.getEmail()) != null){
@@ -59,7 +78,13 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
             return new RestResponse(student.getEmail() + " does not exist in database");
         }
     }
-
+    
+    /**
+     * Finds student in database by email address.
+     * 
+     * @param email the string (email address) to search
+     * @return the student or a message if the student is not found
+     */
     @Transactional
     public <T> Object find(String email) {
         Student student = studentDao.findOne(email);
@@ -70,6 +95,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         }
     }
 
+    /**
+     * Delete the student record from the database associated with this email address.
+     * 
+     * @param email the string (email address) used to find student
+     * @return a message indicating success or no such database object
+     */
     @Transactional
     public <T> Object delete(String email) {
         Student student = studentDao.findOne(email);
@@ -80,7 +111,13 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
             return new RestResponse(email + " does not exist in the database");
         }
     }
-
+    
+    /**
+     * List of all students.
+     * 
+     * @return a List of all unique rows in the students table
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Student> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
@@ -88,6 +125,13 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         return resultList;
     }
 
+    /**
+     * List of students constrained by the course name provided.
+     * 
+     * @param course the course name to filter by
+     * @return a List of students in the course
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Student> listReadByCourse(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1", Student.class);
@@ -95,7 +139,14 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         List<Student> resultList = query.getResultList();
         return resultList;
     }
-
+    
+    /**
+     * List of students constrained by the project name provided.
+     * 
+     * @param project_name the project name to filter by
+     * @return a List of students in the project
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Student> listReadByProject(String project_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE project_name = ?1", Student.class);
@@ -103,7 +154,14 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         List<Student> resultList = query.getResultList();
         return resultList;
     }
-
+    
+    /**
+     * List of students based on the Taiga slug.
+     * 
+     * @param slug the Taiga slug to filter by
+     * @return a List of students associated with the Taiga slug
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Student> listReadBySlug(String slug) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE taiga_project_slug = ?1", Student.class);
@@ -112,6 +170,13 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         return resultList;
     }
 
+    /**
+     * List of Taiga slugs associated with a course name.
+     * 
+     * @param course the course name to filter by
+     * @return a List of Taiga slugs associated with course
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Slugs> listGetSlugs(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT taiga_project_slug FROM cassess.students WHERE course = ?1", Slugs.class);
@@ -119,7 +184,14 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         List<Slugs> resultList = query.getResultList();
         return resultList;
     }
-
+    
+    /**
+     * List of teams associated with a course name.
+     * 
+     * @param course the course name to filter by
+     * @return a List of project names associated with course
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Teams> listGetProjectNames(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT project_name AS 'team' FROM cassess.students WHERE course = ?1", Teams.class);
@@ -128,6 +200,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         return resultList;
     }
 
+    /**
+     * Create a set of student entities in the database.
+     * 
+     * @param students List of student objects
+     * @return JSONObject of student information or message indicating entity already exists
+     */
     @Transactional
     public JSONObject listCreate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -154,6 +232,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         return returnJSON;
     }
 
+    /**
+     * Update student entities in database with information from students List.
+     * 
+     * @param students List of student objects
+     * @return JSONObject of student information or message indicating entity does not exist
+     */
     @Transactional
     public JSONObject listUpdate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -180,7 +264,13 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         returnJSON.put("failure", failureArray);
         return returnJSON;
     }
-
+    
+    /**
+     * Delete all student entities in database associated with this course.
+     * 
+     * @param course name of course to filter by
+     * @return message indicating students removed or no students found for course
+     */
     @Transactional
     public <T> Object deleteByCourse(String course) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 LIMIT 1", Student.class);
@@ -196,6 +286,12 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         }
     }
 
+    /**
+     * Delete all student entities in database associated with this project name.
+     * 
+     * @param project_name name of the project to filter by
+     * @return message indicating students removed or no students found for project_name
+     */
     @Transactional
     public <T> Object deleteByProject(String project_name) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1 LIMIT 1", Student.class);

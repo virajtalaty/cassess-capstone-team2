@@ -35,8 +35,6 @@ public class SlackDAO implements ISlackDAO {
 	
 	@Override
 	public void saveUserList(List<UserObject> userList) {
-		//for (UserObject obj : userList)
-		//	dao.save(obj);
 		dao.save(userList.toArray());
 	}
 }

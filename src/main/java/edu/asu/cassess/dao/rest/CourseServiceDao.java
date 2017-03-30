@@ -13,11 +13,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import edu.asu.cassess.persist.repo.rest.CourseRepo;
-
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.*;
 
 @Component
 public class CourseServiceDao {
@@ -35,7 +34,13 @@ public class CourseServiceDao {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
+    
+    /**
+     * Save this course to the database.
+     * 
+     * @param courseInput the Course object to save
+     * @return courseInput or a message if the course is already in the database
+     */
     @Transactional
     public <T> Object create(Course courseInput) {
         Course course = (Course) courseDao.findOne(courseInput.getCourse());
@@ -47,6 +52,12 @@ public class CourseServiceDao {
         }
     }
 
+    /**
+     * Update this course in the database.
+     * 
+     * @param courseInput the Course to update
+     * @return courseInput or a message indicating the course does not exist in the database
+     */
     @Transactional
     public <T> Object update(Course courseInput) {
         Course course = (Course) courseDao.findOne(courseInput.getCourse());
@@ -58,6 +69,12 @@ public class CourseServiceDao {
         }
     }
 
+    /**
+     * Find a course in the database by its name.
+     * 
+     * @param courseName the name to be used to find the course
+     * @return the Course object or a message indicating the course does not exist
+     */
     @Transactional
     public <T> Object find(String courseName) {
         Course course = (Course) courseDao.findOne(courseName);
@@ -68,6 +85,12 @@ public class CourseServiceDao {
         }
     }
 
+    /**
+     * Delete a course from the database by its name.
+     * 
+     * @param courseName the name to be used to find the course
+     * @return a message indicating the course was deleted or not found
+     */
     @Transactional
     public <T> Object delete(String courseName) {
         Course course = (Course) courseDao.findOne(courseName);
@@ -79,6 +102,12 @@ public class CourseServiceDao {
         }
     }
 
+    /**
+     * Fetch a list of all courses from database.
+     * 
+     * @return A List of Courses
+     * @throws DataAccessException
+     */
     @Transactional
     public List<Course> listRead() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses", Course.class);
@@ -86,13 +115,25 @@ public class CourseServiceDao {
         return resultList;
     }
 
+    /**
+     * Fetch course list from students table.
+     * 
+     * @return A List of CourseList
+     * @throws DataAccessException
+     */
     @Transactional
     public List<CourseList> listGetCourses() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course AS 'course' FROM cassess.students", CourseList.class);
         List<CourseList> resultList = query.getResultList();
         return resultList;
     }
-
+    
+    /**
+     * Create new courses in database from a List of Courses.
+     * 
+     * @param courses List of Courses
+     * @return JSONObject of courses or messages if course(s) already exist
+     */
     @Transactional
     public JSONObject listCreate(List<Course> courses) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -120,6 +161,12 @@ public class CourseServiceDao {
         return returnJSON;
     }
 
+    /**
+     * Update courses from a List.
+     * 
+     * @param courses List of Courses
+     * @return JSONObject of course information or messages if course(s) do not exist
+     */
     @Transactional
     public JSONObject listUpdate(List<Course> courses) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
