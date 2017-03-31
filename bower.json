@@ -14,8 +14,8 @@
     "bootstrap-material-design": "0.4.4",
     "angular-swagger-ui": "~0.2.3",
     "font-awesome": "4.5.0",
-    "angular-fusioncharts": "~0.0.2",
-    "fusioncharts": "~3.12.0"
+    "fusioncharts": "~3.12.0",
+    "angular-fusioncharts": "~0.0.2"
   },
   "private": true,
   "overrides": {
