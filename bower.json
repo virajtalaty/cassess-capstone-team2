@@ -13,7 +13,9 @@
     "bootstrap": "3.3.5",
     "bootstrap-material-design": "0.4.4",
     "angular-swagger-ui": "~0.2.3",
-    "font-awesome": "4.5.0"
+    "font-awesome": "4.5.0",
+    "angular-fusioncharts": "~0.0.2",
+    "fusioncharts": "~3.12.0"
   },
   "private": true,
   "overrides": {
@@ -45,7 +47,7 @@
         "dist/css/swagger-ui.css"
       ]
     },
-    "font-awesome" : {
+    "font-awesome": {
       "main": [
         "css/font-awesome.css",
         "fonts/FontAwesome.otf",
@@ -54,6 +56,21 @@
         "fonts/fontawesome-webfont.ttf",
         "fonts/fontawesome-webfont.woff",
         "fonts/fontawesome-webfont.woff2"
+      ]
+    },
+    "fusioncharts": {
+      "main": [
+        "fusioncharts.js",
+        "fusioncharts.charts.js"
+      ]
+    },
+    "angular-fusioncharts": {
+      "dependencies": {
+        "fusioncharts": "~3.12.0",
+        "angular": "~1.4"
+      },
+      "main": [
+        "dist/angular-fusioncharts.js"
       ]
     }
   },
