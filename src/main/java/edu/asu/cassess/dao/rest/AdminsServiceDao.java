@@ -3,19 +3,28 @@ package edu.asu.cassess.dao.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.dao.UserQueryDao;
+import edu.asu.cassess.persist.entity.UserID;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.entity.security.UsersAuthority;
+import edu.asu.cassess.persist.repo.AuthorityRepo;
+import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.AdminsRepo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Transient;
 import java.util.List;
 
 
@@ -25,6 +34,18 @@ public class AdminsServiceDao {
 
     @Autowired
     private AdminsRepo adminsRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private UsersAuthorityRepo usersAuthorityRepo;
+
+    @Autowired
+    private UserQueryDao userQuery;
 
     protected EntityManager entityManager;
 
@@ -92,6 +113,19 @@ public class AdminsServiceDao {
         query.setParameter(1, course);
         List<Admin> resultList = query.getResultList();
         return resultList;
+    }
+
+    @Transactional
+    public User adminUser(Admin admin){
+        System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
+        String array[] = admin.getFull_name().split("\\s+");
+        UserID userID = userQuery.getUserID();
+        User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, true, (long) userID.getMax() + 1);
+        userRepo.save(user);
+        long role = 1;
+        UsersAuthority usersAuth = new UsersAuthority(user.getId(), role);
+        usersAuthorityRepo.save(usersAuth);
+        return user;
     }
 
 

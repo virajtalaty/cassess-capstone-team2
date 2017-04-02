@@ -1,7 +1,9 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
+import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,11 @@ public class StudentsService implements IStudentsService {
 
     @EJB
     private StudentsServiceDao studentsDao;
+
+    @Override
+    public User studentUser(Student student){
+        return studentsDao.studentUser(student);
+    }
 
     @Override
     public <T> Object create(Student student){

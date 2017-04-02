@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.service.rest.AdminsService;
+import edu.asu.cassess.service.rest.StudentsService;
 import edu.asu.cassess.service.rest.TeamsService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,11 +27,16 @@ public class CourseServiceDao {
     @Autowired
     private CourseRepo courseRepo;
 
+
+
     @Autowired
     private TeamsService teamsService;
 
     @Autowired
     private AdminsService adminsService;
+
+    @Autowired
+    private StudentsService studentsService;
 
     protected EntityManager entityManager;
 
@@ -54,6 +60,13 @@ public class CourseServiceDao {
             courseRepo.save(courseInput);
             teamsService.listCreate(teams);
             adminsService.listCreate(admins);
+            for(Team team:teams){
+                for(Student student:team.getStudents())
+                studentsService.studentUser(student);
+            }
+            for(Admin admin:admins){
+                adminsService.adminUser(admin);
+            }
             return courseInput;
         }
     }

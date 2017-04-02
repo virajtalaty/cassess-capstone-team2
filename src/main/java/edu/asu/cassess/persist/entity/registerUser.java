@@ -31,11 +31,11 @@ public class registerUser {
 
     private Boolean enabled;
 
-    public registerUser(String firstName, String familyName, String email, String phone, String login, String password /*Date birthDate*/) {
+    public registerUser(String firstName, String familyName, String email, String login, String password ) {
         this.firstName = firstName;
         this.familyName = familyName;
         this.email = email;
-        this.phone = phone;
+        this.phone = null;
         this.language = "en";
         this.pictureId = "";
         this.login = login;

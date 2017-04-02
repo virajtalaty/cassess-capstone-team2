@@ -57,14 +57,11 @@ public class UserController {
     public @ResponseBody User saveUser(@RequestHeader(name = "first_name", required = true) String first_name,
                                        @RequestHeader(name = "family_name", required = true) String family_name,
                                        @RequestHeader(name = "email", required = true) String email,
-                                       @RequestHeader(name = "phone", required = true) String phone,
-                                       //@RequestHeader(name = "birth_date", required = true) Date birth_date,
-                                       //@RequestHeader(name = "login", required = true) String login,
                                        @RequestHeader(name = "password", required = true) String password,
                                        @RequestHeader(name = "admin", required = true) boolean admin)  {
     	//registerUser passes email address as login
-        registerUser register_user = new registerUser(first_name, family_name, email, phone, email, password /*birth_date*/);
-        User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getEmail(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate(), register_user.getEnabled());
+        registerUser register_user = new registerUser(first_name, family_name, email, email, password);
+        User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getLogin(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate(), register_user.getEnabled());
         Authority auth = new Authority();
         UserID userID = userQuery.getUserID();
         user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -2,6 +2,7 @@ package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.AdminsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,11 @@ public class AdminsService implements IAdminsService {
 
     @EJB
     private AdminsServiceDao adminsDao;
+
+    @Override
+    public User adminUser(Admin admin){
+        return adminsDao.adminUser(admin);
+    }
 
     @Override
     public <T> Object create(Admin admin) {
