@@ -7,6 +7,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.List;
 
+import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
+
 @Entity
 @Table(name="teams")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,32 +16,30 @@ public class Team {
 
     @Id
     @Column(name="team_name")
-    private String team_name;
+    public String team_name;
+
+    @Transient
+    public static String TEAM_STRING;
 
     @Column(name="course")
-    private String course;
+    public String course;
 
     @Column(name="slack_team_id")
-    private String slack_team_id;
+    protected String slack_team_id;
 
     @Column(name="github_repo_id")
-    private String github_repo_id;
+    protected String github_repo_id;
 
     @Column(name="taiga_project_slug")
-    private String taiga_project_slug;
+    protected String taiga_project_slug;
 
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team_name", fetch = FetchType.EAGER)
-    private List<Student> students;
+    public List<Student> students;
 
-    public Team(String team_name, String course, String slack_team_id, String github_repo_id, String taiga_project_slug, List<Student> students) {
-        this.team_name = team_name;
-        this.course = course;
-        this.slack_team_id = slack_team_id;
-        this.github_repo_id = github_repo_id;
-        this.taiga_project_slug = taiga_project_slug;
-        this.students = students;
-    }
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "team_name", fetch = FetchType.EAGER)
+    public List<Channel> channels;
 
     public Team(){
 
@@ -50,7 +50,8 @@ public class Team {
     }
 
     public void setTeam_name(String team_name) {
-        this.team_name = team_name;
+            TEAM_STRING = team_name;
+            this.team_name = team_name;
     }
 
     public String getCourse() {
@@ -58,6 +59,9 @@ public class Team {
     }
 
     public void setCourse(String course) {
+        if(course == null){
+            course = COURSE_STRING;
+        }
         this.course = course;
     }
 
@@ -91,8 +95,23 @@ public class Team {
 
     public void setStudents(List<Student> students) {
         for(Student student:students){
-            student.setTeam_name(team_name);
+            student.setCourse(COURSE_STRING);
+            student.setTeam_name(TEAM_STRING);
         }
         this.students = students;
     }
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(List<Channel> channels) {
+        for(Channel channel:channels){
+            channel.setCourse(COURSE_STRING);
+            channel.setTeam_name(TEAM_STRING);
+        }
+        this.channels = channels;
+    }
+
+
 }

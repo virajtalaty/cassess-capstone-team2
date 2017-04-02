@@ -3,10 +3,12 @@ package edu.asu.cassess.service.rest;
 import edu.asu.cassess.dao.rest.AdminsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import javax.ejb.EJB;
 import java.util.List;
 
+@Service
 public class AdminsService implements IAdminsService {
 
     @EJB

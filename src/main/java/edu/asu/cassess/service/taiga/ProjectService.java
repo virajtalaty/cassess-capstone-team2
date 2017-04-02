@@ -1,11 +1,9 @@
 package edu.asu.cassess.service.taiga;
 
-import edu.asu.cassess.dao.CAssessDAO;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.Project;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
+import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.persist.repo.taiga.ProjectRepo;
-import edu.asu.cassess.service.GenericServiceImpl;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
 import edu.asu.cassess.service.rest.ITeamsService;
@@ -17,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.MediaType;
 
 import java.util.List;
-
-import static javafx.scene.input.KeyCode.T;
 
 @Service
 @Transactional

@@ -264,6 +264,8 @@ public class restController {
             response.setStatus(HttpServletResponse.SC_OK);
             return courseService.create(coursePackage);
         }
+
+
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -3,12 +3,15 @@ package edu.asu.cassess.dao.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.persist.entity.rest.Channel;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
-import edu.asu.cassess.persist.entity.taiga.TeamNames;
+import edu.asu.cassess.model.Taiga.Slugs;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.repo.rest.TeamRepo;
+import edu.asu.cassess.service.rest.ChannelService;
+import edu.asu.cassess.service.rest.StudentsService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,14 @@ import java.util.List;
 public class TeamsServiceDao {
 
     @Autowired
-    private TeamRepo teamDao;
+    private TeamRepo teamRepo;
 
     @Autowired
-    private StudentsServiceDao studentsService;
+    private StudentsService studentsService;
+
+    @Autowired
+    private ChannelService channelsService;
+
 
     protected EntityManager entityManager;
 
@@ -45,18 +52,18 @@ public class TeamsServiceDao {
     @Transactional
     public <T> Object create(Team team) {
         System.out.println("Got into create");
-        if(teamDao.findOne(team.getTeam_name()) != null){
+        if(teamRepo.findOne(team.getTeam_name()) != null){
             return new RestResponse(team.getTeam_name() + " already exists in database");
         }else{
-            teamDao.save(team);
+            teamRepo.save(team);
             return team;
         }
     }
 
     @Transactional
     public <T> Object update(Team team) {
-        if(teamDao.findOne(team.getTeam_name()) != null){
-            teamDao.save(team);
+        if(teamRepo.findOne(team.getTeam_name()) != null){
+            teamRepo.save(team);
             return team;
         }else{
             return new RestResponse(team.getTeam_name() + " does not exist in database");
@@ -65,7 +72,7 @@ public class TeamsServiceDao {
 
     @Transactional
     public <T> Object find(String team_name) {
-        Team team = teamDao.findOne(team_name);
+        Team team = teamRepo.findOne(team_name);
         if(team != null){
             return team;
         }else{
@@ -75,9 +82,9 @@ public class TeamsServiceDao {
 
     @Transactional
     public <T> Object delete(String team_name) {
-        Team student = teamDao.findOne(team_name);
+        Team student = teamRepo.findOne(team_name);
         if(student != null){
-            teamDao.delete(student);
+            teamRepo.delete(student);
             return new RestResponse(team_name + " has been removed from the database");
         }else{
             return new RestResponse(team_name + " does not exist in the database");
@@ -121,7 +128,7 @@ public class TeamsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for(Team team:teams)
-            if(teamDao.findOne(team.getTeam_name()) != null){
+            if(teamRepo.findOne(team.getTeam_name()) != null){
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(team.getTeam_name() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
@@ -129,8 +136,10 @@ public class TeamsServiceDao {
                 }
             }else{
                 List<Student> students = team.getStudents();
-                teamDao.save(team);
+                List<Channel> channels = team.getChannels();
+                teamRepo.save(team);
                 studentsService.listCreate(students);
+                channelsService.listCreate(channels);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(team)));
                 } catch (JsonProcessingException e) {
@@ -149,7 +158,7 @@ public class TeamsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Team team:teams) {
-            if (teamDao.findOne(team.getTeam_name()) == null) {
+            if (teamRepo.findOne(team.getTeam_name()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(team.getTeam_name() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
@@ -157,8 +166,8 @@ public class TeamsServiceDao {
                 }
             } else {
                 List<Student> students = team.getStudents();
-                teamDao.save(team);
-                studentsService.listCreate(students);
+                teamRepo.save(team);
+                studentsService.listUpdate(students);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(team)));
                 } catch (JsonProcessingException e) {

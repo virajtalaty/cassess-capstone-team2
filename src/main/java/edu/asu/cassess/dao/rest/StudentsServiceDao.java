@@ -2,8 +2,6 @@ package edu.asu.cassess.dao.rest;
 
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
-import edu.asu.cassess.persist.entity.taiga.TeamNames;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -25,7 +23,7 @@ import java.util.List;
 public class StudentsServiceDao {
 
     @Autowired
-    private StudentRepo studentDao;
+    private StudentRepo studentRepo;
 
     protected EntityManager entityManager;
 
@@ -41,18 +39,18 @@ public class StudentsServiceDao {
     @Transactional
     public <T> Object create(Student student) {
         System.out.println("Got into create");
-        if(studentDao.findOne(student.getEmail()) != null){
+        if(studentRepo.findOne(student.getEmail()) != null){
             return new RestResponse(student.getEmail() + " already exists in database");
         }else{
-            studentDao.save(student);
+            studentRepo.save(student);
             return student;
         }
     }
 
     @Transactional
     public <T> Object update(Student student) {
-        if(studentDao.findOne(student.getEmail()) != null){
-            studentDao.save(student);
+        if(studentRepo.findOne(student.getEmail()) != null){
+            studentRepo.save(student);
             return student;
         }else{
             return new RestResponse(student.getEmail() + " does not exist in database");
@@ -61,7 +59,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object find(String email) {
-        Student student = studentDao.findOne(email);
+        Student student = studentRepo.findOne(email);
         if(student != null){
             return student;
         }else{
@@ -71,9 +69,9 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object delete(String email) {
-        Student student = studentDao.findOne(email);
+        Student student = studentRepo.findOne(email);
         if(student != null){
-            studentDao.delete(student);
+            studentRepo.delete(student);
             return new RestResponse(email + " has been removed from the database");
         }else{
             return new RestResponse(email + " does not exist in the database");
@@ -101,14 +99,14 @@ public class StudentsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for(Student student:students)
-            if(studentDao.findOne(student.getEmail()) != null){
+            if(studentRepo.findOne(student.getEmail()) != null){
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }else{
-                studentDao.save(student);
+                studentRepo.save(student);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(student)));
                 } catch (JsonProcessingException e) {
@@ -127,14 +125,14 @@ public class StudentsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Student student : students) {
-            if (studentDao.findOne(student.getEmail()) == null) {
+            if (studentRepo.findOne(student.getEmail()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                studentDao.save(student);
+                studentRepo.save(student);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(student)));
                 } catch (JsonProcessingException e) {

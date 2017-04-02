@@ -24,7 +24,7 @@ import java.util.List;
 public class AdminsServiceDao {
 
     @Autowired
-    private AdminsRepo adminDao;
+    private AdminsRepo adminsRepo;
 
     protected EntityManager entityManager;
 
@@ -40,18 +40,18 @@ public class AdminsServiceDao {
     @Transactional
     public <T> Object create(Admin admin) {
         //System.out.println("Got into create");
-        if(adminDao.findOne(admin.getEmail()) != null){
+        if(adminsRepo.findOne(admin.getEmail()) != null){
             return new RestResponse(admin.getEmail() + " already exists in database");
         }else{
-            adminDao.save(admin);
+            adminsRepo.save(admin);
             return admin;
         }
     }
 
     @Transactional
     public <T> Object update(Admin admin) {
-        if(adminDao.findOne(admin.getEmail()) != null){
-            adminDao.save(admin);
+        if(adminsRepo.findOne(admin.getEmail()) != null){
+            adminsRepo.save(admin);
             return admin;
         }else{
             return new RestResponse(admin.getEmail() + " does not exist in database");
@@ -60,7 +60,7 @@ public class AdminsServiceDao {
 
     @Transactional
     public <T> Object find(String email) {
-        Admin admin = adminDao.findOne(email);
+        Admin admin = adminsRepo.findOne(email);
         if(admin != null){
             return admin;
         }else{
@@ -70,9 +70,9 @@ public class AdminsServiceDao {
 
     @Transactional
     public <T> Object delete(String email) {
-        Admin admin = adminDao.findOne(email);
+        Admin admin = adminsRepo.findOne(email);
         if(admin != null){
-            adminDao.delete(admin);
+            adminsRepo.delete(admin);
             return new RestResponse(email + " has been removed from the database");
         }else{
             return new RestResponse(email + " does not exist in the database");
@@ -102,14 +102,14 @@ public class AdminsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for(Admin admin: admins)
-            if(adminDao.findOne(admin.getEmail()) != null){
+            if(adminsRepo.findOne(admin.getEmail()) != null){
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(admin.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }else{
-                adminDao.save(admin);
+                adminsRepo.save(admin);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(admin)));
                 } catch (JsonProcessingException e) {
@@ -128,14 +128,14 @@ public class AdminsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Admin admin : admins) {
-            if (adminDao.findOne(admin.getEmail()) == null) {
+            if (adminsRepo.findOne(admin.getEmail()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(admin.getEmail() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                adminDao.save(admin);
+                adminsRepo.save(admin);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(admin)));
                 } catch (JsonProcessingException e) {

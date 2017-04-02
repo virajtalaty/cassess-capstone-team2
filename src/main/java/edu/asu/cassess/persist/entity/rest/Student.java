@@ -1,6 +1,10 @@
 package edu.asu.cassess.persist.entity.rest;
 
+
 import javax.persistence.*;
+
+import static edu.asu.cassess.persist.entity.rest.Team.TEAM_STRING;
+import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 
 @Entity
 @Table(name="students")
@@ -15,6 +19,9 @@ public class Student {
 
     @Column(name="team_name")
     private String team_name;
+
+    @Column(name="course")
+    private String course;
 
     public Student(){
 
@@ -41,7 +48,22 @@ public class Student {
     }
 
     public void setTeam_name(String team_name) {
+        if(team_name == null){
+            team_name = TEAM_STRING;
+        }
         this.team_name = team_name;
     }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        if(course == null){
+            course = COURSE_STRING;
+        }
+        this.course = course;
+    }
+
 
 }

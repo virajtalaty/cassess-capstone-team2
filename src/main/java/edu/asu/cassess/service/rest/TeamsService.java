@@ -2,17 +2,14 @@ package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.TeamsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Team;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
-import edu.asu.cassess.persist.entity.taiga.TeamNames;
+import edu.asu.cassess.model.Taiga.Slugs;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.ejb.EJB;
 import java.util.List;
 
-/**
- * Created by Thomas on 3/25/2017.
- */
 @Service
 public class TeamsService implements ITeamsService {
 

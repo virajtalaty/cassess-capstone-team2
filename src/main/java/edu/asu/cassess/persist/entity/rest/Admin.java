@@ -2,10 +2,9 @@ package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 
 @Entity
 @Table(name="admins")
@@ -22,14 +21,8 @@ public class Admin {
     @Column(name = "course")
     private String course;
 
-    public Admin(){
 
-    }
-
-    public Admin(String email, String full_name, String course) {
-        this.email = email;
-        this.full_name = full_name;
-        this.course = course;
+    public Admin() {
     }
 
     public String getEmail() {
@@ -53,6 +46,10 @@ public class Admin {
     }
 
     public void setCourse(String course) {
+        if(course == null){
+            course = COURSE_STRING;
+            System.out.println("-------------------!!!!!!!!!!!!!!!!!!!!!!!!!! Course :" + COURSE_STRING);
+        }
         this.course = course;
     }
 
