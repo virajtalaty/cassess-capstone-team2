@@ -8,11 +8,10 @@
                 <div class="well col-sm-offset-3 col-sm-6">
 
                     <div class="well-heading well-primary">
-                        <h1>Sign in your account</h1>
+                        <h1>Sign in!</h1>
                     </div>
 
                     <form class="well-body">
-
 
                         <div class="form-group label-floating"
                              ng-class="{'has-error is-focused' : authenticationError}">
@@ -39,13 +38,11 @@
 
                         <br/>
 
-                        <div class="col-sm-offset-3 col-sm-6">
+                        <div class="col-sm-offset-3 col-sm-6" style="text-align:center">
                             <button class="btn btn-lg btn-primary btn-block" ng-click="login()">
                                 login
                             </button>
-                            <ul>
-                                <li><strong><a href="/#/register">Register</a></strong></li>
-                            </ul>
+                            <span>Not a member? <strong><a href="#/register">Register Here!</a></strong></span>
                         </div>
 
                     </form>

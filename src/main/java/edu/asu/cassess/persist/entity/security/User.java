@@ -22,8 +22,6 @@ import org.hibernate.annotations.GenericGenerator;
 public class User {
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
 	@Column(name = "id", nullable = false)
 	private Long id;
 

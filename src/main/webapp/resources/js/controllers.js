@@ -67,7 +67,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         switch ($scope.code) {
             case "403" :
-                $scope.message = "Oops! you have come to unauthorised page."
+                $scope.message = "Oops! you have come to unauthorized page."
                 break;
             case "404" :
                 $scope.message = "Page not found."
@@ -78,27 +78,35 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
     })
-    .controller('RegistrationController', [ '$scope', '$http', function($scope, $http) {
+    .controller('RegistrationController', [ '$scope', '$location', '$http', '$window', function($scope, $location, $http, $window) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+
+        $scope.adminCheckbox = {
+            value : true
+        };
 
         $scope.sendRegistration = function() {
             $http({
             url : './user',
             method : "POST",
-            headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email, 'phone' : $scope.phone, 'birth_date' : $scope.birthDate, 'login' : $scope.username, 'password' : $scope.password}
+            headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email,
+                'phone' : $scope.phone, 'password' : $scope.password, 'admin' : $scope.adminCheckbox.value }
             }).then(function(response) {
                 console.log("Worked!");
-                //console.log(response.data);
+                $scope.responseData = console.log(response.data);
                 $scope.message = "User Successfully Registered";
+                $window.alert($scope.message);
+                $location.path('/login');
             }, function(response) {
                 //fail case
-                console.log("didn't work");
+                console.log("Didn't work");
                 //console.log(response);
+                $scope.responseData = console.log(response.data);
                 $scope.message = "User Not Registered, Duplicate User or Incorrect Information";
+                $window.alert($scope.message);
             });
 
         };
-
 
     } ] )
 .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {

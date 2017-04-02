@@ -14,12 +14,19 @@ import org.hibernate.annotations.GenericGenerator;
 public class Authority {
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
 	private Long id;
 
 	@Column(name = "name", nullable = false)
 	private String name;
+
+	public Authority(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
+	public Authority() {
+
+	}
 
 	public Long getId() {
 		return id;
