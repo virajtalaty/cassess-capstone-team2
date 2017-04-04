@@ -1,7 +1,7 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ng-fusioncharts']);
 
 
 myapp.constant('USER_ROLES', {
@@ -161,9 +161,51 @@ myapp.run(function ($rootScope, $location, $http, AuthSharedService, Session, US
 
     // Get already authenticated user account
     AuthSharedService.getAccount();
+}).controller('charts', function($scope, $http) {
+        var self = this;
+        $http.get("/charts/").then(function (response) {
+            self.chartData = response.data;
+            /*$scope.myDataSource = {
+                chart: {
+                    caption: "GitHubCommits for tjjohn1",
+                    subCaption: "Displays Commits By Week",
+                    theme: "fint"
+                },
+                data: response.data
+            };*/
+        });
+        //$scope.myDataSource = {};
 
-
-});
+        //Define the `myDataSource` scope variable.
+            $scope.myDataSource = {
+                chart: {
+                    caption: "Harry's SuperMart",
+                    subCaption: "Top 5 stores in last month by revenue",
+                    numberPrefix: "$",
+                    theme: "fint"
+                },
+                data:[{
+                    label: "Bakersfield Central",
+                    value: "880000"
+                },
+                {
+                    label: "Garden Groove harbour",
+                    value: "730000"
+                },
+                {
+                    label: "Los Angeles Topanga",
+                    value: "590000"
+                },
+                {
+                    label: "Compton-Rancho Dom",
+                    value: "520000"
+                },
+                {
+                    label: "Daly City Serramonte",
+                    value: "330000"
+                }]
+            };
+    });
 
 
 

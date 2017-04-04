@@ -1,7 +1,31 @@
 <div class="well page">
     <h1 class="page-header">GitHub Data</h1>
-
-    <div>
-        <p>Content coming soon...</p>
+    <br><br>
+    <h1>These are some Charts!</h1>
+    <br><br>
+    <div ng-controller="charts">
+        <p>This is going to display some charts.</p>
+        <br><br>
+        <p>This displays the chart data response: </p>
+        <br><br>
+        <p> This is the data for the chart: {{charts.chartData}}</p>
+        <br><br>
+        <p> Here's the chart: </p>
+        <br><br>
+    <!--<div  ng-controller="charts as charts" ng-show="!authenticated">
+        <h1>You are not authorized to view these pages!</h1>
+    </div>-->
     </div>
+    <!-- Chart Area -->
+    <div>
+         <div ng-controller="charts">
+            <div fusioncharts
+                 width="800"
+                 height="500"
+                 type="column2d"
+                 dataSource="{{myDataSource}}" >
+            </div>
+        </div>
+    </div>
+
 </div>
