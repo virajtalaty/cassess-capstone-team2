@@ -1,31 +1,22 @@
 package edu.asu.cassess.dao.rest;
 
-import edu.asu.cassess.dao.UserQueryDao;
-import edu.asu.cassess.persist.entity.UserID;
-import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.asu.cassess.persist.entity.security.User;
-import edu.asu.cassess.persist.entity.security.UsersAuthority;
-import edu.asu.cassess.persist.repo.AuthorityRepo;
-import edu.asu.cassess.persist.repo.UserRepo;
-import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.Transient;
 import java.util.List;
 
 @Component
@@ -34,18 +25,6 @@ public class StudentsServiceDao {
 
     @Autowired
     private StudentRepo studentRepo;
-
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private UsersAuthorityRepo usersAuthorityRepo;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserQueryDao userQuery;
 
     protected EntityManager entityManager;
 
@@ -58,7 +37,6 @@ public class StudentsServiceDao {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     public <T> Object create(Student student) {
         System.out.println("Got into create");
         if(studentRepo.findOne(student.getEmail()) != null){
@@ -69,7 +47,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object update(Student student) {
         if(studentRepo.findOne(student.getEmail()) != null){
             studentRepo.save(student);
@@ -79,7 +56,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object find(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -89,7 +65,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object delete(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -100,14 +75,12 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public List<Student> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
     public List<Student> listReadByTeam(String team_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
         query.setParameter(1, team_name);
@@ -115,20 +88,6 @@ public class StudentsServiceDao {
         return resultList;
     }
 
-    @Transactional
-    public User studentUser(Student student){
-        System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into StudentUser");
-        String array[] = student.getFull_name().split("\\s+");
-        UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, true, (long) userID.getMax() + 1);
-        userRepo.save(user);
-        long role = 2;
-        UsersAuthority usersAuth = new UsersAuthority(user.getId(), role);
-        usersAuthorityRepo.save(usersAuth);
-        return user;
-    }
-
-    @Transactional
     public JSONObject listCreate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -154,7 +113,6 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public JSONObject listUpdate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -181,7 +139,6 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public <T> Object deleteByTeam(String team_name) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, team_name);

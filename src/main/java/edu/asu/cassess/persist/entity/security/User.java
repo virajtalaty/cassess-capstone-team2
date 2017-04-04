@@ -15,8 +15,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "users")
 public class User {
 
-
-
     @Id
     @Column(name = "id")
     private Long id;
@@ -30,13 +28,13 @@ public class User {
     @Column(name = "e_mail")
     private String email;
 
-    @Column(name = "phone")
+    @Transient
     private String phone;
 
     @Column(name = "language")
     private String language;
 
-    @Column(name = "id_picture")
+    @Transient
     private String pictureId;
 
     @Column(name = "login")
@@ -45,7 +43,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "birth_date")
+    @Transient
     private Date birthDate;
 
     @Column(name = "enabled", columnDefinition = "BIT", length = 1)

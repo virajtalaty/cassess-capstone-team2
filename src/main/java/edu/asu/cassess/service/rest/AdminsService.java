@@ -16,11 +16,6 @@ public class AdminsService implements IAdminsService {
     private AdminsServiceDao adminsDao;
 
     @Override
-    public User adminUser(Admin admin){
-        return adminsDao.adminUser(admin);
-    }
-
-    @Override
     public <T> Object create(Admin admin) {
         return adminsDao.create(admin);
     }

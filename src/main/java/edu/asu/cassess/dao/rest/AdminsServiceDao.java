@@ -13,6 +13,7 @@ import edu.asu.cassess.persist.repo.AuthorityRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.AdminsRepo;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +36,6 @@ public class AdminsServiceDao {
     @Autowired
     private AdminsRepo adminsRepo;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private UsersAuthorityRepo usersAuthorityRepo;
-
-    @Autowired
-    private UserQueryDao userQuery;
-
     protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
@@ -58,7 +47,6 @@ public class AdminsServiceDao {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     public <T> Object create(Admin admin) {
         //System.out.println("Got into create");
         if(adminsRepo.findOne(admin.getEmail()) != null){
@@ -69,7 +57,6 @@ public class AdminsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object update(Admin admin) {
         if(adminsRepo.findOne(admin.getEmail()) != null){
             adminsRepo.save(admin);
@@ -79,7 +66,6 @@ public class AdminsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object find(String email) {
         Admin admin = adminsRepo.findOne(email);
         if(admin != null){
@@ -89,7 +75,6 @@ public class AdminsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object delete(String email) {
         Admin admin = adminsRepo.findOne(email);
         if(admin != null){
@@ -100,14 +85,12 @@ public class AdminsServiceDao {
         }
     }
 
-    @Transactional
     public List<Admin> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins", Admin.class);
         List<Admin> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
     public List<Admin> listReadByCourse(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1", Admin.class);
         query.setParameter(1, course);
@@ -115,22 +98,8 @@ public class AdminsServiceDao {
         return resultList;
     }
 
-    @Transactional
-    public User adminUser(Admin admin){
-        System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
-        String array[] = admin.getFull_name().split("\\s+");
-        UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, true, (long) userID.getMax() + 1);
-        userRepo.save(user);
-        long role = 1;
-        UsersAuthority usersAuth = new UsersAuthority(user.getId(), role);
-        usersAuthorityRepo.save(usersAuth);
-        return user;
-    }
 
 
-
-    @Transactional
     public JSONObject listCreate(List<Admin> admins) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -156,12 +125,12 @@ public class AdminsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public JSONObject listUpdate(List<Admin> admins) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Admin admin : admins) {
+
             if (adminsRepo.findOne(admin.getEmail()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(admin.getEmail() + " does not exist in database"))));
@@ -183,7 +152,6 @@ public class AdminsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public <T> Object deleteByCourse(String course) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.admins WHERE course = ?1 LIMIT 1", Admin.class);
         preQuery.setParameter(1, course);

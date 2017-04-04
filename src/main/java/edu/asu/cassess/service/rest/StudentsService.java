@@ -17,11 +17,6 @@ public class StudentsService implements IStudentsService {
     private StudentsServiceDao studentsDao;
 
     @Override
-    public User studentUser(Student student){
-        return studentsDao.studentUser(student);
-    }
-
-    @Override
     public <T> Object create(Student student){
 
         return studentsDao.create(student);

@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface IAdminsService {
 
-    User adminUser(Admin admin);
-
     <T> Object create(Admin admin);
 
     <T> Object update(Admin admin);

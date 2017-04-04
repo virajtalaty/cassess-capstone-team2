@@ -9,8 +9,6 @@ import edu.asu.cassess.persist.entity.rest.Student;
 
 public interface IStudentsService {
 
-    User studentUser(Student student);
-
     <T> Object create(Student student);
 
     <T> Object update(Student student);

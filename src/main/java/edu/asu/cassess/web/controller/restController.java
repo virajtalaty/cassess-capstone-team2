@@ -4,6 +4,7 @@ import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.service.rest.*;
 
+import edu.asu.cassess.service.security.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,10 +37,16 @@ public class restController {
     private AdminsService adminService;
 
     @Autowired
+    private UserService usersService;
+
+    @Autowired
     private ChannelService channelService;
 
     @Autowired
-    ITaskTotalsQueryDao taskTotalService;
+    private ITaskTotalsQueryDao taskTotalService;
+
+    @Autowired
+    private List<Object> returnObject;
 
 
 //-----------------------
@@ -56,10 +63,12 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
+            usersService.createUsersByAdmins(coursePackage.getAdmins());
+            for (Team team : (coursePackage.getTeams())) {
+                usersService.createUsersByStudents(team.getStudents());
+            }
             return courseService.create(coursePackage);
         }
-
-
     }
 
     @ResponseStatus(HttpStatus.OK)
