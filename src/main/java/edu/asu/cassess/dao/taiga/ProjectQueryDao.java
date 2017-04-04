@@ -45,7 +45,7 @@ public class ProjectQueryDao implements IProjectQueryDao {
 
     @Override
     public List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT id, slug FROM cassess.project INNER JOIN cassess.students ON cassess.project.slug=cassess.students.taiga_project_slug AND course=?1", ProjectIDSlug.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT id, slug FROM cassess.project INNER JOIN cassess.teams ON cassess.project.slug=cassess.teams.taiga_project_slug AND course=?1", ProjectIDSlug.class);
         query.setParameter(1, course);
         List<ProjectIDSlug> resultList = query.getResultList();
         return resultList;

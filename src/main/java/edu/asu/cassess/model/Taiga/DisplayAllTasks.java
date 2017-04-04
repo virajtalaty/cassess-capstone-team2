@@ -1,4 +1,4 @@
-package edu.asu.cassess.persist.entity.taiga;
+package edu.asu.cassess.model.Taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Subselect;

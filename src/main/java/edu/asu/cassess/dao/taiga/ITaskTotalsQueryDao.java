@@ -1,6 +1,6 @@
 package edu.asu.cassess.dao.taiga;
 
-import edu.asu.cassess.persist.entity.taiga.DisplayAllTasks;
+import edu.asu.cassess.model.Taiga.DisplayAllTasks;
 import org.springframework.dao.DataAccessException;
 
 import edu.asu.cassess.persist.entity.taiga.TaskTotals;
