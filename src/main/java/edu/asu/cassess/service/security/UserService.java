@@ -2,7 +2,9 @@ package edu.asu.cassess.service.security;
 
 import edu.asu.cassess.dao.security.UserServiceDao;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,31 @@ public class UserService implements IUserService{
     public <T> Object registerUser(String first_name, String family_name, String email, String password, boolean admin){
         return userServiceDao.registerUser(first_name, family_name, email, password, admin);
     }
+
+    @Override
+    public void updateStudent(Student student, User user){
+
+    }
+
+    @Override
+    public void updateAdmin(Admin admin, User user){
+
+    }
+
+    @Override
+    public void deleteUser(User user){}
+
+    @Override
+    public void courseDelete(Course course){}
+
+    @Override
+    public void courseUpdate(Course course){}
+
+    @Override
+    public void teamUpdate(Team team){}
+
+    @Override
+    public void teamDelete(Team team){}
 
 
 }
