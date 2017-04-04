@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "users_authority")
 public class UsersAuthority {
@@ -21,7 +20,7 @@ public class UsersAuthority {
     }
 
     public UsersAuthority(Long id_user, Long id_authority) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!------------------Users_AUthority");
+      
         this.id_user = id_user;
         this.id_authority = id_authority;
     }

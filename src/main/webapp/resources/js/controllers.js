@@ -91,6 +91,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             method : "POST",
             headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email,
                 'password' : $scope.password, 'admin' : $scope.adminCheckbox.value }
+
             }).then(function(response) {
                 console.log("Worked!");
                 $scope.responseData = console.log(response.data);

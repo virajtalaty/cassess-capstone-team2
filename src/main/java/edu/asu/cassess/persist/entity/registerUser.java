@@ -32,6 +32,7 @@ public class registerUser {
     private Boolean enabled;
 
     public registerUser(String firstName, String familyName, String email, String login, String password ) {
+
         this.firstName = firstName;
         this.familyName = familyName;
         this.email = email;
