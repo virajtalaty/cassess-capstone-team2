@@ -5,6 +5,9 @@ import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
 import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
@@ -26,7 +29,7 @@ public class StudentsServiceDao {
     @Autowired
     private StudentRepo studentRepo;
 
-    protected EntityManager entityManager;
+        protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;

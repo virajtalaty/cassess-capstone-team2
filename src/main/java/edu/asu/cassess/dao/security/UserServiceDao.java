@@ -3,9 +3,7 @@ package edu.asu.cassess.dao.security;
 import edu.asu.cassess.dao.UserQueryDao;
 import edu.asu.cassess.persist.entity.UserID;
 import edu.asu.cassess.persist.entity.registerUser;
-import edu.asu.cassess.persist.entity.rest.Admin;
-import edu.asu.cassess.persist.entity.rest.RestResponse;
-import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.entity.security.UsersAuthority;
@@ -24,7 +22,7 @@ import java.util.List;
 public class UserServiceDao {
 
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
 
     @Autowired
     private AuthorityRepo authorityRepo;
@@ -133,5 +131,98 @@ public class UserServiceDao {
             return new RestResponse("User " + user.getEmail() + " already exists in database");
         }
 
+    }
+
+    @Transactional
+    public User updateStudent(Student student, User user){
+        String array[] = student.getFull_name().split("\\s+");
+        user.setEmail(student.getEmail());
+        user.setLogin(student.getEmail());
+        user.setPassword(passwordEncoder.encode(student.getPassword()));
+        user.setFirstName(array[0]);
+        user.setFamilyName(array[1]);
+        userRepo.save(user);
+        return user;
+    }
+
+    @Transactional
+    public User updateAdmin(Admin admin, User user){
+        String array[] = admin.getFull_name().split("\\s+");
+        user.setEmail(admin.getEmail());
+        user.setLogin(admin.getEmail());
+        user.setPassword(passwordEncoder.encode(admin.getPassword()));
+        user.setFirstName(array[0]);
+        user.setFamilyName(array[1]);
+        userRepo.save(user);
+        return user;
+    }
+
+    @Transactional
+    public User deleteUser(User user){
+        usersAuthorityRepo.delete(user.getId());
+        userRepo.delete(user);
+        return user;
+    }
+
+    @Transactional
+    public Course courseDelete(Course course){
+        for(Admin admin:course.getAdmins()){
+            User user = userRepo.findByEmail(admin.getEmail());
+            if(user != null)
+            {
+                usersService.deleteUser(user);
+            }
+        }
+        for(Team team:course.getTeams()){
+            for(Student student:team.getStudents()){
+                User user = userRepo.findByEmail(student.getEmail());
+                if(user != null)
+                {
+                    usersService.deleteUser(user);
+                }
+            }
+        }
+        return course;
+    }
+
+    @Transactional
+    public Course courseUpdate(Course course) {
+        for (Admin admin : course.getAdmins()) {
+            User user = userRepo.findByEmail(admin.getEmail());
+            if (user != null) {
+                usersService.updateAdmin(admin, user);
+            }
+        }
+        for (Team team : course.getTeams()) {
+            for (Student student : team.getStudents()) {
+                User user = userRepo.findByEmail(student.getEmail());
+                if (user != null) {
+                    usersService.updateStudent(student, user);
+                }
+            }
+        }
+        return course;
+    }
+
+    @Transactional
+    public Team teamUpdate(Team team) {
+        for (Student student : team.getStudents()) {
+            User user = userRepo.findByEmail(student.getEmail());
+            if (user != null) {
+                usersService.updateStudent(student, user);
+            }
+        }
+        return team;
+    }
+
+    @Transactional
+    public Team teamDelete(Team team) {
+        for (Student student : team.getStudents()) {
+            User user = userRepo.findByEmail(student.getEmail());
+            if (user != null) {
+                usersService.deleteUser(user);
+            }
+        }
+        return team;
     }
 }
