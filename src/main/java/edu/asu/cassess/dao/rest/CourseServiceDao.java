@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.service.rest.AdminsService;
 import edu.asu.cassess.service.rest.TeamsService;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CourseServiceDao {
 
     @Autowired
     private CourseRepo courseRepo;
+
+    @Autowired
+    private UserService usersService;
 
     @Autowired
     private TeamsService teamsService;

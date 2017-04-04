@@ -1,5 +1,6 @@
 package edu.asu.cassess.persist.entity.rest;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -8,6 +9,7 @@ import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 
 @Entity
 @Table(name="students")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Student {
     
     @Id
@@ -22,6 +24,9 @@ public class Student {
 
     @Column(name="course")
     private String course;
+
+    @Transient
+    private String password;
 
     public Student(){
 
@@ -64,6 +69,17 @@ public class Student {
         }
         this.course = course;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+
 
 
 }

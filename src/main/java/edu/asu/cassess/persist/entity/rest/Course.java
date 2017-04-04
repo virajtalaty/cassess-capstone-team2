@@ -1,6 +1,7 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.asu.cassess.persist.entity.security.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

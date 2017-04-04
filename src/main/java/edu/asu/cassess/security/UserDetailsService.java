@@ -35,6 +35,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
+        System.out.println("login: " + login + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------------------");
         log.debug("Authenticating {}", login);
 
         BCryptPasswordEncoder passEncode = new BCryptPasswordEncoder(11);

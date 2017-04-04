@@ -1,9 +1,12 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
+
 import edu.asu.cassess.persist.entity.rest.*;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.service.rest.*;
 
+import edu.asu.cassess.service.security.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -21,6 +22,8 @@ import java.util.List;
 @RequestMapping(value = "/rest")
 @Api(description = "Nicest Provisioning API")
 public class restController {
+
+
 
 
     @Autowired
@@ -36,10 +39,13 @@ public class restController {
     private AdminsService adminService;
 
     @Autowired
+    private UserService usersService;
+
+    @Autowired
     private ChannelService channelService;
 
     @Autowired
-    ITaskTotalsQueryDao taskTotalService;
+    private UserRepo userRepo;
 
 
 //-----------------------
@@ -56,10 +62,12 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
+            usersService.createUsersByAdmins(coursePackage.getAdmins());
+            for (Team team : (coursePackage.getTeams())) {
+                usersService.createUsersByStudents(team.getStudents());
+            }
             return courseService.create(coursePackage);
         }
-
-
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -73,6 +81,7 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
+            usersService.courseUpdate(coursePackage);
             return courseService.update(coursePackage);
         }
     }
@@ -86,6 +95,11 @@ public class restController {
     <T> Object deleteStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
         if(student != null){
             response.setStatus(HttpServletResponse.SC_OK);
+            User user = userRepo.findByEmail(student.getEmail());
+            if(user != null)
+            {
+                usersService.deleteUser(user);
+            }
             return studentService.delete(student.getEmail());
         }else{
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -98,12 +112,17 @@ public class restController {
     public
     @ResponseBody
     <T> Object updateStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
-
         if (student == null) {
+
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
+            User user = userRepo.findByEmail(student.getEmail());
+            if(user != null)
+            {
+                usersService.updateStudent(student, user);
+            }
             return studentService.update(student);
         }
     }
@@ -129,9 +148,10 @@ public class restController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
+            usersService.courseDelete(course);
             response.setStatus(HttpServletResponse.SC_OK);
-
-            return courseService.delete(course.getCourse());
+            Object object = courseService.delete(course.getCourse());
+            return object;
         }
     }
 
@@ -146,7 +166,7 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            usersService.courseUpdate(course);
             return courseService.update(course);
         }
     }
@@ -228,7 +248,11 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            User user = userRepo.findByEmail(admin.getEmail());
+            if(user != null)
+            {
+                usersService.deleteUser(user);
+            }
             return adminService.delete(admin.getEmail());
         }
     }
@@ -243,7 +267,11 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            User user = userRepo.findByEmail(admin.getEmail());
+            if (user != null)
+            {
+                usersService.updateAdmin(admin, user);
+            }
             return adminService.update(admin);
         }
     }
@@ -258,7 +286,13 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            for(Admin admin:admins){
+                User user = userRepo.findByEmail(admin.getEmail());
+                if (user != null)
+                {
+                    usersService.updateAdmin(admin, user);
+                }
+            }
             return adminService.listUpdate(admins);
         }
     }
@@ -285,7 +319,7 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            usersService.teamDelete(team);
             return teamService.delete(team.getTeam_name());
         }
     }
@@ -301,7 +335,7 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            usersService.teamUpdate(team);
             return teamService.update(team);
         }
     }
@@ -317,7 +351,9 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
+            for(Team team:teams){
+                usersService.teamUpdate(team);
+            }
             return teamService.listUpdate(teams);
         }
     }

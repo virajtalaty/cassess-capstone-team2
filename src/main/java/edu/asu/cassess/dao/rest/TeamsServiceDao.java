@@ -12,6 +12,7 @@ import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.repo.rest.TeamRepo;
 import edu.asu.cassess.service.rest.ChannelService;
 import edu.asu.cassess.service.rest.StudentsService;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,19 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-@Transactional
 public class TeamsServiceDao {
 
     @Autowired
     private TeamRepo teamRepo;
 
     @Autowired
+    private UserService usersService;
+
+    @Autowired
     private StudentsService studentsService;
 
     @Autowired
     private ChannelService channelsService;
-
 
     protected EntityManager entityManager;
 
@@ -127,16 +129,17 @@ public class TeamsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Team team:teams)
-            if(teamRepo.findOne(team.getTeam_name()) != null){
+        for(Team team:teams) {
+            List<Student> students = team.getStudents();
+            List<Channel> channels = team.getChannels();
+            if (teamRepo.findOne(team.getTeam_name()) != null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(team.getTeam_name() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-            }else{
-                List<Student> students = team.getStudents();
-                List<Channel> channels = team.getChannels();
+            } else {
+
                 teamRepo.save(team);
                 studentsService.listCreate(students);
                 channelsService.listCreate(channels);
@@ -146,6 +149,7 @@ public class TeamsServiceDao {
                     e.printStackTrace();
                 }
             }
+        }
         JSONObject returnJSON = new JSONObject();
         returnJSON.put("success", successArray);
         returnJSON.put("failure", failureArray);

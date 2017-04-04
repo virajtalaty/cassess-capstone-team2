@@ -5,7 +5,11 @@ import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +29,7 @@ public class StudentsServiceDao {
     @Autowired
     private StudentRepo studentRepo;
 
-    protected EntityManager entityManager;
+        protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -36,7 +40,6 @@ public class StudentsServiceDao {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     public <T> Object create(Student student) {
         System.out.println("Got into create");
         if(studentRepo.findOne(student.getEmail()) != null){
@@ -47,7 +50,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object update(Student student) {
         if(studentRepo.findOne(student.getEmail()) != null){
             studentRepo.save(student);
@@ -57,7 +59,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object find(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -67,7 +68,6 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public <T> Object delete(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -78,14 +78,12 @@ public class StudentsServiceDao {
         }
     }
 
-    @Transactional
     public List<Student> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
     public List<Student> listReadByTeam(String team_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
         query.setParameter(1, team_name);
@@ -93,7 +91,6 @@ public class StudentsServiceDao {
         return resultList;
     }
 
-    @Transactional
     public JSONObject listCreate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -119,7 +116,6 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public JSONObject listUpdate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -146,7 +142,6 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
-    @Transactional
     public <T> Object deleteByTeam(String team_name) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, team_name);

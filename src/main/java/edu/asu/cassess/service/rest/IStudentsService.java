@@ -2,6 +2,7 @@ package edu.asu.cassess.service.rest;
 
 import java.util.List;
 
+import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 
 import edu.asu.cassess.persist.entity.rest.Student;

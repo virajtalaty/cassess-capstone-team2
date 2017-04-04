@@ -21,6 +21,8 @@ public class Admin {
     @Column(name = "course")
     private String course;
 
+    @Transient
+    private String password;
 
     public Admin() {
     }
@@ -51,6 +53,14 @@ public class Admin {
             System.out.println("-------------------!!!!!!!!!!!!!!!!!!!!!!!!!! Course :" + COURSE_STRING);
         }
         this.course = course;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
