@@ -1,11 +1,13 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.asu.cassess.persist.entity.security.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name="courses")
@@ -14,30 +16,35 @@ public class Course {
 
     @Id
     @Column(name = "course")
-    private String course;
+    public String course;
 
-    @Column(name = "owner")
-    private String owner;
+    @Transient
+    public static String COURSE_STRING;
+
+    @Column(name = "github_owner")
+    protected String github_owner;
 
     @Column(name = "slack_token")
-    private String slack_token;
+    protected String slack_token;
 
     @Column(name = "github_token")
-    private String github_token;
+    protected String github_token;
 
     @Column(name = "taiga_token")
-    private String taiga_token;
+    protected String taiga_token;
+
+    @Column(name = "end_date")
+    protected Date end_date;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.EAGER)
+    protected List<Team> teams;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "course", fetch = FetchType.EAGER)
+    protected List<Admin> admins;
 
     public Course() {
-
-    }
-
-    public Course(String course, String owner, String slack_token, String github_token, String taiga_token) {
-        this.course = course;
-        this.owner = owner;
-        this.slack_token = slack_token;
-        this.github_token = github_token;
-        this.taiga_token = taiga_token;
     }
 
     public String getCourse() {
@@ -45,15 +52,24 @@ public class Course {
     }
 
     public void setCourse(String course) {
-        this.course = course;
+        COURSE_STRING = course;
+        this.course = COURSE_STRING;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getGithub_owner() {
+        return github_owner;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setGithub_owner(String github_owner) {
+        this.github_owner = github_owner;
+    }
+
+    public Date getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(Date end_date) {
+        this.end_date = end_date;
     }
 
     public String getSlack_token() {
@@ -79,6 +95,31 @@ public class Course {
     public void setTaiga_token(String taiga_token) {
         this.taiga_token = taiga_token;
     }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        for(Team team:teams){
+            team.setCourse(COURSE_STRING);
+        }
+        this.teams = teams;
+
+    }
+
+    public List<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<Admin> admins) {
+        for(Admin admin:admins){
+            admin.setCourse(COURSE_STRING);
+        }
+        this.admins = admins;
+    }
+
+
 
 
 }

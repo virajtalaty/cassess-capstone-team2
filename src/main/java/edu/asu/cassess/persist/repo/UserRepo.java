@@ -8,4 +8,5 @@ import edu.asu.cassess.persist.entity.security.User;
 public interface UserRepo extends JpaRepository<User, Long> {
     User findByLogin(String login);
 
+    User findByEmail(String email);
 }

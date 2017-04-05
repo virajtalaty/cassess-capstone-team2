@@ -1,14 +1,15 @@
 package edu.asu.cassess.dao.rest;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
-import edu.asu.cassess.persist.entity.taiga.Teams;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
+import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,12 @@ import java.util.List;
  */
 @Component
 @Transactional
-public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
+public class StudentsServiceDao {
 
     @Autowired
-    private StudentRepo studentDao;
+    private StudentRepo studentRepo;
 
-    protected EntityManager entityManager;
+        protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -46,6 +47,7 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         this.entityManager = entityManager;
     }
 
+<<<<<<< HEAD
     /**
      * Adds this student to the database.
      * 
@@ -53,16 +55,19 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return the student passed or message if student already exists
      */
     @Transactional
+=======
+>>>>>>> master
     public <T> Object create(Student student) {
         System.out.println("Got into create");
-        if(studentDao.findOne(student.getEmail()) != null){
+        if(studentRepo.findOne(student.getEmail()) != null){
             return new RestResponse(student.getEmail() + " already exists in database");
         }else{
-            studentDao.save(student);
+            studentRepo.save(student);
             return student;
         }
     }
 
+<<<<<<< HEAD
     /**
      * Update the database entry for this student with new information.
      * 
@@ -70,14 +75,17 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return the student passed or message if no such student exists in database
      */
     @Transactional
+=======
+>>>>>>> master
     public <T> Object update(Student student) {
-        if(studentDao.findOne(student.getEmail()) != null){
-            studentDao.save(student);
+        if(studentRepo.findOne(student.getEmail()) != null){
+            studentRepo.save(student);
             return student;
         }else{
             return new RestResponse(student.getEmail() + " does not exist in database");
         }
     }
+<<<<<<< HEAD
     
     /**
      * Finds student in database by email address.
@@ -86,8 +94,11 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return the student or a message if the student is not found
      */
     @Transactional
+=======
+
+>>>>>>> master
     public <T> Object find(String email) {
-        Student student = studentDao.findOne(email);
+        Student student = studentRepo.findOne(email);
         if(student != null){
             return student;
         }else{
@@ -95,6 +106,7 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         }
     }
 
+<<<<<<< HEAD
     /**
      * Delete the student record from the database associated with this email address.
      * 
@@ -102,15 +114,18 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return a message indicating success or no such database object
      */
     @Transactional
+=======
+>>>>>>> master
     public <T> Object delete(String email) {
-        Student student = studentDao.findOne(email);
+        Student student = studentRepo.findOne(email);
         if(student != null){
-            studentDao.delete(student);
+            studentRepo.delete(student);
             return new RestResponse(email + " has been removed from the database");
         }else{
             return new RestResponse(email + " does not exist in the database");
         }
     }
+<<<<<<< HEAD
     
     /**
      * List of all students.
@@ -119,12 +134,16 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @throws DataAccessException
      */
     @Transactional
+=======
+
+>>>>>>> master
     public List<Student> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
+<<<<<<< HEAD
     /**
      * List of students constrained by the course name provided.
      * 
@@ -207,19 +226,28 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return JSONObject of student information or message indicating entity already exists
      */
     @Transactional
+=======
+    public List<Student> listReadByTeam(String team_name) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
+        query.setParameter(1, team_name);
+        List<Student> resultList = query.getResultList();
+        return resultList;
+    }
+
+>>>>>>> master
     public JSONObject listCreate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for(Student student:students)
-            if(studentDao.findOne(student.getEmail()) != null){
+            if(studentRepo.findOne(student.getEmail()) != null){
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }else{
-                studentDao.save(student);
+                studentRepo.save(student);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(student)));
                 } catch (JsonProcessingException e) {
@@ -232,6 +260,7 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         return returnJSON;
     }
 
+<<<<<<< HEAD
     /**
      * Update student entities in database with information from students List.
      * 
@@ -239,19 +268,21 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
      * @return JSONObject of student information or message indicating entity does not exist
      */
     @Transactional
+=======
+>>>>>>> master
     public JSONObject listUpdate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Student student : students) {
-            if (studentDao.findOne(student.getEmail()) == null) {
+            if (studentRepo.findOne(student.getEmail()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                studentDao.save(student);
+                studentRepo.save(student);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(student)));
                 } catch (JsonProcessingException e) {
@@ -264,6 +295,7 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
         returnJSON.put("failure", failureArray);
         return returnJSON;
     }
+<<<<<<< HEAD
     
     /**
      * Delete all student entities in database associated with this course.
@@ -296,14 +328,20 @@ public class StudentsServiceDao extends GenericDAOImpl<Student, Long> {
     public <T> Object deleteByProject(String project_name) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE project_name = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, project_name);
+=======
+
+    public <T> Object deleteByTeam(String team_name) {
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
+        preQuery.setParameter(1, team_name);
+>>>>>>> master
         Student student = (Student) preQuery.getSingleResult();
         if(student != null){
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE project_name = ?1");
-            query.setParameter(1, project_name);
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE team_name = ?1");
+            query.setParameter(1, team_name);
             query.executeUpdate();
-            return new RestResponse("All students in project " + project_name + " have been removed from the database");
+            return new RestResponse("All students in project " + team_name + " have been removed from the database");
         }else{
-            return new RestResponse("No students in project " + project_name + " exist in the database");
+            return new RestResponse("No students in project " + team_name + " exist in the database");
         }
     }
 

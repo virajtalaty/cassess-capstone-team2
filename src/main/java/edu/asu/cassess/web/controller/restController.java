@@ -1,40 +1,159 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
-import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.rest.Student;
-import edu.asu.cassess.persist.entity.taiga.WeeklyTotals;
-import edu.asu.cassess.service.rest.ICourseService;
-import edu.asu.cassess.service.rest.IStudentsService;
 
+import edu.asu.cassess.persist.entity.rest.*;
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.service.rest.*;
+
+import edu.asu.cassess.service.security.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpringJavaAutowiringInspection")
 @RestController
 @RequestMapping(value = "/rest")
 @Api(description = "Nicest Provisioning API")
 public class restController {
 
 
-    @Autowired
-    private ICourseService courseService;
+
 
     @Autowired
-    private IStudentsService studentsService;
+    private CourseService courseService;
 
     @Autowired
-    ITaskTotalsQueryDao taskTotalService;
+    private TeamsService teamService;
+
+    @Autowired
+    private StudentsService studentService;
+
+    @Autowired
+    private AdminsService adminService;
+
+    @Autowired
+    private UserService usersService;
+
+    @Autowired
+    private ChannelService channelService;
+
+    @Autowired
+    private UserRepo userRepo;
+
+
+//-----------------------
+
+    //New CoursePackage REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/coursePackage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object newCoursePackage(@RequestBody Course coursePackage, HttpServletRequest request, HttpServletResponse response) {
+
+        if (coursePackage == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+            usersService.createUsersByAdmins(coursePackage.getAdmins());
+            for (Team team : (coursePackage.getTeams())) {
+                usersService.createUsersByStudents(team.getStudents());
+            }
+            return courseService.create(coursePackage);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/coursePackage", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object updateCoursePackage(@RequestBody Course coursePackage, HttpServletRequest request, HttpServletResponse response) {
+
+        if (coursePackage == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+            usersService.courseUpdate(coursePackage);
+            return courseService.update(coursePackage);
+        }
+    }
+
+
+    //New Student REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/student", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
+        if(student != null){
+            response.setStatus(HttpServletResponse.SC_OK);
+            User user = userRepo.findByEmail(student.getEmail());
+            if(user != null)
+            {
+                usersService.deleteUser(user);
+            }
+            return studentService.delete(student.getEmail());
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/student", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object updateStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
+        if (student == null) {
+
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+            User user = userRepo.findByEmail(student.getEmail());
+            if(user != null)
+            {
+                usersService.updateStudent(student, user);
+            }
+            return studentService.update(student);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/list/student", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> List<Student> getStudentList(HttpServletRequest request, HttpServletResponse response) {
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            return studentService.listReadAll();
+        }
+
+    //New Course REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/course", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteCourse(@RequestBody Course course, HttpServletRequest request, HttpServletResponse response) {
+
+        if (course == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        } else {
+            usersService.courseDelete(course);
+            response.setStatus(HttpServletResponse.SC_OK);
+            Object object = courseService.delete(course.getCourse());
+            return object;
+        }
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/course", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,215 +166,209 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
+            usersService.courseUpdate(course);
             return courseService.update(course);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/course", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object newCourse(@RequestBody Course course, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object readCourseList(HttpServletRequest request, HttpServletResponse response) {
 
-        if (course == null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            return courseService.listRead();
+        }
+
+    //New Slack Channel REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/slack_channel", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteChannel(@RequestBody Channel channel, HttpServletRequest request, HttpServletResponse response) {
+        if (channel == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return courseService.create(course);
+
+            return channelService.delete(channel.getCourse());
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course", params = "course", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/slack_channel", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object getCourse(@RequestParam("course") String course, HttpServletRequest request, HttpServletResponse response) {
-
-        if (course == null) {
+    <T> Object updateChannel(@RequestBody Channel channel, HttpServletRequest request, HttpServletResponse response) {
+        if (channel == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return courseService.read(course);
+
+            return channelService.update(channel);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course", params = "course", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/slack_channel", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object deleteCourse(@RequestParam("course") String course, HttpServletRequest request, HttpServletResponse response) {
-
-        if (course == null) {
+    <T> Object updateChannelList(@RequestBody List<Channel> channels, HttpServletRequest request, HttpServletResponse response) {
+        if (channels == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            //System.out.println("Tool: " + tool);
-            return courseService.delete(course);
+
+            return channelService.listUpdate(channels);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course_list", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/slack_channel", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    String updateCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    <T> Object readChannelList(HttpServletRequest request, HttpServletResponse response) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return channelService.listRead();
+        }
 
-        if (courses == null) {
+    //New Admin REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/admin", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteAdmin(@RequestBody Admin admin, HttpServletRequest request, HttpServletResponse response) {
+        if (admin == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-                return courseService.listUpdate(courses).toString();
+            User user = userRepo.findByEmail(admin.getEmail());
+            if(user != null)
+            {
+                usersService.deleteUser(user);
+            }
+            return adminService.delete(admin.getEmail());
         }
-
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    String newCourses(@RequestBody ArrayList<Course> courses, HttpServletRequest request, HttpServletResponse response) {
-
-        if (courses == null) {
+    <T> Object updateAdmin(@RequestBody Admin admin, HttpServletRequest request, HttpServletResponse response) {
+        if (admin == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return courseService.listCreate(courses).toString();
+            User user = userRepo.findByEmail(admin.getEmail());
+            if (user != null)
+            {
+                usersService.updateAdmin(admin, user);
+            }
+            return adminService.update(admin);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/course_list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/admin", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> List<Course> getAllCourses(HttpServletRequest request, HttpServletResponse response) {
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        return courseService.listRead();
-    }
-
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> Object updateStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
-
-        if (student == null) {
+    <T> Object updateAdmin(@RequestBody List<Admin> admins, HttpServletRequest request, HttpServletResponse response) {
+        if (admins == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.update(student);
+            for(Admin admin:admins){
+                User user = userRepo.findByEmail(admin.getEmail());
+                if (user != null)
+                {
+                    usersService.updateAdmin(admin, user);
+                }
+            }
+            return adminService.listUpdate(admins);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/admin", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object newStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object readAdminList(HttpServletRequest request, HttpServletResponse response) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return adminService.listReadAll();
+        }
 
-        if (student == null) {
+
+    //New Team REST API Operations
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/team", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteTeam(@RequestBody Team team, HttpServletRequest request, HttpServletResponse response) {
+
+        if (team == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.create(student);
+            usersService.teamDelete(team);
+            return teamService.delete(team.getTeam_name());
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/team", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object getStudent(@RequestParam(value = "email", required = true) String email, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object updateTeam(@RequestBody Team team, HttpServletRequest request, HttpServletResponse response) {
 
-        if (email == null) {
+        if (team == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.find(email);
+            usersService.teamUpdate(team);
+            return teamService.update(team);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/team", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    String updateStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object updateTeamList(@RequestBody List<Team> teams, HttpServletRequest request, HttpServletResponse response) {
 
-        if (students == null) {
+        if (teams == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listUpdate(students).toString();
+            for(Team team:teams){
+                usersService.teamUpdate(team);
+            }
+            return teamService.listUpdate(teams);
         }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/list/team", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    String newStudentList(@RequestBody List<Student> students, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object readTeamList(HttpServletRequest request, HttpServletResponse response) {
 
-        if (students == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listCreate(students).toString();
+
+            return teamService.listReadAll();
         }
-    }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student_list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> List<Student> getStudents(@RequestParam(value = "course", required = false) String course,
-                                  @RequestParam(value = "project", required = false) String project, HttpServletRequest request, HttpServletResponse response) {
-
-        if(course != null){
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadByCourse(course);
-        }else if(project != null){
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadByProject(project);
-        }else{
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.listReadAll();
-        }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/student", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    <T> Object delete(@RequestParam(value = "project", required = false) String project, @RequestParam(value = "email", required = false) String email,
-                                       @RequestParam(value = "course", required = false) String course, HttpServletRequest request, HttpServletResponse response) {
-        if(project != null){
-            System.out.println("Project: " + project);
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.deleteByProject(project);
-        }else if(course != null){
-            System.out.println("Course: " + course);
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.deleteByCourse(course);
-        }else if(email != null){
-            System.out.println("Email: " + email);
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentsService.delete(email);
-        }else{
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        }
-    }
 
 }
 

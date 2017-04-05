@@ -5,74 +5,86 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Student;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-	@Id
-	@Column(name = "id", nullable = false)
-	private Long id;
+    @Id
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "first_name", nullable = false)
-	private String firstName;
 
-	@Column(name = "family_name", nullable = false)
-	private String familyName;
+    @Column(name = "first_name")
+    private String firstName;
 
-	@Column(name = "e_mail", nullable = false)
-	private String email;
+    @Column(name = "family_name")
+    private String familyName;
 
-	@Column(name = "phone", nullable = false)
-	private String phone;
+    @Column(name = "e_mail")
+    private String email;
 
-	@Column(name = "language", nullable = false)
-	private String language;
-	
-	@Column(name = "id_picture")
-	private String pictureId;
+    @Transient
+    private String phone;
 
-	@Column(name = "login", nullable = false)
-	private String login;
+    @Column(name = "language")
+    private String language;
 
-	@Column(name = "password", nullable = false)
-	private String password;
+    @Transient
+    private String pictureId;
 
-	@Column(name = "birth_date")
-	private Date birthDate;
+    @Column(name = "login")
+    private String login;
 
-	@Column(name = "enabled", columnDefinition = "BIT", length = 1)
-	private Boolean enabled;
+    @Column(name = "password")
+    private String password;
+
+    @Transient
+    private Date birthDate;
+
+    @Column(name = "enabled", columnDefinition = "BIT", length = 1)
+    private Boolean enabled;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_authority", joinColumns = { @JoinColumn(name = "id_user", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "id_authority", table = "authority", referencedColumnName = "id") })
 	private Set<Authority> authorities = new HashSet<Authority>();
 
-	public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled) {
-		this.firstName = firstName;
-		this.familyName = familyName;
-		this.email = email;
-		this.phone = phone;
-		this.language = language;
-		this.pictureId = pictureId;
-		this.login = login;
-		this.password = password;
-		this.birthDate = birthDate;
-		this.enabled = enabled;
-	}
+    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled) {
+        this.firstName = firstName;
+        this.familyName = familyName;
+        this.email = email;
+        this.phone = phone;
+        this.language = language;
+        this.pictureId = pictureId;
+        this.login = login;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.enabled = enabled;
+    }
 
-    public User(){}
+    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled, long id) {
+        this.id = id;
+        this.firstName = firstName;
+        this.familyName = familyName;
+        this.email = email;
+        this.phone = phone;
+        this.language = language;
+        this.pictureId = pictureId;
+        this.login = login;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.enabled = enabled;
+        System.out.print("!!!!!!!!!!!!!!!!!_-----------------------------Created Full User");
+    }
+
+    public User(){
+
+    }
 
 	public String getFirstName() {
 		return firstName;
@@ -114,14 +126,6 @@ public class User {
 		this.password = password;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
-
 	public Set<Authority> getAuthorities() {
 		return authorities;
 	}
@@ -154,14 +158,6 @@ public class User {
 		this.language = language;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
 	public String getPictureId() {
 		return pictureId;
 	}
@@ -169,8 +165,22 @@ public class User {
 	public void setPictureId(String pictureId) {
 		this.pictureId = pictureId;
 	}
-	
-	
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
 
 }

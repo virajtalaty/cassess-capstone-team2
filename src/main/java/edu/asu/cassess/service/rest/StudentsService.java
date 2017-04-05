@@ -1,8 +1,9 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
-import edu.asu.cassess.persist.entity.taiga.Slugs;
+import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -15,72 +16,62 @@ public class StudentsService implements IStudentsService {
     @EJB
     private StudentsServiceDao studentsDao;
 
+    @Override
     public <T> Object create(Student student){
 
         return studentsDao.create(student);
     }
 
+    @Override
     public <T> Object update(Student student){
 
         return studentsDao.update(student);
     }
 
+    @Override
     public <T> Object find(String email){
 
         return studentsDao.find(email);
     }
 
+    @Override
     public <T> Object delete(String email){
 
         return studentsDao.delete(email);
 
     }
 
+    @Override
     public <T> List<Student> listReadAll(){
 
         return studentsDao.listReadAll();
 
     }
 
-    public <T> List<Student> listReadByCourse(String course){
-
-        return studentsDao.listReadByCourse(course);
-
+    @Override
+    public <T> List<Student> listReadByTeam(String team_name) {
+        return studentsDao.listReadByTeam(team_name);
     }
 
-    public <T> List<Student> listReadByProject(String project_name){
-
-        return studentsDao.listReadByProject(project_name);
-
-    }
-
+    @Override
     public JSONObject listUpdate(List<Student> students){
 
         return studentsDao.listUpdate(students);
 
     }
 
+    @Override
     public JSONObject listCreate(List<Student> students){
 
         return studentsDao.listCreate(students);
 
     }
 
-    public <T> Object deleteByCourse(String course){
+    @Override
+    public <T> Object deleteByTeam(String team_name){
 
-        return studentsDao.deleteByCourse(course);
+        return studentsDao.deleteByTeam(team_name);
 
-    }
-
-    public <T> Object deleteByProject(String project_name){
-
-        return studentsDao.deleteByProject(project_name);
-
-    }
-
-    public List<Slugs> listGetSlugs(String course) {
-
-        return studentsDao.listGetSlugs(course);
     }
 
 }

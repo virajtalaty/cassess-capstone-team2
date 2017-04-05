@@ -5,10 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * Created by Thomas on 3/27/2017.
- */
-
 @Entity
 @Table(name = "users_authority")
 public class UsersAuthority {
@@ -24,6 +20,7 @@ public class UsersAuthority {
     }
 
     public UsersAuthority(Long id_user, Long id_authority) {
+      
         this.id_user = id_user;
         this.id_authority = id_authority;
     }
