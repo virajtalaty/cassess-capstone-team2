@@ -23,6 +23,8 @@ import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 
 @Configuration
+//Disabled for now as this annotation creates proxy beans that do not
+//function well with session-based objects needed for Angular<->Spring communication
 //@EnableTransactionManagement(proxyTargetClass=true)
 @ComponentScan({"edu.asu.cassess.dao", "edu.asu.cassess.persist", "edu.asu.cassess.service"})
 @EnableJpaRepositories("edu.asu.cassess")
@@ -80,6 +82,8 @@ public class DBConfig {
 	
 	Properties additionalProperties() {
 		Properties properties = new Properties();
+		//validate forces schema validation on program execution; use create to recreate schema and all tables
+		//based on entities; create will overwrite any existing data
 		properties.setProperty("hibernate.hbm2ddl.auto", "validate");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 	  	return properties;

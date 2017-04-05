@@ -11,7 +11,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Subselect;
 
 /**
- * Created by Thomas on 2/11/2017.
+ * Created by Thomas on 2/11/2017. Used to populate authority during user registration.
+ * @author tjjohn1
  */
 @Entity
 @Subselect("SELECT * FROM taskdata")

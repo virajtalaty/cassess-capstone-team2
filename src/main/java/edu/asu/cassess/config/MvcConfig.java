@@ -18,6 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @Import({SecurityConfig.class})
 @EnableWebMvc
+//Swagger is used to auto-create REST API documentation
 @EnableSwagger2
 @ComponentScan(basePackages = { "edu.asu.cassess.web.controller" })
 @EnableAspectJAutoProxy(proxyTargetClass = true)
@@ -27,7 +28,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
     public ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
         return new ResourceUrlEncodingFilter();
     }
-
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -44,7 +44,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         configurer.enable();
     }
 
-
     @Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
@@ -52,6 +51,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         resource.setDefaultEncoding("UTF-8");
         return resource;
     }
-
-
 }
