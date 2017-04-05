@@ -17,15 +17,9 @@
     </div>-->
     </div>
     <!-- Chart Area -->
-    <div>
-         <div ng-controller="charts">
-            <div fusioncharts
-                 width="800"
-                 height="500"
-                 type="column2d"
-                 dataSource="{{myDataSource}}" >
-            </div>
-        </div>
+    <div ng-controller='charts'>
+        <nvd3 options='options' data='data'></nvd3>
     </div>
+
 
 </div>
