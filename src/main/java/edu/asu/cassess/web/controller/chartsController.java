@@ -1,7 +1,5 @@
 package edu.asu.cassess.web.controller;
 
-//import com.cassess.service.ApiService;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import edu.asu.cassess.persist.entity.github.CommitData;
@@ -18,13 +16,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-@JsonAutoDetect
+//@JsonAutoDetect
 public class chartsController {
 
     @Autowired
@@ -32,18 +28,21 @@ public class chartsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/charts", produces = "application/json")
-    public  Map<String, Object> homeResource(){
-    //public List<CommitData> homeResource(){
+    public  Map<String, Object> chartsResource(){
 
+        ///Creates an empty initial String
         String jsonString = "";
+
+        ///Creates a hash map
         Map<String, Object> model = new HashMap<>();
 
-        //model.put("placeholder", "This is placeholder text");
 
-        //return model;
-
+        ///Gets the commit data as a whole
         List<CommitData> chartData = gatherGitHubData.getCommitList();
 
+        //String jsonString = getJSONString(chartData);
+
+        /// Creates chart data in the form [{<data1>},{<data2>}]
         ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
         try {
@@ -52,149 +51,72 @@ public class chartsController {
             e.printStackTrace();
         }
 
+
+        ///Creates a counter to check the number of objects for a user
         int counter = 0;
 
+        /// Create returned collections that will be arrays in the json object
         List<List<Integer>> commitArray = new ArrayList<>();
         List<String> weeks = new ArrayList<>();
+
+        /// Read in the chart Data as a JSON array
         JSONArray jsonarray = new JSONArray(jsonString);
 
+        /// Check Each object in the JSON array for contributor name
         for (int i = 0; i < jsonarray.length(); i++) {
+            /// Separates each  JSON object out of the JSON array.
             JSONObject jsonObject = jsonarray.getJSONObject(i);
             JSONObject commitDataPK = jsonObject.getJSONObject("commitDataPK");
-            //String week = commitDataPK.getString("date");
+            ///Gets the username or contributor from chartData
             String username = commitDataPK.getString("username");
-            //int commits = jsonObject.getInt("commits");
-            //Integer commitsObj = new Integer(commits);
 
-            ///Check for individual contributor (Change to contributor)
+            ///Makes sure username is equal to contributor
             if(username.equals("tjjohn1")){
+                /// counts the number of objects for that contributor
                 counter++;
+                /// Gets the week they committed
                 String week = commitDataPK.getString("date");
+                /// Gets the number of commits they made
                 int commits = jsonObject.getInt("commits");
                 Integer commitsObj = new Integer(commits);
 
+                ///Creates an array of [x,y] data points
                 List<Integer> dataPoints = new ArrayList<Integer>();
+                ///Adds the x
                 dataPoints.add(new Integer(counter));
+                ///Adds the y
                 dataPoints.add(commitsObj);
+                /// Adds the array of data points to an array
                 commitArray.add(dataPoints);
-
+                /// Adds a week to the array for weeks
                 weeks.add(week);
             }
         }
 
-        model.put("commitArray", commitArray);
+        ///Returns the data in a hashmap
         model.put("weeks", weeks);
-
-        //ArrayList<Object> chartDataArray = createDataChartDataArray(gitHubData, "tjjohn1");
+        model.put("values", commitArray);
+        model.put("key", "GitHubData");
 
         return model;
     }
 
-   /* private ArrayList<String> seperateObjects(String gitHubData, String stringPattern, char characterEnd) {
+/*
+    private <T> String getJSONString(List<T> passedInList) {
 
-        ArrayList<String> returnedList = new ArrayList<>();
+        ///Creates an empty initial String
+        String jsonString = "";
 
-        Pattern ptrn= Pattern.compile(stringPattern);
-
-        Matcher matcher = ptrn.matcher(gitHubData);
-
-        int dataEnd = 0;
-
-        String returnedListItem;
-
-        while(matcher.find()){
-
-            int dataStart = matcher.start();
-
-            int goTwice = 0;
-
-            for (int i = dataStart; i < gitHubData.length();  i++){
-                if (gitHubData.charAt(i) == characterEnd) {
-                    dataEnd = i+1;
-                    goTwice += 1;
-                    if(goTwice > 1) {
-                        break;
-                    }
-                }
-            }
-
-            returnedListItem = gitHubData.substring(dataStart, dataEnd);
-            returnedList.add(returnedListItem);
-        }
-
-        return returnedList;
-    }
-
-    private String parseForItems(String gitHubData, String stringPattern, char characterEnd) {
-
-        String returnedData = "";
-
-        int stringLength = stringPattern.length();
-
-        Pattern ptrn= Pattern.compile(stringPattern);
-
-        Matcher matcher = ptrn.matcher(gitHubData);
-
-        while(matcher.find()){
-
-            int dataStart= matcher.start() + stringLength;
-
-            int dataEnd = 0;
-
-            for (int i = dataStart; i < gitHubData.length();  i++){
-                if (gitHubData.charAt(i) == characterEnd) {
-                    dataEnd = i;
-                    break;
-                }
-            }
-
-            returnedData = gitHubData.substring(dataStart, dataEnd);
-        }
-
-        return returnedData;
-    }
-
-    private Object createDataChartObject(String listItem) {
-
-        String stringPattern2 = "date=";
-
-        String Day = parseForItems(listItem, stringPattern2, ',');
-
-        String stringPattern3 = "commits=";
-
-        String commit = parseForItems(listItem, stringPattern3, ',');
-
-        JSONObject jsonObj = new JSONObject();
-
-        jsonObj.put("label", Day);
-        jsonObj.put("value", commit);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        Object ob = new Object();
+        /// Creates chart data in the form [{<data1>},{<data2>}]
+        ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
         try {
-            ob = mapper.readValue(jsonObj.toString(), Object.class);
-            //System.out.println(ob.toString());
+            jsonString = mapper.writeValueAsString(passedInList);
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        return ob;
+        return jsonString;
     }
-
-    private ArrayList<Object> createDataChartDataArray(String commitData, String userName) {
-
-        ArrayList<Object> returnedDataChartArray = new ArrayList<>();
-
-        ArrayList<String> listItems = seperateObjects(commitData, "CommitDataPK", '}');
-
-        for (String item : listItems){
-            if(item.contains("username='"+userName)) {
-                returnedDataChartArray.add(createDataChartObject(item));
-            }
-        }
-
-        return returnedDataChartArray;
-    }*/
+*/
 }
