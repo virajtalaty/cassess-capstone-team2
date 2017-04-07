@@ -253,14 +253,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     };
 } ]).controller('charts', function($scope, $http) {
         var self = this;
-        //var jsonString;
         $http.get("./charts").then(function (response) {
 
             self.chartData = response.data;
 
             $scope.options = {
                 chart: {
-                    type: 'cumulativeLineChart',
+                    type: 'lineChart',
                     height: 450,
                     margin : {
                         top: 20,
@@ -268,17 +267,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         bottom: 50,
                         left: 65
                     },
+
                     x: function(d){ return d[0]; },
                     y: function(d){ return d[1]; },
-                    //average: function(d) { return d.mean/100; },
 
                     color: d3.scale.category10().range(),
-                    duration: 300,
                     useInteractiveGuideline: true,
-                    clipVoronoi: false,
 
                     xAxis: {
-                        axisLabel: 'X Axis',
+                        axisLabel: 'Weeks',
                         tickFormat: function(d) {
                             return d3.time.format('%m/%d/%y')(new Date(d))
                         },
@@ -287,8 +284,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     },
 
                     yAxis: {
-                        axisLabel: 'Y Axis',
-                        tickValues: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        axisLabel: 'Commits',
                         axisLabelDistance: 0
                     }
                 }
