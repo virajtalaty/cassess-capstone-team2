@@ -5,11 +5,7 @@ import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.asu.cassess.persist.entity.security.User;
-import edu.asu.cassess.persist.repo.UserRepo;
-import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
-import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +18,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+
+/**
+ * REST API implementation for student-based services.
+ * 
+ * @author tjjohn1
+ *
+ */
 @Component
 @Transactional
 public class StudentsServiceDao {
@@ -40,6 +43,13 @@ public class StudentsServiceDao {
         this.entityManager = entityManager;
     }
 
+    /**
+     * Adds this student to the database.
+     * 
+     * @param student the student to add
+     * @return the student passed or message if student already exists
+     */
+    @Transactional
     public <T> Object create(Student student) {
         System.out.println("Got into create");
         if(studentRepo.findOne(student.getEmail()) != null){
@@ -50,6 +60,13 @@ public class StudentsServiceDao {
         }
     }
 
+    /**
+     * Update the database entry for this student with new information.
+     * 
+     * @param student the student to update
+     * @return the student passed or message if no such student exists in database
+     */
+    @Transactional
     public <T> Object update(Student student) {
         if(studentRepo.findOne(student.getEmail()) != null){
             studentRepo.save(student);
@@ -58,7 +75,14 @@ public class StudentsServiceDao {
             return new RestResponse(student.getEmail() + " does not exist in database");
         }
     }
-
+    
+    /**
+     * Finds student in database by email address.
+     * 
+     * @param email the string (email address) to search
+     * @return the student or a message if the student is not found
+     */
+    @Transactional
     public <T> Object find(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -68,6 +92,14 @@ public class StudentsServiceDao {
         }
     }
 
+
+    /**
+     * Delete the student record from the database associated with this email address.
+     * 
+     * @param email the string (email address) used to find student
+     * @return a message indicating success or no such database object
+     */
+    @Transactional
     public <T> Object delete(String email) {
         Student student = studentRepo.findOne(email);
         if(student != null){
@@ -78,12 +110,25 @@ public class StudentsServiceDao {
         }
     }
 
+    /**
+     * List of all students from database.
+     * 
+     * @return List of all Student objects
+     * @throws DataAccessException
+     */
     public List<Student> listReadAll() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
 
+    /**
+     * List of all students on the given team.
+     * 
+     * @param team_name name of the team to filter by
+     * @return List of Student objects where student team is team_name
+     * @throws DataAccessException
+     */
     public List<Student> listReadByTeam(String team_name) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
         query.setParameter(1, team_name);
@@ -91,6 +136,12 @@ public class StudentsServiceDao {
         return resultList;
     }
 
+    /**
+     * Adds students to the database.
+     * 
+     * @param students List of Student objects to add
+     * @return JSONObject of student information and success or failure messages.
+     */
     public JSONObject listCreate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -116,6 +167,12 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
+    /**
+     * Update database records for students.
+     * 
+     * @param students List of Student objects to update
+     * @return JSONObject of student information and success or failure messages.
+     */
     public JSONObject listUpdate(List<Student> students) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
@@ -142,6 +199,12 @@ public class StudentsServiceDao {
         return returnJSON;
     }
 
+    /**
+     * Deletes all student records from database associated with this team.
+     * 
+     * @param team_name name of team to filter by
+     * @return RestResponse indicating success or failure
+     */
     public <T> Object deleteByTeam(String team_name) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
         preQuery.setParameter(1, team_name);
