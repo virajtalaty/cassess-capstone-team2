@@ -253,9 +253,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     };
 } ]).controller('charts', function($scope, $http) {
         var self = this;
-        $http.get("./charts").then(function (response) {
+        $http.get("./GitHubIndividualCommitChart").then(function (response) {
 
-            self.chartData = response.data;
+            $scope.chartData = response.data;
 
             $scope.options = {
                 chart: {
@@ -292,4 +292,79 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.data = [response.data];
         });
+
+    $http.get("./TaigaBarGraph").then(function (response) {
+
+        self.chartData = response.data;
+
+        $scope.options = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 600,
+                margin : {
+                    top: 20,
+                    right: 20,
+                    bottom: 60,
+                    left: 45
+                },
+                clipEdge: true,
+                staggerLabels: true,
+                transitionDuration: 1000,
+                tooltips: true,
+                tooltipContent: function (key, x, y, e, graph) {
+                    return '<p>' + key + ': ' + y + '</p>';
+                },
+                stacked: true,
+                showControls: false,
+                xAxis: {
+                    axisLabel: 'Time',
+                    showMaxMin: true,
+                    tickFormat: function(d) {return d;}
+                },
+                yAxis: {
+                    axisLabel: 'Number of emails',
+                    axisLabelDistance: 100,
+                    tickFormat: function(d){
+                        return d3.format(',.f')(d);
+                    }
+                }
+            }
+        };
+
+        /*$scope.data = generateData();
+
+        function generateData() {
+            var values = [];
+            var values0 =[];
+            var values1 = [];
+            //change number of bars here by editing '90'//
+            for (var h=0; h<90; h++) {
+                //replace the y values with your own values//
+                values.push({x: h, y: Math.random()+1});
+                values0.push({x: h, y: Math.sqrt(h)/2});
+                values1.push({x: h, y: Math.abs(h-18)})
+            }
+
+            return [{
+                key: 'Sent',
+                color: '#bcbd22',
+                values: values
+                },
+                {
+                    key: 'Received',
+                    color: '#1f77b4',
+                    values: values0
+                },
+                {
+                    key: 'Spam',
+                    color: 'black',
+                    values: values1
+                }
+            ];
+        }*/
+
+        $scope.data = [response.data];
+    });
+
 });

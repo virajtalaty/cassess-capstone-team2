@@ -29,8 +29,8 @@ public class chartsController {
     private ChartsService chartsService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/charts", produces = "application/json")
-    public  Map<String, Object> chartsResource(){
+    @GetMapping(value = "/GitHubIndividualCommitChart", produces = "application/json")
+    public  Map<String, Object> gitHubIndividualCommitChartsResource(){
 
         ///Creates a hash map
         Map<String, Object> model = new HashMap<>();
@@ -49,4 +49,27 @@ public class chartsController {
 
         return model;
     }
+/*
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/TaigaBarGraph", produces = "application/json")
+    public  Map<String, Object> TaigaBarGraphChartsResource(){
+
+        ///Creates a hash map
+        Map<String, Object> model = new HashMap<>();
+
+        ///Gets the commit data as a whole
+        List<CommitData> chartData = gatherGitHubData.getCommitList();
+
+        //Converts the List to JSON String
+        String jsonString = chartsService.getJSONString(chartData);
+
+        /// Create returned collections that will be arrays in the json object
+        List<List<Long>> commitArray = chartsService.getGitHubChartDataPoints(jsonString, "tjjohn1");
+
+        model.put("values", commitArray);
+        model.put("key", "GitHubData");
+
+        return model;
+    }
+*/
 }
