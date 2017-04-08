@@ -1,6 +1,9 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
+import edu.asu.cassess.model.Taiga.DisplayAllTasks;
 import edu.asu.cassess.persist.entity.github.CommitData;
+import edu.asu.cassess.persist.entity.taiga.WeeklyTotals;
 import edu.asu.cassess.service.charts.ChartsService;
 import edu.asu.cassess.service.github.GatherGitHubData;
 
@@ -21,6 +24,9 @@ public class chartsController {
 
     ///Keeps track of the timezone for Phoenix
     private final ZoneId zoneId = ZoneId.of("America/Phoenix");
+
+    @Autowired
+    ITaskTotalsQueryDao iTaskTotalsQueryDao;
 
     @Autowired
     private GatherGitHubData gatherGitHubData;
@@ -49,7 +55,7 @@ public class chartsController {
 
         return model;
     }
-/*
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/TaigaBarGraph", produces = "application/json")
     public  Map<String, Object> TaigaBarGraphChartsResource(){
@@ -57,19 +63,13 @@ public class chartsController {
         ///Creates a hash map
         Map<String, Object> model = new HashMap<>();
 
-        ///Gets the commit data as a whole
-        List<CommitData> chartData = gatherGitHubData.getCommitList();
+        List<DisplayAllTasks> tasksRecords = iTaskTotalsQueryDao.getTaskTotals("Christopher Moretti");
 
-        //Converts the List to JSON String
-        String jsonString = chartsService.getJSONString(chartData);
+        List<WeeklyTotals> tasksProgress = iTaskTotalsQueryDao.getWeeklyTasks("Christopher Moretti");
 
-        /// Create returned collections that will be arrays in the json object
-        List<List<Long>> commitArray = chartsService.getGitHubChartDataPoints(jsonString, "tjjohn1");
-
-        model.put("values", commitArray);
-        model.put("key", "GitHubData");
+        model.put("taskRecords", tasksRecords);
+        model.put("tasksProgress", tasksProgress);
 
         return model;
     }
-*/
 }
