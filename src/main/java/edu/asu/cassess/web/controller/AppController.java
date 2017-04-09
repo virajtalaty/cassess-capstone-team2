@@ -1,8 +1,6 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.model.Taiga.CourseList;
-import edu.asu.cassess.model.Taiga.DisplayAllTasks;
-import edu.asu.cassess.model.Taiga.TeamNames;
+import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.service.rest.TeamsService;
@@ -49,6 +47,71 @@ public class AppController {
 
     @Autowired
     private TaskDataService taskService;
+
+
+    //New Charting Query Based Methods for Sprint 4
+    @ResponseBody
+    @RequestMapping(value = "/taiga/studentTasks", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<DailyTaskTotals>> getStudentTasks(@RequestHeader(name = "project", required = true) String project,
+                                                          @RequestHeader(name = "student", required = true) String student,
+                                                          @RequestHeader(name = "weekBeginning", required = true) String weekBeginning,
+                                                          @RequestHeader(name = "weekEnding", required = true) String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(weekBeginning, weekEnding, project, student);
+        return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/taiga/projectTasks", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<DailyTaskTotals>> getProjectTasks(@RequestHeader(name = "project", required = true) String project,
+                                                          @RequestHeader(name = "weekBeginning", required = true) String weekBeginning,
+                                                          @RequestHeader(name = "weekEnding", required = true) String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByProject(weekBeginning, weekEnding, project);
+        return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/taiga/studentActivity", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<WeeklyUpdateActivity>> getStudentActivity(@RequestHeader(name = "project", required = true) String project,
+                                                          @RequestHeader(name = "student", required = true) String student, String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyUpdateActivity> activityList = (List<WeeklyUpdateActivity>) taskTotalService.getWeeklyUpdatesByStudent(project, student);
+        return new ResponseEntity<List<WeeklyUpdateActivity>>(activityList, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/taiga/projectActivity", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<WeeklyUpdateActivity>> getProjectActivity(@RequestHeader(name = "project", required = true) String project,
+                                                                   String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyUpdateActivity> activityList = (List<WeeklyUpdateActivity>) taskTotalService.getWeeklyUpdatesByProject(project);
+        return new ResponseEntity<List<WeeklyUpdateActivity>>(activityList, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/taiga/projectIntervals", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<WeeklyIntervals>> getProjectIntervals(@RequestHeader(name = "project", required = true) String project,
+                                                                  String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) taskTotalService.getWeeklyIntervalsByProject(project);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/taiga/studentIntervals", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<WeeklyIntervals>> getStudentIntervals(@RequestHeader(name = "project", required = true) String project,
+                                                              @RequestHeader(name = "student", required = true) String student,
+                                                              String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) taskTotalService.getWeeklyIntervalsByStudent(project, student);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
+    }
+
+    //End of New Charting Methods for Sprint 4
+
+
+
 
     @ResponseBody
     @RequestMapping(value = "/taigaProgress", method = RequestMethod.POST)

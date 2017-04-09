@@ -1,6 +1,9 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.model.Taiga.DailyTaskTotals;
 import edu.asu.cassess.model.Taiga.DisplayAllTasks;
+import edu.asu.cassess.model.Taiga.WeeklyIntervals;
+import edu.asu.cassess.model.Taiga.WeeklyUpdateActivity;
 import org.springframework.dao.DataAccessException;
 
 import edu.asu.cassess.persist.entity.taiga.TaskTotals;
@@ -40,4 +43,16 @@ public interface ITaskTotalsQueryDao {
      * @throws DataAccessException
      */
     List<WeeklyTotals> getWeeklyTasks(String fullName) throws DataAccessException;
+
+    List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String project);
+
+    List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String project, String student);
+
+    List<WeeklyIntervals> getWeeklyIntervalsByStudent(String project, String student);
+
+    List<WeeklyIntervals> getWeeklyIntervalsByProject(String project);
+
+    List<WeeklyUpdateActivity> getWeeklyUpdatesByProject(String project);
+
+    List<WeeklyUpdateActivity> getWeeklyUpdatesByStudent(String project, String student);
 }
