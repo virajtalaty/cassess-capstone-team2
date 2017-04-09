@@ -3,13 +3,11 @@
 var myapp = angular
     .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit']);
 
-
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
     user: 'user'
 });
-
 
 myapp.config(function ($routeProvider, USER_ROLES) {
 
@@ -50,9 +48,9 @@ myapp.config(function ($routeProvider, USER_ROLES) {
                 loginRequired: true,
                 authorizedRoles: [USER_ROLES.admin]
             }
-    }).when('/course', {
+    }).when('/course/:course_id', {
         templateUrl: 'partials/course.html',
-        controller: 'TaigaAdmin',
+        controller: 'CourseController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.all]

@@ -78,6 +78,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
     })
+    .controller('TabController', ['$scope', function($scope) {
+        $scope.tab = 1;
+m
+        $scope.setTab = function (newTab) {
+            $scope.tab = newTab;
+        };
+
+        $scope.isSet = function (tabNum) {
+            return $scope.tab === tabNum;
+        };
+    }])
     .controller('RegistrationController', [ '$scope', '$location', '$http', '$window', function($scope, $location, $http, $window) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
@@ -110,13 +121,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
     } ] )
-    .controller('CourseSelectController', function ($scope, $location, $http) {
-        $scope.course = {};
-        $scope.init = function() {
-            $http.get('url/' + $location.search('course'), function(response) {
-                $scope.course = response;
-            })
-        }
+    .controller('CourseController', function ($scope, $routeParams, $http) {
+        $scope.courseid=$routeParams.course_id;
+
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+
+        $http({
+            url : './taigaCourses',
+            method : "GET"
+        }).then(function(response) {
+            console.log("Worked!");
+            //console.log(response.data);
+            $scope.courses = response.data;
+        });
     })
     .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {
 
