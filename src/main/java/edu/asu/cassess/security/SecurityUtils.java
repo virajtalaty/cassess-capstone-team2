@@ -1,15 +1,18 @@
 package edu.asu.cassess.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.asu.cassess.model.Error;
 import edu.asu.cassess.model.Response;
 
+import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.repo.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,10 +21,14 @@ import java.io.PrintWriter;
 /**
  * Utility class for Spring Security.
  */
+@Service
 public final class SecurityUtils {
 
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private UserRepo userRepo;
 
 
     private SecurityUtils() {
@@ -47,6 +54,29 @@ public final class SecurityUtils {
         }
 
         return userName;
+    }
+
+    /**
+     * Get the User object for the current user.
+     */
+    public User getCurrentUser() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        UserDetails springSecurityUser = null;
+        String userName = null;
+
+        if(authentication != null) {
+            if (authentication.getPrincipal() instanceof UserDetails) {
+                springSecurityUser = (UserDetails) authentication.getPrincipal();
+                userName = springSecurityUser.getUsername();
+            } else if (authentication.getPrincipal() instanceof String) {
+                userName = (String) authentication.getPrincipal();
+            }
+        }
+
+        User user = userRepo.findByLogin(userName);
+
+        return user;
     }
 
 

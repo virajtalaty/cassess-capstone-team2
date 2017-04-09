@@ -1,8 +1,11 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.rest.AdminsServiceDao;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.entity.taiga.*;
+import edu.asu.cassess.security.SecurityUtils;
 import edu.asu.cassess.service.rest.TeamsService;
 import edu.asu.cassess.service.taiga.MembersService;
 import edu.asu.cassess.service.taiga.ProjectService;
@@ -46,8 +49,73 @@ public class AppController {
     private StudentsServiceDao studentsService;
 
     @Autowired
+    private AdminsServiceDao adminsService;
+
+    @Autowired
     private TaskDataService taskService;
 
+    @Autowired
+    private SecurityUtils securityUtils;
+
+    //New Query Based method to retrieve the current User object, associated with the current login
+    @ResponseBody
+    @RequestMapping(value = "/current_user", method = RequestMethod.GET)
+    public User getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
+        return securityUtils.getCurrentUser();
+    }
+
+    //New Query Based Method to get the course list for which an admin is assigned to
+    @ResponseBody
+    @RequestMapping(value = "/admin_courses", method = RequestMethod.GET)
+    public List<CourseList> getAdminCourses(@RequestHeader(name = "email", required = true) String email,
+                                              HttpServletRequest request, HttpServletResponse response) {
+        return adminsService.listGetCoursesForAdmin(email);
+
+    }
+
+    //Previous Query Based method to obtain Teams assigned to a particular course
+    @ResponseBody
+    @RequestMapping(value = "/taigaTeams", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<TeamNames>> getTeams(@RequestHeader(name = "course", required = true) String course, HttpServletRequest request, HttpServletResponse response) {
+        //System.out.print("Course: " + course);
+        List<TeamNames> teamList = (List<TeamNames>) teamsService.listGetTeamNames(course);
+        //for(TeamNames team:teamList){
+        //System.out.print("Team: " + team.getTeam());
+        //}
+        return new ResponseEntity<List<TeamNames>>(teamList, HttpStatus.OK);
+    }
+
+    //Previous Query Based method to obtain Students assigned to a particular team/project
+    @ResponseBody
+    @RequestMapping(value = "/taigaStudents", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<Student>> getStudents(@RequestHeader(name = "team", required = true) String team, HttpServletRequest request, HttpServletResponse response) {
+        //System.out.print("Team: " + team);
+        List<Student> studentList = (List<Student>) studentsService.listReadByTeam(team);
+        //for(Student student:studentList){
+        //System.out.print("Student: " + student.getFull_name());
+        //}
+        return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+    }
+
+    //New Query Based Methods to get the courses and projects lists for which a student is assigned to
+    @ResponseBody
+    @RequestMapping(value = "/student_courses", method = RequestMethod.GET)
+    public List<CourseList> getStudentCourses(@RequestHeader(name = "email", required = true) String email,
+                                              HttpServletRequest request, HttpServletResponse response) {
+        return studentsService.listGetCoursesForStudent(email);
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/assigned_projects", method = RequestMethod.GET)
+    public List<TeamNames> getAssignedProjects(@RequestHeader(name = "email", required = true) String email,
+                                   HttpServletRequest request, HttpServletResponse response) {
+
+        return studentsService.listGetAssignedTeams(email);
+    }
+    //End of New Student Course and Project list methods
 
     //New Charting Query Based Methods for Sprint 4
     @ResponseBody
@@ -60,6 +128,8 @@ public class AppController {
         List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(weekBeginning, weekEnding, project, student);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
+
+
 
     @ResponseBody
     @RequestMapping(value = "/taiga/projectTasks", method = RequestMethod.GET)
@@ -84,7 +154,7 @@ public class AppController {
     @RequestMapping(value = "/taiga/projectActivity", method = RequestMethod.GET)
     public
     ResponseEntity<List<WeeklyUpdateActivity>> getProjectActivity(@RequestHeader(name = "project", required = true) String project,
-                                                                   String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+                                                                   HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyUpdateActivity> activityList = (List<WeeklyUpdateActivity>) taskTotalService.getWeeklyUpdatesByProject(project);
         return new ResponseEntity<List<WeeklyUpdateActivity>>(activityList, HttpStatus.OK);
     }
@@ -93,7 +163,7 @@ public class AppController {
     @RequestMapping(value = "/taiga/projectIntervals", method = RequestMethod.GET)
     public
     ResponseEntity<List<WeeklyIntervals>> getProjectIntervals(@RequestHeader(name = "project", required = true) String project,
-                                                                  String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+                                                                  HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) taskTotalService.getWeeklyIntervalsByProject(project);
         return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
     }
@@ -111,29 +181,8 @@ public class AppController {
     //End of New Charting Methods for Sprint 4
 
 
-
-
-    @ResponseBody
-    @RequestMapping(value = "/taigaProgress", method = RequestMethod.POST)
-    public
-    ResponseEntity<List<WeeklyTotals>> getProgress(@RequestHeader(name = "name", required = true) String name, HttpServletRequest request, HttpServletResponse response) {
-        //System.out.print("Name is: " + name);
-        List<WeeklyTotals> tasksList = (List<WeeklyTotals>) taskTotalService.getWeeklyTasks(name);
-        return new ResponseEntity<List<WeeklyTotals>>(tasksList, HttpStatus.OK);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/taigaRecords", method = RequestMethod.POST)
-    public
-    ResponseEntity<List<DisplayAllTasks>> getRecords(@RequestHeader(name = "name", required = true) String name, HttpServletRequest request, HttpServletResponse response) {
-        //System.out.print("Name is: " + name);
-        List<DisplayAllTasks> tasksList = (List<DisplayAllTasks>) taskTotalService.getTaskTotals(name);
-        //for(DisplayAllTasks task:tasksList){
-            //System.out.print("Week is: " + task.getRetrievalDate());
-        //}
-        return new ResponseEntity<List<DisplayAllTasks>>(tasksList, HttpStatus.OK);
-    }
-
+    //Previous Query Based method to obtain the courses currently in the Database
+    //For Admins not assigned to a particular course, but system-Admins
     @RequestMapping(value = "/taigaCourses", method = RequestMethod.GET)
     public
     ResponseEntity<List<CourseList>> getCourses(HttpServletRequest request, HttpServletResponse response) {
@@ -141,29 +190,6 @@ public class AppController {
         return new ResponseEntity<List<CourseList>>(courseList, HttpStatus.OK);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/taigaTeams", method = RequestMethod.GET)
-    public
-    ResponseEntity<List<TeamNames>> getTeams(@RequestHeader(name = "course", required = true) String course, HttpServletRequest request, HttpServletResponse response) {
-        //System.out.print("Course: " + course);
-        List<TeamNames> teamList = (List<TeamNames>) teamsService.listGetTeamNames(course);
-        //for(TeamNames team:teamList){
-            //System.out.print("Team: " + team.getTeam());
-        //}
-        return new ResponseEntity<List<TeamNames>>(teamList, HttpStatus.OK);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/taigaStudents", method = RequestMethod.GET)
-    public
-    ResponseEntity<List<Student>> getStudents(@RequestHeader(name = "team", required = true) String team, HttpServletRequest request, HttpServletResponse response) {
-        //System.out.print("Team: " + team);
-        List<Student> studentList = (List<Student>) studentsService.listReadByTeam(team);
-        //for(Student student:studentList){
-            //System.out.print("Student: " + student.getFull_name());
-        //}
-        return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
-    }
 
     @RequestMapping(value = "/taiga/Update/Projects", method = RequestMethod.POST)
     public

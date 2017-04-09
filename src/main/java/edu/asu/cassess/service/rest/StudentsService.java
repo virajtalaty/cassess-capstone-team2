@@ -1,5 +1,7 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
@@ -72,6 +74,16 @@ public class StudentsService implements IStudentsService {
 
         return studentsDao.deleteByTeam(team_name);
 
+    }
+
+    @Override
+    public List<CourseList> listGetCoursesForStudent(String email){
+        return studentsDao.listGetCoursesForStudent(email);
+    }
+
+    @Override
+    public List<TeamNames> listGetAssignedTeams(String email){
+        return studentsDao.listGetAssignedTeams(email);
     }
 
 }

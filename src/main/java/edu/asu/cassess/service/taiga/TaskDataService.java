@@ -93,7 +93,7 @@ public class TaskDataService {
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
 
-            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getUser_email(), member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
     }

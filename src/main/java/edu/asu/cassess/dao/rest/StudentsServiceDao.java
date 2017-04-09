@@ -1,5 +1,7 @@
 package edu.asu.cassess.dao.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -217,6 +219,21 @@ public class StudentsServiceDao {
         }else{
             return new RestResponse("No students in project " + team_name + " exist in the database");
         }
+    }
+
+    public List<CourseList> listGetCoursesForStudent(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.students WHERE email = ?1", CourseList.class);
+        query.setParameter(1, email);
+                List<CourseList> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Transactional
+    public List<TeamNames> listGetAssignedTeams(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.students WHERE email = ?1", TeamNames.class);
+        query.setParameter(1, email);
+        List<TeamNames> resultList = query.getResultList();
+        return resultList;
     }
 
 }

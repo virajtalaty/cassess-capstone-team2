@@ -15,6 +15,9 @@ public class TaskTotals {
     @Column(name="fullName")
     private String full_name;
 
+    @Column(name="email")
+    private String email;
+
     @Column(name="project")
     private String project_name;
 
@@ -42,9 +45,10 @@ public class TaskTotals {
 
     }
 
-    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String email, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
         this.compositeId = compositeId;
         this.full_name = full_name;
+        this.email = email;
         this.project_name = project_name;
         this.role_name = role_name;
         this.tasks_closed = tasks_closed;
@@ -61,6 +65,14 @@ public class TaskTotals {
     public String getFull_name() { return full_name; }
 
     public void setFull_name(String full_name) { this.full_name = full_name; }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getProject_name() { return project_name; }
 

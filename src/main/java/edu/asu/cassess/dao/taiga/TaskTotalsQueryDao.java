@@ -41,23 +41,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
-    public List<DisplayAllTasks> getTaskTotals(String name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate, tasksClosed, tasksOpen, tasksInProgress, tasksReadyForTest, tasksNew FROM cassess.tasktotals WHERE fullName = ?1", DisplayAllTasks.class);
-        query.setParameter(1, name);
-        List<DisplayAllTasks> resultList = query.getResultList();
-        return resultList;
-    }
-
-    @Override
-    public List<WeeklyTotals> getWeeklyTasks(String fullName) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT fullName, WeekEnding, COALESCE(ClosedTasks, 0) AS ClosedTasks, COALESCE(OpenTasks, 0) AS OpenTasks FROM (SELECT tasktotals1.fullName, tasktotals1.retrievalDate AS WeekEnding, tasktotals1.tasksClosed - tasktotals2.tasksClosed as ClosedTasks, IF(tasktotals1.tasksClosed - tasktotals2.tasksClosed >= 0, (tasktotals1.tasksOpen - tasktotals2.tasksOpen) + (tasktotals1.tasksClosed - tasktotals2.tasksClosed), tasktotals1.tasksOpen - tasktotals2.tasksOpen) as OpenTasks FROM tasktotals tasktotals1 LEFT JOIN tasktotals tasktotals2 ON tasktotals1.id=tasktotals2.id AND tasktotals2.retrievalDate = (SELECT MAX(tasktotals3.retrievalDate) FROM tasktotals tasktotals3 WHERE tasktotals3.retrievalDate < tasktotals1.retrievalDate AND tasktotals3.id = tasktotals1.id) WHERE tasktotals1.fullName = ?1 ) AS WeeklyTotals", WeeklyTotals.class);
-        query.setParameter(1, fullName);
-        List<WeeklyTotals> resultList = query.getResultList();
-        System.out.print(resultList);
-        return resultList;
-    }
-
-    @Override
     public List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String project){
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', SUM(tasksInProgress) as 'InProgress', SUM(tasksReadyForTest) as 'ToTest', SUM(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND project = ?3 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
@@ -69,7 +52,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String project, String student){
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND project = ?3 AND fullName = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND project = ?3 AND email = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, project);
@@ -80,7 +63,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String project, String student){
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE project = ?1 AND fullName = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE project = ?1 AND email = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
                 query.setParameter(1, project);
                 query.setParameter(2, student);
                 List<WeeklyIntervals> resultList = query.getResultList();
@@ -164,7 +147,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "               @lasttasksInProgress \\:= 0, \n" +
                 "               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
                 "\tWHERE project = ?1\n" +
-                "    AND fullName = ?2\n" +
+                "    AND email = ?2\n" +
                 "   order by\n" +
                 "      TSK.fullName,\n" +
                 "      TSK.retrievalDate) query1\n" +

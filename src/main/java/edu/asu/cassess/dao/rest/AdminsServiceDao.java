@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.dao.UserQueryDao;
+import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.UserID;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
@@ -164,6 +165,13 @@ public class AdminsServiceDao {
         }else{
             return new RestResponse("No admin in course " + course + " exist in the database");
         }
+    }
+
+    public List<CourseList> listGetCoursesForAdmin(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.admins WHERE email = ?1", CourseList.class);
+        query.setParameter(1, email);
+        List<CourseList> resultList = query.getResultList();
+        return resultList;
     }
 
 }

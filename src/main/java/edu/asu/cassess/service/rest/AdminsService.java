@@ -1,6 +1,7 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.AdminsServiceDao;
+import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
@@ -58,5 +59,10 @@ public class AdminsService implements IAdminsService {
     @Override
     public <T> Object deleteByCourse(String course) {
         return adminsDao.deleteByCourse(course);
+    }
+
+    @Override
+    public List<CourseList> listGetCoursesForAdmin(String email){
+        return adminsDao.listGetCoursesForAdmin(email);
     }
 }

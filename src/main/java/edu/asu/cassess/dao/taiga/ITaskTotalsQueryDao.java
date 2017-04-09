@@ -26,24 +26,6 @@ public interface ITaskTotalsQueryDao {
      */
     List<TaskTotals> getTaskTotals() throws DataAccessException;
 
-    /**
-     * Get task totals from database for the given name.
-     * 
-     * @param name the fullname of the Taiga user
-     * @return List of DisplayAllTasks
-     * @throws DataAccessException
-     */
-    List<DisplayAllTasks> getTaskTotals(String name) throws DataAccessException;
-
-    /**
-     * Get task totals for this week based on the given name.
-     * 
-     * @param fullName the fullname of the Taiga user
-     * @return List of WeeklyTotals
-     * @throws DataAccessException
-     */
-    List<WeeklyTotals> getWeeklyTasks(String fullName) throws DataAccessException;
-
     List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String project);
 
     List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String project, String student);
