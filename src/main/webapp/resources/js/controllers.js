@@ -80,7 +80,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     })
     .controller('TabController', ['$scope', function($scope) {
         $scope.tab = 1;
-m
+
         $scope.setTab = function (newTab) {
             $scope.tab = newTab;
         };
