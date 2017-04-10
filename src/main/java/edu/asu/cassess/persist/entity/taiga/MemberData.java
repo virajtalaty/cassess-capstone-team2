@@ -9,7 +9,6 @@ import javax.persistence.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MemberData {
 
-    @Id
     @Column(name="id")
     public int id;
 
@@ -25,6 +24,7 @@ public class MemberData {
     @Column(name="roleName")
     private String role_name;
 
+    @Id
     @Column(name="email")
     private String user_email;
 

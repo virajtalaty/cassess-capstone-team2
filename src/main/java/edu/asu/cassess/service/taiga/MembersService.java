@@ -1,6 +1,5 @@
 package edu.asu.cassess.service.taiga;
 
-import edu.asu.cassess.dao.CAssessDAO;
 import edu.asu.cassess.dao.taiga.*;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.MemberData;
@@ -79,7 +78,7 @@ public class MembersService {
         System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
-        List<ProjectIDSlug> idSlugList = projectDao.listGetProjectIDSlug(course);
+        List<ProjectIDSlug> idSlugList = projectDao.listGetTaigaProjectIDSlug(course);
         for(ProjectIDSlug idSlug:idSlugList){
             System.out.println("Id: " + idSlug.getId());
             getMembers(idSlug.getId(), token, 1);

@@ -1,12 +1,17 @@
 package edu.asu.cassess.web.controller;
 
 
+import edu.asu.cassess.dao.taiga.MemberQueryDao;
+import edu.asu.cassess.dao.taiga.ProjectQueryDao;
+import edu.asu.cassess.dao.taiga.TaskTotalsQueryDao;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.service.rest.*;
 
 import edu.asu.cassess.service.security.UserService;
+import edu.asu.cassess.service.taiga.MembersService;
+import edu.asu.cassess.service.taiga.ProjectService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +27,6 @@ import java.util.List;
 @RequestMapping(value = "/rest")
 @Api(description = "Nicest Provisioning API")
 public class restController {
-
-
-
 
     @Autowired
     private CourseService courseService;
@@ -47,6 +49,21 @@ public class restController {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private TaskTotalsQueryDao taskTotalsDao;
+
+    @Autowired
+    private ProjectQueryDao projectDao;
+
+    @Autowired
+    private MemberQueryDao memberDao;
+
+    @Autowired
+    private MembersService members;
+
+    @Autowired
+    private ProjectService projects;
+
 
 //-----------------------
 
@@ -66,6 +83,8 @@ public class restController {
             for (Team team : (coursePackage.getTeams())) {
                 usersService.createUsersByStudents(team.getStudents());
             }
+            projects.updateProjects(coursePackage.getCourse());
+            members.updateMembership(coursePackage.getCourse());
             return courseService.create(coursePackage);
         }
     }
@@ -82,6 +101,8 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             usersService.courseUpdate(coursePackage);
+            projects.updateProjects(coursePackage.getCourse());
+            members.updateMembership(coursePackage.getCourse());
             return courseService.update(coursePackage);
         }
     }
@@ -100,6 +121,8 @@ public class restController {
             {
                 usersService.deleteUser(user);
             }
+            taskTotalsDao.deleteTaskTotalsByStudent(student.getEmail());
+            memberDao.deleteMembersByStudent(student.getEmail());
             return studentService.delete(student.getEmail());
         }else{
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -123,6 +146,7 @@ public class restController {
             {
                 usersService.updateStudent(student, user);
             }
+            members.updateMembership(student.getCourse());
             return studentService.update(student);
         }
     }
@@ -149,6 +173,9 @@ public class restController {
             return null;
         } else {
             usersService.courseDelete(course);
+            taskTotalsDao.deleteTaskTotalsByCourse(course);
+            projectDao.deleteTaigaProjectByCourse(course);
+            memberDao.deleteMembersByCourse(course);
             response.setStatus(HttpServletResponse.SC_OK);
             Object object = courseService.delete(course.getCourse());
             return object;
@@ -167,6 +194,8 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             usersService.courseUpdate(course);
+            projects.updateProjects(course.getCourse());
+            members.updateMembership(course.getCourse());
             return courseService.update(course);
         }
     }
@@ -208,7 +237,6 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-
             return channelService.update(channel);
         }
     }
@@ -320,6 +348,9 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             usersService.teamDelete(team);
+            taskTotalsDao.deleteTaskTotalsByProject(team);
+            projectDao.deleteTaigaProjectByTeam(team);
+            memberDao.deleteMembersByTeam(team);
             return teamService.delete(team.getTeam_name());
         }
     }
@@ -336,6 +367,8 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             usersService.teamUpdate(team);
+            members.updateMembership(team.getCourse());
+            projects.updateProjects(team.getCourse());
             return teamService.update(team);
         }
     }
@@ -353,6 +386,8 @@ public class restController {
             response.setStatus(HttpServletResponse.SC_OK);
             for(Team team:teams){
                 usersService.teamUpdate(team);
+                projects.updateProjects(team.getCourse());
+                members.updateMembership(team.getCourse());
             }
             return teamService.listUpdate(teams);
         }
@@ -365,7 +400,6 @@ public class restController {
     <T> Object readTeamList(HttpServletRequest request, HttpServletResponse response) {
 
             response.setStatus(HttpServletResponse.SC_OK);
-
             return teamService.listReadAll();
         }
 

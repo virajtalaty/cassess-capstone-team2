@@ -1,6 +1,12 @@
 package edu.asu.cassess.dao.taiga;
 
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
+import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +24,9 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     protected EntityManager entityManager;
 
+    @Autowired
+    private TaskTotalsRepo taskTotalsRepo;
+
     @Override
     public EntityManager getEntityManager() {
         return entityManager;
@@ -34,6 +43,36 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
         Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals", TaskTotals.class);
         List<TaskTotals> resultList = query.getResultList();
         return resultList;
+    }
+
+    @Override
+    public RestResponse deleteTaskTotalsByCourse(Course course) throws DataAccessException {
+        for(Team team:course.getTeams()){
+            for (Student student:team.getStudents()){
+                if(taskTotalsRepo.exists(student.getEmail())) {
+                    taskTotalsRepo.delete(student.getEmail());
+                }
+            }
+        }
+        return new RestResponse("tasktotals for course: " + course.getCourse() + " have been removed from the database");
+    }
+
+    @Override
+    public RestResponse deleteTaskTotalsByProject(Team team) throws DataAccessException {
+            for (Student student:team.getStudents()){
+                if(taskTotalsRepo.exists(student.getEmail())) {
+                    taskTotalsRepo.delete(student.getEmail());
+                }
+            }
+        return new RestResponse("tasktotals for team: " + team.getTeam_name() + " have been removed from the database");
+    }
+
+    @Override
+    public RestResponse deleteTaskTotalsByStudent(String email) throws DataAccessException {
+        if(taskTotalsRepo.exists(email)) {
+            taskTotalsRepo.delete(email);
+        }
+        return new RestResponse("tasktotals for student: " + email + " have been removed from the database");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.springframework.dao.DataAccessException;
 
 import edu.asu.cassess.persist.entity.taiga.Project;
@@ -20,7 +23,7 @@ public interface IProjectQueryDao {
      * @return List of Projects
      * @throws DataAccessException
      */
-    List<Project> getAllProjects() throws DataAccessException;
+    List<Project> getAllTaigaProjects() throws DataAccessException;
 
     /**
      * Get Project data from database for this slug; only ever returns one object.
@@ -29,7 +32,7 @@ public interface IProjectQueryDao {
      * @return a single Project object
      * @throws DataAccessException
      */
-    Project getProject(String slug) throws DataAccessException;
+    Project getTaigaProject(String slug) throws DataAccessException;
 
     /**
      * Get Project ID Slug(s) from database given this course.
@@ -38,5 +41,9 @@ public interface IProjectQueryDao {
      * @return List of ProjectIDSlug object(s)
      * @throws DataAccessException
      */
-    List<ProjectIDSlug> listGetProjectIDSlug(String course) throws DataAccessException;
+    List<ProjectIDSlug> listGetTaigaProjectIDSlug(String course) throws DataAccessException;
+
+    RestResponse deleteTaigaProjectByCourse(Course course);
+
+    RestResponse deleteTaigaProjectByTeam(Team team);
 }

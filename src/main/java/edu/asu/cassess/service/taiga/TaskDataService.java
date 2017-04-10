@@ -92,10 +92,10 @@ public class TaskDataService {
             int inProgressTasks = TaskQueryDao.getInProgressTasks(name);
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
-
             TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), course, closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
+        TaskQueryDao.truncateTaskData();
     }
 
     /* Method to obtain all task totals for members of a particular course,
@@ -105,7 +105,7 @@ public class TaskDataService {
         System.out.println("Updating Tasks");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
-        List<ProjectIDSlug> idSlugList = projectsDao.listGetProjectIDSlug(course);
+        List<ProjectIDSlug> idSlugList = projectsDao.listGetTaigaProjectIDSlug(course);
         for(ProjectIDSlug idSlug:idSlugList){
             System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
             getTasks(idSlug.getId(), token, 1);
