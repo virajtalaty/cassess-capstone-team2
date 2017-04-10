@@ -15,14 +15,11 @@ public class TaskTotals {
     @Column(name="fullName")
     private String full_name;
 
-    @Column(name="email")
-    private String email;
-
     @Column(name="project")
     private String project_name;
 
-    @Column(name="roleName")
-    private String role_name;
+    @Column(name="course")
+    private String course;
 
     @Column(name="tasksClosed")
     private int tasks_closed;
@@ -39,18 +36,15 @@ public class TaskTotals {
     @Column(name="tasksOpen")
     private int tasks_open;
 
-
-
     public TaskTotals(){
 
     }
 
-    public TaskTotals(TaskTotalsID compositeId, String full_name, String email, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String course, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
         this.compositeId = compositeId;
         this.full_name = full_name;
-        this.email = email;
         this.project_name = project_name;
-        this.role_name = role_name;
+        this.course = course;
         this.tasks_closed = tasks_closed;
         this.tasks_new = tasks_new;
         this.tasks_in_progress = tasks_in_progress;
@@ -66,21 +60,17 @@ public class TaskTotals {
 
     public void setFull_name(String full_name) { this.full_name = full_name; }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getProject_name() { return project_name; }
 
     public void setProject_name(String project_name) { this.project_name = project_name; }
 
-    public String getRole_name() { return role_name; }
+    public String getCourse() {
+        return course;
+    }
 
-    public void setRole_name(String role_name) { this.role_name = role_name; }
+    public void setCourse(String course) {
+        this.course = course;
+    }
 
     public int getTasks_closed() { return tasks_closed; }
 
@@ -102,8 +92,7 @@ public class TaskTotals {
 
     public void setTasks_open(int tasks_open) { this.tasks_open = tasks_open; }
 
-
-    public int getId() { return compositeId.getId(); }
+    public String getEmail() { return compositeId.getEmail(); }
 
     public String getRetrievalDate() {
         return compositeId.getRetrievalDate();

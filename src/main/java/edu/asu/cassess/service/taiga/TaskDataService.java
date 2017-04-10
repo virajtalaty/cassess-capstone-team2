@@ -83,7 +83,7 @@ public class TaskDataService {
         }
     }
 
-    public void getTaskTotals(String slug) {
+    public void getTaskTotals(String slug, String course) {
         List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member: memberNames) {
             String name = member.getFull_name();
@@ -93,7 +93,7 @@ public class TaskDataService {
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
 
-            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getUser_email(), member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), course, closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
     }
@@ -109,7 +109,7 @@ public class TaskDataService {
         for(ProjectIDSlug idSlug:idSlugList){
             System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
             getTasks(idSlug.getId(), token, 1);
-            getTaskTotals(idSlug.getSlug());
+            getTaskTotals(idSlug.getSlug(), course);
         }
     }
 }
