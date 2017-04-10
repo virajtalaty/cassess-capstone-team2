@@ -9,8 +9,8 @@ import java.util.Date;
 @Embeddable
 public class TaskTotalsID implements Serializable{
 
-    @Column(name = "id")
-    public int id;
+    @Column(name = "email")
+    public String email;
 
     @Column(name = "retrievalDate")
     private String retrievalDate;
@@ -18,15 +18,15 @@ public class TaskTotalsID implements Serializable{
     public TaskTotalsID() {
     }
 
-    public TaskTotalsID(int id) {
-        this.id = id;
+    public TaskTotalsID(String email) {
+        this.email = email;
         Date date = new Date();
         this.retrievalDate =  new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
-    public int getId() { return id; }
+    public String getEmail() { return email; }
 
-    public void setId(int id) { this.id = id; }
+    public void setEmail(String email) { this.email = email; }
 
 
     public String getRetrievalDate() {
