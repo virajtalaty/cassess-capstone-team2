@@ -1,4 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<<<<<<< HEAD
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
@@ -20,6 +21,48 @@
 
     <dependencies>
 
+=======
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.cassess</groupId>
+	<artifactId>cassess</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>cassess</name>
+	<description>A continuous assessment of an Agile project</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.4.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -55,15 +98,36 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.6.1</version>
         </dependency>
+<<<<<<< HEAD
 
 
         <!-- security -->
+=======
+        
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Google generic DAO -->
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
             <version>4.2.1.RELEASE</version>
         </dependency>
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -94,8 +158,12 @@
             <artifactId>spring-orm</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
+<<<<<<< HEAD
 
         <!-- apache -->
+=======
+        
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
         <dependency>
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
@@ -189,6 +257,7 @@
             <scope>test</scope>
         </dependency>
 
+<<<<<<< HEAD
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -202,6 +271,8 @@
             <version>${org.springframework-version}</version>
         </dependency>
 
+=======
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
         <dependency>
         	<groupId>mysql</groupId>
         	<artifactId>mysql-connector-java</artifactId>
@@ -249,6 +320,7 @@
     <build>
         <plugins>
 
+<<<<<<< HEAD
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -269,6 +341,35 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+=======
+        <dependency>
+        	<groupId>org.springframework</groupId>
+        	<artifactId>spring-tx</artifactId>
+        </dependency>
+        
+        <dependency>
+        	<groupId>org.quartz-scheduler</groupId>
+        	<artifactId>quartz</artifactId>
+        	<version>2.2.1</version>
+        </dependency>
+        
+		<dependency>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz-jobs</artifactId>
+    		<version>2.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+	</dependencies>
+>>>>>>> bd994aa7ca7e0a639f57d0c75dacc32275337695
 
             <plugin>
                 <groupId>com.github.eirslett</groupId>
