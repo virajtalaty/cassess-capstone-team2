@@ -3,6 +3,7 @@ package edu.asu.cassess.dao.taiga;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import org.springframework.dao.DataAccessException;
 
@@ -17,50 +18,51 @@ public interface ITaskTotalsQueryDao {
 
     void setEntityManager(EntityManager entityManager);
 
-
     List<TaskTotals> getTaskTotals() throws DataAccessException;
 
     RestResponse deleteTaskTotalsByCourse(Course course) throws DataAccessException;
 
     RestResponse deleteTaskTotalsByProject(Team team) throws DataAccessException;
 
-    RestResponse deleteTaskTotalsByStudent(String email) throws DataAccessException;
+    RestResponse deleteTaskTotalsByStudent(Student student) throws DataAccessException;
 
-    List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String course, String project);
+    List<DailyTaskTotals> getDailyTasksByCourse(String beginDate, String endDate, String course) throws DataAccessException;
 
-    List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String project, String student);
+    List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String course, String project) throws DataAccessException;
 
-    List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String project, String student);
+    List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String project, String student) throws DataAccessException;
 
-    List<WeeklyIntervals> getWeeklyIntervalsByProject(String course, String project);
+    List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String project, String student) throws DataAccessException;
 
-    List<WeeklyUpdateActivity> getWeeklyUpdatesByProject(String course, String project);
+    List<WeeklyIntervals> getWeeklyIntervalsByProject(String course, String project) throws DataAccessException;
 
-    List<WeeklyUpdateActivity> getWeeklyUpdatesByStudent(String course, String project, String student);
+    List<WeeklyUpdateActivity> getWeeklyUpdatesByProject(String course, String project) throws DataAccessException;
 
-    List<WeeklyUpdateActivity> getWeeklyUpdatesByCourse(String course);
+    List<WeeklyUpdateActivity> getWeeklyUpdatesByStudent(String course, String project, String student) throws DataAccessException;
 
-    List<WeeklyWeight> lastTwoWeekWeightsByStudent(String course, String project, String student);
+    List<WeeklyUpdateActivity> getWeeklyUpdatesByCourse(String course) throws DataAccessException;
 
-    List<WeeklyWeight> lastTwoWeekWeightsByProject(String course, String project);
+    List<WeeklyFreqWeight> twoWeekWeightFreqByStudent(String course, String project, String student) throws DataAccessException;
 
-    List<WeeklyWeight> lastTwoWeekWeightsByCourse(String course);
+    List<WeeklyFreqWeight> twoWeekWeightFreqByTeam(String course, String team) throws DataAccessException;
 
-    List<WeeklyWeight> getWeeklyWeightByStudent(String course, String project, String student);
+    List<WeeklyFreqWeight> twoWeekWeightFreqByCourse(String course) throws DataAccessException;
 
-    List<WeeklyWeight> getWeeklyWeightByProject(String course, String project);
+    List<WeeklyFreqWeight> weeklyWeightFreqByStudent(String course, String project, String student) throws DataAccessException;
 
-    List<WeeklyWeight> getWeeklyWeightByCourse(String course);
+    List<WeeklyFreqWeight> weeklyWeightFreqByTeam(String course, String project) throws DataAccessException;
 
-    List<WeeklyAverages> getWeeklyAverageByCourse(String course);
+    List<WeeklyFreqWeight> weeklyWeightFreqByCourse(String course) throws DataAccessException;
 
-    List<WeeklyAverages> getWeeklyAverageByProject(String course, String project);
+    List<WeeklyAverages> getWeeklyAverageByCourse(String course) throws DataAccessException;
 
-    List<WeeklyAverages> getWeeklyAverageByStudent(String course, String project, String email);
+    List<WeeklyAverages> getWeeklyAverageByProject(String course, String project) throws DataAccessException;
 
-    List<WeeklyAverages> lastTwoWeekAveragesByCourse(String course);
+    List<WeeklyAverages> getWeeklyAverageByStudent(String course, String project, String email) throws DataAccessException;
 
-    List<WeeklyAverages> lastTwoWeekAveragesByProject(String course, String project);
+    List<WeeklyAverages> lastTwoWeekAveragesByCourse(String course) throws DataAccessException;
 
-    List<WeeklyAverages> lastTwoWeekAveragesByStudent(String course, String project, String email);
+    List<WeeklyAverages> lastTwoWeekAveragesByProject(String course, String project) throws DataAccessException;
+
+    List<WeeklyAverages> lastTwoWeekAveragesByStudent(String course, String project, String email) throws DataAccessException;
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class MembersService {
+public class MembersService implements IMembersService {
 
     private RestTemplate restTemplate;
 
@@ -30,14 +30,15 @@ public class MembersService {
     private ICourseService courseService;
 
     @Autowired
-    private ProjectQueryDao projectDao;
+    private IProjectQueryDao projectDao;
 
     public MembersService(){
         restTemplate = new RestTemplate();
         membershipListURL = "https://api.taiga.io/api/v1/memberships?project=";
     }
 
-    public List<MemberData> getMembers(Long projectId, String token, int page) {
+    @Override
+    public List<MemberData> getMembers(Long projectId, String token, int page, String team, String course) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -59,12 +60,14 @@ public class MembersService {
         List<MemberData> members = memberList.getBody();
 
         for (int i = 0; i < members.size(); i++) {
+            members.get(i).setTeam(team);
+            members.get(i).setCourse(course);
             MemberDao.save(members.get(i));
         }
 
         if (memberList.getHeaders().containsKey("x-pagination-next")) {
             page++;
-            return getMembers(projectId, token, page);
+            return getMembers(projectId, token, page, team, course);
         } else {
 
             return members;
@@ -74,14 +77,17 @@ public class MembersService {
     /* Method to provide single operation on
     updating the member_data table based on the course, student and project tables
      */
+    @Override
     public void updateMembership(String course){
         System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectDao.listGetTaigaProjectIDSlug(course);
-        for(ProjectIDSlug idSlug:idSlugList){
-            System.out.println("Id: " + idSlug.getId());
-            getMembers(idSlug.getId(), token, 1);
+        if(token != null) {
+            for (ProjectIDSlug idSlug : idSlugList) {
+                System.out.println("Id: " + idSlug.getId());
+                getMembers(idSlug.getId(), token, 1, idSlug.getTeam(), course);
+            }
         }
     }
 }

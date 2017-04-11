@@ -6,15 +6,16 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.ejb.EJB;
 import java.util.List;
 
 @Service
+
 public class UserService implements IUserService{
 
-    @EJB
+    @Autowired
     private UserServiceDao userServiceDao;
 
     @Override

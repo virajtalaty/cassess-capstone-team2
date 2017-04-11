@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.service.rest.AdminsService;
+import edu.asu.cassess.service.rest.IAdminsService;
+import edu.asu.cassess.service.rest.ITeamsService;
 import edu.asu.cassess.service.rest.TeamsService;
 import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
@@ -27,13 +29,10 @@ public class CourseServiceDao {
     private CourseRepo courseRepo;
 
     @Autowired
-    private UserService usersService;
+    private ITeamsService teamsService;
 
     @Autowired
-    private TeamsService teamsService;
-
-    @Autowired
-    private AdminsService adminsService;
+    private IAdminsService adminsService;
 
     protected EntityManager entityManager;
 
@@ -54,15 +53,18 @@ public class CourseServiceDao {
      */
     @Transactional
     public <T> Object create(Course courseInput) {
-        Course course = (Course) courseRepo.findOne(courseInput.getCourse());
         List<Team> teams = courseInput.getTeams();
         List<Admin> admins = courseInput.getAdmins();
-        if (course != null) {
-            return new RestResponse(course.getCourse() + " already exists in database");
+        if (courseRepo.exists(courseInput.getCourse())) {
+            return new RestResponse(courseInput.getCourse() + " already exists in database");
         } else {
             courseRepo.save(courseInput);
-            teamsService.listCreate(teams);
-            adminsService.listCreate(admins);
+            if(courseInput.getTeams() != null) {
+                teamsService.listCreate(teams);
+            }
+            if(courseInput.getAdmins() != null) {
+                adminsService.listCreate(admins);
+            }
             return courseInput;
         }
     }
@@ -75,13 +77,19 @@ public class CourseServiceDao {
      */
     @Transactional
     public <T> Object update(Course courseInput) {
-        Course course = (Course) courseRepo.findOne(courseInput.getCourse());
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
+        query.setParameter(1, courseInput.getCourse());
+        Course course = (Course) query.getSingleResult();
         List<Team> teams = courseInput.getTeams();
         List<Admin> admins = courseInput.getAdmins();
         if (course != null) {
             courseRepo.save(courseInput);
-            teamsService.listUpdate(teams);
-            adminsService.listUpdate(admins);
+            if(course.getTeams() != null) {
+                teamsService.listUpdate(teams);
+            }
+            if(course.getAdmins() != null) {
+                adminsService.listUpdate(admins);
+            }
             return courseInput;
         } else {
             return new RestResponse(courseInput + " does not exist in database");
@@ -96,7 +104,9 @@ public class CourseServiceDao {
      */
     @Transactional
     public <T> Object find(String courseName) {
-        Course course = (Course) courseRepo.findOne(courseName);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
+        query.setParameter(1, courseName);
+        Course course = (Course) query.getSingleResult();
         if (course != null) {
             return course;
         } else {
@@ -107,14 +117,17 @@ public class CourseServiceDao {
     /**
      * Delete a course from the database by its name.
      * 
-     * @param courseName the name to be used to find the course
+     * @param course the course to be removed from the database
      * @return a message indicating the course was deleted or not found
      */
     @Transactional
-    public <T> Object delete(String courseName) {
-        Course course = (Course) courseRepo.findOne(courseName);
+    public <T> Object delete(Course course) {
         if (course != null) {
-            courseRepo.delete(course);
+            adminsService.deleteByCourse(course);
+            teamsService.deleteByCourse(course);
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.courses WHERE course = ?1");
+            query.setParameter(1, course.getCourse());
+            query.executeUpdate();
             return new RestResponse(course + " has been removed from the database");
         } else {
             return new RestResponse(course + " does not exist in the database");
@@ -159,6 +172,12 @@ public class CourseServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Course course : courses) {
+            if(course.getTeams() != null) {
+                teamsService.listCreate(course.getTeams());
+            }
+            if(course.getAdmins() != null) {
+                adminsService.listCreate(course.getAdmins());
+            }
             if (courseRepo.findOne(course.getCourse()) != null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(course.getCourse() + " already exists in the database"))));
@@ -192,6 +211,12 @@ public class CourseServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Course course : courses) {
+            if(course.getTeams() != null) {
+                teamsService.listUpdate(course.getTeams());
+            }
+            if(course.getAdmins() != null) {
+                adminsService.listUpdate(course.getAdmins());
+            }
             if (courseRepo.findOne(course.getCourse()) == null) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(course.getCourse() + " does not exist in database"))));

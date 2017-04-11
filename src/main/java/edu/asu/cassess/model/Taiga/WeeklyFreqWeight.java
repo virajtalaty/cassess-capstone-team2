@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Subselect("")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WeeklyWeight {
+public class WeeklyFreqWeight {
 
         @Id
         @Column(name="week")
@@ -22,15 +22,19 @@ public class WeeklyWeight {
         @Column(name="weekEnding")
         private String weekEnding;
 
+        @Column(name="frequency")
+        private String frequency;
+
         @Column(name="weight")
         private String weight;
 
-        public WeeklyWeight(){}
+        public WeeklyFreqWeight(){}
 
-        public WeeklyWeight(String week, String weekBeginning, String weekEnding, String weight) {
+        public WeeklyFreqWeight(String week, String weekBeginning, String weekEnding, String frequency, String weight) {
             this.week = week;
             this.weekBeginning = weekBeginning;
             this.weekEnding = weekEnding;
+            this.frequency = frequency;
             this.weight = weight;
         }
 
@@ -56,6 +60,14 @@ public class WeeklyWeight {
 
         public void setWeekEnding(String weekEnding) {
             this.weekEnding = weekEnding;
+        }
+
+        public String getFrequency() {
+            return frequency;
+        }
+
+        public void setFrequency(String frequency) {
+            this.frequency = frequency;
         }
 
         public String getWeight() {

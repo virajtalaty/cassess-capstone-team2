@@ -21,7 +21,7 @@ public interface IMemberQueryDao {
 
     RestResponse deleteMembersByTeam(Team team) throws DataAccessException;
 
-    RestResponse deleteMembersByStudent(String email) throws DataAccessException;
+    RestResponse deleteMembersByStudent(Student student) throws DataAccessException;
 
     /**
      * Get members based on role and/or slug.

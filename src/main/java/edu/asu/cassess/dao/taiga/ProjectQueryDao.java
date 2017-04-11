@@ -40,21 +40,18 @@ public class ProjectQueryDao implements IProjectQueryDao {
     @Override
     public RestResponse deleteTaigaProjectByCourse(Course course){
         for(Team team:course.getTeams()){
-            if(projectRepo.exists(team.getTaiga_project_slug()));{
-                Project project = projectRepo.findOne(team.getTaiga_project_slug());
-                projectRepo.delete(project);
-            }
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.project WHERE slug = ?1");
+            query.setParameter(1, team.getTaiga_project_slug());
+            query.executeUpdate();
         }
         return new RestResponse("taiga projects for course: " + course.getCourse() + " have been removed from the database");
     }
 
     @Override
     public RestResponse deleteTaigaProjectByTeam(Team team) {
-        if (projectRepo.exists(team.getTaiga_project_slug())) ;
-        {
-            Project project = projectRepo.findOne(team.getTaiga_project_slug());
-            projectRepo.delete(project);
-        }
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.project WHERE slug = ?1");
+        query.setParameter(1, team.getTaiga_project_slug());
+        query.executeUpdate();
         return new RestResponse("taiga projects for team: " + team.getTeam_name() + " have been removed from the database");
     }
 
@@ -73,7 +70,12 @@ public class ProjectQueryDao implements IProjectQueryDao {
 
     @Override
     public List<ProjectIDSlug> listGetTaigaProjectIDSlug(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT id, slug FROM cassess.project INNER JOIN cassess.teams ON cassess.project.slug=cassess.teams.taiga_project_slug AND course=?1", ProjectIDSlug.class);
+        Query query = getEntityManager().createNativeQuery("SELECT id, slug, team_name AS 'team'\n" +
+                "FROM\n" +
+                "(SELECT DISTINCT * FROM cassess.project \n" +
+                "INNER JOIN cassess.teams \n" +
+                "ON cassess.project.slug=cassess.teams.taiga_project_slug \n" +
+                "AND course=?1) q1", ProjectIDSlug.class);
         query.setParameter(1, course);
         List<ProjectIDSlug> resultList = query.getResultList();
         return resultList;

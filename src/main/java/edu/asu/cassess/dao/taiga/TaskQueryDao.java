@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.cassess.model.Taiga.TaskCount;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.UserTransaction;
 import java.util.List;
 
 @Component
