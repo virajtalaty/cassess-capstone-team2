@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +59,55 @@ public class chartsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/TaigaBarGraph", produces = "application/json")
-    public  Map<String, Object> TaigaBarGraphChartsResource(){
+    public  List<Object> TaigaBarGraphChartsResource(){
+
+        List<Object> data = new ArrayList();
 
         ///Creates a hash map
-        Map<String, Object> model = new HashMap<>();
+        Map<String, Object> closedTasks = new HashMap<>();
+        Map<String, Object> inProgress = new HashMap<>();
+        Map<String, Object> toTest = new HashMap<>();
 
-        List<DisplayAllTasks> tasksRecords = iTaskTotalsQueryDao.getTaskTotals("Christopher Moretti");
+        ///Converts the Progress Data to chart Data
 
         List<WeeklyTotals> tasksProgress = iTaskTotalsQueryDao.getWeeklyTasks("Christopher Moretti");
 
-        model.put("taskRecords", tasksRecords);
-        model.put("tasksProgress", tasksProgress);
+        //Converts the List to JSON String
+        String progressString = chartsService.getJSONString(tasksProgress);
 
-        return model;
+        List<List<Long>> closedTasksData = chartsService.getTaigaChartDataPoints(progressString, "weekEnding", "closedTasks");
+
+        ////Converts the Record data to data for a chart
+
+        List<DisplayAllTasks> tasksRecords = iTaskTotalsQueryDao.getTaskTotals("Christopher Moretti");
+
+        //Converts the List to JSON String
+        String recordString = chartsService.getJSONString(tasksRecords);
+
+        List<List<Long>> inProgressTasksData = chartsService.getTaigaChartDataPoints(recordString, "retrievalDate", "tasks_in_progress");
+
+        List<List<Long>> toTestTasksData = chartsService.getTaigaChartDataPoints(recordString, "retrievalDate", "tasks_ready_for_test");
+
+        ///Create a map that becomes the chart data object
+        //inProgress.put("key", "In Progress Data");
+        inProgress.put("values",inProgressTasksData);
+        inProgress.put("key", "In Progress Data");
+
+        ///Add the data to the array
+        data.add(inProgress);
+
+        closedTasks.put("key", "Closed Tasks");
+        closedTasks.put("values", closedTasksData);
+
+        ///Add the data to the array
+        data.add(closedTasks);
+
+        toTest.put("key","To Test Tasks");
+        toTest.put("values",toTestTasksData);
+
+        ///Add the data to the array
+        data.add(toTest);
+
+        return data;
     }
 }

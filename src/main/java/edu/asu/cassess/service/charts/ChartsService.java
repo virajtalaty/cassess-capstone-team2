@@ -78,4 +78,41 @@ public class ChartsService {
         return commitArray;
     }
 
+
+    public List<List<Long>> getTaigaChartDataPoints(String JsonString, String dayName, String value) {
+
+        /// Create collections that will be arrays in the json object
+        List<List<Long>> chartData = new ArrayList<>();
+
+        /// Read in the chart Data as a JSON array
+        JSONArray progressArray = new JSONArray(JsonString);
+
+        /// Check Each object in the JSON for the day and value
+        for (int i = 0; i < progressArray.length(); i++) {
+
+            List<Long> dataPoints = new ArrayList<>();
+
+            /// Separates each  JSON object out of the JSON array.
+            JSONObject jsonObject = progressArray.getJSONObject(i);
+
+            ///Converts the String into milliseconds
+            String weekEnding = jsonObject.getString(dayName);
+            LocalDate day = LocalDate.parse(weekEnding);
+            long longDay = day.atStartOfDay(zoneId).toEpochSecond() * 1000;
+            Long longDayObj = new Long(longDay);
+            ///Adds the day(milliseconds)into the arrays.
+            dataPoints.add(longDayObj);
+
+            /// Gets the Long for the value
+            Long closedTasks = jsonObject.getLong(value);
+            ///Adds the value to
+            dataPoints.add(closedTasks);
+
+            ///Adds the [x,y] values to the List of Lists
+            chartData.add(dataPoints);
+        }
+
+        return chartData;
+    }
+
 }

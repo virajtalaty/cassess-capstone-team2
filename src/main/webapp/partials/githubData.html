@@ -16,8 +16,27 @@
             <h1>You are not authorized to view these pages!</h1>
         </div>-->
     </div>
+
     <!-- Chart Area -->
     <div ng-controller='charts'>
         <nvd3 options='options' data='data'></nvd3>
     </div>
-</div>
+
+    <!--<div ng-controller='charts'>
+      <div fusioncharts
+           width="600"
+           height="400"
+           type="column2d"
+           dataSource="{{myDataSource}}" >
+      </div>
+       <fc-chart fc-chart-type="Bar2D" fc-data="monthlySales" width="100%" dataSource="{{myDataSource}}">
+         </fc-chart>
+        <fusioncharts
+                width="600"
+                height="400"
+                type="column2d"
+                datasource="{{myDataSource}}">
+        </fusioncharts>
+    </div>-->
+
+  </div>
