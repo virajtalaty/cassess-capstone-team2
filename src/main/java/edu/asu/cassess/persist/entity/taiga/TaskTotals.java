@@ -1,12 +1,14 @@
 package edu.asu.cassess.persist.entity.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="tasktotals")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SQLDelete(sql = "DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2")
 public class TaskTotals {
 
     @EmbeddedId
@@ -17,6 +19,9 @@ public class TaskTotals {
 
     @Column(name="project")
     private String project_name;
+
+    @Column(name="team")
+    private String team;
 
     @Column(name="course")
     private String course;
@@ -40,10 +45,11 @@ public class TaskTotals {
 
     }
 
-    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String course, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String team, String course, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
         this.compositeId = compositeId;
         this.full_name = full_name;
         this.project_name = project_name;
+        this.team = team;
         this.course = course;
         this.tasks_closed = tasks_closed;
         this.tasks_new = tasks_new;
@@ -63,6 +69,14 @@ public class TaskTotals {
     public String getProject_name() { return project_name; }
 
     public void setProject_name(String project_name) { this.project_name = project_name; }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 
     public String getCourse() {
         return course;

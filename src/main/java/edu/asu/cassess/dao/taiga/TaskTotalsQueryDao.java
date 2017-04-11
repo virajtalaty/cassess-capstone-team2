@@ -8,6 +8,7 @@ import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +19,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+
 @Component
-@Transactional
 public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     protected EntityManager entityManager;
@@ -39,6 +40,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<TaskTotals> getTaskTotals() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals", TaskTotals.class);
         List<TaskTotals> resultList = query.getResultList();
@@ -46,36 +48,38 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
+    @Modifying
     public RestResponse deleteTaskTotalsByCourse(Course course) throws DataAccessException {
-        for(Team team:course.getTeams()){
-            for (Student student:team.getStudents()){
-                if(taskTotalsRepo.exists(student.getEmail())) {
-                    taskTotalsRepo.delete(student.getEmail());
-                }
-            }
-        }
+                Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1");
+                query.setParameter(1, course.getCourse());
+                query.executeUpdate();
         return new RestResponse("tasktotals for course: " + course.getCourse() + " have been removed from the database");
     }
 
     @Override
+    @Transactional
     public RestResponse deleteTaskTotalsByProject(Team team) throws DataAccessException {
-            for (Student student:team.getStudents()){
-                if(taskTotalsRepo.exists(student.getEmail())) {
-                    taskTotalsRepo.delete(student.getEmail());
-                }
-            }
+                Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2");
+                query.setParameter(1, team.getCourse());
+                query.setParameter(2, team.getTeam_name());
+                query.executeUpdate();
         return new RestResponse("tasktotals for team: " + team.getTeam_name() + " have been removed from the database");
     }
 
     @Override
-    public RestResponse deleteTaskTotalsByStudent(String email) throws DataAccessException {
-        if(taskTotalsRepo.exists(email)) {
-            taskTotalsRepo.delete(email);
-        }
-        return new RestResponse("tasktotals for student: " + email + " have been removed from the database");
+    @Transactional
+    public RestResponse deleteTaskTotalsByStudent(Student student) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3");
+        query.setParameter(1, student.getCourse());
+        query.setParameter(2, student.getTeam_name());
+        query.setParameter(3, student.getEmail());
+        query.executeUpdate();
+        return new RestResponse("tasktotals for student: " + student.getEmail() + " have been removed from the database");
     }
 
     @Override
+    @Transactional
     public List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String course, String project){
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', SUM(tasksInProgress) as 'InProgress', SUM(tasksReadyForTest) as 'ToTest', SUM(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND project = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
@@ -87,6 +91,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String project, String email){
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND project = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
@@ -99,6 +104,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String project, String email){
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND project = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
                 query.setParameter(1, course);
@@ -109,6 +115,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByProject(String course, String project){
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND project = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
                 query.setParameter(1, course);
@@ -118,6 +125,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyUpdateActivity> getWeeklyUpdatesByProject(String course, String project){
         Query query = getEntityManager().createNativeQuery("SELECT TSKF.week, TSKF.weekBeginning, TSKF.weekEnding, \n" +
                 "\tTRIM(TRAILING '.' FROM (TRIM(TRAILING '0' FROM (TSKF.DoneActivity - @lastDoneActivity)))) as 'DoneActivity',\n" +
@@ -161,6 +169,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyUpdateActivity> getWeeklyUpdatesByStudent(String course, String project, String email){
         Query query = getEntityManager().createNativeQuery("SELECT TSKF.week, TSKF.weekBeginning, TSKF.weekEnding, \n" +
                 "\tTRIM(TRAILING '.' FROM (TRIM(TRAILING '0' FROM (TSKF.DoneActivity - @lastDoneActivity)))) as 'DoneActivity',\n" +
@@ -206,6 +215,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyUpdateActivity> getWeeklyUpdatesByCourse(String course) {
         Query query = getEntityManager().createNativeQuery("SELECT TSKF.week, TSKF.weekBeginning, TSKF.weekEnding, \n" +
                 "\tTRIM(TRAILING '.' FROM (TRIM(TRAILING '0' FROM (TSKF.DoneActivity - @lastDoneActivity)))) as 'DoneActivity',\n" +
@@ -246,6 +256,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> lastTwoWeekWeightsByStudent(String course, String project, String email) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                         "FROM\n" +
@@ -310,6 +321,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> lastTwoWeekWeightsByProject(String course, String project) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                 "FROM\n" +
@@ -372,6 +384,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> lastTwoWeekWeightsByCourse(String course) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                 "FROM\n" +
@@ -432,6 +445,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> getWeeklyWeightByStudent(String course, String project, String email) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                 "FROM\n" +
@@ -495,6 +509,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> getWeeklyWeightByProject(String course, String project) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                 "FROM\n" +
@@ -556,6 +571,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyWeight> getWeeklyWeightByCourse(String course) {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, GREATEST(DoneWeight, InProgressWeight, ToTestWeight) AS weight\n" +
                 "FROM\n" +
@@ -615,6 +631,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> getWeeklyAverageByCourse(String course) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
@@ -651,6 +668,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> getWeeklyAverageByProject(String course, String project) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
@@ -689,6 +707,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> getWeeklyAverageByStudent(String course, String project, String email) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
@@ -729,6 +748,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> lastTwoWeekAveragesByCourse(String course) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
@@ -766,6 +786,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> lastTwoWeekAveragesByProject(String course, String project) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
@@ -805,6 +826,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     }
 
     @Override
+    @Transactional
     public List<WeeklyAverages> lastTwoWeekAveragesByStudent(String course, String project, String email) {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +

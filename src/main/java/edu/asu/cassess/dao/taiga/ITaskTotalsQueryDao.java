@@ -3,6 +3,7 @@ package edu.asu.cassess.dao.taiga;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import org.springframework.dao.DataAccessException;
 
@@ -24,7 +25,7 @@ public interface ITaskTotalsQueryDao {
 
     RestResponse deleteTaskTotalsByProject(Team team) throws DataAccessException;
 
-    RestResponse deleteTaskTotalsByStudent(String email) throws DataAccessException;
+    RestResponse deleteTaskTotalsByStudent(Student student) throws DataAccessException;
 
     List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String course, String project);
 

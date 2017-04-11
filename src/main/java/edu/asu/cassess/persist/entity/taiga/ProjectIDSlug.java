@@ -20,12 +20,16 @@ public class ProjectIDSlug {
     @Column(name="slug")
     private String slug;
 
+    @Column(name="team")
+    private String team;
+
     public ProjectIDSlug(){
     }
 
-    public ProjectIDSlug(Long id, String slug){
+    public ProjectIDSlug(Long id, String slug, String team){
         this.id = id;
         this.slug = slug;
+        this.team = team;
     }
 
     public Long getId() { return id; }
@@ -35,5 +39,13 @@ public class ProjectIDSlug {
     public String getSlug() { return slug; }
 
     public void setSlug(String slug) { this.slug = slug; }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 
 }

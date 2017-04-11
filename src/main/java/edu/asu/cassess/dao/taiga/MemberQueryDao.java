@@ -39,35 +39,29 @@ public class MemberQueryDao implements IMemberQueryDao{
 
     @Override
     public RestResponse deleteMembersByCourse(Course course) throws DataAccessException{
-        for(Team team:course.getTeams()){
-            for (Student student:team.getStudents()){
-                if(memberRepo.exists(student.getEmail())) {
-                    MemberData memberData = memberRepo.findOne(student.getEmail());
-                    memberRepo.delete(memberData);
-                }
-            }
-        }
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1");
+        query.setParameter(1, course.getCourse());
+        query.executeUpdate();
         return new RestResponse("Taiga Members for course: " + course.getCourse() + " have been removed from the database");
     }
 
     @Override
     public RestResponse deleteMembersByTeam(Team team) throws DataAccessException{
-            for (Student student:team.getStudents()){
-                if(memberRepo.exists(student.getEmail())) {
-                    MemberData memberData = memberRepo.findOne(student.getEmail());
-                    memberRepo.delete(memberData);
-                }
-            }
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2");
+        query.setParameter(1, team.getCourse());
+        query.setParameter(2, team.getTeam_name());
+        query.executeUpdate();
         return new RestResponse("Taiga Members for team: " + team.getTeam_name() + " have been removed from the database");
     }
 
     @Override
-    public RestResponse deleteMembersByStudent(String email) throws DataAccessException{
-            if(memberRepo.exists(email)) {
-                MemberData memberData = memberRepo.findOne(email);
-                memberRepo.delete(memberData);
-            }
-        return new RestResponse("Taiga Member for student: " + email + " have been removed from the database");
+    public RestResponse deleteMembersByStudent(Student student) throws DataAccessException{
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2 AND email = ?3");
+        query.setParameter(1, student.getCourse());
+        query.setParameter(2, student.getTeam_name());
+        query.setParameter(3, student.getEmail());
+        query.executeUpdate();
+        return new RestResponse("Taiga Member for student: " + student.getEmail() + " have been removed from the database");
     }
 
     @Override

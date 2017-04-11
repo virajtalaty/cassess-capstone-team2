@@ -24,6 +24,12 @@ public class MemberData {
     @Column(name="roleName")
     private String role_name;
 
+    @Column(name="team")
+    private String team;
+
+    @Column(name="course")
+    private String course;
+
     @Id
     @Column(name="email")
     private String user_email;
@@ -32,13 +38,15 @@ public class MemberData {
 
     }
 
-    public MemberData(int id, String full_name, String project_name, String project_slug, String role_name, String user_email) {
+    public MemberData(int id, String full_name, String project_name, String project_slug, String role_name, String user_email, String team, String course) {
         this.id = id;
         this.full_name = full_name;
         this.project_name = project_name;
         this.project_slug = project_slug;
         this.role_name = role_name;
         this.user_email = user_email;
+        this.team = team;
+        this.course = course;
     }
 
     public int getId() {
@@ -71,6 +79,22 @@ public class MemberData {
 
     public void setUser_email(String user_email) {
         this.user_email = user_email;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 
 }

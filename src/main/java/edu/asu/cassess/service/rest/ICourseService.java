@@ -1,5 +1,6 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
 import org.json.JSONObject;
 
 import edu.asu.cassess.persist.entity.rest.Course;
@@ -15,9 +16,11 @@ public interface ICourseService {
 
     <T> Object read(String course);
 
-    <T> Object delete(String course);
+    <T> Object delete(Course course);
 
     <T> List<Course> listRead();
+
+    List<CourseList> listGetCourses();
 
     JSONObject listCreate(List<Course> courses);
 

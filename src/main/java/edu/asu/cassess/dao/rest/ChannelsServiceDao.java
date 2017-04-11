@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.persist.entity.rest.Channel;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.repo.rest.ChannelRepo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,20 +38,26 @@ public class ChannelsServiceDao {
         this.entityManager = entityManager;
     }
 
-    @Transactional
-    public <T> Object create(Channel channel){
-        if(channelRepo.findOne(channel.getId()) != null){
-            return new RestResponse(channel.getId() + " already exists in database");
+    public <T> Object create(Channel channelInput){
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        preQuery.setParameter(1, channelInput.getCourse());
+        preQuery.setParameter(2, channelInput.getTeam_name());
+        preQuery.setParameter(3, channelInput.getId());
+        Channel channel = (Channel) preQuery.getSingleResult();
+        if(channel != null){
+            return new RestResponse(channelInput.getId() + " already exists in database");
         }else{
-            channelRepo.save(channel);
-            return channel;
+            channelRepo.save(channelInput);
+            return channelInput;
         }
     }
 
-    @Transactional
     public <T> Object update(Channel channelInput) {
-        Channel channel = (Channel) channelRepo.findOne(channelInput.getCourse());
-
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        preQuery.setParameter(1, channelInput.getCourse());
+        preQuery.setParameter(2, channelInput.getTeam_name());
+        preQuery.setParameter(3, channelInput.getId());
+        Channel channel = (Channel) preQuery.getSingleResult();
         if (channel != null) {
             channelRepo.save(channelInput);
             return channelInput;
@@ -58,9 +66,12 @@ public class ChannelsServiceDao {
         }
     }
 
-    @Transactional
-    public <T> Object find(String id) {
-        Channel channel = (Channel) channelRepo.findOne(id);
+    public <T> Object find(String id, String team, String course) {
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        preQuery.setParameter(1, course);
+        preQuery.setParameter(2, team);
+        preQuery.setParameter(3, id);
+        Channel channel = (Channel) preQuery.getSingleResult();
         if (channel != null) {
             return channel;
         } else {
@@ -68,98 +79,97 @@ public class ChannelsServiceDao {
         }
     }
 
-    @Transactional
-    public <T> Object delete(String id) {
-        Channel channel = (Channel) channelRepo.findOne(id);
-        if (id != null) {
-            channelRepo.delete(channel);
-            return new RestResponse(id + " has been removed from the database");
-        } else {
-            return new RestResponse(id + " does not exist in the database");
-        }
+    public <T> Object delete(Channel channel) {
+        Query preQuery = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        preQuery.setParameter(1, channel.getCourse());
+        preQuery.setParameter(2, channel.getTeam_name());
+        preQuery.setParameter(3, channel.getId());
+        return new RestResponse(channel.getId() + " has been removed from the database");
     }
 
-    @Transactional
     public List<Channel> listRead() throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.channels", Channel.class);
         List<Channel> resultList = query.getResultList();
         return resultList;
     }
 
-    @Transactional
-    public List<Channel> listReadByTeam(String team_name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.channels WHERE team_name = ?1", Channel.class);
-        query.setParameter(1, team_name);
+    public List<Channel> listReadByTeam(String team_name, String course) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2", Channel.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team_name);
         List<Channel> resultList = query.getResultList();
         return resultList;
     }
 
 
-    @Transactional
     public JSONObject listCreate(List<Channel> channels) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Channel channel:channels)
-            if(channelRepo.findOne(channel.getId()) != null){
+        for(Channel channelInput:channels) {
+            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+            preQuery.setParameter(1, channelInput.getCourse());
+            preQuery.setParameter(2, channelInput.getTeam_name());
+            preQuery.setParameter(3, channelInput.getId());
+            Channel channel = (Channel) preQuery.getSingleResult();
+            if (channel != null) {
                 try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channel.getId() + " already exists in database"))));
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channelInput.getId() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-            }else{
-                channelRepo.save(channel);
+            } else {
+                channelRepo.save(channelInput);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(channel)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(channelInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }
+        }
         JSONObject returnJSON = new JSONObject();
         returnJSON.put("success", successArray);
         returnJSON.put("failure", failureArray);
         return returnJSON;
     }
 
-    @Transactional
     public JSONObject listUpdate(List<Channel> channels) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Channel channel:channels)
-            if(channelRepo.findOne(channel.getId()) == null){
+        for(Channel channelInput:channels) {
+            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+            preQuery.setParameter(1, channelInput.getCourse());
+            preQuery.setParameter(2, channelInput.getTeam_name());
+            preQuery.setParameter(3, channelInput.getId());
+            Channel channel = (Channel) preQuery.getSingleResult();
+            if (channel == null) {
                 try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channel.getId() + " does not exist in database"))));
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channelInput.getId() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-            }else{
-                channelRepo.save(channel);
+            } else {
+                channelRepo.save(channelInput);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(channel)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(channelInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }
+        }
         JSONObject returnJSON = new JSONObject();
         returnJSON.put("success", successArray);
         returnJSON.put("failure", failureArray);
         return returnJSON;
     }
 
-    @Transactional
-    public <T> Object deleteByTeam(String team_name) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE team_name = ?1 LIMIT 1", Channel.class);
-        preQuery.setParameter(1, team_name);
-        Channel channel = (Channel) preQuery.getSingleResult();
-        if(channel != null){
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE team_name = ?1");
-            query.setParameter(1, team_name);
+    public <T> Object deleteByTeam(Team team) {
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2");
+            query.setParameter(1, team.getCourse());
+            query.setParameter(2, team.getTeam_name());
             query.executeUpdate();
-            return new RestResponse("All channels in team " + team_name + " have been removed from the database");
-        }else{
-            return new RestResponse("No channels in team " + team_name + " exist in the database");
-        }
+            return new RestResponse("All channels in team " + team.getTeam_name() + " have been removed from the database");
     }
 
 }

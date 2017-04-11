@@ -16,20 +16,17 @@ import java.sql.Date;
 import java.util.List;
 
 @Component
-public class GitHubCommitDataDao extends GenericDAOImpl<CommitData, Long>{
+public class GitHubCommitDataDao{
     protected EntityManager entityManager;
 
 
-    @Override
-    @Autowired(required=true)
-    public void setSearchProcessor(JPASearchProcessor searchProcessor) {
-        super.setSearchProcessor(searchProcessor);
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
-    @Override
-    @PersistenceContext(unitName="default")
+
+    @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
-        super.setEntityManager(entityManager);
         this.entityManager = entityManager;
     }
 

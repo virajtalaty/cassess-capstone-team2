@@ -1,23 +1,21 @@
 package edu.asu.cassess.web.controller;
 
-
-import edu.asu.cassess.dao.taiga.MemberQueryDao;
-import edu.asu.cassess.dao.taiga.ProjectQueryDao;
-import edu.asu.cassess.dao.taiga.TaskTotalsQueryDao;
+import edu.asu.cassess.dao.taiga.*;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.service.rest.*;
 
-import edu.asu.cassess.service.security.UserService;
-import edu.asu.cassess.service.taiga.MembersService;
-import edu.asu.cassess.service.taiga.ProjectService;
+import edu.asu.cassess.service.security.IUserService;
+import edu.asu.cassess.service.taiga.IMembersService;
+import edu.asu.cassess.service.taiga.IProjectService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -28,41 +26,41 @@ import java.util.List;
 @Api(description = "Nicest Provisioning API")
 public class restController {
 
-    @Autowired
-    private CourseService courseService;
+    @EJB
+    private ICourseService courseService;
 
-    @Autowired
-    private TeamsService teamService;
+    @EJB
+    private ITeamsService teamService;
 
-    @Autowired
-    private StudentsService studentService;
+    @EJB
+    private IStudentsService studentService;
 
-    @Autowired
-    private AdminsService adminService;
+    @EJB
+    private IAdminsService adminService;
 
-    @Autowired
-    private UserService usersService;
+    @EJB
+    private IUserService usersService;
 
-    @Autowired
-    private ChannelService channelService;
+    @EJB
+    private IChannelService channelService;
 
     @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private TaskTotalsQueryDao taskTotalsDao;
+    @EJB
+    private ITaskTotalsQueryDao taskTotalsDao;
 
-    @Autowired
-    private ProjectQueryDao projectDao;
+    @EJB
+    private IProjectQueryDao projectDao;
 
-    @Autowired
-    private MemberQueryDao memberDao;
+    @EJB
+    private IMemberQueryDao memberDao;
 
-    @Autowired
-    private MembersService members;
+    @EJB
+    private IMembersService members;
 
-    @Autowired
-    private ProjectService projects;
+    @EJB
+    private IProjectService projects;
 
 
 //-----------------------
@@ -83,9 +81,10 @@ public class restController {
             for (Team team : (coursePackage.getTeams())) {
                 usersService.createUsersByStudents(team.getStudents());
             }
+            Object object = courseService.create(coursePackage);
             projects.updateProjects(coursePackage.getCourse());
             members.updateMembership(coursePackage.getCourse());
-            return courseService.create(coursePackage);
+            return object;
         }
     }
 
@@ -121,9 +120,9 @@ public class restController {
             {
                 usersService.deleteUser(user);
             }
-            taskTotalsDao.deleteTaskTotalsByStudent(student.getEmail());
-            memberDao.deleteMembersByStudent(student.getEmail());
-            return studentService.delete(student.getEmail());
+            taskTotalsDao.deleteTaskTotalsByStudent(student);
+            memberDao.deleteMembersByStudent(student);
+            return studentService.delete(student);
         }else{
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -166,20 +165,25 @@ public class restController {
     @RequestMapping(value = "/course", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object deleteCourse(@RequestBody Course course, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object deleteCourse(@RequestBody Course courseInput, HttpServletRequest request, HttpServletResponse response) {
 
-        if (course == null) {
+        Object object = new Object();
+        if (courseInput == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
-            usersService.courseDelete(course);
-            taskTotalsDao.deleteTaskTotalsByCourse(course);
-            projectDao.deleteTaigaProjectByCourse(course);
-            memberDao.deleteMembersByCourse(course);
-            response.setStatus(HttpServletResponse.SC_OK);
-            Object object = courseService.delete(course.getCourse());
-            return object;
+            Course course = (Course) courseService.read(courseInput.getCourse());
+            if(course != null){
+                usersService.courseDelete(course);
+                taskTotalsDao.deleteTaskTotalsByCourse(course);
+                projectDao.deleteTaigaProjectByCourse(course);
+                memberDao.deleteMembersByCourse(course);
+                object = courseService.delete(course);
+
+            }
         }
+        response.setStatus(HttpServletResponse.SC_OK);
+        return object;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -223,7 +227,7 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
 
-            return channelService.delete(channel.getCourse());
+            return channelService.delete(channel);
         }
     }
 
@@ -281,7 +285,7 @@ public class restController {
             {
                 usersService.deleteUser(user);
             }
-            return adminService.delete(admin.getEmail());
+            return adminService.delete(admin);
         }
     }
 
@@ -340,18 +344,22 @@ public class restController {
     @RequestMapping(value = "/team", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    <T> Object deleteTeam(@RequestBody Team team, HttpServletRequest request, HttpServletResponse response) {
+    <T> Object deleteTeam(@RequestBody Team teamInput, HttpServletRequest request, HttpServletResponse response) {
 
-        if (team == null) {
+        if (teamInput == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         } else {
+            Team team = (Team) teamService.read(teamInput.getTeam_name(), teamInput.getCourse());
             response.setStatus(HttpServletResponse.SC_OK);
-            usersService.teamDelete(team);
-            taskTotalsDao.deleteTaskTotalsByProject(team);
-            projectDao.deleteTaigaProjectByTeam(team);
-            memberDao.deleteMembersByTeam(team);
-            return teamService.delete(team.getTeam_name());
+            if(team != null){
+                usersService.teamDelete(team);
+                taskTotalsDao.deleteTaskTotalsByProject(team);
+                projectDao.deleteTaigaProjectByTeam(team);
+                memberDao.deleteMembersByTeam(team);
+            }
+
+            return teamService.delete(team);
         }
     }
 

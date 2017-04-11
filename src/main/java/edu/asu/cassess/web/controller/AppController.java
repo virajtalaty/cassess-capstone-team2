@@ -1,17 +1,13 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.rest.AdminsServiceDao;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.security.User;
-import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.security.SecurityUtils;
-import edu.asu.cassess.service.rest.TeamsService;
-import edu.asu.cassess.service.taiga.MembersService;
-import edu.asu.cassess.service.taiga.ProjectService;
-import edu.asu.cassess.service.taiga.TaskDataService;
-import edu.asu.cassess.dao.rest.CourseServiceDao;
-import edu.asu.cassess.dao.rest.StudentsServiceDao;
+import edu.asu.cassess.service.rest.*;
+import edu.asu.cassess.service.taiga.IMembersService;
+import edu.asu.cassess.service.taiga.IProjectService;
+import edu.asu.cassess.service.taiga.ITaskDataService;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +30,25 @@ public class AppController {
     private ITaskTotalsQueryDao taskTotalService;
 
     @Autowired
-    private CourseServiceDao coursesService;
+    private ICourseService coursesService;
 
     @Autowired
-    private ProjectService projects;
+    private IProjectService projects;
 
     @Autowired
-    private MembersService members;
+    private IMembersService members;
 
     @Autowired
-    private TeamsService teamsService;
+    private ITeamsService teamsService;
 
     @Autowired
-    private StudentsServiceDao studentsService;
+    private IStudentsService studentsService;
 
     @Autowired
-    private AdminsServiceDao adminsService;
+    private IAdminsService adminsService;
 
     @Autowired
-    private TaskDataService taskService;
+    private ITaskDataService taskService;
 
     @Autowired
     private SecurityUtils securityUtils;
