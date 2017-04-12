@@ -26,8 +26,26 @@
                         <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(2)">
+
                         <h1>Taiga Charts</h1>
-                        <p> Content coming soon... </p>
+                        <br><br>
+                        <h1>These are some Charts!</h1>
+                        <br><br>
+                        <div ng-controller='charts as ch'>
+                            <p>This is going to display some charts.</p>
+                            <br><br>
+                            <p>This displays the chart data response: </p>
+                            <br><br>
+                            <p> This is the data for the chart: {{ch.chartData}}</p>
+                            <br><br>
+                            <p> Here's the chart: </p>
+                            <br><br>
+                        </div>
+                        <!-- Chart Area -->
+                        <div ng-controller='charts'>
+                            <nvd3 options='options' data='data'></nvd3>
+                        </div>
+                        <!-- End of Chart Area -->
                     </div>
                     <div ng-show="isSet(3)">
                         <h1>GitHub Charts</h1>
