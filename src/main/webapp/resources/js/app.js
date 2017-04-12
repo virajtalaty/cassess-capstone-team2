@@ -3,13 +3,11 @@
 var myapp = angular
     .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit']);
 
-
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
     user: 'user'
 });
-
 
 myapp.config(function ($routeProvider, USER_ROLES) {
 
@@ -44,26 +42,21 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/taiga_admin', {
-            templateUrl : 'partials/taigaAdmin.html',
-            controller : 'TaigaAdmin',
+            templateUrl: 'partials/taigaAdmin.html',
+            controller: 'TaigaAdmin',
             access: {
                 loginRequired: true,
                 authorizedRoles: [USER_ROLES.admin]
             }
-    }).when('/githubData', {
-        templateUrl: 'partials/githubData.html',
-        access: {
-            loginRequired: true,
-            authorizedRoles: [USER_ROLES.all]
-        }
-    }).when('/slackData', {
-        templateUrl: 'partials/slackData.html',
+    }).when('/course/:course_id', {
+        templateUrl: 'partials/course.html',
+        controller: 'CourseController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/about', {
-        templateUrl : 'partials/about.html',
+        templateUrl: 'partials/about.html',
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
