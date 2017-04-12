@@ -252,8 +252,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
     };
 } ]).controller('charts', function($scope, $http) {
+
         var self = this;
-        $http.get("./GitHubIndividualCommitChart").then(function (response) {
+        /*$http.get("./GitHubIndividualCommitChart").then(function (response) {
 
             $scope.chartData = response.data;
 
@@ -291,7 +292,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.data = [response.data];
-        });
+        });*/
 
     $http.get("./TaigaBarGraph").then(function (response) {
 
@@ -300,8 +301,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.options = {
 
             chart: {
+
                 type: 'multiBarChart',
                 height: 600,
+
                 margin : {
                     top: 20,
                     right: 20,
@@ -309,17 +312,22 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     left: 45
                 },
 
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
                 clipEdge: true,
                 staggerLabels: true,
                 transitionDuration: 1000,
-                tooltips: true,
 
-                tooltipContent: function (key, x, y, e, graph) {
-                    return '<p>' + key + ': ' + y + '</p>';
-                },
+                //tooltips: true,
 
-                stacked: true,
+                //tooltipContent: function (key, x, y, e, graph) {
+                  //  return '<p>' + key + ': ' + y + '</p>';
+                //},
+
+                stacked: false,
                 showControls: false,
+
                 xAxis: {
                     axisLabel: 'Day',
                     showMaxMin: true,
@@ -327,9 +335,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     }
                 },
+
                 yAxis: {
                     axisLabel: 'Tasks',
-                    axisLabelDistance: 100,
+                    axisLabelDistance: 100
                 }
             }
         };
