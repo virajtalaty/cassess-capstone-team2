@@ -1,6 +1,8 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 
@@ -12,9 +14,9 @@ public interface IAdminsService {
 
     <T> Object update(Admin admin);
 
-    <T> Object find(String email);
+    <T> Object find(String email, String course);
 
-    <T> Object delete(String email);
+    <T> Object delete(Admin admin);
 
     <T> List<Admin> listReadAll();
 
@@ -24,5 +26,7 @@ public interface IAdminsService {
 
     JSONObject listCreate(List<Admin> admins);
 
-    <T> Object deleteByCourse(String course);
+    <T> Object deleteByCourse(Course course);
+
+    List<CourseList> listGetCoursesForAdmin(String email);
 }

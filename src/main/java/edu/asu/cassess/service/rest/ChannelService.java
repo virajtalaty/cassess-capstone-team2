@@ -3,6 +3,7 @@ package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.ChannelsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Channel;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +29,15 @@ public class ChannelService implements IChannelService {
     }
 
     @Override
-    public <T> Object read(String id){
+    public <T> Object read(String id, String team, String course){
 
-        return channelServiceDao.find(id);
+        return channelServiceDao.find(id, team, course);
     }
 
     @Override
-    public <T> Object delete(String id){
+    public <T> Object delete(Channel channel){
 
-        return channelServiceDao.delete(id);
+        return channelServiceDao.delete(channel);
     }
 
     @Override
@@ -46,9 +47,9 @@ public class ChannelService implements IChannelService {
     }
 
     @Override
-    public <T> List<Channel> listReadByTeam(String team_name) {
+    public <T> List<Channel> listReadByTeam(String team_name, String course) {
 
-        return channelServiceDao.listReadByTeam(team_name);
+        return channelServiceDao.listReadByTeam(team_name, course);
     }
 
     @Override
@@ -64,9 +65,9 @@ public class ChannelService implements IChannelService {
     }
 
     @Override
-    public <T> Object deleteByTeam(String team_name) {
+    public <T> Object deleteByTeam(Team team) {
 
-        return channelServiceDao.deleteByTeam(team_name);
+        return channelServiceDao.deleteByTeam(team);
     }
 }
 

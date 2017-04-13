@@ -10,6 +10,7 @@ import edu.asu.cassess.persist.repo.AuthorityRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 
+import edu.asu.cassess.service.security.IUserService;
 import edu.asu.cassess.service.security.UserService;
 
 import io.swagger.annotations.Api;
@@ -33,7 +34,7 @@ public class UserController {
     private UserRepo userRepo;
 
     @Autowired
-    private UserService usersService;
+    private IUserService usersService;
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public @ResponseBody List<User> usersList() {

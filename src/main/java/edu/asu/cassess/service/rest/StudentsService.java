@@ -1,8 +1,11 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -29,15 +32,15 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public <T> Object find(String email){
+    public <T> Object find(String email, String team, String course){
 
-        return studentsDao.find(email);
+        return studentsDao.find(email, team, course);
     }
 
     @Override
-    public <T> Object delete(String email){
+    public <T> Object delete(Student student){
 
-        return studentsDao.delete(email);
+        return studentsDao.delete(student);
 
     }
 
@@ -49,8 +52,8 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public <T> List<Student> listReadByTeam(String team_name) {
-        return studentsDao.listReadByTeam(team_name);
+    public <T> List<Student> listReadByTeam(String course, String team_name) {
+        return studentsDao.listReadByTeam(course, team_name);
     }
 
     @Override
@@ -68,10 +71,20 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public <T> Object deleteByTeam(String team_name){
+    public <T> Object deleteByTeam(Team team){
 
-        return studentsDao.deleteByTeam(team_name);
+        return studentsDao.deleteByTeam(team);
 
+    }
+
+    @Override
+    public List<CourseList> listGetCoursesForStudent(String email){
+        return studentsDao.listGetCoursesForStudent(email);
+    }
+
+    @Override
+    public List<TeamNames> listGetAssignedTeams(String email){
+        return studentsDao.listGetAssignedTeams(email);
     }
 
 }
