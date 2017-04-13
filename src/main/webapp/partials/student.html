@@ -1,5 +1,5 @@
 <div class="well page">
-    <h1 class="page-header">{{courseid}} Data</h1>
+    <h1 class="page-header">{{studentid}} Data</h1>
 
     <div class="container" ng-controller="TabController">
         <div class="row">
@@ -45,6 +45,26 @@
                     </div>
                     <div ng-show="isSet(2)">
                         <h1>Taiga Charts</h1>
+                        <table class="table table-bordered" fixed-header>
+                            <thead>
+                            <tr>
+                                <th>Week Beginning</th>
+                                <th>Week Ending</th>
+                                <th>DoneActivity</th>
+                                <th>InProgressActivity</th>
+                                <th>ToTestActivity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in studentActivity">
+                                <td>{{ x.weekBeginning }}</td>
+                                <td>{{ x.weekEnding }}</td>
+                                <td>{{ x.doneActivity }}</td>
+                                <td>{{ x.inProgressActivity }}</td>
+                                <td>{{ x.toTestActivity }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
                         <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(3)">

@@ -22,7 +22,7 @@ public interface IStudentsService {
 
     <T> List<Student> listReadAll();
 
-    <T> List<Student> listReadByTeam(String team_name);
+    <T> List<Student> listReadByTeam(String course, String team_name);
 
     JSONObject listUpdate(List<Student> students);
 

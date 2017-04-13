@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Subselect("")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WeeklyUpdateActivity {
+public class WeeklyActivity {
 
     @Id
     @Column(name="week")
@@ -23,17 +23,18 @@ public class WeeklyUpdateActivity {
     private String weekEnding;
 
     @Column(name="DoneActivity")
-    private int DoneActivity;
+    private String DoneActivity;
 
     @Column(name="InProgressActivity")
-    private int InProgressActivity;
+    private String InProgressActivity;
 
     @Column(name="ToTestActivity")
-    private int ToTestActivity;
+    private String ToTestActivity;
 
-    public WeeklyUpdateActivity(){}
+    public WeeklyActivity(){}
 
-    public WeeklyUpdateActivity(String week, String weekBeginning, String weekEnding, int doneActivity, int inProgressActivity, int toTestActivity) {
+
+    public WeeklyActivity(String week, String weekBeginning, String weekEnding, String doneActivity, String inProgressActivity, String toTestActivity) {
         this.week = week;
         this.weekBeginning = weekBeginning;
         this.weekEnding = weekEnding;
@@ -41,6 +42,8 @@ public class WeeklyUpdateActivity {
         this.InProgressActivity = inProgressActivity;
         this.ToTestActivity = toTestActivity;
     }
+
+
 
     public String getWeek() {
         return week;
@@ -66,27 +69,29 @@ public class WeeklyUpdateActivity {
         this.weekEnding = weekEnding;
     }
 
-    public int getDoneActivity() {
+    public String getDoneActivity() {
         return DoneActivity;
     }
 
-    public void setDoneActivity(int doneActivity) {
+    public void setDoneActivity(String doneActivity) {
         DoneActivity = doneActivity;
     }
 
-    public int getInProgressActivity() {
+    public String getInProgressActivity() {
         return InProgressActivity;
     }
 
-    public void setInProgressActivity(int inProgressActivity) {
+    public void setInProgressActivity(String inProgressActivity) {
         InProgressActivity = inProgressActivity;
     }
 
-    public int getToTestActivity() {
+    public String getToTestActivity() {
         return ToTestActivity;
     }
 
-    public void setToTestActivity(int toTestActivity) {
+    public void setToTestActivity(String toTestActivity) {
         ToTestActivity = toTestActivity;
     }
+
+
 }

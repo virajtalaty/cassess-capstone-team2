@@ -52,8 +52,8 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public <T> List<Student> listReadByTeam(String team_name) {
-        return studentsDao.listReadByTeam(team_name);
+    public <T> List<Student> listReadByTeam(String course, String team_name) {
+        return studentsDao.listReadByTeam(course, team_name);
     }
 
     @Override

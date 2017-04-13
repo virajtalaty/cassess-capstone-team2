@@ -23,24 +23,24 @@ public class WeeklyAverages {
     private String weekEnding;
 
     @Column(name="DoneAverage")
-    private int DoneAverage;
+    private String DoneAverage;
 
     @Column(name="InProgressAverage")
-    private int InProgressAverage;
+    private String InProgressAverage;
 
     @Column(name="ToTestAverage")
-    private int ToTestAverage;
+    private String ToTestAverage;
 
     public WeeklyAverages(){}
 
 
-    public WeeklyAverages(String week, String weekBeginning, String weekEnding, int doneAverage, int inProgressAverage, int toTestAverage) {
+    public WeeklyAverages(String week, String weekBeginning, String weekEnding, String doneAverage, String inProgressAverage, String toTestAverage) {
         this.week = week;
         this.weekBeginning = weekBeginning;
         this.weekEnding = weekEnding;
-        DoneAverage = doneAverage;
-        InProgressAverage = inProgressAverage;
-        ToTestAverage = toTestAverage;
+        this.DoneAverage = doneAverage;
+        this.InProgressAverage = inProgressAverage;
+        this.ToTestAverage = toTestAverage;
     }
 
 
@@ -69,27 +69,27 @@ public class WeeklyAverages {
         this.weekEnding = weekEnding;
     }
 
-    public int getDoneAverage() {
+    public String getDoneAverage() {
         return DoneAverage;
     }
 
-    public void setDoneAverage(int doneAverage) {
+    public void setDoneAverage(String doneAverage) {
         DoneAverage = doneAverage;
     }
 
-    public int getInProgressAverage() {
+    public String getInProgressAverage() {
         return InProgressAverage;
     }
 
-    public void setInProgressAverage(int inProgressAverage) {
+    public void setInProgressAverage(String inProgressAverage) {
         InProgressAverage = inProgressAverage;
     }
 
-    public int getToTestAverage() {
+    public String getToTestAverage() {
         return ToTestAverage;
     }
 
-    public void setToTestAverage(int toTestAverage) {
+    public void setToTestAverage(String toTestAverage) {
         ToTestAverage = toTestAverage;
     }
 

@@ -90,24 +90,24 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<DailyTaskTotals> getDailyTasksByProject(String beginDate, String endDate, String course, String project) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND project = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
+    public List<DailyTaskTotals> getDailyTasksByTeam(String beginDate, String endDate, String course, String team) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
-        query.setParameter(4, project);
+        query.setParameter(4, team);
         List<DailyTaskTotals> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
     @Transactional
-    public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String project, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND project = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
+    public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String team, String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
-        query.setParameter(4, project);
+        query.setParameter(4, team);
         query.setParameter(5, email);
         List<DailyTaskTotals> resultList = query.getResultList();
         return resultList;
@@ -115,10 +115,10 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String project, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND project = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+    public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
                 query.setParameter(1, course);
-                query.setParameter(2, project);
+                query.setParameter(2, team);
                 query.setParameter(3, email);
                 List<WeeklyIntervals> resultList = query.getResultList();
                 return resultList;
@@ -126,17 +126,17 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<WeeklyIntervals> getWeeklyIntervalsByProject(String course, String project) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND project = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+    public List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
                 query.setParameter(1, course);
-                query.setParameter(2, project);
+                query.setParameter(2, team);
                 List<WeeklyIntervals> resultList = query.getResultList();
                 return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyUpdateActivity> getWeeklyUpdatesByProject(String course, String project) throws DataAccessException {
+    public List<WeeklyActivity> getWeeklyUpdatesByTeam(String course, String team) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, \n" +
                         "                ROUND(AVG(DoneActivity), 3) as 'DoneActivity', ROUND(AVG(InProgressActivity), 3) as 'InProgressActivity', ROUND(AVG(ToTestActivity), 3) as 'ToTestActivity'\n" +
                         "                FROM\n" +
@@ -158,6 +158,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                         "                   from\n" +
                         "                      tasktotals TSK,\n" +
                         "                      ( select @lastfullName \\:= 0,\n" +
+                        "                               @lasttasksClosed \\:= 0,\n" +
                         "                               @lasttasksInProgress \\:= 0,\n" +
                         "                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
                         "                WHERE course = ?1\n" +
@@ -168,57 +169,58 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                         "                      TSK.retrievalDate) query1\n" +
                         "                      GROUP BY fullName, DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY)) query2,\n" +
                         "                      (select @rn \\:= 0) vars\n" +
-                        "                      GROUP BY weekBeginning", WeeklyUpdateActivity.class);
+                        "                      GROUP BY weekBeginning", WeeklyActivity.class);
                 query.setParameter(1, course);
-                query.setParameter(2, project);
-                List<WeeklyUpdateActivity> resultList = query.getResultList();
+                query.setParameter(2,team);
+                List<WeeklyActivity> resultList = query.getResultList();
                 return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyUpdateActivity> getWeeklyUpdatesByStudent(String course, String project, String email) throws DataAccessException {
+    public List<WeeklyActivity> getWeeklyUpdatesByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, DoneActivity, InProgressActivity, ToTestActivity\n" +
-                "FROM\n" +
-                "                (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
-                "                DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding', SUM(tasksClosedDIFF) as 'DoneActivity', \n" +
-                "                SUM(tasksInProgressDIFF) as 'InProgressActivity', SUM(tasksReadyForTestDIFF) as 'ToTestActivity'\n" +
-                "                FROM\n" +
-                "                (select\n" +
-                "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
-                "\t\t\t      TSK.fullName,\n" +
-                "\t\t\t      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
-                "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
-                "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksInProgress - @lasttasksInProgress), TSK.tasksInProgress) as tasksInProgressDIFF,\n" +
-                "                      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
-                "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
-                "                      @lastfullName \\:= TSK.fullName,\n" +
-                "                      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
-                "                   from\n" +
-                "                      tasktotals TSK,\n" +
-                "                      ( select @lastfullName \\:= 0,\n" +
-                "                               @lasttasksInProgress \\:= 0,\n" +
-                "                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
-                "                WHERE course = ?1\n" +
-                "                AND team = ?2\n" +
-                "                AND email = ?3\n" +
-                "                   order by\n" +
-                "                      TSK.fullName,\n" +
-                "                      TSK.retrievalDate) query1\n" +
-                "                      GROUP BY fullName, DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY)) query2,\n" +
-                "                      (select @rn \\:= 0) vars\n" +
-                "                      GROUP BY weekBeginning", WeeklyUpdateActivity.class);
+                        "FROM\n" +
+                        "                               (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning',\n" +
+                        "                                DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding', SUM(tasksClosedDIFF) as 'DoneActivity', \n" +
+                        "\t\t\t\t\t\t\tSUM(tasksInProgressDIFF) as 'InProgressActivity', SUM(tasksReadyForTestDIFF) as 'ToTestActivity'\n" +
+                        "                                FROM\n" +
+                        "                                (select\n" +
+                        "                                      TSK.retrievalDate,\n" +
+                        "                                      TSK.project,\n" +
+                        "\t\t\t\t\t\t\t\t\t\tTSK.fullName,\n" +
+                        "\t\t\t\t\t\t\t\t\t  if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
+                        "                                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
+                        "                                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksInProgress - @lasttasksInProgress), TSK.tasksInProgress) as tasksInProgressDIFF,\n" +
+                        "                                      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
+                        "                                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
+                        "                                      @lastfullName \\:= TSK.fullName,\n" +
+                        "                                      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
+                        "                                   from\n" +
+                        "                                      tasktotals TSK,\n" +
+                        "                                      ( select @lastfullName \\:= 0,\n" +
+                        "                                               @lasttasksClosed \\:= 0,\n" +
+                        "                                               @lasttasksInProgress \\:= 0,\n" +
+                        "                                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
+                        "                                WHERE course = ?1\n" +
+                        "                                AND team = ?2\n" +
+                        "                                AND email = ?3\n" +
+                        "                                   order by\n" +
+                        "                                      TSK.fullName,\n" +
+                        "                                      TSK.retrievalDate) query1\n" +
+                        "                                      GROUP BY fullName, DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY)) query2,\n" +
+                        "                                      (select @rn \\:= 0) vars\n" +
+                        "                                      GROUP BY weekBeginning", WeeklyActivity.class);
                 query.setParameter(1, course);
-                query.setParameter(2, project);
+                query.setParameter(2, team);
                 query.setParameter(3, email);
-                List<WeeklyUpdateActivity> resultList = query.getResultList();
+                List<WeeklyActivity> resultList = query.getResultList();
                 return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyUpdateActivity> getWeeklyUpdatesByCourse(String course) throws DataAccessException {
+    public List<WeeklyActivity> getWeeklyUpdatesByCourse(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, \n" +
                 "                ROUND(AVG(DoneActivity), 3) as 'DoneActivity', ROUND(AVG(InProgressActivity), 3) as 'InProgressActivity', ROUND(AVG(ToTestActivity), 3) as 'ToTestActivity'\n" +
                 "                FROM\n" +
@@ -240,6 +242,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                   from\n" +
                 "                      tasktotals TSK,\n" +
                 "                      ( select @lastfullName \\:= 0,\n" +
+                "                               @lasttasksClosed \\:= 0,\n" +
                 "                               @lasttasksInProgress \\:= 0,\n" +
                 "                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
                 "                WHERE course = ?1\n" +
@@ -248,15 +251,15 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                      TSK.retrievalDate) query1\n" +
                 "                      GROUP BY fullName, DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY)) query2,\n" +
                 "                      (select @rn \\:= 0) vars\n" +
-                "                      GROUP BY weekBeginning", WeeklyUpdateActivity.class);
+                "                      GROUP BY weekBeginning", WeeklyActivity.class);
                 query.setParameter(1, course);
-                List<WeeklyUpdateActivity> resultList = query.getResultList();
+                List<WeeklyActivity> resultList = query.getResultList();
                 return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyFreqWeight> twoWeekWeightFreqByStudent(String course, String project, String email) throws DataAccessException {
+    public List<WeeklyFreqWeight> twoWeekWeightFreqByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, IF(frequency > 3, 3, frequency) as 'frequency', IF((GREATEST(Done/(days + 1), InProgress/(days + 1), ToTest/(days + 1))) > 3, 3, ROUND(GREATEST(Done/(days + 1), InProgress/(days + 1), ToTest/(days + 1)), 3)) AS weight\n" +
         "FROM\n" +
                 "(SELECT (@rn \\:= @rn + 1) as 'week', days, weekBeginning, weekEnding, ROUND(frequency/daysFreq, 3) as 'frequency', \n" +
@@ -298,7 +301,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                      GROUP BY weekBeginning) query4\n" +
                 "                      GROUP BY weekBeginning DESC LIMIT 2", WeeklyFreqWeight.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         query.setParameter(3, email);
         List<WeeklyFreqWeight> resultList = query.getResultList();
         return resultList;
@@ -382,7 +385,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
                 "                   from\n" +
                 "                      tasktotals TSK,\n" +
-                "                      ( select @lastfullName := 0,\n" +
+                "                      ( select @lastfullName \\:= 0,\n" +
                 "                   @lasttasksClosed \\:= 0,\n" +
                 "                               @lasttasksInProgress \\:= 0, \n" +
                 "                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
@@ -402,7 +405,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<WeeklyFreqWeight> weeklyWeightFreqByStudent(String course, String project, String email) throws DataAccessException {
+    public List<WeeklyFreqWeight> weeklyWeightFreqByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT week, weekBeginning, weekEnding, IF(frequency > 3, 3, frequency) as 'frequency', IF((GREATEST(Done/(days + 1), InProgress/(days + 1), ToTest/(days + 1))) > 3, 3, ROUND(GREATEST(Done/(days + 1), InProgress/(days + 1), ToTest/(days + 1)), 3)) AS weight\n" +
                 "FROM\n" +
                 "(SELECT (@rn \\:= @rn + 1) as 'week', days, weekBeginning, weekEnding, ROUND(frequency/daysFreq, 3) as 'frequency', \n" +
@@ -444,7 +447,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                      GROUP BY weekBeginning) query4\n" +
                 "                      GROUP BY weekBeginning", WeeklyFreqWeight.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         query.setParameter(3, email);
         List<WeeklyFreqWeight> resultList = query.getResultList();
         return resultList;
@@ -564,7 +567,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
                 "      @lastfullName \\:= TSK.fullName,\n" +
-                "      @lasttasksReadyForTest := TSK.tasksReadyForTest\n" +
+                "      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
                 "   from\n" +
                 "      tasktotals TSK,\n" +
                 "      ( select @lastfullName \\:= 0,\n" +
@@ -585,7 +588,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<WeeklyAverages> getWeeklyAverageByProject(String course, String project) throws DataAccessException {
+    public List<WeeklyAverages> getWeeklyAverageByTeam(String course, String team) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
                 "(SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
@@ -601,7 +604,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
                 "      @lastfullName \\:= TSK.fullName,\n" +
-                "      @lasttasksReadyForTest := TSK.tasksReadyForTest\n" +
+                "      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
                 "   from\n" +
                 "      tasktotals TSK,\n" +
                 "      ( select @lastfullName \\:= 0,\n" +
@@ -617,14 +620,14 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      (select @rn \\:= 0) vars\n" +
                 "       GROUP By weekBeginning", WeeklyAverages.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         List<WeeklyAverages> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyAverages> getWeeklyAverageByStudent(String course, String project, String email) throws DataAccessException {
+    public List<WeeklyAverages> getWeeklyAverageByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
                 "(SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
@@ -640,7 +643,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
                 "      @lastfullName \\:= TSK.fullName,\n" +
-                "      @lasttasksReadyForTest := TSK.tasksReadyForTest\n" +
+                "      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
                 "   from\n" +
                 "      tasktotals TSK,\n" +
                 "      ( select @lastfullName \\:= 0,\n" +
@@ -649,7 +652,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
                 "\tWHERE course = ?1\n" +
                 "    AND project = ?2\n" +
-                "    AND email = ?2\n" +
+                "    AND email = ?3\n" +
                 "   order by\n" +
                 "      TSK.fullName,\n" +
                 "      TSK.retrievalDate) query1\n" +
@@ -657,7 +660,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      (select @rn \\:= 0) vars\n" +
                 "       GROUP By weekBeginning", WeeklyAverages.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         query.setParameter(3, email);
         List<WeeklyAverages> resultList = query.getResultList();
         return resultList;
@@ -681,7 +684,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "      @lasttasksInProgress \\:= TSK.tasksInProgress,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksReadyForTest - @lasttasksReadyForTest), TSK.tasksReadyForTest ) as tasksReadyForTestDIFF,\n" +
                 "      @lastfullName \\:= TSK.fullName,\n" +
-                "      @lasttasksReadyForTest := TSK.tasksReadyForTest\n" +
+                "      @lasttasksReadyForTest \\:= TSK.tasksReadyForTest\n" +
                 "   from\n" +
                 "      tasktotals TSK,\n" +
                 "      ( select @lastfullName \\:= 0,\n" +
@@ -703,7 +706,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
 
     @Override
     @Transactional
-    public List<WeeklyAverages> lastTwoWeekAveragesByProject(String course, String project) throws DataAccessException {
+    public List<WeeklyAverages> lastTwoWeekAveragesByTeam(String course, String team) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
                 "(SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
@@ -736,14 +739,14 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "       GROUP By weekBeginning" +
                 "       ORDER BY week DESC LIMIT 2", WeeklyAverages.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         List<WeeklyAverages> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
     @Transactional
-    public List<WeeklyAverages> lastTwoWeekAveragesByStudent(String course, String project, String email) throws DataAccessException {
+    public List<WeeklyAverages> lastTwoWeekAveragesByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, ROUND(COALESCE(AVG(NULLIF(DoneAverage ,0)), 0), 0) as 'DoneAverage', ROUND(COALESCE(AVG(NULLIF(InProgressAverage ,0)), 0), 0) as 'InProgressAverage', ROUND(COALESCE(AVG(NULLIF(ToTestAverage ,0)), 0), 0) as 'ToTestAverage'\n" +
                 "FROM\n" +
                 "(SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
@@ -777,7 +780,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "       GROUP By weekBeginning" +
                 "       ORDER BY week DESC LIMIT 2", WeeklyAverages.class);
         query.setParameter(1, course);
-        query.setParameter(2, project);
+        query.setParameter(2, team);
         query.setParameter(3, email);
         List<WeeklyAverages> resultList = query.getResultList();
         return resultList;

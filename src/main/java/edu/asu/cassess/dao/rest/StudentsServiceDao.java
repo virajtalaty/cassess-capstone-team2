@@ -144,9 +144,10 @@ public class StudentsServiceDao {
      * @return List of Student objects where student team is team_name
      * @throws DataAccessException
      */
-    public List<Student> listReadByTeam(String team_name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
-        query.setParameter(1, team_name);
+    public List<Student> listReadByTeam(String course, String team_name) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team_name);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
