@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.dao.UserQueryDao;
+import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.UserID;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.entity.security.UsersAuthority;
 import edu.asu.cassess.persist.repo.AuthorityRepo;
@@ -47,27 +50,37 @@ public class AdminsServiceDao {
         this.entityManager = entityManager;
     }
 
-    public <T> Object create(Admin admin) {
-        //System.out.println("Got into create");
+    public <T> Object create(Admin adminInput) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        query.setParameter(1, adminInput.getCourse());
+        query.setParameter(2, adminInput.getEmail());
+        Admin admin = (Admin) query.getSingleResult();
         if(adminsRepo.findOne(admin.getEmail()) != null){
-            return new RestResponse(admin.getEmail() + " already exists in database");
+            return new RestResponse(adminInput.getEmail() + " already exists in database");
         }else{
-            adminsRepo.save(admin);
-            return admin;
+            adminsRepo.save(adminInput);
+            return adminInput;
         }
     }
 
-    public <T> Object update(Admin admin) {
-        if(adminsRepo.findOne(admin.getEmail()) != null){
-            adminsRepo.save(admin);
-            return admin;
+    public <T> Object update(Admin adminInput) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        query.setParameter(1, adminInput.getCourse());
+        query.setParameter(2, adminInput.getEmail());
+        Admin admin = (Admin) query.getSingleResult();
+        if(admin != null){
+            adminsRepo.save(adminInput);
+            return adminInput;
         }else{
-            return new RestResponse(admin.getEmail() + " does not exist in database");
+            return new RestResponse(adminInput.getEmail() + " does not exist in database");
         }
     }
 
-    public <T> Object find(String email) {
-        Admin admin = adminsRepo.findOne(email);
+    public <T> Object find(String email, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        query.setParameter(1, course);
+        query.setParameter(2, email);
+        Admin admin = (Admin) query.getSingleResult();
         if(admin != null){
             return admin;
         }else{
@@ -75,14 +88,11 @@ public class AdminsServiceDao {
         }
     }
 
-    public <T> Object delete(String email) {
-        Admin admin = adminsRepo.findOne(email);
-        if(admin != null){
-            adminsRepo.delete(admin);
-            return new RestResponse(email + " has been removed from the database");
-        }else{
-            return new RestResponse(email + " does not exist in the database");
-        }
+    public <T> Object delete(Admin admin) {
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        query.setParameter(1, admin.getCourse());
+        query.setParameter(2, admin.getEmail());
+            return new RestResponse(admin.getEmail() + " has been removed from the database");
     }
 
     public List<Admin> listReadAll() throws DataAccessException {
@@ -104,43 +114,21 @@ public class AdminsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Admin admin: admins)
-            if(adminsRepo.findOne(admin.getEmail()) != null){
+        for(Admin adminInput: admins) {
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+            query.setParameter(1, adminInput.getCourse());
+            query.setParameter(2, adminInput.getEmail());
+            Admin admin = (Admin) query.getSingleResult();
+            if (admin != null) {
                 try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(admin.getEmail() + " already exists in database"))));
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            }else{
-                adminsRepo.save(admin);
-                try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(admin)));
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            }
-        JSONObject returnJSON = new JSONObject();
-        returnJSON.put("success", successArray);
-        returnJSON.put("failure", failureArray);
-        return returnJSON;
-    }
-
-    public JSONObject listUpdate(List<Admin> admins) {
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        JSONArray successArray = new JSONArray();
-        JSONArray failureArray = new JSONArray();
-        for (Admin admin : admins) {
-
-            if (adminsRepo.findOne(admin.getEmail()) == null) {
-                try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(admin.getEmail() + " does not exist in database"))));
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(adminInput.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                adminsRepo.save(admin);
+                adminsRepo.save(adminInput);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(admin)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(adminInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +140,37 @@ public class AdminsServiceDao {
         return returnJSON;
     }
 
-    public <T> Object deleteByCourse(String course) {
+    public JSONObject listUpdate(List<Admin> admins) {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        JSONArray successArray = new JSONArray();
+        JSONArray failureArray = new JSONArray();
+        for (Admin adminInput : admins) {
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+            query.setParameter(1, adminInput.getCourse());
+            query.setParameter(2, adminInput.getEmail());
+            Admin admin = (Admin) query.getSingleResult();
+            if (admin == null) {
+                try {
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(adminInput.getEmail() + " does not exist in database"))));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                adminsRepo.save(adminInput);
+                try {
+                    successArray.put(new JSONObject(ow.writeValueAsString(adminInput)));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        JSONObject returnJSON = new JSONObject();
+        returnJSON.put("success", successArray);
+        returnJSON.put("failure", failureArray);
+        return returnJSON;
+    }
+
+    public <T> Object deleteByCourse(Course course) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.admins WHERE course = ?1 LIMIT 1", Admin.class);
         preQuery.setParameter(1, course);
         Admin admin = (Admin) preQuery.getSingleResult();
@@ -164,6 +182,13 @@ public class AdminsServiceDao {
         }else{
             return new RestResponse("No admin in course " + course + " exist in the database");
         }
+    }
+
+    public List<CourseList> listGetCoursesForAdmin(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.admins WHERE email = ?1", CourseList.class);
+        query.setParameter(1, email);
+        List<CourseList> resultList = query.getResultList();
+        return resultList;
     }
 
 }
