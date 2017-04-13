@@ -38,6 +38,12 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
+    public <T> Object find(String email, String course) {
+
+        return studentsDao.find(email, course);
+    }
+
+    @Override
     public <T> Object delete(Student student){
 
         return studentsDao.delete(student);

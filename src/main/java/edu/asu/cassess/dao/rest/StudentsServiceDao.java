@@ -100,8 +100,23 @@ public class StudentsServiceDao {
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
-        Student student = (Student) query.getSingleResult();
-        if(student != null){
+        List results = query.getResultList();
+        if(!results.isEmpty()){
+            Student student = (Student) results.get(0);
+            return student;
+        }else{
+            return new RestResponse(email + " does not exist in database");
+        }
+    }
+
+    @Transactional
+    public <T> Object find(String email, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND email = ?2", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, email);
+        List results = query.getResultList();
+        if(!results.isEmpty()){
+            Student student = (Student) results.get(0);
             return student;
         }else{
             return new RestResponse(email + " does not exist in database");

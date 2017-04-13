@@ -33,6 +33,9 @@ public class TeamsService implements ITeamsService {
     }
 
     @Override
+    public <T> Object findOne(String team_name, String course) { return teamsDao.findOne(team_name, course);}
+
+    @Override
     public <T> Object delete(Team team) {
         return teamsDao.delete(team);
     }

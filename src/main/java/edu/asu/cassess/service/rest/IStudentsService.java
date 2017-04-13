@@ -18,6 +18,8 @@ public interface IStudentsService {
 
     <T> Object find(String email, String team, String course);
 
+    <T> Object find(String email, String course);
+
     <T> Object delete(Student student);
 
     <T> List<Student> listReadAll();

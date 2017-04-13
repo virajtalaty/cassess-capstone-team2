@@ -1,8 +1,13 @@
 package edu.asu.cassess.web.controller;
 
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.entity.security.UsersAuthority;
+import edu.asu.cassess.persist.repo.AuthorityRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.security.SecurityUtils;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.taiga.IMembersService;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @RestController

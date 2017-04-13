@@ -80,8 +80,9 @@ public class AdminsServiceDao {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, course);
         query.setParameter(2, email);
-        Admin admin = (Admin) query.getSingleResult();
-        if(admin != null){
+        List results = query.getResultList();
+        if(!results.isEmpty()){
+            Admin admin = (Admin) results.get(0);
             return admin;
         }else{
             return new RestResponse(email + " does not exist in database");

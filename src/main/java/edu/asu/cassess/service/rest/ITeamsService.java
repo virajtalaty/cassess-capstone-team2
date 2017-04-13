@@ -17,6 +17,8 @@ public interface ITeamsService {
 
     <T> Object read(String team, String course);
 
+    <T> Object findOne(String team_name, String course);
+
     <T> Object delete(Team team);
 
     <T> List<Team> listReadAll();

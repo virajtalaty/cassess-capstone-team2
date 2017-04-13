@@ -146,6 +146,20 @@ public class TeamsServiceDao {
     }
 
     @Transactional
+    public <T> Object findOne(String team_name, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team_name);
+        List results = query.getResultList();
+        if(!results.isEmpty()){
+            Team team = (Team) results.get(0);
+            return team;
+        }else{
+            return new RestResponse(team_name + " does not exist for this course");
+        }
+    }
+
+    @Transactional
     public JSONObject listCreate(List<Team> teams) {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
