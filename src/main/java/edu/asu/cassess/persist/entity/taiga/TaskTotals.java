@@ -1,12 +1,14 @@
 package edu.asu.cassess.persist.entity.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="tasktotals")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@SQLDelete(sql = "DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2")
 public class TaskTotals {
 
     @EmbeddedId
@@ -18,8 +20,11 @@ public class TaskTotals {
     @Column(name="project")
     private String project_name;
 
-    @Column(name="roleName")
-    private String role_name;
+    @Column(name="team")
+    private String team;
+
+    @Column(name="course")
+    private String course;
 
     @Column(name="tasksClosed")
     private int tasks_closed;
@@ -36,17 +41,16 @@ public class TaskTotals {
     @Column(name="tasksOpen")
     private int tasks_open;
 
-
-
     public TaskTotals(){
 
     }
 
-    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String role_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, String team, String course, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open){
         this.compositeId = compositeId;
         this.full_name = full_name;
         this.project_name = project_name;
-        this.role_name = role_name;
+        this.team = team;
+        this.course = course;
         this.tasks_closed = tasks_closed;
         this.tasks_new = tasks_new;
         this.tasks_in_progress = tasks_in_progress;
@@ -66,9 +70,21 @@ public class TaskTotals {
 
     public void setProject_name(String project_name) { this.project_name = project_name; }
 
-    public String getRole_name() { return role_name; }
+    public String getTeam() {
+        return team;
+    }
 
-    public void setRole_name(String role_name) { this.role_name = role_name; }
+    public void setTeam(String team) {
+        this.team = team;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
 
     public int getTasks_closed() { return tasks_closed; }
 
@@ -90,8 +106,7 @@ public class TaskTotals {
 
     public void setTasks_open(int tasks_open) { this.tasks_open = tasks_open; }
 
-
-    public int getId() { return compositeId.getId(); }
+    public String getEmail() { return compositeId.getEmail(); }
 
     public String getRetrievalDate() {
         return compositeId.getRetrievalDate();

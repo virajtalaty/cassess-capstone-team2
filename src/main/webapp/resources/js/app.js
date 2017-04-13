@@ -55,6 +55,20 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
         }
+    }).when('/team/:team_id', {
+        templateUrl: 'partials/team.html',
+        controller: 'TeamController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/student/:student_id', {
+        templateUrl: 'partials/student.html',
+        controller: 'StudentController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
     }).when('/about', {
         templateUrl: 'partials/about.html',
         access: {

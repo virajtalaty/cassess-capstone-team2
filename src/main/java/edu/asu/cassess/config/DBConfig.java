@@ -6,6 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.dozer.DozerBeanMapper;
+import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 //Disabled for now as this annotation creates proxy beans that do not
 //function well with session-based objects needed for Angular<->Spring communication
 //@EnableTransactionManagement(proxyTargetClass=true)
+@EnableTransactionManagement
 @ComponentScan({"edu.asu.cassess.dao", "edu.asu.cassess.persist", "edu.asu.cassess.service"})
 @EnableJpaRepositories("edu.asu.cassess")
 public class DBConfig {

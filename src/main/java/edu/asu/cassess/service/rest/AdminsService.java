@@ -1,7 +1,9 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.AdminsServiceDao;
+import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -26,13 +28,13 @@ public class AdminsService implements IAdminsService {
     }
 
     @Override
-    public <T> Object find(String email) {
-        return adminsDao.find(email);
+    public <T> Object find(String email, String course) {
+        return adminsDao.find(email, course);
     }
 
     @Override
-    public <T> Object delete(String email) {
-        return adminsDao.delete(email);
+    public <T> Object delete(Admin admin) {
+        return adminsDao.delete(admin);
     }
 
     @Override
@@ -56,7 +58,12 @@ public class AdminsService implements IAdminsService {
     }
 
     @Override
-    public <T> Object deleteByCourse(String course) {
+    public <T> Object deleteByCourse(Course course) {
         return adminsDao.deleteByCourse(course);
+    }
+
+    @Override
+    public List<CourseList> listGetCoursesForAdmin(String email){
+        return adminsDao.listGetCoursesForAdmin(email);
     }
 }

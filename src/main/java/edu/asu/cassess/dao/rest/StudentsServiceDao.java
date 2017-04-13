@@ -1,10 +1,13 @@
 package edu.asu.cassess.dao.rest;
 
+import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,33 +49,42 @@ public class StudentsServiceDao {
     /**
      * Adds this student to the database.
      * 
-     * @param student the student to add
+     * @param studentInput the student to add
      * @return the student passed or message if student already exists
      */
     @Transactional
-    public <T> Object create(Student student) {
-        System.out.println("Got into create");
-        if(studentRepo.findOne(student.getEmail()) != null){
+    public <T> Object create(Student studentInput) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        query.setParameter(1, studentInput.getCourse());
+        query.setParameter(2, studentInput.getTeam_name());
+        query.setParameter(3, studentInput.getEmail());
+        Student student = (Student) query.getSingleResult();
+        if(student != null){
             return new RestResponse(student.getEmail() + " already exists in database");
         }else{
-            studentRepo.save(student);
-            return student;
+            studentRepo.save(studentInput);
+            return studentInput;
         }
     }
 
     /**
      * Update the database entry for this student with new information.
      * 
-     * @param student the student to update
+     * @param studentInput the student to update
      * @return the student passed or message if no such student exists in database
      */
     @Transactional
-    public <T> Object update(Student student) {
-        if(studentRepo.findOne(student.getEmail()) != null){
-            studentRepo.save(student);
-            return student;
+    public <T> Object update(Student studentInput) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        query.setParameter(1, studentInput.getCourse());
+        query.setParameter(2, studentInput.getTeam_name());
+        query.setParameter(3, studentInput.getEmail());
+        Student student = (Student) query.getSingleResult();
+        if(student != null){
+            studentRepo.save(studentInput);
+            return studentInput;
         }else{
-            return new RestResponse(student.getEmail() + " does not exist in database");
+            return new RestResponse(studentInput.getEmail() + " does not exist in database");
         }
     }
     
@@ -83,8 +95,12 @@ public class StudentsServiceDao {
      * @return the student or a message if the student is not found
      */
     @Transactional
-    public <T> Object find(String email) {
-        Student student = studentRepo.findOne(email);
+    public <T> Object find(String email, String team, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, email);
+        Student student = (Student) query.getSingleResult();
         if(student != null){
             return student;
         }else{
@@ -96,18 +112,17 @@ public class StudentsServiceDao {
     /**
      * Delete the student record from the database associated with this email address.
      * 
-     * @param email the string (email address) used to find student
+     * @param student the student object to remove from the database
      * @return a message indicating success or no such database object
      */
     @Transactional
-    public <T> Object delete(String email) {
-        Student student = studentRepo.findOne(email);
-        if(student != null){
-            studentRepo.delete(student);
-            return new RestResponse(email + " has been removed from the database");
-        }else{
-            return new RestResponse(email + " does not exist in the database");
-        }
+    public <T> Object delete(Student student) {
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3");
+            query.setParameter(1, student.getCourse());
+            query.setParameter(2, student.getTeam_name());
+            query.setParameter(3, student.getEmail());
+            query.executeUpdate();
+            return new RestResponse(student.getEmail() + " has been removed from the database");
     }
 
     /**
@@ -129,9 +144,10 @@ public class StudentsServiceDao {
      * @return List of Student objects where student team is team_name
      * @throws DataAccessException
      */
-    public List<Student> listReadByTeam(String team_name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE team_name = ?1", Student.class);
-        query.setParameter(1, team_name);
+    public List<Student> listReadByTeam(String course, String team_name) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team_name);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
@@ -146,25 +162,31 @@ public class StudentsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Student student:students)
-            if(studentRepo.findOne(student.getEmail()) != null){
+        for(Student studentInput:students) {
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+            query.setParameter(1, studentInput.getCourse());
+            query.setParameter(2, studentInput.getTeam_name());
+            query.setParameter(3, studentInput.getEmail());
+            Student student = (Student) query.getSingleResult();
+            if (student != null) {
                 try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " already exists in database"))));
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(studentInput.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-            }else{
-                studentRepo.save(student);
+            } else {
+                studentRepo.save(studentInput);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(student)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(studentInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }
-        JSONObject returnJSON = new JSONObject();
-        returnJSON.put("success", successArray);
-        returnJSON.put("failure", failureArray);
-        return returnJSON;
+        }
+            JSONObject returnJSON = new JSONObject();
+            returnJSON.put("success", successArray);
+            returnJSON.put("failure", failureArray);
+            return returnJSON;
     }
 
     /**
@@ -177,17 +199,22 @@ public class StudentsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for (Student student : students) {
-            if (studentRepo.findOne(student.getEmail()) == null) {
+        for (Student studentInput : students) {
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+            query.setParameter(1, studentInput.getCourse());
+            query.setParameter(2, studentInput.getTeam_name());
+            query.setParameter(3, studentInput.getEmail());
+            Student student = (Student) query.getSingleResult();
+            if (student == null) {
                 try {
-                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(student.getEmail() + " does not exist in database"))));
+                    failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(studentInput.getEmail() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                studentRepo.save(student);
+                studentRepo.save(studentInput);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(student)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(studentInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -202,21 +229,38 @@ public class StudentsServiceDao {
     /**
      * Deletes all student records from database associated with this team.
      * 
-     * @param team_name name of team to filter by
+     * @param team object of team to filter by
      * @return RestResponse indicating success or failure
      */
-    public <T> Object deleteByTeam(String team_name) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE team_name = ?1 LIMIT 1", Student.class);
-        preQuery.setParameter(1, team_name);
+    public <T> Object deleteByTeam(Team team) {
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 LIMIT 1", Student.class);
+        preQuery.setParameter(1, team.getCourse());
+        preQuery.setParameter(2, team.getTeam_name());
         Student student = (Student) preQuery.getSingleResult();
         if(student != null){
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE team_name = ?1");
-            query.setParameter(1, team_name);
+            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1 AND team_name = ?2");
+            query.setParameter(1, team.getCourse());
+            query.setParameter(2, team.getTeam_name());
             query.executeUpdate();
-            return new RestResponse("All students in project " + team_name + " have been removed from the database");
+            return new RestResponse("All students in team " + team.getTeam_name() + " have been removed from the database");
         }else{
-            return new RestResponse("No students in project " + team_name + " exist in the database");
+            return new RestResponse("No students in project " + team.getTeam_name() + " exist in the database");
         }
+    }
+
+    public List<CourseList> listGetCoursesForStudent(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.students WHERE email = ?1", CourseList.class);
+        query.setParameter(1, email);
+                List<CourseList> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Transactional
+    public List<TeamNames> listGetAssignedTeams(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.students WHERE email = ?1", TeamNames.class);
+        query.setParameter(1, email);
+        List<TeamNames> resultList = query.getResultList();
+        return resultList;
     }
 
 }
