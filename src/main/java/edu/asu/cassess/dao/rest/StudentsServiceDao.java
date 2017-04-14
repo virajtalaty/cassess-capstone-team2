@@ -167,6 +167,16 @@ public class StudentsServiceDao {
         return resultList;
     }
 
+
+    public List<Student> listReadStudent(String course, String team_name, String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team_name);
+        query.setParameter(3, email);
+        List<Student> resultList = query.getResultList();
+        return resultList;
+    }
+
     /**
      * Adds students to the database.
      * 
@@ -271,9 +281,10 @@ public class StudentsServiceDao {
     }
 
     @Transactional
-    public List<TeamNames> listGetAssignedTeams(String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.students WHERE email = ?1", TeamNames.class);
+    public List<TeamNames> listGetAssignedTeams(String email, String course) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.students WHERE email = ?1 AND course = ?2", TeamNames.class);
         query.setParameter(1, email);
+        query.setParameter(2, course);
         List<TeamNames> resultList = query.getResultList();
         return resultList;
     }

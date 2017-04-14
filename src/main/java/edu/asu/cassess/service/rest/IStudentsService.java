@@ -9,6 +9,7 @@ import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 
 import edu.asu.cassess.persist.entity.rest.Student;
+import org.springframework.dao.DataAccessException;
 
 public interface IStudentsService {
 
@@ -26,6 +27,8 @@ public interface IStudentsService {
 
     <T> List<Student> listReadByTeam(String course, String team_name);
 
+    List<Student> listReadStudent(String course, String team_name, String email) throws DataAccessException;
+
     JSONObject listUpdate(List<Student> students);
 
     JSONObject listCreate(List<Student> students);
@@ -34,5 +37,5 @@ public interface IStudentsService {
 
     List<CourseList> listGetCoursesForStudent(String email);
 
-    List<TeamNames> listGetAssignedTeams(String email);
+    List<TeamNames> listGetAssignedTeams(String email, String course);
 }

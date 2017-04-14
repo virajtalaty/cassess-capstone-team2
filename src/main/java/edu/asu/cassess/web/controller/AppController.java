@@ -117,13 +117,24 @@ public class AppController {
 
     }
 
-    //Gets Projects assigned to a student
+    //Gets Teams assigned to a student
     @ResponseBody
-    @RequestMapping(value = "/assigned_team", method = RequestMethod.GET)
+    @RequestMapping(value = "/student_teams", method = RequestMethod.GET)
     public List<TeamNames> getAssignedTeams(@RequestHeader(name = "email", required = true) String email,
+                                            @RequestHeader(name = "course", required = true) String course,
                                    HttpServletRequest request, HttpServletResponse response) {
 
-        return studentsService.listGetAssignedTeams(email);
+        return studentsService.listGetAssignedTeams(email, course);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/student_data", method = RequestMethod.GET)
+    public List<Student> getStudent(@RequestHeader(name = "email", required = true) String email,
+                              @RequestHeader(name = "team", required = true) String team,
+                                            @RequestHeader(name = "course", required = true) String course,
+                                            HttpServletRequest request, HttpServletResponse response) {
+
+        return studentsService.listReadStudent(course, team, email);
     }
     //End of New Student Course and Project list methods
 

@@ -8,6 +8,7 @@ import edu.asu.cassess.dao.rest.StudentsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.ejb.EJB;
@@ -63,6 +64,11 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
+    public List<Student> listReadStudent(String course, String team_name, String email) throws DataAccessException{
+        return studentsDao.listReadStudent(course, team_name, email);
+    }
+
+    @Override
     public JSONObject listUpdate(List<Student> students){
 
         return studentsDao.listUpdate(students);
@@ -89,8 +95,8 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public List<TeamNames> listGetAssignedTeams(String email){
-        return studentsDao.listGetAssignedTeams(email);
+    public List<TeamNames> listGetAssignedTeams(String email, String course){
+        return studentsDao.listGetAssignedTeams(email, course);
     }
 
 }
