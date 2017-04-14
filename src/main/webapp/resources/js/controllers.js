@@ -453,4 +453,146 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
     }])
-;
+    .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {
+
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+
+        $http({
+            url : './taigaCourses',
+            method : "GET"
+        }).then(function(response) {
+            console.log("Worked!");
+            //console.log(response.data);
+            $scope.courses = response.data;
+        });
+
+        $scope.selectedCourseChanged = function(){
+            $http({
+                url : './taigaTeams',
+                method : "GET",
+                headers: {'course' : $scope.selectedCourse.value.course}
+            }).then(function(response) {
+                console.log("Worked!: " + $scope.selectedCourse.value.course);
+                //console.log(response.data);
+                $scope.teams = response.data;
+                console.log($scope.teams);
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        }
+
+        $scope.selectedTeamChanged = function(){
+            $http({
+                url : './taigaStudents',
+                method : "GET",
+                headers: {'team' : $scope.selectedTeam.value.team}
+            }).then(function(response) {
+                console.log("Worked!: " + $scope.selectedTeam.value.team);
+                //console.log(response.data);
+                $scope.students = response.data;
+                console.log($scope.students);
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        }
+
+        $scope.taskProgress = function() {
+            console.log($scope.name);
+            $http({
+                url : './taigaProgress',
+                method : "POST",
+                headers: {'name' : $scope.selectedStudent.value.full_name}
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasksRecords = null;
+                $scope.tasksProgress = response.data;
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.taskRecords = function() {
+            console.log($scope.name);
+            $http({
+                url : './taigaRecords',
+                method : "POST",
+                headers: {'name' : $scope.selectedStudent.value.full_name}
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasksProgress = null;
+                $scope.tasksRecords = response.data;
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.updateTaigaProjects = function() {
+            $http({
+                url : './taiga/Update/Projects',
+                method : "POST"
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.updateTaigaMemberships = function() {
+            $http({
+                url : './taiga/Update/Memberships',
+                method : "POST"
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.updateTaigaTaskTotals = function() {
+            $http({
+                url : './taiga/Update/Tasks',
+                method : "POST"
+            }).then(function(response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function(response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+    } ]);

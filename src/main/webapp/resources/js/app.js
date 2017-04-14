@@ -6,7 +6,9 @@ var myapp = angular
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
-    user: 'user'
+    user: 'user',
+    super_user: 'super_user',
+    rest: 'rest'
 });
 
 myapp.config(function ($routeProvider, USER_ROLES) {
@@ -46,7 +48,7 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             controller: 'TaigaAdmin',
             access: {
                 loginRequired: true,
-                authorizedRoles: [USER_ROLES.admin]
+                authorizedRoles: [USER_ROLES.super_user]
             }
     }).when('/course/:course_id', {
         templateUrl: 'partials/course.html',
@@ -95,7 +97,13 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
-    }).otherwise({
+    }).when("/rest", {
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.rest, USER_ROLES.super_user]
+        }
+    })
+        .otherwise({
         redirectTo: '/error/404',
         access: {
             loginRequired: false,
