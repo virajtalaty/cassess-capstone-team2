@@ -438,7 +438,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 getTaigaActivity();
             });
         }
-
+         var self = this;
         function getTaigaActivity() {
             $http({
                 url : './taiga/student_activity',
@@ -448,8 +448,108 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.studentActivity = response.data;
+                /*/////////////Entering Data Here ////////*/
+                //self.data = response.data;
+                self.data = getDataForCharts(response.data);
+                $scope.data = getDataForCharts(response.data);
+                //getDataForCharts(response.data);
             });
         }
+
+        $scope.options = {
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 20,
+                    right: 20,
+                    bottom: 50,
+                    left: 65
+                },
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                color: d3.scale.category10().range(),
+
+                useInteractiveGuideline: true,
+
+
+                xAxis: {
+                    axisLabel: 'Weeks',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: true
+                },
+
+                yAxis: {
+                    axisLabel: 'Commits',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+       // $scope.data = getDataForCharts();
+
+
+
+        function getDataForCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+
+            //var array = JSON.parse(responseData);
+
+            for (var i = 0; i < array.length; i++)
+            {
+
+                var valueset1 = [];
+
+                valueset1.push(Date.parse(array[i].weekBeginning));
+                valueset1.push(array[i].inProgressActivity);
+
+                inProgress.push(valueset1);
+            }
+
+            data.push({key: "inProgress", values: inProgress});
+
+
+            for (var i = 0; i < array.length; i++)
+            {
+
+                var valueset2 = [];
+
+                valueset2.push(Date.parse(array[i].weekBeginning));
+                valueset2.push(array[i].toTestActivity);
+
+                toTest.push(valueset2);
+            }
+
+            data.push({key: "toTest", values: toTest});
+
+            for (var i = 0; i < array.length; i++)
+            {
+
+                var valueset3 = [];
+
+                valueset3.push(Date.parse(array[i].weekBeginning));
+                valueset3.push(array[i].doneActivity);
+
+                done.push(valueset3);
+            }
+
+            data.push({key: "done", values: done});
+
+            return data;
+        }
+
+        /////////////End of Input ////////////////////
 
 
     }])
@@ -483,7 +583,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = response;
             });
 
-        }
+        };
 
         $scope.selectedTeamChanged = function(){
             $http({
@@ -502,7 +602,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = response;
             });
 
-        }
+        };
 
         $scope.taskProgress = function() {
             console.log($scope.name);
