@@ -1,21 +1,26 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.Token;
 import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.entity.security.UsersAuthority;
 import edu.asu.cassess.persist.repo.AuthorityRepo;
 import edu.asu.cassess.persist.repo.TokenRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
+import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.security.SecurityUtils;
+import edu.asu.cassess.service.rest.AdminsService;
+import edu.asu.cassess.service.rest.StudentsService;
+import edu.asu.cassess.service.rest.TeamsService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,11 +35,158 @@ public class SecurityController {
     private UserRepo userRepo;
 
     @Autowired
-    private AuthorityRepo authRepo;
+    private AdminsService adminsService;
 
+    @Autowired
+    private StudentsService studentsService;
+
+    @Autowired
+    private TeamsService teamsService;
 
     @Autowired
     private TokenRepo tokenRepo;
+
+    @ResponseBody
+    @RequestMapping(value = "/check_courseaccess", method = RequestMethod.GET)
+    public boolean checkCourseAccess(@RequestHeader(name = "course", required = true) String course,
+                                     @RequestHeader(name = "login", required = true) String login,
+                                     @RequestHeader(name = "auth", required = true) String auth,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        Boolean bool = false;
+        //System.out.println(course);
+        //System.out.println(login);
+        //System.out.println(auth);
+        if(auth.equalsIgnoreCase("admin")){
+            //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS ADMIN------");
+            Object object = adminsService.find(login, course);
+            if(object.getClass() != Admin.class){
+                bool = false;
+            }else{
+                bool = true;
+            }
+        }
+        if(auth.equalsIgnoreCase("user")){
+            //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS STUDENT------");
+            Object object = studentsService.find(login, course);
+            if(object.getClass() != Student.class){
+                bool = false;
+            }else{
+                bool = true;
+            }
+        }
+        return bool;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/check_teamaccess", method = RequestMethod.GET)
+    public boolean checkTeamAccess(@RequestHeader(name = "course", required = true) String course,
+                                   @RequestHeader(name = "team", required = true) String team,
+                                   @RequestHeader(name = "login", required = true) String login,
+                                   @RequestHeader(name = "auth", required = true) String auth,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        Boolean bool = false;
+        //System.out.println(course);
+        //System.out.println(team);
+        //System.out.println(login);
+        //System.out.println(auth);
+        if(auth.equalsIgnoreCase("admin")){
+            //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS ADMIN------");
+            Object object = adminsService.find(login, course);
+            if(object.getClass() != Admin.class){
+                //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS NOT ADMIN OBJECT------");
+                bool = false;
+            }else{
+                //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS ADMIN OBJECT------");
+                Admin admin = (Admin) object;
+                if(admin.getCourse().equalsIgnoreCase(course)){
+                    Object objectTeam = teamsService.findOne(team, course);
+                    if(objectTeam.getClass() != Team.class){
+                        //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS NOT TEAM------");
+                        bool = false;
+                        }else {
+                        //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS TEAM------");
+                        bool = true;
+                    }
+                }else{
+                    bool = false;
+                }
+
+            }
+        }
+        if(auth.equalsIgnoreCase("user")){
+            //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS STUDENT------");
+            Object object = studentsService.find(login, team, course);
+            if(object.getClass() != Student.class){
+                bool = false;
+            }else{
+                bool = true;
+            }
+        }
+        return bool;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/check_studentaccess", method = RequestMethod.GET)
+    public boolean checkStudentAccess(@RequestHeader(name = "course", required = true) String course,
+                                   @RequestHeader(name = "team", required = true) String team,
+                                      @RequestHeader(name = "login", required = true) String login,
+                                      @RequestHeader(name = "auth", required = true) String auth,
+                                      @RequestHeader(name = "studentemail", required = true) String studentemail,
+                                      @RequestHeader(name = "fullname", required = true) String fullname,
+                                   HttpServletRequest request, HttpServletResponse response) {
+        Boolean bool = false;
+        //System.out.println(course);
+        //System.out.println(team);
+        //System.out.println(login);
+        //System.out.println(studentemail);
+        //System.out.println(fullname);
+        //System.out.println(auth);
+        if(auth.equalsIgnoreCase("admin")){
+            Object object = adminsService.find(login, course);
+            if(object.getClass() != Admin.class){
+                bool = false;
+            }else {
+                Admin admin = (Admin) object;
+                if (admin.getCourse().equalsIgnoreCase(course)) {
+                    Object objectTeam = teamsService.findOne(team, course);
+                    if (objectTeam.getClass() != Team.class) {
+                        bool = false;
+                    } else {
+                        Object objectStudent = studentsService.find(studentemail, team, course);
+                        if (objectStudent.getClass() != Student.class) {
+                            bool = false;
+                        } else {
+                            bool = true;
+                        }
+                    }
+                } else {
+                    bool = true;
+                }
+            }
+                }else{
+                    bool = false;
+                }
+
+        if(auth.equalsIgnoreCase("user")){
+            User user = userRepo.findByLogin(login);
+            String name = user.getFirstName() + " " + user.getFamilyName();
+            //System.out.println(name);
+            Object object = studentsService.find(login, team, course);
+            if(object.getClass() != Student.class){
+                bool = false;
+            }else{
+                //System.out.println("-------------------------------!!!!!!!!!!!!!!!!!!!__________IS STUDENT IN TEAM AND COURSE");
+                if(name.equalsIgnoreCase(fullname)){
+                    bool = true;
+                    //System.out.println("-------------------------------!!!!!!!!!!!!!!!!!!!__________NAMES ARE EQUAL");
+                }else{
+                    //System.out.println("-------------------------------!!!!!!!!!!!!!!!!!!!__________NAMES NOT EQUAL");
+                    bool = false;
+                }
+            }
+        }
+        return bool;
+    }
 
     @RequestMapping(value = "/security/account", method = RequestMethod.GET)
     public @ResponseBody

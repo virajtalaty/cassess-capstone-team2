@@ -1,12 +1,14 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'nvd3', 'fusioncharts']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'nvd3']);
 
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
-    user: 'user'
+    user: 'user',
+    super_user: 'super_user',
+    rest: 'rest'
 });
 
 myapp.config(function ($routeProvider, USER_ROLES) {
@@ -46,11 +48,25 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             controller: 'TaigaAdmin',
             access: {
                 loginRequired: true,
-                authorizedRoles: [USER_ROLES.admin]
+                authorizedRoles: [USER_ROLES.super_user]
             }
     }).when('/course/:course_id', {
         templateUrl: 'partials/course.html',
         controller: 'CourseController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/team/:team_id', {
+        templateUrl: 'partials/team.html',
+        controller: 'TeamController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/student/:student_id', {
+        templateUrl: 'partials/student.html',
+        controller: 'StudentController',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
@@ -81,7 +97,13 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
-    }).otherwise({
+    }).when("/rest", {
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.rest, USER_ROLES.super_user]
+        }
+    })
+        .otherwise({
         redirectTo: '/error/404',
         access: {
             loginRequired: false,
@@ -154,6 +176,7 @@ myapp.run(function ($rootScope, $location, $http, AuthSharedService, Session, US
 
     // Get already authenticated user account
     AuthSharedService.getAccount();
+
 
 });
 

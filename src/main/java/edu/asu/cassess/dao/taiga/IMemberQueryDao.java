@@ -1,5 +1,9 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.springframework.dao.DataAccessException;
 
 import edu.asu.cassess.persist.entity.taiga.MemberData;
@@ -12,7 +16,13 @@ public interface IMemberQueryDao {
     EntityManager getEntityManager();
 
     void setEntityManager(EntityManager entityManager);
-    
+
+    RestResponse deleteMembersByCourse(Course course) throws DataAccessException;
+
+    RestResponse deleteMembersByTeam(Team team) throws DataAccessException;
+
+    RestResponse deleteMembersByStudent(Student student) throws DataAccessException;
+
     /**
      * Get members based on role and/or slug.
      * 

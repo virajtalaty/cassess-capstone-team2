@@ -1,5 +1,6 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.rest.RestResponse;
 import org.springframework.dao.DataAccessException;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,8 @@ public interface ITaskQueryDao {
     EntityManager getEntityManager();
 
     void setEntityManager(EntityManager entityManager);
+
+    RestResponse truncateTaskData();
 
     /**
      * Get count of Tasks with status Closed based on Taiga user.

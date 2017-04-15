@@ -1,14 +1,21 @@
 package edu.asu.cassess.dao.taiga;
 
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.repo.taiga.TaskRepo;
+import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.cassess.model.Taiga.TaskCount;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.UserTransaction;
 import java.util.List;
 
 @Component
@@ -16,6 +23,9 @@ import java.util.List;
 public class TaskQueryDao implements ITaskQueryDao {
 
     protected EntityManager entityManager;
+
+    @Autowired
+    private TaskRepo taskRepo;
 
     @Override
     public EntityManager getEntityManager() {
@@ -26,6 +36,13 @@ public class TaskQueryDao implements ITaskQueryDao {
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    @Transactional
+    public RestResponse truncateTaskData(){
+        taskRepo.deleteAll();
+        return new RestResponse("taskdata table date has been deleted");
     }
 
     @Override

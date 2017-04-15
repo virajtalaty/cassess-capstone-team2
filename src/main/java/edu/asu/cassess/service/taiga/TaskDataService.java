@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @Transactional
-public class TaskDataService {
+public class TaskDataService implements ITaskDataService {
 
     private RestTemplate restTemplate;
 
@@ -29,25 +32,26 @@ public class TaskDataService {
     private TaskRepo TaskDao;
 
     @Autowired
-    private TaskTotalsRepo TaskTotalsDao;
+    private TaskTotalsRepo TaskTotalsRepo;
 
     @Autowired
-    private TaskQueryDao TaskQueryDao;
+    private ITaskQueryDao TaskQueryDao;
 
     @Autowired
-    private MemberQueryDao MemberQueryDao;
+    private IMemberQueryDao MemberQueryDao;
 
     @Autowired
     private ICourseService courseService;
 
     @Autowired
-    private ProjectQueryDao projectsDao;
+    private IProjectQueryDao projectsDao;
 
     public TaskDataService() {
         restTemplate = new RestTemplate();
         tasksListURL = "https://api.taiga.io/api/v1/tasks?project=";
     }
 
+    @Override
     public TaskData[] getTasks(Long id, String token, int page) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -83,7 +87,8 @@ public class TaskDataService {
         }
     }
 
-    public void getTaskTotals(String slug) {
+    @Override
+    public void getTaskTotals(String slug, String course) {
         List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member: memberNames) {
             String name = member.getFull_name();
@@ -92,24 +97,35 @@ public class TaskDataService {
             int inProgressTasks = TaskQueryDao.getInProgressTasks(name);
             int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
-
-            TaskTotalsDao.save(new TaskTotals(new TaskTotalsID(member.getId()), name, member.getProject_name(), member.getRole_name(), closedTasks, newTasks, inProgressTasks,
+            TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), member.getTeam(), course, closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
+        TaskQueryDao.truncateTaskData();
     }
 
     /* Method to obtain all task totals for members of a particular course,
         occurring on a schedule
      */
-    public void updateTaskTotals(String course){
+    @Override
+    public void updateTaskTotals(String course) {
         System.out.println("Updating Tasks");
         Course tempCourse = (Course) courseService.read(course);
-        String token = tempCourse.getTaiga_token();
-        List<ProjectIDSlug> idSlugList = projectsDao.listGetProjectIDSlug(course);
-        for(ProjectIDSlug idSlug:idSlugList){
-            System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
-            getTasks(idSlug.getId(), token, 1);
-            getTaskTotals(idSlug.getSlug());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+        String formatted = df.format(new Date());
+        Date current = new Date();
+        try {
+            current = df.parse(formatted);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(current.before(tempCourse.getEnd_date())) {
+            String token = tempCourse.getTaiga_token();
+            List<ProjectIDSlug> idSlugList = projectsDao.listGetTaigaProjectIDSlug(course);
+            for (ProjectIDSlug idSlug : idSlugList) {
+                System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
+                getTasks(idSlug.getId(), token, 1);
+                getTaskTotals(idSlug.getSlug(), course);
+            }
         }
     }
 }

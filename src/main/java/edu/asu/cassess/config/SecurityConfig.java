@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/resources/**", "/index.html", "/login.html", "/register.html",
-                "/partials/**", "/template/**", "/", "/error/**", "/user", "/register");
+                "/partials/**", "/template/**", "/", "/error/**", "/user", "/register", "/check_courseaccess", "/check_teamaccess", "/check_studentaccess");
     }
     
     //the .formLogin() method defines the location Spring processes authentication when 
@@ -79,8 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers("/failure").permitAll()
                 .antMatchers("/users").permitAll()
-                .antMatchers("/v2/api-docs").hasAnyAuthority("admin")
-                .antMatchers("/users/**").hasAnyAuthority("admin")
+                .antMatchers("/rest/**").hasAnyAuthority("rest", "super_user")
+                .antMatchers("/v2/api-docs").hasAnyAuthority("super_user")
+                .antMatchers("/users/**").hasAnyAuthority("super_user")
                 .anyRequest().authenticated()
                 .and()
             .exceptionHandling()

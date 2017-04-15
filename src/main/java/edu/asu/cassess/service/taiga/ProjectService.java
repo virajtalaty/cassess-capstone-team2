@@ -18,20 +18,16 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProjectService {
+public class ProjectService implements IProjectService {
 
     private RestTemplate restTemplate;
     private String projectURL;
-
 
     @Autowired
     private ProjectRepo projectStoreDao;
 
     @Autowired
     private ICourseService courseService;
-
-    @Autowired
-    private IStudentsService studentsService;
 
     @Autowired
     private ITeamsService teamsService;
@@ -44,6 +40,7 @@ public class ProjectService {
 
     }
 
+    @Override
     public Project getProjectInfo(String token, String slug) {
 
         HttpHeaders headers = new HttpHeaders();
@@ -65,15 +62,18 @@ public class ProjectService {
     /* Method to provide single operation on
     updating the projects table based on the course and student tables
      */
+    @Override
     public void updateProjects(String course){
         System.out.println("Updating Projects");
         if (courseService.read(course).getClass() == Course.class){
             Course tempCourse = (Course) courseService.read(course);
             String token = tempCourse.getTaiga_token();
             List<Slugs> slugList = teamsService.listGetSlugs(course);
-            for(Slugs slug:slugList){
-                System.out.println("Slug: " + slug);
-                getProjectInfo(token, slug.getSlug());
+            if(token != null) {
+                for (Slugs slug : slugList) {
+                    System.out.println("Slug: " + slug);
+                    getProjectInfo(token, slug.getSlug());
+                }
             }
         }
 

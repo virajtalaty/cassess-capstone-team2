@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.asu.cassess.persist.entity.github.CommitData;
 
+import edu.asu.cassess.persist.repo.CommitDataRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ public class GatherGitHubData{
 
     @Autowired
     private GitHubCommitDataDao dao;
+
+    @Autowired
+    private CommitDataRepo repo;
 
     private RestTemplate restTemplate;
     private String accessToken;
@@ -83,7 +87,7 @@ public class GatherGitHubData{
                 String userName = contributor.getAuthor().getLogin();
 
                 CommitData commitData = new CommitData(date, userName, linesAdded, linesDeleted, commits, projectName, owner);
-                dao.save(commitData);
+                repo.save(commitData);
             }
         }
 

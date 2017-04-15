@@ -1,13 +1,15 @@
 <div class="navbar navbar-default">
     <div class="navbar-header">
-        <div class="navbar-collapse collapse navbar-responsive-collapse" ng-controller="CourseController">
+        <div class="navbar-collapse collapse navbar-responsive-collapse" ng-controller="StudentController">
             <ul class="nav navbar-nav navbar-left">
+                <li><a class="navbar-brand">Course Selected: {{courseid}}</a></li>
+                <li><a class="navbar-brand">Team Selected: {{teamid}}</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div class="well page">
-    <h1 class="page-header">{{courseid}} Data</h1>
+    <h1 class="page-header">{{studentid}} Data</h1>
 
     <div class="container" ng-controller="TabController">
         <div class="row">
@@ -52,23 +54,33 @@
                         <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(2)">
-
                         <h1>Taiga Charts</h1>
-                        <br><br>
-                        <h1>These are some Charts!</h1>
-                        <br><br>
-                        <div ng-controller='charts as ch'>
-                            <p>This is going to display some charts.</p>
-                            <br><br>
-                            <p>This displays the chart data response: </p>
-                            <br><br>
-                            <p> This is the data for the chart: {{ch.chartData}}</p>
-                            <br><br>
-                            <p> Here's the chart: </p>
-                            <br><br>
+                        <table class="table table-bordered" fixed-header>
+                            <thead>
+                            <tr>
+                                <th>Week Beginning</th>
+                                <th>Week Ending</th>
+                                <th>DoneActivity</th>
+                                <th>InProgressActivity</th>
+                                <th>ToTestActivity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in studentActivity">
+                                <td>{{ x.weekBeginning }}</td>
+                                <td>{{ x.weekEnding }}</td>
+                                <td>{{ x.doneActivity }}</td>
+                                <td>{{ x.inProgressActivity }}</td>
+                                <td>{{ x.toTestActivity }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div ng-controller='StudentController as st'>
+                            <p> These are the chan </p><br>
+                            <p> This is the data: {{st.data}}</p>
                         </div>
                         <!-- Chart Area -->
-                        <div ng-controller='charts'>
+                        <div ng-controller='StudentController'>
                             <nvd3 options='options' data='data'></nvd3>
                         </div>
                         <!-- End of Chart Area -->

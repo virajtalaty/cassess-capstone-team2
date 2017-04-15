@@ -13,13 +13,13 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Project {
 
-    @Id
     @Column(name = "id")
     private Long id;
 
     @Column(name = "name")
     private String name;
 
+    @Id
     @Column(name = "slug")
     private String slug;
 
@@ -30,7 +30,6 @@ public class Project {
         this.id = id;
         this.name = name;
         this.slug = slug;
-        Date date = new Date();
     }
 
     public Long getId() {
