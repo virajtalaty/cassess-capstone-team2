@@ -12,7 +12,7 @@
     </div>
 
 
-    <div id="userList" >
+    <div id="userList">
         <div class="list-group">
             <div class="list-group-item">
                 <div ng-repeat="user in users | filter:query" class="list-group-item" style="margin-top:16px">
@@ -22,7 +22,8 @@
                         <h4 class="list-group-item-heading">{{user.firstName}} {{user.familyName}}</h4>
 
                         <p class="list-group-item-text"><i class="glyphicon glyphicon-envelope"></i> {{user.email}}
-                        <p class="list-group-item-text"><i class="glyphicon glyphicon-lock"></i> {{user.authorities[0].name}}
+                        <p class="list-group-item-text"><i class="glyphicon glyphicon-lock"></i>
+                            {{user.authorities[0].name}}
                         </p>
                         <li ng-click="viewProfile(user.email, user.authorities[0].name)">
                             <button type="submit" class="btn pull-right">View Profile</button>

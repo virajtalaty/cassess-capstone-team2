@@ -1,6 +1,7 @@
 package edu.asu.cassess.config;
 
 
+import edu.asu.cassess.security.RestUnauthorizedEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,39 +24,30 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
-import edu.asu.cassess.security.RestUnauthorizedEntryPoint;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan("edu.asu.cassess.security")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-
     public static final String REMEMBER_ME_KEY = "rememberme_key";
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private RestUnauthorizedEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private AccessDeniedHandler restAccessDeniedHandler;
+    @Autowired
+    private AuthenticationSuccessHandler restAuthenticationSuccessHandler;
+    @Autowired
+    private AuthenticationFailureHandler restAuthenticationFailureHandler;
+    @Autowired
+    private RememberMeServices rememberMeServices;
 
     public SecurityConfig() {
         super();
     }
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private RestUnauthorizedEntryPoint restAuthenticationEntryPoint;
-
-    @Autowired
-    private AccessDeniedHandler restAccessDeniedHandler;
-
-    @Autowired
-    private AuthenticationSuccessHandler restAuthenticationSuccessHandler;
-
-    @Autowired
-    private AuthenticationFailureHandler restAuthenticationFailureHandler;
-
-    @Autowired
-    private RememberMeServices rememberMeServices;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -68,15 +60,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/resources/**", "/index.html", "/login.html", "/register.html",
                 "/partials/**", "/template/**", "/", "/error/**", "/user", "/register", "/check_courseaccess", "/check_teamaccess", "/check_studentaccess");
     }
-    
+
     //the .formLogin() method defines the location Spring processes authentication when 
     //a POST is received at that path
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .headers().disable()
-            .csrf().disable()
-            .authorizeRequests()
+                .headers().disable()
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/failure").permitAll()
                 .antMatchers("/users").permitAll()
                 .antMatchers("/rest/**").hasAnyAuthority("rest", "super_user")
@@ -84,11 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").hasAnyAuthority("super_user")
                 .anyRequest().authenticated()
                 .and()
-            .exceptionHandling()
+                .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .accessDeniedHandler(restAccessDeniedHandler)
                 .and()
-            .formLogin()
+                .formLogin()
                 .loginProcessingUrl("/authenticate")
                 .successHandler(restAuthenticationSuccessHandler)
                 .failureHandler(restAuthenticationFailureHandler)
@@ -96,29 +88,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .permitAll()
                 .and()
-            .logout()
+                .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 .deleteCookies("JSESSIONID")
                 .permitAll()
                 .and()
-            .rememberMe()
+                .rememberMe()
                 .rememberMeServices(rememberMeServices)
                 .key(REMEMBER_ME_KEY)
                 .and();
     }
-    
+
     //Using BCrypt password encryption
     @Bean
     public DaoAuthenticationProvider authProvider() {
-    	final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    	authProvider.setUserDetailsService(userDetailsService);
-    	authProvider.setPasswordEncoder(encoder());
-    	return authProvider;
+        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(encoder());
+        return authProvider;
     }
-    
+
     @Bean
     public PasswordEncoder encoder() {
-    	return new BCryptPasswordEncoder(11);
+        return new BCryptPasswordEncoder(11);
     }
 }

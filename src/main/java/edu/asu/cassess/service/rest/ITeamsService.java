@@ -1,9 +1,9 @@
 package edu.asu.cassess.service.rest;
 
-import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.model.Taiga.TeamNames;
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.json.JSONObject;
 
 import java.util.List;

@@ -1,8 +1,6 @@
 package edu.asu.cassess.dao.security;
 
 import edu.asu.cassess.dao.IUserQueryDao;
-import edu.asu.cassess.dao.UserQueryDao;
-import edu.asu.cassess.model.Taiga.TaskCount;
 import edu.asu.cassess.model.rest.AdminCount;
 import edu.asu.cassess.model.rest.StudentCount;
 import edu.asu.cassess.persist.entity.UserID;
@@ -29,28 +27,21 @@ import java.util.List;
 @Transactional
 public class UserServiceDao {
 
+    protected EntityManager entityManager;
     @Autowired
     private UserRepo userRepo;
-
     @Autowired
     private AuthorityRepo authorityRepo;
-
     @Autowired
     private UsersAuthorityRepo usersAuthorityRepo;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private IUserService usersService;
-
     @Autowired
     private IUserQueryDao userQuery;
-
     @Autowired
     private List<Object> userCreateList;
-
-    protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -61,21 +52,21 @@ public class UserServiceDao {
         this.entityManager = entityManager;
     }
 
-    public <T> Object createUser(User userInput, long role){
+    public <T> Object createUser(User userInput, long role) {
         User user = userRepo.findByEmail(userInput.getEmail());
-        if(user == null){
+        if (user == null) {
             userRepo.save(userInput);
             UsersAuthority usersAuth = new UsersAuthority(userInput.getId(), role);
             usersAuthorityRepo.save(usersAuth);
             return userInput;
-        }else{
+        } else {
             return new RestResponse("User " + userInput.getEmail() + " already exists in database");
         }
     }
 
-    public <T> Object createUsersByAdmins(List<Admin> admins){
+    public <T> Object createUsersByAdmins(List<Admin> admins) {
 
-        for(Admin admin:admins){
+        for (Admin admin : admins) {
             User user = usersService.adminUser(admin);
             long role = 1;
             Object userCreate = usersService.createUser(user, role);
@@ -84,16 +75,16 @@ public class UserServiceDao {
         return userCreateList;
     }
 
-    public User adminUser(Admin admin){
-        System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
+    public User adminUser(Admin admin) {
+        //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
         String array[] = admin.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
         User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, true, (long) userID.getMax() + 1);
         return user;
     }
 
-    public <T> Object createUsersByStudents(List<Student> students){
-        for(Student student:students){
+    public <T> Object createUsersByStudents(List<Student> students) {
+        for (Student student : students) {
             User user = usersService.studentUser(student);
             long role = 2;
             Object userCreate = usersService.createUser(user, role);
@@ -102,15 +93,15 @@ public class UserServiceDao {
         return userCreateList;
     }
 
-    public User studentUser(Student student){
-        System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into StudentUser");
+    public User studentUser(Student student) {
+        //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into StudentUser");
         String array[] = student.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
         User user = new User(array[0], array[1], student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, true, (long) userID.getMax() + 1);
         return user;
     }
 
-    public <T> Object registerUser(String first_name, String family_name, String email, String password, String role){
+    public <T> Object registerUser(String first_name, String family_name, String email, String password, String role) {
         registerUser register_user = new registerUser(first_name, family_name, email, email, password);
         User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getLogin(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate(), register_user.getEnabled());
         Authority auth = new Authority();
@@ -119,34 +110,34 @@ public class UserServiceDao {
         user.setId((long) userID.getMax() + 1);
         User userFind = userRepo.findByEmail(user.getEmail());
         long user_authValue = 0;
-        if(userFind == null){
+        if (userFind == null) {
             userRepo.save(user);
-            if(role.equalsIgnoreCase("admin")){
+            if (role.equalsIgnoreCase("admin")) {
                 user_authValue = 1;
             }
-            if(role.equalsIgnoreCase("student")){
+            if (role.equalsIgnoreCase("student")) {
                 user_authValue = 2;
             }
-            if(role.equalsIgnoreCase("super_user")){
+            if (role.equalsIgnoreCase("super_user")) {
                 user_authValue = 3;
             }
-            if(role.equalsIgnoreCase("rest")){
+            if (role.equalsIgnoreCase("rest")) {
                 user_authValue = 4;
             }
-            if(!authorityRepo.exists(user_authValue)){
-                if(user_authValue == 1){
+            if (!authorityRepo.exists(user_authValue)) {
+                if (user_authValue == 1) {
                     auth.setId((long) 1);
                     auth.setName("admin");
                     authorityRepo.save(auth);
-                }else if(user_authValue == 2){
+                } else if (user_authValue == 2) {
                     auth.setId((long) 2);
                     auth.setName("student");
                     authorityRepo.save(auth);
-                }else if(user_authValue == 3){
+                } else if (user_authValue == 3) {
                     auth.setId((long) 3);
                     auth.setName("super_user");
                     authorityRepo.save(auth);
-                }else if(user_authValue == 4){
+                } else if (user_authValue == 4) {
                     auth.setId((long) 4);
                     auth.setName("rest");
                     authorityRepo.save(auth);
@@ -155,13 +146,13 @@ public class UserServiceDao {
             UsersAuthority usersAuth = new UsersAuthority(user.getId(), user_authValue);
             usersAuthorityRepo.save(usersAuth);
             return user;
-        }else{
+        } else {
             return new RestResponse("User " + user.getEmail() + " already exists in database");
         }
 
     }
 
-    public User updateStudent(Student student, User user){
+    public User updateStudent(Student student, User user) {
         String array[] = student.getFull_name().split("\\s+");
         user.setEmail(student.getEmail());
         user.setLogin(student.getEmail());
@@ -172,7 +163,7 @@ public class UserServiceDao {
         return user;
     }
 
-    public User updateAdmin(Admin admin, User user){
+    public User updateAdmin(Admin admin, User user) {
         String array[] = admin.getFull_name().split("\\s+");
         user.setEmail(admin.getEmail());
         user.setLogin(admin.getEmail());
@@ -183,7 +174,7 @@ public class UserServiceDao {
         return user;
     }
 
-    public User deleteUser(User user){
+    public User deleteUser(User user) {
         Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.users_authority WHERE id_user = ?1");
         query.setParameter(1, user.getId());
         query.executeUpdate();
@@ -193,8 +184,8 @@ public class UserServiceDao {
         return user;
     }
 
-    public Course courseDelete(Course course){
-        if(course.getAdmins() != null) {
+    public Course courseDelete(Course course) {
+        if (course.getAdmins() != null) {
             for (Admin admin : course.getAdmins()) {
                 Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'Total' FROM cassess.admins WHERE email = ?1", AdminCount.class);
                 query.setParameter(1, admin.getEmail());
@@ -208,7 +199,7 @@ public class UserServiceDao {
                 }
             }
         }
-        if(course.getTeams() != null) {
+        if (course.getTeams() != null) {
             for (Team team : course.getTeams()) {
                 for (Student student : team.getStudents()) {
                     Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM cassess.students WHERE email = ?1", StudentCount.class);
@@ -228,7 +219,7 @@ public class UserServiceDao {
     }
 
     public Course courseUpdate(Course course) {
-        if(course.getAdmins() != null) {
+        if (course.getAdmins() != null) {
             for (Admin admin : course.getAdmins()) {
                 Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
                 query.setParameter(1, admin.getEmail());
@@ -238,7 +229,7 @@ public class UserServiceDao {
                 }
             }
         }
-        if(course.getTeams() != null) {
+        if (course.getTeams() != null) {
             for (Team team : course.getTeams()) {
                 for (Student student : team.getStudents()) {
                     Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
@@ -254,7 +245,7 @@ public class UserServiceDao {
     }
 
     public Team teamUpdate(Team team) {
-        if(team.getStudents() != null) {
+        if (team.getStudents() != null) {
             for (Student student : team.getStudents()) {
                 Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
                 query.setParameter(1, student.getEmail());
@@ -268,7 +259,7 @@ public class UserServiceDao {
     }
 
     public Team teamDelete(Team team) {
-        if(team.getStudents() != null) {
+        if (team.getStudents() != null) {
             for (Student student : team.getStudents()) {
                 Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM cassess.students WHERE email = ?1", StudentCount.class);
                 query.setParameter(1, student.getEmail());

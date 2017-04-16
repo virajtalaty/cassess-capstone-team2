@@ -53,11 +53,13 @@
                     <div ng-show="isSet(2)">
                         <h3>Average Task Totals</h3>
                         <p> Select Week Beginning </p>
-                        <select ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in courseIntervals" ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
+                        <select ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in courseIntervals"
+                                ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
                         </select>
                         <br>
                         <p> Select Week Ending </p>
-                        <select ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in courseIntervals" ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
+                        <select ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in courseIntervals"
+                                ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
                         </select>
                         <br>
                         <table class="table table-bordered" fixed-header>

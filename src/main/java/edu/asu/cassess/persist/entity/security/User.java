@@ -1,15 +1,10 @@
 package edu.asu.cassess.persist.entity.security;
 
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.*;
-
-import edu.asu.cassess.persist.entity.rest.Admin;
-import edu.asu.cassess.persist.entity.rest.Student;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "users")
@@ -50,9 +45,9 @@ public class User {
     @Column(name = "enabled", columnDefinition = "BIT", length = 1)
     private Boolean enabled;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "users_authority", joinColumns = { @JoinColumn(name = "id_user", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "id_authority", table = "authority", referencedColumnName = "id") })
-	private Set<Authority> authorities = new HashSet<Authority>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_authority", joinColumns = {@JoinColumn(name = "id_user", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "id_authority", table = "authority", referencedColumnName = "id")})
+    private Set<Authority> authorities = new HashSet<Authority>();
 
     public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled) {
         this.firstName = firstName;
@@ -82,89 +77,89 @@ public class User {
         System.out.print("!!!!!!!!!!!!!!!!!_-----------------------------Created Full User");
     }
 
-    public User(){
+    public User() {
 
     }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getFamilyName() {
-		return familyName;
-	}
+    public String getFamilyName() {
+        return familyName;
+    }
 
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
 
-	public long getId() {
-		return id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Set<Authority> getAuthorities() {
-		return authorities;
-	}
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
 
-	public void setAuthorities(Set<Authority> authorities) {
-		this.authorities = authorities;
-	}
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+    public Boolean getEnabled() {
+        return enabled;
+    }
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getLanguage() {
-		return language;
-	}
+    public String getLanguage() {
+        return language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public String getPictureId() {
-		return pictureId;
-	}
+    public String getPictureId() {
+        return pictureId;
+    }
 
-	public void setPictureId(String pictureId) {
-		this.pictureId = pictureId;
-	}
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
+    }
 
     public String getPhone() {
         return phone;

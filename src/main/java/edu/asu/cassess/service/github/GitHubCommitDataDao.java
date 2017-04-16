@@ -1,11 +1,6 @@
 package edu.asu.cassess.service.github;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
-import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-
 import edu.asu.cassess.persist.entity.github.CommitData;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +11,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Component
-public class GitHubCommitDataDao{
+public class GitHubCommitDataDao {
     protected EntityManager entityManager;
 
 
@@ -31,16 +26,17 @@ public class GitHubCommitDataDao{
     }
 
     @Transactional
-    public CommitData getCommit(String username, Date date) throws DataAccessException{
+    public CommitData getCommit(String username, Date date) throws DataAccessException {
 
         CommitData commitData;
-        try{
+        try {
+            //noinspection JpaQlInspection
             commitData = (CommitData) entityManager
                     .createQuery("SELECT c FROM CommitData c  WHERE c.username = ?1 AND c.date = ?2")
                     .setParameter(1, username)
                     .setParameter(2, date)
                     .getSingleResult();
-        }catch(Exception e){
+        } catch (Exception e) {
             commitData = null;
         }
 
@@ -48,10 +44,11 @@ public class GitHubCommitDataDao{
     }
 
     @Transactional
-    public List<CommitData> getAllCommitData() throws DataAccessException{
+    public List<CommitData> getAllCommitData() throws DataAccessException {
+        //noinspection JpaQlInspection
         return entityManager
-                    .createQuery("SELECT c FROM CommitData c")
-                    .getResultList();
+                .createQuery("SELECT c FROM CommitData c")
+                .getResultList();
     }
 
 }

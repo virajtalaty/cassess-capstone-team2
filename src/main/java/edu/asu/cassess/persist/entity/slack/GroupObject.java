@@ -1,255 +1,244 @@
 package edu.asu.cassess.persist.entity.slack;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.*;
+
 @Entity
-@Table(name="slack_group")
+@Table(name = "slack_group")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupObject {
-	
-	@Id
-	private String id;
-	private String name;
-	private String is_group;
-	private long created;
-	private String creator;
-	private boolean is_archived;
-	private boolean is_mpim;
-	@OrderColumn(name = "slack_group_members_sequence")
-	@ElementCollection
-	private String[] members;
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="value", column=@Column(name="topic_value")),
-		@AttributeOverride(name="creator", column=@Column(name="topic_creator")),
-		@AttributeOverride(name="last_set", column=@Column(name="topic_last_set"))
-	})
-	private SlackGroupObject topic;
-	@Embedded
-	@AttributeOverrides({
-		@AttributeOverride(name="value", column=@Column(name="purpose_value")),
-		@AttributeOverride(name="creator", column=@Column(name="purpose_creator")),
-		@AttributeOverride(name="last_set", column=@Column(name="purpose_last_set"))
-	})
-	private SlackGroupObject purpose;
-	private String last_read;
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="id")
-	private SlackMessage latest;
-	private long unread_count;
-	private long unread_count_display;
-	
-	public GroupObject() {
-		
-	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    @Id
+    private String id;
+    private String name;
+    private String is_group;
+    private long created;
+    private String creator;
+    private boolean is_archived;
+    private boolean is_mpim;
+    @OrderColumn(name = "slack_group_members_sequence")
+    @ElementCollection
+    private String[] members;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "value", column = @Column(name = "topic_value")),
+            @AttributeOverride(name = "creator", column = @Column(name = "topic_creator")),
+            @AttributeOverride(name = "last_set", column = @Column(name = "topic_last_set"))
+    })
+    private SlackGroupObject topic;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "value", column = @Column(name = "purpose_value")),
+            @AttributeOverride(name = "creator", column = @Column(name = "purpose_creator")),
+            @AttributeOverride(name = "last_set", column = @Column(name = "purpose_last_set"))
+    })
+    private SlackGroupObject purpose;
+    private String last_read;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private SlackMessage latest;
+    private long unread_count;
+    private long unread_count_display;
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    public GroupObject() {
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * @return the is_group
-	 */
-	public String getIs_group() {
-		return is_group;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param is_group the is_group to set
-	 */
-	public void setIs_group(String is_group) {
-		this.is_group = is_group;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the created
-	 */
-	public long getCreated() {
-		return created;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param created the created to set
-	 */
-	public void setCreated(long created) {
-		this.created = created;
-	}
+    /**
+     * @return the is_group
+     */
+    public String getIs_group() {
+        return is_group;
+    }
 
-	/**
-	 * @return the creator
-	 */
-	public String getCreator() {
-		return creator;
-	}
+    /**
+     * @param is_group the is_group to set
+     */
+    public void setIs_group(String is_group) {
+        this.is_group = is_group;
+    }
 
-	/**
-	 * @param creator the creator to set
-	 */
-	public void setCreator(String creator) {
-		this.creator = creator;
-	}
+    /**
+     * @return the created
+     */
+    public long getCreated() {
+        return created;
+    }
 
-	/**
-	 * @return the is_archived
-	 */
-	public boolean isIs_archived() {
-		return is_archived;
-	}
+    /**
+     * @param created the created to set
+     */
+    public void setCreated(long created) {
+        this.created = created;
+    }
 
-	/**
-	 * @param is_archived the is_archived to set
-	 */
-	public void setIs_archived(boolean is_archived) {
-		this.is_archived = is_archived;
-	}
+    /**
+     * @return the creator
+     */
+    public String getCreator() {
+        return creator;
+    }
 
-	/**
-	 * @return the is_mpim
-	 */
-	public boolean isIs_mpim() {
-		return is_mpim;
-	}
+    /**
+     * @param creator the creator to set
+     */
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 
-	/**
-	 * @param is_mpim the is_mpim to set
-	 */
-	public void setIs_mpim(boolean is_mpim) {
-		this.is_mpim = is_mpim;
-	}
+    /**
+     * @return the is_archived
+     */
+    public boolean isIs_archived() {
+        return is_archived;
+    }
 
-	/**
-	 * @return the members
-	 */
-	public String[] getMembers() {
-		return members;
-	}
+    /**
+     * @param is_archived the is_archived to set
+     */
+    public void setIs_archived(boolean is_archived) {
+        this.is_archived = is_archived;
+    }
 
-	/**
-	 * @param members the members to set
-	 */
-	public void setMembers(String[] members) {
-		this.members = members;
-	}
+    /**
+     * @return the is_mpim
+     */
+    public boolean isIs_mpim() {
+        return is_mpim;
+    }
 
-	/**
-	 * @return the topic
-	 */
-	public SlackGroupObject getTopic() {
-		return topic;
-	}
+    /**
+     * @param is_mpim the is_mpim to set
+     */
+    public void setIs_mpim(boolean is_mpim) {
+        this.is_mpim = is_mpim;
+    }
 
-	/**
-	 * @param topic the topic to set
-	 */
-	public void setTopic(SlackGroupObject topic) {
-		this.topic = topic;
-	}
+    /**
+     * @return the members
+     */
+    public String[] getMembers() {
+        return members;
+    }
 
-	/**
-	 * @return the purpose
-	 */
-	public SlackGroupObject getPurpose() {
-		return purpose;
-	}
+    /**
+     * @param members the members to set
+     */
+    public void setMembers(String[] members) {
+        this.members = members;
+    }
 
-	/**
-	 * @param purpose the purpose to set
-	 */
-	public void setPurpose(SlackGroupObject purpose) {
-		this.purpose = purpose;
-	}
+    /**
+     * @return the topic
+     */
+    public SlackGroupObject getTopic() {
+        return topic;
+    }
 
-	/**
-	 * @return the last_read
-	 */
-	public String getLast_read() {
-		return last_read;
-	}
+    /**
+     * @param topic the topic to set
+     */
+    public void setTopic(SlackGroupObject topic) {
+        this.topic = topic;
+    }
 
-	/**
-	 * @param last_read the last_read to set
-	 */
-	public void setLast_read(String last_read) {
-		this.last_read = last_read;
-	}
+    /**
+     * @return the purpose
+     */
+    public SlackGroupObject getPurpose() {
+        return purpose;
+    }
 
-	/**
-	 * @return the latest
-	 */
-	public SlackMessage getLatest() {
-		return latest;
-	}
+    /**
+     * @param purpose the purpose to set
+     */
+    public void setPurpose(SlackGroupObject purpose) {
+        this.purpose = purpose;
+    }
 
-	/**
-	 * @param latest the latest to set
-	 */
-	public void setLatest(SlackMessage latest) {
-		this.latest = latest;
-	}
+    /**
+     * @return the last_read
+     */
+    public String getLast_read() {
+        return last_read;
+    }
 
-	/**
-	 * @return the unread_count
-	 */
-	public long getUnread_count() {
-		return unread_count;
-	}
+    /**
+     * @param last_read the last_read to set
+     */
+    public void setLast_read(String last_read) {
+        this.last_read = last_read;
+    }
 
-	/**
-	 * @param unread_count the unread_count to set
-	 */
-	public void setUnread_count(long unread_count) {
-		this.unread_count = unread_count;
-	}
+    /**
+     * @return the latest
+     */
+    public SlackMessage getLatest() {
+        return latest;
+    }
 
-	/**
-	 * @return the unread_count_display
-	 */
-	public long getUnread_count_display() {
-		return unread_count_display;
-	}
+    /**
+     * @param latest the latest to set
+     */
+    public void setLatest(SlackMessage latest) {
+        this.latest = latest;
+    }
 
-	/**
-	 * @param unread_count_display the unread_count_display to set
-	 */
-	public void setUnread_count_display(long unread_count_display) {
-		this.unread_count_display = unread_count_display;
-	}
+    /**
+     * @return the unread_count
+     */
+    public long getUnread_count() {
+        return unread_count;
+    }
+
+    /**
+     * @param unread_count the unread_count to set
+     */
+    public void setUnread_count(long unread_count) {
+        this.unread_count = unread_count;
+    }
+
+    /**
+     * @return the unread_count_display
+     */
+    public long getUnread_count_display() {
+        return unread_count_display;
+    }
+
+    /**
+     * @param unread_count_display the unread_count_display to set
+     */
+    public void setUnread_count_display(long unread_count_display) {
+        this.unread_count_display = unread_count_display;
+    }
 
 }

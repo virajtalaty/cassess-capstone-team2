@@ -1,15 +1,13 @@
 package edu.asu.cassess.service.rest;
 
-import java.util.List;
-
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
-import edu.asu.cassess.persist.entity.rest.Team;
-import edu.asu.cassess.persist.entity.security.User;
-import org.json.JSONObject;
-
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
+
+import java.util.List;
 
 public interface IStudentsService {
 
