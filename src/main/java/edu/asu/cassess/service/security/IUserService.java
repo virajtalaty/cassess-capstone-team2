@@ -21,7 +21,7 @@ public interface IUserService {
 
     User studentUser(Student student);
 
-    <T> Object registerUser(String first_name, String family_name, String email, String password, boolean admin);
+    <T> Object registerUser(String first_name, String family_name, String email, String password, String role);
 
     User updateStudent(Student student, User user);
 

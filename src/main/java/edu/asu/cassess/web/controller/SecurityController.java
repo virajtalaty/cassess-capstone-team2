@@ -47,6 +47,27 @@ public class SecurityController {
     private TokenRepo tokenRepo;
 
     @ResponseBody
+    @RequestMapping(value = "/check_profileaccess", method = RequestMethod.GET)
+    public boolean checkProfileAccess(@RequestHeader(name = "login", required = true) String login,
+                                     @RequestHeader(name = "auth", required = true) String auth,
+                                     @RequestHeader(name = "email", required = true) String email,
+                                     HttpServletRequest request, HttpServletResponse response) {
+        Boolean bool = false;
+        //System.out.println(course);
+        //System.out.println(login);
+        //System.out.println(auth);
+        if(auth.equalsIgnoreCase("super_user")){
+            bool = true;
+        }else if(login.equalsIgnoreCase(email)){
+            bool = true;
+        }else{
+            bool = false;
+        }
+        return bool;
+    }
+
+
+    @ResponseBody
     @RequestMapping(value = "/check_courseaccess", method = RequestMethod.GET)
     public boolean checkCourseAccess(@RequestHeader(name = "course", required = true) String course,
                                      @RequestHeader(name = "login", required = true) String login,
@@ -56,7 +77,9 @@ public class SecurityController {
         //System.out.println(course);
         //System.out.println(login);
         //System.out.println(auth);
-        if(auth.equalsIgnoreCase("admin")){
+        if(auth.equalsIgnoreCase("super_user")){
+            bool = true;
+        } else if(auth.equalsIgnoreCase("admin")){
             //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS ADMIN------");
             Object object = adminsService.find(login, course);
             if(object.getClass() != Admin.class){
@@ -65,7 +88,7 @@ public class SecurityController {
                 bool = true;
             }
         }
-        if(auth.equalsIgnoreCase("user")){
+        if(auth.equalsIgnoreCase("student")){
             //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS STUDENT------");
             Object object = studentsService.find(login, course);
             if(object.getClass() != Student.class){
@@ -89,7 +112,9 @@ public class SecurityController {
         //System.out.println(team);
         //System.out.println(login);
         //System.out.println(auth);
-        if(auth.equalsIgnoreCase("admin")){
+        if(auth.equalsIgnoreCase("super_user")){
+            bool = true;
+        } else if(auth.equalsIgnoreCase("admin")){
             //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS ADMIN------");
             Object object = adminsService.find(login, course);
             if(object.getClass() != Admin.class){
@@ -113,7 +138,7 @@ public class SecurityController {
 
             }
         }
-        if(auth.equalsIgnoreCase("user")){
+        if(auth.equalsIgnoreCase("student")){
             //System.out.println("---------------------------------!!!!!!!!!!!!!!!!   IS STUDENT------");
             Object object = studentsService.find(login, team, course);
             if(object.getClass() != Student.class){
@@ -141,7 +166,9 @@ public class SecurityController {
         //System.out.println(studentemail);
         //System.out.println(fullname);
         //System.out.println(auth);
-        if(auth.equalsIgnoreCase("admin")){
+        if(auth.equalsIgnoreCase("super_user")){
+            bool = true;
+        } else if(auth.equalsIgnoreCase("admin")){
             Object object = adminsService.find(login, course);
             if(object.getClass() != Admin.class){
                 bool = false;
@@ -167,7 +194,7 @@ public class SecurityController {
                     bool = false;
                 }
 
-        if(auth.equalsIgnoreCase("user")){
+        if(auth.equalsIgnoreCase("student")){
             User user = userRepo.findByLogin(login);
             String name = user.getFirstName() + " " + user.getFamilyName();
             //System.out.println(name);

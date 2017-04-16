@@ -45,7 +45,12 @@
                     <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="#/about">About CA</a></li>
-                    <li><a href="#/apiDoc" access="admin">API</a></li>
+                    <li><a href="#/apiDoc" access="super_user">API</a></li>
+                    <li><a href="#/users" access="super_user">Manage Users</a></li>
+                    <li><a href="#/studentProfile/{{user.login}}" access="student">Profile</a></li>
+                    <li><a href="#/adminProfile/{{user.login}}" access="admin">Profile</a></li>
+                    <li><a href="#/restProfile/{{user.login}}" access="rest">Profile</a></li>
+                    <li><a href="#/taiga_admin" access="super_user">Taiga</a></li>
                     <li class="divider"></li>
                     <li><a href="#/logout"><i class="glyphicon glyphicon-off"></i> Sign out</a></li>
                 </ul>

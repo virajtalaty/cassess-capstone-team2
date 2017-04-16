@@ -2,11 +2,9 @@ package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
-import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
 import edu.asu.cassess.persist.entity.rest.Team;
-import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -64,8 +62,13 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
-    public List<Student> listReadStudent(String course, String team_name, String email) throws DataAccessException{
-        return studentsDao.listReadStudent(course, team_name, email);
+    public List<Student> listReadStudent(String course, String email) throws DataAccessException{
+        return studentsDao.listReadStudent(course, email);
+    }
+
+    @Override
+    public List<Student> listReadSingleStudent(String course, String team, String email) throws DataAccessException{
+        return studentsDao.listReadSingleStudent(course, team, email);
     }
 
     @Override

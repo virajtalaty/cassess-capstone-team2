@@ -31,7 +31,7 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h1>Overall Charts</h1>
+                        <h3>Taiga Average Frequency and Weight</h3>
                         <table class="table table-bordered" fixed-header>
                             <thead>
                             <tr>
@@ -50,11 +50,57 @@
                             </tr>
                             </tbody>
                         </table>
-                        <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(2)">
-                        <h1>Taiga Charts</h1>
-                        <p> Content coming soon... </p>
+                        <h3>Average Task Totals</h3>
+                        <p> Select Week Beginning </p>
+                        <select ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in teamIntervals" ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
+                        </select>
+                        <br>
+                        <p> Select Week Ending </p>
+                        <select ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in teamIntervals" ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
+                        </select>
+                        <br>
+                        <table class="table table-bordered" fixed-header>
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tasks In Progress</th>
+                                <th>Tasks To Test</th>
+                                <th>Tasks Done</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in teamTasks">
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.inProgress }}</td>
+                                <td>{{ x.toTest }}</td>
+                                <td>{{ x.done }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <h>Average Task Activity</h>
+                        <table class="table table-bordered" fixed-header>
+                            <thead>
+                            <tr>
+                                <th>Week Beginning</th>
+                                <th>Week Ending</th>
+                                <th>DoneActivity</th>
+                                <th>InProgressActivity</th>
+                                <th>ToTestActivity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in teamActivity">
+                                <td>{{ x.weekBeginning }}</td>
+                                <td>{{ x.weekEnding }}</td>
+                                <td>{{ x.doneActivity }}</td>
+                                <td>{{ x.inProgressActivity }}</td>
+                                <td>{{ x.toTestActivity }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div ng-show="isSet(3)">
                         <h1>GitHub Charts</h1>

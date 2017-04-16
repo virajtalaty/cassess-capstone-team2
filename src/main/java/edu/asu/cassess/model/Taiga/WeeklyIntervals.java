@@ -22,12 +22,20 @@ public class WeeklyIntervals {
     @Column(name="weekEnding")
     private String weekEnding;
 
+    @Column(name="rawWeekBeginning")
+    private long rawWeekBeginning;
+
+    @Column(name="rawWeekEnding")
+    private long rawWeekEnding;
+
     public WeeklyIntervals(){}
 
-    public WeeklyIntervals(String week, String weekBeginning, String weekEnding) {
+    public WeeklyIntervals(String week, String weekBeginning, String weekEnding, long rawWeekBeginning, long rawWeekEnding) {
         this.week = week;
         this.weekBeginning = weekBeginning;
         this.weekEnding = weekEnding;
+        this.rawWeekBeginning = rawWeekBeginning;
+        this.rawWeekEnding = rawWeekEnding;
     }
 
     public String getWeek() {
@@ -52,6 +60,22 @@ public class WeeklyIntervals {
 
     public void setWeekEnding(String weekEnding) {
         this.weekEnding = weekEnding;
+    }
+
+    public long getRawWeekBeginning() {
+        return rawWeekBeginning;
+    }
+
+    public void setRawWeekBeginning(long rawWeekBeginning) {
+        this.rawWeekBeginning = rawWeekBeginning;
+    }
+
+    public long getRawWeekEnding() {
+        return rawWeekEnding;
+    }
+
+    public void setRawWeekEnding(long rawWeekEnding) {
+        this.rawWeekEnding = rawWeekEnding;
     }
 
 }

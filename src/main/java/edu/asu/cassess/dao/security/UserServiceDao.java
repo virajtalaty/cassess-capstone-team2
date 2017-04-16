@@ -110,7 +110,7 @@ public class UserServiceDao {
         return user;
     }
 
-    public <T> Object registerUser(String first_name, String family_name, String email, String password, boolean admin){
+    public <T> Object registerUser(String first_name, String family_name, String email, String password, String role){
         registerUser register_user = new registerUser(first_name, family_name, email, email, password);
         User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getLogin(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate(), register_user.getEnabled());
         Authority auth = new Authority();
@@ -118,26 +118,41 @@ public class UserServiceDao {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setId((long) userID.getMax() + 1);
         User userFind = userRepo.findByEmail(user.getEmail());
+        long user_authValue = 0;
         if(userFind == null){
             userRepo.save(user);
-            long role = 0;
-            if(admin == true){
-                role = 1;
-            }if(admin == false){
-                role = 2;
+            if(role.equalsIgnoreCase("admin")){
+                user_authValue = 1;
             }
-            if(!authorityRepo.exists(role)){
-                if(role == 1){
+            if(role.equalsIgnoreCase("student")){
+                user_authValue = 2;
+            }
+            if(role.equalsIgnoreCase("super_user")){
+                user_authValue = 3;
+            }
+            if(role.equalsIgnoreCase("rest")){
+                user_authValue = 4;
+            }
+            if(!authorityRepo.exists(user_authValue)){
+                if(user_authValue == 1){
                     auth.setId((long) 1);
                     auth.setName("admin");
                     authorityRepo.save(auth);
-                }else if(role == 2){
+                }else if(user_authValue == 2){
                     auth.setId((long) 2);
-                    auth.setName("user");
+                    auth.setName("student");
+                    authorityRepo.save(auth);
+                }else if(user_authValue == 3){
+                    auth.setId((long) 3);
+                    auth.setName("super_user");
+                    authorityRepo.save(auth);
+                }else if(user_authValue == 4){
+                    auth.setId((long) 4);
+                    auth.setName("rest");
                     authorityRepo.save(auth);
                 }
             }
-            UsersAuthority usersAuth = new UsersAuthority(user.getId(), role);
+            UsersAuthority usersAuth = new UsersAuthority(user.getId(), user_authValue);
             usersAuthorityRepo.save(usersAuth);
             return user;
         }else{

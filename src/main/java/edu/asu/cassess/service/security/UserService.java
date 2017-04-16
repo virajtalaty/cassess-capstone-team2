@@ -44,8 +44,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public <T> Object registerUser(String first_name, String family_name, String email, String password, boolean admin){
-        return userServiceDao.registerUser(first_name, family_name, email, password, admin);
+    public <T> Object registerUser(String first_name, String family_name, String email, String password, String role){
+        return userServiceDao.registerUser(first_name, family_name, email, password, role);
     }
 
     @Override

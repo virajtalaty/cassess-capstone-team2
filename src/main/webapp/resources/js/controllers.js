@@ -98,9 +98,293 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller('HomeController', function ($scope, HomeService) {
         $scope.technos = HomeService.getTechno();
     })
-    .controller('UsersController', function ($scope, $log, UsersService) {
+    .controller('UsersController', [ '$scope', '$location', '$http', 'UsersService', function($scope, $location, $http, UsersService) {
         $scope.users = UsersService.getAll();
-    })
+
+        $scope.viewProfile = function(email, auth){
+            if(auth == 'student'){
+                console.log("Email: " + email);
+                console.log("Auth: " + auth);
+                console.log("Path: /studentProfile/" + email);
+                $location.path('/studentProfile/' + email);
+            }
+            if(auth == 'admin'){
+                console.log("Email: " + email);
+                console.log("Auth: " + auth);
+                console.log("Path: /studentProfile/" + email);
+                $location.path('/adminProfile/' + email);
+            }
+            if(auth == 'rest'){
+                console.log("Email: " + email);
+                console.log("Auth: " + auth);
+                console.log("Path: /studentProfile/" + email);
+                $location.path('/restProfile/' + email);
+            }
+        }
+    }])
+    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+        $scope.userid = $routeParams.user_id;
+
+        $http({
+            url : './current_user',
+            method : "GET"
+        }).then(function(response) {
+            console.log("Worked!");
+            console.log(response.data);
+            $scope.user = response.data;
+            userService.setUser($scope.user.login);
+            userService.setAuth($scope.user.authorities[0].name);
+            getAccess();
+        });
+
+        function getAccess() {
+            $http({
+                url: './check_profileaccess',
+                method: "GET",
+                headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                if (response.data == false) {
+                    $location.path('/home');
+                } else {
+                    getUserData();
+                }
+            });
+        }
+
+        function getUserData() {
+            $http({
+                url: './user_email',
+                method: "GET",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.userData = response.data;
+                getCoursesData();
+            });
+        }
+
+        function getCoursesData() {
+        $http({
+            url: './student_courses',
+            method: "GET",
+            headers: {'email': $scope.userid}
+        }).then(function (response) {
+            console.log("Worked!");
+            //console.log(response.data);
+            $scope.courses = response.data;
+        });
+    }
+
+    $scope.selectedCourseChanged = function() {
+        $http({
+            url: './student_teams',
+            method: "GET",
+            headers: {'course': $scope.studentCourse.value.course, 'email': $scope.userid}
+        }).then(function (response) {
+            $scope.course = $scope.studentCourse.value.course;
+            //console.log(response.data);
+            $scope.teams = response.data;
+            console.log($scope.teams);
+        }, function (response) {
+            //fail case
+            console.log("didn't work");
+            //console.log(response);
+        });
+    }
+
+    $scope.selectedTeamChanged = function() {
+        //console.log(response.data);
+        $scope.team = $scope.studentTeam.value.team;
+        console.log($scope.team);
+    }
+
+    $scope.studentTeamRemove = function() {
+        $http({
+            url: './studentProfileDelTeam',
+            method: "DELETE",
+            headers: {'course': $scope.studentCourse.value.course, 'team': $scope.studentTeam.value.team, 'email': $scope.userid}
+        }).then(function (response) {
+            //console.log(response.data);
+        }, function (response) {
+            //fail case
+            console.log("didn't work");
+            //console.log(response);
+        });
+    }
+
+    $scope.studentCourseRemove = function() {
+        $http({
+            url: './studentProfileDelCourse',
+            method: "DELETE",
+            headers: {'course': $scope.studentCourse.value.course, 'email': $scope.userid}
+        }).then(function (response) {
+            //console.log(response.data);
+        }, function (response) {
+            console.log("didn't work");
+        });
+    }
+
+    $scope.removeUser = function() {
+        $http({
+            url: './userProfileDelete',
+            method: "DELETE",
+            headers: {'email': $scope.userid}
+        }).then(function (response) {
+            //console.log(response.data);
+        }, function (response) {
+            console.log("didn't work");
+        });
+    }
+
+}])
+    .controller('RestProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+        $scope.userid = $routeParams.user_id;
+
+        $http({
+            url : './current_user',
+            method : "GET"
+        }).then(function(response) {
+            console.log("Worked!");
+            console.log(response.data);
+            $scope.user = response.data;
+            userService.setUser($scope.user.login);
+            userService.setAuth($scope.user.authorities[0].name);
+            getAccess();
+        });
+
+        function getAccess() {
+            $http({
+                url: './check_profileaccess',
+                method: "GET",
+                headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                if (response.data == false) {
+                    $location.path('/home');
+                } else {
+                    getUserData();
+                }
+            });
+        }
+
+        function getUserData() {
+            $http({
+                url: './user_email',
+                method: "GET",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.userData = response.data;
+            });
+        }
+
+        $scope.removeUser = function() {
+            $http({
+                url: './userProfileDelete',
+                method: "DELETE",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                //console.log(response.data);
+            }, function (response) {
+                console.log("didn't work");
+            });
+        }
+
+    }])
+
+.controller('AdminProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+    $scope.userid = $routeParams.user_id;
+
+    $http({
+        url : './current_user',
+        method : "GET"
+    }).then(function(response) {
+        console.log("Worked!");
+        console.log(response.data);
+        $scope.user = response.data;
+        userService.setUser($scope.user.login);
+        userService.setAuth($scope.user.authorities[0].name);
+        getAccess();
+    });
+
+    function getAccess() {
+        $http({
+            url: './check_profileaccess',
+            method: "GET",
+            headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
+        }).then(function (response) {
+            console.log("Worked!");
+            console.log(response.data);
+            if (response.data == false) {
+                $location.path('/home');
+            } else {
+                getUserData();
+            }
+        });
+    }
+
+    function getUserData() {
+        $http({
+            url: './user_email',
+            method: "GET",
+            headers: {'email': $scope.userid}
+        }).then(function (response) {
+            console.log("Worked!");
+            //console.log(response.data);
+            $scope.userData = response.data;
+            getCoursesData();
+        });
+    }
+
+    function getCoursesData() {
+        $http({
+            url: './admin_courses',
+            method: "GET",
+            headers: {'email': $scope.userid}
+        }).then(function (response) {
+            console.log("Worked!");
+            console.log(response.data);
+            $scope.courses = response.data;
+        });
+    }
+
+    $scope.selectedCourseChanged = function() {
+            $scope.course = $scope.adminCourse.value.course;
+    }
+
+    $scope.adminCourseRemove = function() {
+        $http({
+            url: './adminProfileDelete',
+            method: "DELETE",
+            headers: {'course': $scope.adminCourse.value.course, 'email': $scope.userid}
+        }).then(function (response) {
+            //console.log(response.data);
+        }, function (response) {
+            console.log("didn't work");
+        });
+    }
+
+    $scope.removeUser = function() {
+        $http({
+            url: './userProfileDelete',
+            method: "DELETE",
+            headers: {'email': $scope.userid}
+        }).then(function (response) {
+            //console.log(response.data);
+        }, function (response) {
+            console.log("didn't work");
+        });
+    }
+
+
+
+
+}])
     .controller('ApiDocController', function ($scope) {
         // init form
         $scope.isLoading = false;
@@ -160,14 +444,23 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Oops! unexpected error"
         }
 
-    }).controller('NavController', ['$scope', '$location', '$http', 'courseService', 'teamService', 'studentService', '$window', '$routeParams', 'userService',
+    })
+    .controller('NavController', ['$scope', '$location', '$http', 'courseService', 'teamService', 'studentService', '$window', '$routeParams', 'userService',
     function($scope, $location, $http, courseService, teamService, studentService, $window, $routeParams, userService) {
-
-
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
         function getCourses(user) {
+            if(userService.getAuth() == 'super_user'){
+                $http({
+                    url: './taigaCourses',
+                    method: "GET",
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.courses = response.data;
+                });
+            }
             if(userService.getAuth() == 'admin'){
                 $http({
                     url: './admin_courses',
@@ -179,7 +472,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.courses = response.data;
                 });
             }
-            if(userService.getAuth() == 'user'){
+            if(userService.getAuth() == 'student'){
                 $http({
                     url: './student_courses',
                     method: "GET",
@@ -206,6 +499,18 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         });
 
         $scope.selectedCourseChanged = function(course) {
+            if(userService.getAuth() == 'super_user') {
+                courseService.setCourse(course);
+                $http({
+                    url: './course_teams',
+                    method: "GET",
+                    headers: {'course': course}
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.teams = response.data;
+                });
+            }
             if(userService.getAuth() == 'admin') {
                 courseService.setCourse(course);
                 $http({
@@ -218,7 +523,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.teams = response.data;
                 });
             }
-            if(userService.getAuth() == 'user') {
+            if(userService.getAuth() == 'student') {
                 courseService.setCourse(course);
                 $http({
                     url: './student_teams',
@@ -233,6 +538,18 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         $scope.selectedTeamChanged = function(team) {
+            if(userService.getAuth() == 'super_user') {
+                teamService.setTeam(team);
+                $http({
+                    url: './team_students',
+                    method: "GET",
+                    headers: {'course': courseService.getCourse(), 'team': teamService.getTeam()}
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.students = response.data;
+                });
+            }
             if(userService.getAuth() == 'admin') {
                 teamService.setTeam(team);
                 $http({
@@ -245,12 +562,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.students = response.data;
                 });
             }
-            if(userService.getAuth() == 'user') {
+            if(userService.getAuth() == 'student') {
                 teamService.setTeam(team);
+                console.log("EMail1: " + userService.getUser());
+                console.log("EMail2: " + $scope.user.login);
                 $http({
                     url: './student_data',
                     method: "GET",
-                    headers: {'course': courseService.getCourse(), 'team': teamService.getTeam(), 'email': $scope.user.email}
+                    headers: {'email':$scope.user.login, 'course': courseService.getCourse(), 'team': teamService.getTeam()}
                 }).then(function (response) {
                     console.log("Worked!");
                     console.log(response.data);
@@ -280,25 +599,29 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller('RegistrationController', [ '$scope', '$location', '$http', '$window', function($scope, $location, $http, $window) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
-        $scope.adminCheckbox = {
-            value : true
+        $scope.roles = {
+            role1: {name: "super_user"},
+            role2: {name: "rest"},
+            role3: {name: "admin"},
+            role4: {name: "student"}
         };
+        $scope.role = "";
 
         $scope.sendRegistration = function() {
             $http({
                 url : './user',
                 method : "POST",
                 headers : {'first_name' : $scope.firstName, 'family_name' : $scope.familyName,  'email' : $scope.email,
-                    'password' : $scope.password, 'admin' : $scope.adminCheckbox.value }
-
+                    'password' : $scope.password, 'role' : $scope.selectedRole.value.name }
             }).then(function(response) {
                 console.log("Worked!");
                 $scope.responseData = console.log(response.data);
                 $scope.message = "User Successfully Registered";
                 $window.alert($scope.message);
-                $location.path('/login');
+                $location.path('/users');
             }, function(response) {
                 //fail case
+                console.log("Role: " + $scope.selectedRole.value.name);
                 console.log("Didn't work");
                 //console.log(response);
                 $scope.responseData = console.log(response.data);
@@ -328,22 +651,90 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if(response.data == false){
                 $location.path('/home');
             } else{
-                getQuickWeightFreq();
+                getWeightFreq();
             }
         });
 
-        function getQuickWeightFreq() {
+        function getWeightFreq() {
             $http({
-                url: './taiga/course_quickweightFreq',
+                url: './taiga/course_weightFreq',
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.weightFreq = response.data;
+                getTaigaActivity();
             });
         }
+
+        function getTaigaActivity() {
+            $http({
+                url : './taiga/course_activity',
+                method : "GET",
+                headers : {'course' : $scope.courseid}
+            }).then(function(response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.courseActivity = response.data;
+                getTaigaIntervals();
+            });
+        }
+
+        function getTaigaIntervals() {
+            $http({
+                url : './taiga/course_intervals',
+                method : "GET",
+                headers : {'course' : $scope.courseid}
+            }).then(function(response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.courseIntervals = response.data;
+            });
+        }
+
+        $scope.IntervalChangedBegin = function(rawWeekBeginning) {
+            $scope.rawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            if($scope.rawWeekEnding != null) {
+                $http({
+                    url: './taiga/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.courseTasks = response.data;
+                });
+            }
+        }
+
+        $scope.IntervalChangedEnd = function(rawWeekEnding) {
+            $scope.rawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            if($scope.rawWeekBeginning != null) {
+                $http({
+                    url: './taiga/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.courseTasks = response.data;
+                });
+            }
+        }
+
     }])
+
     .controller('TeamController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
         var course =  courseService.getCourse();
@@ -371,23 +762,106 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if(response.data == false){
                 $location.path('/home');
             } else{
-                getQuickWeightFreq();
+                getCourseWeightFreq();
             }
         });
 
-        function getQuickWeightFreq() {
+        function getCourseWeightFreq() {
             $http({
-                url: './taiga/team_quickweightFreq',
+                url: './taiga/course_weightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.courseWeightFreq = response.data;
+                getTeamWeightFreq();
+            });
+        }
+
+        function getTeamWeightFreq() {
+            $http({
+                url: './taiga/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.weightFreq = response.data;
+                getTaigaActivity();
             });
         }
+
+        function getTaigaActivity() {
+            $http({
+                url : './taiga/team_activity',
+                method : "GET",
+                headers : {'course' : course, 'team' : $scope.teamid}
+            }).then(function(response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.teamActivity = response.data;
+                getTaigaIntervals();
+            });
+        }
+
+        function getTaigaIntervals() {
+            $http({
+                url : './taiga/team_intervals',
+                method : "GET",
+                headers : {'course' : course, 'team' : $scope.teamid}
+            }).then(function(response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.teamIntervals = response.data;
+            });
+        }
+
+        $scope.IntervalChangedBegin = function(rawWeekBeginning) {
+            $scope.rawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            if($scope.rawWeekEnding != null) {
+                $http({
+                    url: './taiga/team_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': $scope.teamid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.teamTasks = response.data;
+                });
+            }
+        }
+
+        $scope.IntervalChangedEnd = function(rawWeekEnding) {
+            $scope.rawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            if($scope.rawWeekBeginning != null) {
+                $http({
+                    url: './taiga/team_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': $scope.teamid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.teamTasks = response.data;
+                });
+            }
+        }
+
     }])
-    .controller('StudentController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'studentService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, studentService, userService, $http) {
+
+    .controller('StudentController', ['$filter', '$scope', '$location', '$routeParams', 'courseService', 'teamService', 'studentService', 'userService', '$http', function ($filter, $scope, $location, $routeParams, courseService, teamService, studentService, userService, $http) {
         $scope.studentid = $routeParams.student_id;
         $scope.courseid = courseService.getCourse();
         $scope.teamid = teamService.getTeam();
@@ -422,11 +896,37 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if(response.data == false){
                 $location.path('/home');
             } else{
-                getQuickWeightFreq();
+                getCourseWeightFreq();
             }
         });
 
-        function getQuickWeightFreq() {
+        function getCourseWeightFreq() {
+            $http({
+                url: './taiga/course_weightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.courseWeightFreq = response.data;
+                getTeamWeightFreq();
+            });
+        }
+
+        function getTeamWeightFreq() {
+            $http({
+                url: './taiga/team_weightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': team}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.teamWeightFreq = response.data;
+                getStudentWeightFreq();
+            });
+        }
+
+        function getStudentWeightFreq() {
             $http({
                 url: './taiga/student_quickweightFreq',
                 method: "GET",
@@ -448,9 +948,65 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.studentActivity = response.data;
+                getTaigaIntervals();
             });
         }
 
+        function getTaigaIntervals() {
+            $http({
+                url : './taiga/student_intervals',
+                method : "GET",
+                headers : {'course' : course, 'team' : team, 'email' : studentemail}
+            }).then(function(response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.studentIntervals = response.data;
+            });
+        }
+
+        $scope.IntervalChangedBegin = function(rawWeekBeginning) {
+            $scope.rawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            if($scope.rawWeekEnding != null) {
+                $http({
+                    url: './taiga/student_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': team,
+                        'email': studentemail,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.studentTasks = response.data;
+                });
+            }
+        }
+
+        $scope.IntervalChangedEnd = function(rawWeekEnding) {
+            $scope.rawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            if($scope.rawWeekBeginning != null) {
+                $http({
+                    url: './taiga/student_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': team,
+                        'email': studentemail,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked!");
+                    console.log(response.data);
+                    $scope.studentTasks = response.data;
+                });
+            }
+        }
 
     }])
     .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {

@@ -1,5 +1,7 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.taiga.IMemberQueryDao;
+import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
@@ -7,9 +9,11 @@ import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.entity.security.UsersAuthority;
 import edu.asu.cassess.persist.repo.AuthorityRepo;
+import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
 import edu.asu.cassess.security.SecurityUtils;
 import edu.asu.cassess.service.rest.*;
+import edu.asu.cassess.service.security.IUserService;
 import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
 import edu.asu.cassess.service.taiga.ITaskDataService;
@@ -17,12 +21,16 @@ import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -39,12 +47,6 @@ public class AppController {
     private ICourseService coursesService;
 
     @Autowired
-    private IProjectService projects;
-
-    @Autowired
-    private IMembersService members;
-
-    @Autowired
     private ITeamsService teamsService;
 
     @Autowired
@@ -58,6 +60,42 @@ public class AppController {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @EJB
+    private ICourseService courseService;
+
+    @EJB
+    private ITeamsService teamService;
+
+    @EJB
+    private IStudentsService studentService;
+
+    @EJB
+    private IAdminsService adminService;
+
+    @EJB
+    private IUserService usersService;
+
+    @EJB
+    private IChannelService channelService;
+
+    @Autowired
+    private UserRepo userRepo;
+
+    @EJB
+    private ITaskTotalsQueryDao taskTotalsDao;
+
+    @EJB
+    private IProjectQueryDao projectDao;
+
+    @EJB
+    private IMemberQueryDao memberDao;
+
+    @EJB
+    private IMembersService members;
+
+    @EJB
+    private IProjectService projects;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -132,9 +170,9 @@ public class AppController {
     public List<Student> getStudent(@RequestHeader(name = "email", required = true) String email,
                               @RequestHeader(name = "team", required = true) String team,
                                             @RequestHeader(name = "course", required = true) String course,
-                                            HttpServletRequest request, HttpServletResponse response) {
+                                            HttpServletRequest request, HttpServletResponse response){
 
-        return studentsService.listReadStudent(course, team, email);
+        return studentsService.listReadSingleStudent(course, team, email);
     }
     //End of New Student Course and Project list methods
 
@@ -152,9 +190,18 @@ public class AppController {
     ResponseEntity<List<DailyTaskTotals>> getStudentTasks(@RequestHeader(name = "course", required = true) String course,
                                                           @RequestHeader(name = "team", required = true) String team,
                                                           @RequestHeader(name = "email", required = true) String email,
-                                                          @RequestHeader(name = "weekBeginning", required = true) String weekBeginning,
-                                                          @RequestHeader(name = "weekEnding", required = true) String weekEnding, HttpServletRequest request, HttpServletResponse response) {
-        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(weekBeginning, weekEnding, course, team, email);
+                                                          @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                          @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
+
+        Date dateBegin = new Date(weekBeginning*1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfBegin.format(dateEnd);
+        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
 
@@ -164,9 +211,17 @@ public class AppController {
     public
     ResponseEntity<List<DailyTaskTotals>> getAverageTeamTasks(@RequestHeader(name = "course", required = true) String course,
                                                               @RequestHeader(name = "team", required = true) String team,
-                                                              @RequestHeader(name = "weekBeginning", required = true) String weekBeginning,
-                                                              @RequestHeader(name = "weekEnding", required = true) String weekEnding, HttpServletRequest request, HttpServletResponse response) {
-        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByTeam(weekBeginning, weekEnding, course, team);
+                                                              @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                              @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        Date dateBegin = new Date(weekBeginning*1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfBegin.format(dateEnd);
+        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByTeam(formattedDateBegin, formattedDateEnd, course, team);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
 
@@ -175,10 +230,18 @@ public class AppController {
     @RequestMapping(value = "/taiga/course_tasks", method = RequestMethod.GET)
     public
     ResponseEntity<List<DailyTaskTotals>> getAverageCourseTasks(@RequestHeader(name = "course", required = true) String course,
-                                                          @RequestHeader(name = "weekBeginning", required = true) String weekBeginning,
-                                                          @RequestHeader(name = "weekEnding", required = true) String weekEnding,
+                                                          @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                          @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                 HttpServletRequest request, HttpServletResponse response) {
-        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByCourse(weekBeginning, weekEnding, course);
+        Date dateBegin = new Date(weekBeginning*1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfBegin.format(dateEnd);
+        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByCourse(formattedDateBegin, formattedDateEnd, course);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
 
@@ -213,6 +276,16 @@ public class AppController {
                                                            HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyActivity> activityList = (List<WeeklyActivity>) taskTotalService.getWeeklyUpdatesByCourse(course);
         return new ResponseEntity<List<WeeklyActivity>>(activityList, HttpStatus.OK);
+    }
+
+    //Weekly Intervals for a project
+    @ResponseBody
+    @RequestMapping(value = "/taiga/course_intervals", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<WeeklyIntervals>> getCourseIntervals(@RequestHeader(name = "course", required = true) String course,
+                                                              HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) taskTotalService.getWeeklyIntervalsByCourse(course);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
     }
 
     //Weekly Intervals for a project
@@ -412,6 +485,103 @@ public class AppController {
         for (CourseList course : courseList) {
             //System.out.print("Course: " + course.getCourse());
             taskService.updateTaskTotals(course.getCourse());
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/studentProfileDelTeam", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteStudentFromGUITeam(@RequestHeader(name = "course", required = true) String course,
+                                        @RequestHeader(name = "team", required = true) String team,
+                                        @RequestHeader(name = "email", required = true) String email,
+                                        HttpServletRequest request, HttpServletResponse response) {
+        if(email != null){
+            User user = userRepo.findByEmail(email);
+            Object object = studentService.find(email, team, course);
+            Student student = new Student();
+            if(object.getClass() == Student.class)
+            {
+                student = (Student) object;
+                usersService.deleteUser(user);
+                taskTotalsDao.deleteTaskTotalsByStudent(student);
+                memberDao.deleteMembersByStudent(student);
+                response.setStatus(HttpServletResponse.SC_OK);
+                return studentService.delete(student);
+            }else{
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return null;
+            }
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/studentProfileDelCourse", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> void deleteStudentFromGUICourse(@RequestHeader(name = "course", required = true) String course,
+                                        @RequestHeader(name = "email", required = true) String email,
+                                        HttpServletRequest request, HttpServletResponse response) {
+        if(email != null){
+            List<Student> students = studentService.listReadStudent(course, email);
+            if(!students.isEmpty()) {
+                {
+                    for(Student student:students){
+                        taskTotalsDao.deleteTaskTotalsByStudent(student);
+                        memberDao.deleteMembersByStudent(student);
+                        studentService.delete(student);
+                    }
+                }
+                response.setStatus(HttpServletResponse.SC_OK);
+            }else{
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/adminProfileDelete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteAdminFromGUI(@RequestHeader(name = "course", required = true) String course,
+                                  @RequestHeader(name = "email", required = true) String email,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        if(email != null){
+            Object object = adminService.find(email, course);
+            Admin admin = new Admin();
+            if(object.getClass() == Admin.class)
+            {
+                admin = (Admin) object;
+                response.setStatus(HttpServletResponse.SC_OK);
+                return adminService.delete(admin);
+            }else{
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return null;
+            }
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/userProfileDelete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    <T> Object deleteUserFromGUI(@RequestHeader(name = "email", required = true) String email,
+                                 HttpServletRequest request, HttpServletResponse response) {
+        if(email != null){
+            User user = userRepo.findByEmail(email);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return usersService.deleteUser(user);
+        }else{
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
         }
     }
 }

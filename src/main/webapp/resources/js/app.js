@@ -6,7 +6,7 @@ var myapp = angular
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
-    user: 'user',
+    student: 'student',
     super_user: 'super_user',
     rest: 'rest'
 });
@@ -41,7 +41,7 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         controller: 'RegistrationController',
         access: {
             loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.super_user]
         }
     }).when('/taiga_admin', {
             templateUrl: 'partials/taigaAdmin.html',
@@ -75,6 +75,34 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         templateUrl: 'partials/about.html',
         access: {
             loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/users', {
+        templateUrl: 'partials/users.html',
+        controller: 'UsersController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
+    }).when('/studentProfile/:user_id', {
+        templateUrl: 'partials/studentProfile.html',
+        controller: 'StudentProfileController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/adminProfile/:user_id', {
+        templateUrl: 'partials/adminProfile.html',
+        controller: 'AdminProfileController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/restProfile/:user_id', {
+        templateUrl: 'partials/restProfile.html',
+        controller: 'RestProfileController',
+        access: {
+            loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/loading', {
