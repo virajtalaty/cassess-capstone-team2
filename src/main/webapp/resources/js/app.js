@@ -1,12 +1,12 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'nvd3']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword']);
 
 myapp.constant('USER_ROLES', {
     all: '*',
     admin: 'admin',
-    user: 'user',
+    student: 'student',
     super_user: 'super_user',
     rest: 'rest'
 });
@@ -41,15 +41,15 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         controller: 'RegistrationController',
         access: {
             loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.super_user]
         }
     }).when('/taiga_admin', {
-            templateUrl: 'partials/taigaAdmin.html',
-            controller: 'TaigaAdmin',
-            access: {
-                loginRequired: true,
-                authorizedRoles: [USER_ROLES.super_user]
-            }
+        templateUrl: 'partials/taigaAdmin.html',
+        controller: 'TaigaAdmin',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
     }).when('/course/:course_id', {
         templateUrl: 'partials/course.html',
         controller: 'CourseController',
@@ -75,6 +75,34 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         templateUrl: 'partials/about.html',
         access: {
             loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/users', {
+        templateUrl: 'partials/users.html',
+        controller: 'UsersController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
+    }).when('/studentProfile/:user_id', {
+        templateUrl: 'partials/studentProfile.html',
+        controller: 'StudentProfileController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/adminProfile/:user_id', {
+        templateUrl: 'partials/adminProfile.html',
+        controller: 'AdminProfileController',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when('/restProfile/:user_id', {
+        templateUrl: 'partials/restProfile.html',
+        controller: 'RestProfileController',
+        access: {
+            loginRequired: true,
             authorizedRoles: [USER_ROLES.all]
         }
     }).when('/loading', {
@@ -104,19 +132,19 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         }
     })
         .otherwise({
-        redirectTo: '/error/404',
-        access: {
-            loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
-        }
-    });
+            redirectTo: '/error/404',
+            access: {
+                loginRequired: false,
+                authorizedRoles: [USER_ROLES.all]
+            }
+        });
 });
 
 myapp.run(function ($rootScope, $location, $http, AuthSharedService, Session, USER_ROLES, $q, $timeout) {
 
     $rootScope.$on('$routeChangeStart', function (event, next) {
 
-        if(next.originalPath === "/login" && $rootScope.authenticated) {
+        if (next.originalPath === "/login" && $rootScope.authenticated) {
             event.preventDefault();
         } else if (next.access && next.access.loginRequired && !$rootScope.authenticated) {
             event.preventDefault();

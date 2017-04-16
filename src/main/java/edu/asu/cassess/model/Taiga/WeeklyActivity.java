@@ -13,25 +13,26 @@ import javax.persistence.Id;
 public class WeeklyActivity {
 
     @Id
-    @Column(name="week")
+    @Column(name = "week")
     private String week;
 
-    @Column(name="weekBeginning")
+    @Column(name = "weekBeginning")
     private String weekBeginning;
 
-    @Column(name="weekEnding")
+    @Column(name = "weekEnding")
     private String weekEnding;
 
-    @Column(name="DoneActivity")
+    @Column(name = "DoneActivity")
     private String DoneActivity;
 
-    @Column(name="InProgressActivity")
+    @Column(name = "InProgressActivity")
     private String InProgressActivity;
 
-    @Column(name="ToTestActivity")
+    @Column(name = "ToTestActivity")
     private String ToTestActivity;
 
-    public WeeklyActivity(){}
+    public WeeklyActivity() {
+    }
 
 
     public WeeklyActivity(String week, String weekBeginning, String weekEnding, String doneActivity, String inProgressActivity, String toTestActivity) {
@@ -42,7 +43,6 @@ public class WeeklyActivity {
         this.InProgressActivity = inProgressActivity;
         this.ToTestActivity = toTestActivity;
     }
-
 
 
     public String getWeek() {

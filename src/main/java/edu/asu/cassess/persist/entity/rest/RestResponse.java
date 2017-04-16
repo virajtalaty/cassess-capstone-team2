@@ -5,7 +5,7 @@ public class RestResponse {
     public String response;
 
 
-    public RestResponse (String message){
+    public RestResponse(String message) {
 
         this.response = message;
     }

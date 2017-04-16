@@ -2,9 +2,7 @@ package edu.asu.cassess.service.github;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.asu.cassess.persist.entity.github.CommitData;
-
 import edu.asu.cassess.persist.repo.CommitDataRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GatherGitHubData{
+public class GatherGitHubData {
 
     @Autowired
     private GitHubCommitDataDao dao;
@@ -45,10 +43,10 @@ public class GatherGitHubData{
      * The github owner and project name can be found in the repo url as follows
      * www.github.com/:owner/:projectName
      *
-     * @param owner                 the owner of the repo
-     * @param projectName           the project name of the repo
+     * @param owner       the owner of the repo
+     * @param projectName the project name of the repo
      */
-    public void fetchData(String owner, String projectName){
+    public void fetchData(String owner, String projectName) {
         this.projectName = projectName;
         this.owner = owner;
         url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
@@ -56,7 +54,7 @@ public class GatherGitHubData{
     }
 
 
-    private void getStats(){
+    private void getStats() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken);
         String urlPath = builder.build().toUriString();
@@ -66,20 +64,21 @@ public class GatherGitHubData{
         ArrayList<GitHubContributors> contributors = null;
         ObjectMapper mapper = new ObjectMapper();
 
-        try{
-            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {});
-        }catch(IOException e){
+        try {
+            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {
+            });
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         storeStats(contributors);
     }
 
-    private void storeStats(ArrayList<GitHubContributors> contributors){
-        for(GitHubContributors contributor: contributors){
+    private void storeStats(ArrayList<GitHubContributors> contributors) {
+        for (GitHubContributors contributor : contributors) {
             ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
 
-            for(GitHubContributors.Weeks week: weeks){
+            for (GitHubContributors.Weeks week : weeks) {
                 Date date = new Date(week.getW() * 1000L);
                 int linesAdded = week.getA();
                 int linesDeleted = week.getD();
@@ -95,9 +94,10 @@ public class GatherGitHubData{
 
     /**
      * Gathers all the rows in the commit_data table
-     * @return      A list of CommitData Objects
+     *
+     * @return A list of CommitData Objects
      */
-    public List<CommitData> getCommitList(){
+    public List<CommitData> getCommitList() {
         return dao.getAllCommitData();
     }
 }

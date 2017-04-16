@@ -1,15 +1,13 @@
 package edu.asu.cassess.service.rest;
 
-import java.util.List;
-
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
-import edu.asu.cassess.persist.entity.rest.Team;
-import edu.asu.cassess.persist.entity.security.User;
-import org.json.JSONObject;
-
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
+import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
+
+import java.util.List;
 
 public interface IStudentsService {
 
@@ -27,7 +25,9 @@ public interface IStudentsService {
 
     <T> List<Student> listReadByTeam(String course, String team_name);
 
-    List<Student> listReadStudent(String course, String team_name, String email) throws DataAccessException;
+    List<Student> listReadStudent(String course, String email) throws DataAccessException;
+
+    List<Student> listReadSingleStudent(String course, String team, String email) throws DataAccessException;
 
     JSONObject listUpdate(List<Student> students);
 

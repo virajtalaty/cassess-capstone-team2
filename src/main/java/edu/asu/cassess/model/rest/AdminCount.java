@@ -15,18 +15,22 @@ import javax.persistence.Id;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AdminCount {
 
-        @Id
-        @Column(name="Total")
-        public int Total;
+    @Id
+    @Column(name = "Total")
+    public int Total;
 
-        public AdminCount(){
-        }
+    public AdminCount() {
+    }
 
-        public AdminCount(int Total){
-            this.Total = Total;
-        }
+    public AdminCount(int Total) {
+        this.Total = Total;
+    }
 
-        public int getTotal() { return Total; }
+    public int getTotal() {
+        return Total;
+    }
 
-        public void setTotal(int Total) { this.Total = Total; }
+    public void setTotal(int Total) {
+        this.Total = Total;
+    }
 }

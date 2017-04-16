@@ -14,7 +14,7 @@
                 link: function ($scope, $elem, $attrs, $ctrl) {
                     function isVisible(el) {
                         var style = window.getComputedStyle(el);
-                        return (style.display != 'none' && el.offsetWidth !=0 );
+                        return (style.display != 'none' && el.offsetWidth != 0 );
                     }
 
                     function isTableReady() {
@@ -39,10 +39,10 @@
 
 
                                         var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
-                                        if(tdElems) {
+                                        if (tdElems) {
                                             tdElems.style.width = columnWidth + 'px';
                                         }
-                                        if(thElem) {
+                                        if (thElem) {
                                             thElem.style.width = columnWidth + 'px';
                                         }
                                         if (tfElems) {

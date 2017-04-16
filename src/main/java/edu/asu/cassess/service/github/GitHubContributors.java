@@ -13,7 +13,7 @@ public class GitHubContributors {
     private ArrayList<Weeks> weeks;
 
 
-    public GitHubContributors(){
+    public GitHubContributors() {
         weeks = new ArrayList<Weeks>();
     }
 
@@ -23,7 +23,7 @@ public class GitHubContributors {
 
     @JsonSetter()
     public void setWeeks(JsonNode node) {
-        for (JsonNode current: node) {
+        for (JsonNode current : node) {
             int w = Integer.parseInt(current.findValue("w").toString());
             int a = Integer.parseInt(current.findValue("a").toString());
             int d = Integer.parseInt(current.findValue("d").toString());
@@ -47,7 +47,7 @@ public class GitHubContributors {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    class Weeks{
+    class Weeks {
         private int w;
         private int a;
         private int d;

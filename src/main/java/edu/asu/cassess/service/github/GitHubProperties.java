@@ -11,7 +11,7 @@ public class GitHubProperties {
     private String accessToken;
 
     public GitHubProperties() {
-    Properties properties = new Properties();
+        Properties properties = new Properties();
 
         BufferedReader reader = null;
         try {
@@ -21,7 +21,7 @@ public class GitHubProperties {
             accessToken = properties.getProperty("access_token");
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             try {
                 reader.close();
             } catch (IOException e) {

@@ -13,25 +13,26 @@ import javax.persistence.Id;
 public class WeeklyAverages {
 
     @Id
-    @Column(name="week")
+    @Column(name = "week")
     private String week;
 
-    @Column(name="weekBeginning")
+    @Column(name = "weekBeginning")
     private String weekBeginning;
 
-    @Column(name="weekEnding")
+    @Column(name = "weekEnding")
     private String weekEnding;
 
-    @Column(name="DoneAverage")
+    @Column(name = "DoneAverage")
     private String DoneAverage;
 
-    @Column(name="InProgressAverage")
+    @Column(name = "InProgressAverage")
     private String InProgressAverage;
 
-    @Column(name="ToTestAverage")
+    @Column(name = "ToTestAverage")
     private String ToTestAverage;
 
-    public WeeklyAverages(){}
+    public WeeklyAverages() {
+    }
 
 
     public WeeklyAverages(String week, String weekBeginning, String weekEnding, String doneAverage, String inProgressAverage, String toTestAverage) {
@@ -42,7 +43,6 @@ public class WeeklyAverages {
         this.InProgressAverage = inProgressAverage;
         this.ToTestAverage = toTestAverage;
     }
-
 
 
     public String getWeek() {
