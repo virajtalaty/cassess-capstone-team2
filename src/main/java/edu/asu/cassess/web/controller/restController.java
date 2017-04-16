@@ -1,11 +1,12 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.taiga.*;
+import edu.asu.cassess.dao.taiga.IMemberQueryDao;
+import edu.asu.cassess.dao.taiga.IProjectQueryDao;
+import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.service.rest.*;
-
 import edu.asu.cassess.service.security.IUserService;
 import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
@@ -113,22 +114,20 @@ public class restController {
     public
     @ResponseBody
     <T> Object deleteStudent(@RequestBody Student student, HttpServletRequest request, HttpServletResponse response) {
-        if(student != null){
+        if (student != null) {
             response.setStatus(HttpServletResponse.SC_OK);
             User user = userRepo.findByEmail(student.getEmail());
-            if(user != null)
-            {
+            if (user != null) {
                 usersService.deleteUser(user);
             }
             taskTotalsDao.deleteTaskTotalsByStudent(student);
             memberDao.deleteMembersByStudent(student);
             return studentService.delete(student);
-        }else{
+        } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
     }
-
 
 
     @ResponseStatus(HttpStatus.OK)
@@ -143,8 +142,7 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             User user = userRepo.findByEmail(student.getEmail());
-            if(user != null)
-            {
+            if (user != null) {
                 usersService.updateStudent(student, user);
             }
             members.updateMembership(student.getCourse());
@@ -158,9 +156,9 @@ public class restController {
     @ResponseBody
     <T> List<Student> getStudentList(HttpServletRequest request, HttpServletResponse response) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            return studentService.listReadAll();
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        return studentService.listReadAll();
+    }
 
     //New Course REST API Operations
     @ResponseStatus(HttpStatus.OK)
@@ -175,7 +173,7 @@ public class restController {
             return null;
         } else {
             Course course = (Course) courseService.read(courseInput.getCourse());
-            if(course != null){
+            if (course != null) {
                 usersService.courseDelete(course);
                 taskTotalsDao.deleteTaskTotalsByCourse(course);
                 projectDao.deleteTaigaProjectByCourse(course);
@@ -212,10 +210,10 @@ public class restController {
     @ResponseBody
     <T> Object readCourseList(HttpServletRequest request, HttpServletResponse response) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_OK);
 
-            return courseService.listRead();
-        }
+        return courseService.listRead();
+    }
 
     //New Slack Channel REST API Operations
     @ResponseStatus(HttpStatus.OK)
@@ -267,9 +265,9 @@ public class restController {
     public
     @ResponseBody
     <T> Object readChannelList(HttpServletRequest request, HttpServletResponse response) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return channelService.listRead();
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        return channelService.listRead();
+    }
 
     //New Admin REST API Operations
     @ResponseStatus(HttpStatus.OK)
@@ -283,8 +281,7 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             User user = userRepo.findByEmail(admin.getEmail());
-            if(user != null)
-            {
+            if (user != null) {
                 usersService.deleteUser(user);
             }
             return adminService.delete(admin);
@@ -302,8 +299,7 @@ public class restController {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
             User user = userRepo.findByEmail(admin.getEmail());
-            if (user != null)
-            {
+            if (user != null) {
                 usersService.updateAdmin(admin, user);
             }
             return adminService.update(admin);
@@ -320,10 +316,9 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            for(Admin admin:admins){
+            for (Admin admin : admins) {
                 User user = userRepo.findByEmail(admin.getEmail());
-                if (user != null)
-                {
+                if (user != null) {
                     usersService.updateAdmin(admin, user);
                 }
             }
@@ -336,9 +331,9 @@ public class restController {
     public
     @ResponseBody
     <T> Object readAdminList(HttpServletRequest request, HttpServletResponse response) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return adminService.listReadAll();
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        return adminService.listReadAll();
+    }
 
 
     //New Team REST API Operations
@@ -354,7 +349,7 @@ public class restController {
         } else {
             Team team = (Team) teamService.read(teamInput.getTeam_name(), teamInput.getCourse());
             response.setStatus(HttpServletResponse.SC_OK);
-            if(team != null){
+            if (team != null) {
                 usersService.teamDelete(team);
                 taskTotalsDao.deleteTaskTotalsByProject(team);
                 projectDao.deleteTaigaProjectByTeam(team);
@@ -394,7 +389,7 @@ public class restController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
-            for(Team team:teams){
+            for (Team team : teams) {
                 usersService.teamUpdate(team);
                 projects.updateProjects(team.getCourse());
                 members.updateMembership(team.getCourse());
@@ -409,11 +404,9 @@ public class restController {
     @ResponseBody
     <T> Object readTeamList(HttpServletRequest request, HttpServletResponse response) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            return teamService.listReadAll();
-        }
-
-
+        response.setStatus(HttpServletResponse.SC_OK);
+        return teamService.listReadAll();
+    }
 
 
 }

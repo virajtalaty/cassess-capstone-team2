@@ -1,7 +1,7 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword']);
 
 myapp.constant('USER_ROLES', {
     all: '*',
@@ -44,12 +44,12 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             authorizedRoles: [USER_ROLES.super_user]
         }
     }).when('/taiga_admin', {
-            templateUrl: 'partials/taigaAdmin.html',
-            controller: 'TaigaAdmin',
-            access: {
-                loginRequired: true,
-                authorizedRoles: [USER_ROLES.super_user]
-            }
+        templateUrl: 'partials/taigaAdmin.html',
+        controller: 'TaigaAdmin',
+        access: {
+            loginRequired: true,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
     }).when('/course/:course_id', {
         templateUrl: 'partials/course.html',
         controller: 'CourseController',
@@ -132,19 +132,19 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         }
     })
         .otherwise({
-        redirectTo: '/error/404',
-        access: {
-            loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
-        }
-    });
+            redirectTo: '/error/404',
+            access: {
+                loginRequired: false,
+                authorizedRoles: [USER_ROLES.all]
+            }
+        });
 });
 
 myapp.run(function ($rootScope, $location, $http, AuthSharedService, Session, USER_ROLES, $q, $timeout) {
 
     $rootScope.$on('$routeChangeStart', function (event, next) {
 
-        if(next.originalPath === "/login" && $rootScope.authenticated) {
+        if (next.originalPath === "/login" && $rootScope.authenticated) {
             event.preventDefault();
         } else if (next.access && next.access.loginRequired && !$rootScope.authenticated) {
             event.preventDefault();

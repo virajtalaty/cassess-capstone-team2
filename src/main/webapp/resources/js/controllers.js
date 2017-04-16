@@ -1,88 +1,5 @@
 'use strict';
 
-myapp.service('userService', function () {
-    var user = null;
-    var auth = null;
-
-    var setUser = function (userObject) {
-        user = userObject;
-    }
-
-    var getUser = function () {
-        return user;
-    }
-
-    var setAuth = function (authObject) {
-        auth = authObject;
-    }
-
-    var getAuth = function () {
-        return auth;
-    }
-    return {
-        setUser: setUser,
-        getUser: getUser,
-        setAuth: setAuth,
-        getAuth: getAuth
-    };
-})
-    .service('courseService', function () {
-        var course = null;
-
-        var setCourse = function (courseObject) {
-            course = courseObject;
-        }
-
-        var getCourse = function () {
-            return course;
-        }
-        return {
-            setCourse: setCourse,
-            getCourse: getCourse
-        };
-    })
-    .service('teamService', function () {
-        var team = null;
-
-        var setTeam = function (teamName) {
-            team = teamName;
-        }
-
-        var getTeam = function () {
-            return team;
-        }
-        return {
-            setTeam: setTeam,
-            getTeam: getTeam
-        };
-    })
-    .service('studentService', function () {
-        var studentEmail = null;
-        var studentName = null;
-
-        var setStudentEmail = function (email) {
-            studentEmail = email;
-        }
-
-        var getStudentEmail = function () {
-            return studentEmail;
-        }
-
-        var setStudentName = function (studentname) {
-            studentName = studentname;
-        }
-
-        var getStudentName = function () {
-            return studentName;
-        }
-        return {
-            setStudentEmail: setStudentEmail,
-            getStudentEmail: getStudentEmail,
-            setStudentName: setStudentName,
-            getStudentName: getStudentName
-        };
-    });
-
 myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedService) {
     $scope.rememberMe = true;
     $scope.login = function () {
@@ -211,11 +128,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     'email': $scope.userid
                 }
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "Student Removed From Team";
+                $window.alert($scope.message);
             }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
+                $scope.message = "Student Not Removed From Team";
+                $window.alert($scope.message);
             });
         }
 
@@ -225,9 +142,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "DELETE",
                 headers: {'course': $scope.studentCourse.value.course, 'email': $scope.userid}
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "Student Removed From Course";
+                $window.alert($scope.message);
             }, function (response) {
-                console.log("didn't work");
+                $scope.message = "Student Not Removed From Course";
+                $window.alert($scope.message);
             });
         }
 
@@ -237,15 +156,38 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "DELETE",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "User Successfully Deleted";
+                $window.alert($scope.message);
             }, function (response) {
-                console.log("didn't work");
+                $scope.message = "User Not Deleted";
+                $window.alert($scope.message);
             });
         }
 
+        $scope.submit = function () {
+            if($scope.password.new!=$scope.password.confirm){
+                $scope.message = "Passwords Do Not Match";
+                $window.alert($scope.message);
+            }else {
+                $http({
+                    url: './userPasswordUpdate',
+                    method: "PUT",
+                    headers: {'login': $scope.userid, 'pass': $scope.password.new}
+                }).then(function (response) {
+                    $scope.message = "Password Succesfully Changed";
+                    $window.alert($scope.message);
+                }, function (response) {
+                    $scope.message = "Password Not Changed";
+                    $window.alert($scope.message);
+                });
+            }
+        }
+
     }])
-    .controller('RestProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+    .controller('RestProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
         $scope.userid = $routeParams.user_id;
+
+        $scope.password = {};
 
         $http({
             url: './current_user',
@@ -293,11 +235,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "DELETE",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "User Account Deleted";
+                $window.alert($scope.message);
             }, function (response) {
-                console.log("didn't work");
+                $scope.message = "User Account Not Deleted";
+                $window.alert($scope.message);
             });
         }
+
+        $scope.submit = function () {
+            if($scope.password.new!=$scope.password.confirm){
+                $scope.message = "Passwords Do Not Match";
+                $window.alert($scope.message);
+            }else {
+                $http({
+                    url: './userPasswordUpdate',
+                    method: "PUT",
+                    headers: {'login': $scope.userid, 'pass': $scope.password.new}
+                }).then(function (response) {
+                    $scope.message = "Password Succesfully Changed";
+                    $window.alert($scope.message);
+                }, function (response) {
+                    $scope.message = "Password Not Changed";
+                    $window.alert($scope.message);
+                });
+            }
+        }
+
+
 
     }])
 
@@ -367,9 +332,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "DELETE",
                 headers: {'course': $scope.adminCourse.value.course, 'email': $scope.userid}
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "Admin Removed From Course";
+                $window.alert($scope.message);
             }, function (response) {
-                console.log("didn't work");
+                $scope.message = "Admin Not Removed From Course";
+                $window.alert($scope.message);
             });
         }
 
@@ -379,10 +346,31 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "DELETE",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                //console.log(response.data);
+                $scope.message = "User Successfully Deleted";
+                $window.alert($scope.message);
             }, function (response) {
-                console.log("didn't work");
+                $scope.message = "User Not Deleted";
+                $window.alert($scope.message);
             });
+        }
+
+        $scope.submit = function () {
+            if($scope.password.new!=$scope.password.confirm){
+                $scope.message = "Passwords Do Not Match";
+                $window.alert($scope.message);
+            }else {
+                $http({
+                    url: './userPasswordUpdate',
+                    method: "PUT",
+                    headers: {'login': $scope.userid, 'pass': $scope.password.new}
+                }).then(function (response) {
+                    $scope.message = "Password Succesfully Changed";
+                    $window.alert($scope.message);
+                }, function (response) {
+                    $scope.message = "Password Not Changed";
+                    $window.alert($scope.message);
+                });
+            }
         }
 
 
@@ -1032,93 +1020,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller("TaigaAdmin", ['$scope', '$http', function ($scope, $http) {
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
-
-        $http({
-            url: './taigaCourses',
-            method: "GET"
-        }).then(function (response) {
-            console.log("Worked!");
-            //console.log(response.data);
-            $scope.courses = response.data;
-        });
-
-        $scope.selectedCourseChanged = function () {
-            $http({
-                url: './taigaTeams',
-                method: "GET",
-                headers: {'course': $scope.selectedCourse.value.course}
-            }).then(function (response) {
-                console.log("Worked!: " + $scope.selectedCourse.value.course);
-                //console.log(response.data);
-                $scope.teams = response.data;
-                console.log($scope.teams);
-            }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
-            });
-
-        }
-
-        $scope.selectedTeamChanged = function () {
-            $http({
-                url: './taigaStudents',
-                method: "GET",
-                headers: {'team': $scope.selectedTeam.value.team}
-            }).then(function (response) {
-                console.log("Worked!: " + $scope.selectedTeam.value.team);
-                //console.log(response.data);
-                $scope.students = response.data;
-                console.log($scope.students);
-            }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
-            });
-
-        }
-
-        $scope.taskProgress = function () {
-            console.log($scope.name);
-            $http({
-                url: './taigaProgress',
-                method: "POST",
-                headers: {'name': $scope.selectedStudent.value.full_name}
-            }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasksRecords = null;
-                $scope.tasksProgress = response.data;
-            }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
-            });
-
-        };
-
-        $scope.taskRecords = function () {
-            console.log($scope.name);
-            $http({
-                url: './taigaRecords',
-                method: "POST",
-                headers: {'name': $scope.selectedStudent.value.full_name}
-            }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasksProgress = null;
-                $scope.tasksRecords = response.data;
-            }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
-            });
-
-        };
 
         $scope.updateTaigaProjects = function () {
             $http({

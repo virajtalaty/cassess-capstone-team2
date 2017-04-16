@@ -5,9 +5,8 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
-import org.springframework.dao.DataAccessException;
-
 import edu.asu.cassess.persist.entity.taiga.TaskTotals;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;

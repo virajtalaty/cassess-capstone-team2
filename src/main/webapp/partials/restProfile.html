@@ -24,8 +24,20 @@
     </div>
     <br>
     <div class="row-content">
-    <form ng-submit="removeUser()">
-        <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove User</button>
-    </form>
+        <form ng-submit="removeUser()">
+            <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove User</button>
+        </form>
     </div>
+    <br>
+    <br>
+    <h3>Change Password</h3>
+    <form name="profileForm" autocomplete="off" novalidate="" ng-submit="submit()">
+        <fieldset>
+            <h4>New Password</h4>
+            <input type="password" name="newPassword" ng-model="password.new" required=""/>
+            <h4>Confirm Password</h4>
+            <input type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
+        </fieldset>
+        <button>Submit</button>
+    </form>
 </div>

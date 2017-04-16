@@ -23,35 +23,38 @@
         <p class="list-group-item-text"><h4>Language:</h4> {{userData.language}}</p>
     </div>
     <br>
-      <div access="super_user"><h4>Select a Course</h4>
-          <select ng-model="studentCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()" access="super_user">
-          </select>
-          </div>
+    <div access="super_user"><h4>Select a Course</h4>
+        <select ng-model="studentCourse.value" ng-options="x.course for x in courses"
+                ng-change="selectedCourseChanged()" access="super_user">
+        </select>
+    </div>
     <br>
     <div access="super_user"><h4>Select a Team</h4>
-    <select ng-model="studentTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()" access="super_user">
-    </select>
-    <br>
+        <select ng-model="studentTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()"
+                access="super_user">
+        </select>
+        <br>
     </div>
-            <form ng-submit="studentCourseRemove()">
-                <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove From Course</button>
-            </form>
+    <form ng-submit="studentCourseRemove()">
+        <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove From Course</button>
+    </form>
     <br>
-            <form ng-submit="studentTeamRemove()">
-                <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove From Team</button>
-            </form>
+    <form ng-submit="studentTeamRemove()">
+        <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove From Team</button>
+    </form>
     <br>
-            <form ng-submit="removeUser()">
-                <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove User</button>
-            </form>
+    <form ng-submit="removeUser()">
+        <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove User</button>
+    </form>
     <br>
-    <div access ="student">
+    <div access="student">
         <h4>Select My Courses</h4>
-        <select ng-model="studentCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()" access="student">
+        <select ng-model="studentCourse.value" ng-options="x.course for x in courses"
+                ng-change="selectedCourseChanged()" access="student">
         </select>
     </div>
 
-        <br>
+    <br>
     <div id="teamList" access="student"><h4>My Teams</h4>
         <div class="list-group">
             <div class="list-group-item">
@@ -65,4 +68,16 @@
             </div>
         </div>
     </div>
+    <br>
+    <br>
+    <h3>Change Password</h3>
+    <form name="profileForm" autocomplete="off" novalidate="" ng-submit="submit()">
+        <fieldset>
+            <h4>New Password</h4>
+            <input type="password" name="newPassword" ng-model="password.new" required=""/>
+            <h4>Confirm Password</h4>
+            <input type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
+        </fieldset>
+        <button>Submit</button>
+    </form>
 </div>

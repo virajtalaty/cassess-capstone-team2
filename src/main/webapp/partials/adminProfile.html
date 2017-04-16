@@ -24,8 +24,9 @@
     </div>
     <br>
     <div access="super_user"><h4>Select a Course</h4>
-    <select ng-model="adminCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()" access="super_user">
-    </select>
+        <select ng-model="adminCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()"
+                access="super_user">
+        </select>
     </div>
     <br>
     <form ng-submit="adminCourseRemove()">
@@ -49,5 +50,16 @@
             </div>
         </div>
     </div>
-
+    <br>
+    <br>
+    <h3>Change Password</h3>
+    <form name="profileForm" autocomplete="off" novalidate="" ng-submit="submit()">
+        <fieldset>
+            <h4>New Password</h4>
+            <input type="password" name="newPassword" ng-model="password.new" required=""/>
+            <h4>Confirm Password</h4>
+            <input type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
+        </fieldset>
+        <button>Submit</button>
+    </form>
 </div>
