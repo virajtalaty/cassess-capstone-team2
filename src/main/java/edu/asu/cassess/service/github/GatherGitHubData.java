@@ -3,6 +3,7 @@ package edu.asu.cassess.service.github;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.asu.cassess.dao.github.GitHubCommitDataDao;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
 import edu.asu.cassess.persist.repo.CommitDataRepo;

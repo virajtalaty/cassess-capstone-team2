@@ -1,11 +1,7 @@
-package edu.asu.cassess.service.github;
-
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
-import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
+package edu.asu.cassess.dao.github;
 
 import edu.asu.cassess.persist.entity.github.CommitData;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
