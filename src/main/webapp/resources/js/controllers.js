@@ -438,7 +438,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 getTaigaActivity();
             });
         }
-         var self = this;
+
         function getTaigaActivity() {
             $http({
                 url : './taiga/student_activity',
@@ -448,44 +448,41 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.studentActivity = response.data;
-                /*/////////////Entering Data Here ////////*/
-                //self.data = response.data;
-                self.data = getDataForCharts(response.data);
+                /*/////////////Entering Data For Charts Here ////////*/
                 $scope.data = getDataForCharts(response.data);
-                //getDataForCharts(response.data);
+
             });
         }
 
         $scope.options = {
+
             chart: {
                 type: 'lineChart',
                 height: 450,
                 margin : {
-                    top: 20,
-                    right: 20,
-                    bottom: 50,
-                    left: 65
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
                 },
+
                 x: function(d){ return d[0]; },
                 y: function(d){ return d[1]; },
 
-                color: d3.scale.category10().range(),
-
                 useInteractiveGuideline: true,
 
-
                 xAxis: {
-                    axisLabel: 'Weeks',
+                    axisLabel: 'Week Ending On',
                     tickFormat: function(d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },
 
                     showMaxMin: false,
-                    staggerLabels: true
+                    staggerLabels: false
                 },
 
                 yAxis: {
-                    axisLabel: 'Commits',
+                    axisLabel: 'Taiga Task Activity',
                     axisLabelDistance: 0,
                     tickValues:  [0, 5, 10, 15, 20, 25, 30]
                 },
@@ -495,63 +492,36 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
         };
 
-       // $scope.data = getDataForCharts();
-
-
-
         function getDataForCharts(array){
 
             var data = []; var inProgress = []; var toTest = []; var done =[];
 
+            for (var i = 0; i < array.length; i++){
 
-            //var array = JSON.parse(responseData);
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
 
-            for (var i = 0; i < array.length; i++)
-            {
-
-                var valueset1 = [];
-
-                valueset1.push(Date.parse(array[i].weekBeginning));
+                valueset1.push(Date.parse(array[i].weekEnding));
                 valueset1.push(array[i].inProgressActivity);
 
-                inProgress.push(valueset1);
-            }
-
-            data.push({key: "inProgress", values: inProgress});
-
-
-            for (var i = 0; i < array.length; i++)
-            {
-
-                var valueset2 = [];
-
-                valueset2.push(Date.parse(array[i].weekBeginning));
+                valueset2.push(Date.parse(array[i].weekEnding));
                 valueset2.push(array[i].toTestActivity);
 
-                toTest.push(valueset2);
-            }
-
-            data.push({key: "toTest", values: toTest});
-
-            for (var i = 0; i < array.length; i++)
-            {
-
-                var valueset3 = [];
-
-                valueset3.push(Date.parse(array[i].weekBeginning));
+                valueset3.push(Date.parse(array[i].weekEnding));
                 valueset3.push(array[i].doneActivity);
 
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
                 done.push(valueset3);
             }
 
-            data.push({key: "done", values: done});
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
 
             return data;
         }
 
         /////////////End of Input ////////////////////
-
-
     }])
     .controller("TaigaAdmin", [ '$scope', '$http', function($scope, $http) {
 
