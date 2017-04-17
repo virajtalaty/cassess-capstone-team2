@@ -1,43 +1,48 @@
 <div class="well page">
 
-    <h2>User Profile</h2>
+    <h2>User Profile:</h2>
 
     <div class="row-content">
         <h3 class="list-group-item-heading">{{userData.firstName}} {{userData.familyName}}</h3>
     </div>
 
     <div class="row-content">
-        <p class="list-group-item-text"><h4>Authority:</h4> {{userData.authorities[0].name}}</p>
+        <label style="color: black">Authority:</label>
+        <p class="list-group-item-text">{{userData.authorities[0].name}}</p>
     </div>
 
     <div class="row-content">
-        <p class="list-group-item-text"><h4>Email:</h4> {{userData.email}}</p>
+        <label style="color: black">Email:</label>
+        <p class="list-group-item-text">{{userData.email}}</p>
     </div>
     <div class="row-content">
-        <p class="list-group-item-text"><h4>ID:</h4> {{userData.id}}</p>
+        <label style="color: black">ID:</label>
+        <p class="list-group-item-text">{{userData.id}}</p>
     </div>
     <div class="row-content">
-        <p class="list-group-item-text"><h4>Enabled Flag:</h4> {{userData.enabled}}</p>
+        <label style="color: black">Enabled Flag:</label>
+        <p class="list-group-item-text">{{userData.enabled}}</p>
     </div>
     <div class="row-content">
-        <p class="list-group-item-text"><h4>Language:</h4> {{userData.language}}</p>
+        <label style="color: black">Language:</label>
+        <p class="list-group-item-text">{{userData.language}}</p>
     </div>
     <br>
     <div class="row-content">
-        <form ng-submit="removeUser()">
-            <button type="submit" class="btn btn-lg btn-primary btn-block" access="super_user">Remove User</button>
+        <form >
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
         </form>
     </div>
     <br>
     <br>
     <h3>Change Password</h3>
-    <form name="profileForm" autocomplete="off" novalidate="" ng-submit="submit()">
+    <form name="profileForm" autocomplete="off" novalidate="">
         <fieldset>
-            <h4>New Password</h4>
-            <input type="password" name="newPassword" ng-model="password.new" required=""/>
-            <h4>Confirm Password</h4>
-            <input type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
+            <label style="color: black">New Password:</label>
+            <input class="form-control" type="password" name="newPassword" ng-model="password.new" required=""/>
+            <label style="color: black">Confirm Password:</label>
+            <input class="form-control" type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
         </fieldset>
-        <button>Submit</button>
+        <button class="btn btn-primary" ng-really-message="Change Password?"? ng-really-click="submit()">Submit Change</button>
     </form>
 </div>

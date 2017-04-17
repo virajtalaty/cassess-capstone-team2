@@ -39,7 +39,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
         }
     }])
-    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
         $scope.userid = $routeParams.user_id;
 
         $http({
@@ -176,6 +176,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }).then(function (response) {
                     $scope.message = "Password Succesfully Changed";
                     $window.alert($scope.message);
+                    $scope.password.new = "";
+                    $scope.password.confirm = "";
                 }, function (response) {
                     $scope.message = "Password Not Changed";
                     $window.alert($scope.message);
@@ -255,6 +257,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }).then(function (response) {
                     $scope.message = "Password Succesfully Changed";
                     $window.alert($scope.message);
+                    $scope.password.new = "";
+                    $scope.password.confirm = "";
                 }, function (response) {
                     $scope.message = "Password Not Changed";
                     $window.alert($scope.message);
@@ -266,7 +270,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
     }])
 
-    .controller('AdminProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', function ($scope, $location, $routeParams, $http, userService) {
+    .controller('AdminProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
         $scope.userid = $routeParams.user_id;
 
         $http({
@@ -366,6 +370,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }).then(function (response) {
                     $scope.message = "Password Succesfully Changed";
                     $window.alert($scope.message);
+                    $scope.password.new = "";
+                    $scope.password.confirm = "";
                 }, function (response) {
                     $scope.message = "Password Not Changed";
                     $window.alert($scope.message);
