@@ -1,7 +1,6 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.asu.cassess.persist.entity.security.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -10,17 +9,15 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
-@Table(name="courses")
+@Table(name = "courses")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Course {
 
+    @Transient
+    public static String COURSE_STRING;
     @Id
     @Column(name = "course")
     public String course;
-
-    @Transient
-    public static String COURSE_STRING;
-
     @Column(name = "github_owner")
     protected String github_owner;
 
@@ -101,7 +98,7 @@ public class Course {
     }
 
     public void setTeams(List<Team> teams) {
-        for(Team team:teams){
+        for (Team team : teams) {
             team.setCourse(COURSE_STRING);
         }
         this.teams = teams;
@@ -113,13 +110,11 @@ public class Course {
     }
 
     public void setAdmins(List<Admin> admins) {
-        for(Admin admin:admins){
+        for (Admin admin : admins) {
             admin.setCourse(COURSE_STRING);
         }
         this.admins = admins;
     }
-
-
 
 
 }

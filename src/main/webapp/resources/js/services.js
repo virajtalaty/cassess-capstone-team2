@@ -23,6 +23,89 @@ myapp.service('Session', function () {
     return this;
 });
 
+myapp.service('userService', function () {
+    var user = null;
+    var auth = null;
+
+    var setUser = function (userObject) {
+        user = userObject;
+    }
+
+    var getUser = function () {
+        return user;
+    }
+
+    var setAuth = function (authObject) {
+        auth = authObject;
+    }
+
+    var getAuth = function () {
+        return auth;
+    }
+    return {
+        setUser: setUser,
+        getUser: getUser,
+        setAuth: setAuth,
+        getAuth: getAuth
+    };
+})
+    .service('courseService', function () {
+        var course = null;
+
+        var setCourse = function (courseObject) {
+            course = courseObject;
+        }
+
+        var getCourse = function () {
+            return course;
+        }
+        return {
+            setCourse: setCourse,
+            getCourse: getCourse
+        };
+    })
+    .service('teamService', function () {
+        var team = null;
+
+        var setTeam = function (teamName) {
+            team = teamName;
+        }
+
+        var getTeam = function () {
+            return team;
+        }
+        return {
+            setTeam: setTeam,
+            getTeam: getTeam
+        };
+    })
+    .service('studentService', function () {
+        var studentEmail = null;
+        var studentName = null;
+
+        var setStudentEmail = function (email) {
+            studentEmail = email;
+        }
+
+        var getStudentEmail = function () {
+            return studentEmail;
+        }
+
+        var setStudentName = function (studentname) {
+            studentName = studentname;
+        }
+
+        var getStudentName = function () {
+            return studentName;
+        }
+        return {
+            setStudentEmail: setStudentEmail,
+            getStudentEmail: getStudentEmail,
+            setStudentName: setStudentName,
+            getStudentName: getStudentName
+        };
+    });
+
 
 myapp.service('AuthSharedService', function ($rootScope, $http, $resource, authService, Session) {
     return {

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class GitHubBranches {
     private String name;
 
-    public GitHubBranches(){
+    public GitHubBranches() {
     }
 
     public String getName() {

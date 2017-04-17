@@ -1,6 +1,6 @@
 package edu.asu.cassess.service.taiga;
 
-import edu.asu.cassess.dao.taiga.*;
+import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.MemberData;
 import edu.asu.cassess.persist.entity.taiga.ProjectIDSlug;
@@ -32,7 +32,7 @@ public class MembersService implements IMembersService {
     @Autowired
     private IProjectQueryDao projectDao;
 
-    public MembersService(){
+    public MembersService() {
         restTemplate = new RestTemplate();
         membershipListURL = "https://api.taiga.io/api/v1/memberships?project=";
     }
@@ -53,7 +53,8 @@ public class MembersService implements IMembersService {
         ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
                 HttpMethod.GET,
                 request,
-                new ParameterizedTypeReference<List<MemberData>>() {});
+                new ParameterizedTypeReference<List<MemberData>>() {
+                });
 
         //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
 
@@ -78,12 +79,12 @@ public class MembersService implements IMembersService {
     updating the member_data table based on the course, student and project tables
      */
     @Override
-    public void updateMembership(String course){
+    public void updateMembership(String course) {
         System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectDao.listGetTaigaProjectIDSlug(course);
-        if(token != null) {
+        if (token != null) {
             for (ProjectIDSlug idSlug : idSlugList) {
                 System.out.println("Id: " + idSlug.getId());
                 getMembers(idSlug.getId(), token, 1, idSlug.getTeam(), course);

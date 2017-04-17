@@ -6,12 +6,10 @@ import org.hibernate.annotations.Subselect;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Subselect;
 
 /**
  * Created by Thomas on 2/11/2017. Used to populate authority during user registration.
+ *
  * @author tjjohn1
  */
 @Entity
@@ -20,18 +18,22 @@ import org.hibernate.annotations.Subselect;
 public class UserID {
 
     @Id
-    @Column(name="Max")
+    @Column(name = "Max")
     public long Max;
 
-    public UserID(){
+    public UserID() {
     }
 
-    public UserID(long Max){
+    public UserID(long Max) {
         this.Max = Max;
     }
 
-    public long getMax() { return Max; }
+    public long getMax() {
+        return Max;
+    }
 
-    public void setMax(long Max) { this.Max = Max; }
+    public void setMax(long Max) {
+        this.Max = Max;
+    }
 
 }

@@ -8,21 +8,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="channels")
+@Table(name = "channels")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Channel {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     protected String id;
 
-    @Column(name="course")
+    @Column(name = "course")
     protected String course;
 
-    @Column(name="team_name")
+    @Column(name = "team_name")
     protected String team_name;
 
-    public Channel(){
+    public Channel() {
 
     }
 

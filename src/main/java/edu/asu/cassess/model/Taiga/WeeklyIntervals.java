@@ -13,21 +13,30 @@ import javax.persistence.Id;
 public class WeeklyIntervals {
 
     @Id
-    @Column(name="week")
+    @Column(name = "week")
     private String week;
 
-    @Column(name="weekBeginning")
+    @Column(name = "weekBeginning")
     private String weekBeginning;
 
-    @Column(name="weekEnding")
+    @Column(name = "weekEnding")
     private String weekEnding;
 
-    public WeeklyIntervals(){}
+    @Column(name = "rawWeekBeginning")
+    private long rawWeekBeginning;
 
-    public WeeklyIntervals(String week, String weekBeginning, String weekEnding) {
+    @Column(name = "rawWeekEnding")
+    private long rawWeekEnding;
+
+    public WeeklyIntervals() {
+    }
+
+    public WeeklyIntervals(String week, String weekBeginning, String weekEnding, long rawWeekBeginning, long rawWeekEnding) {
         this.week = week;
         this.weekBeginning = weekBeginning;
         this.weekEnding = weekEnding;
+        this.rawWeekBeginning = rawWeekBeginning;
+        this.rawWeekEnding = rawWeekEnding;
     }
 
     public String getWeek() {
@@ -52,6 +61,22 @@ public class WeeklyIntervals {
 
     public void setWeekEnding(String weekEnding) {
         this.weekEnding = weekEnding;
+    }
+
+    public long getRawWeekBeginning() {
+        return rawWeekBeginning;
+    }
+
+    public void setRawWeekBeginning(long rawWeekBeginning) {
+        this.rawWeekBeginning = rawWeekBeginning;
+    }
+
+    public long getRawWeekEnding() {
+        return rawWeekEnding;
+    }
+
+    public void setRawWeekEnding(long rawWeekEnding) {
+        this.rawWeekEnding = rawWeekEnding;
     }
 
 }

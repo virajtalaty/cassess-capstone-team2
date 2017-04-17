@@ -1,10 +1,8 @@
 package edu.asu.cassess.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.asu.cassess.model.Error;
 import edu.asu.cassess.model.Response;
-
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +42,7 @@ public final class SecurityUtils {
         UserDetails springSecurityUser = null;
         String userName = null;
 
-        if(authentication != null) {
+        if (authentication != null) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 springSecurityUser = (UserDetails) authentication.getPrincipal();
                 userName = springSecurityUser.getUsername();
@@ -56,6 +54,25 @@ public final class SecurityUtils {
         return userName;
     }
 
+    public static void sendError(HttpServletResponse response, Exception exception, int status, String message) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(status);
+        PrintWriter writer = response.getWriter();
+        Error error = new Error("authError", exception.getMessage());
+        writer.write(mapper.writeValueAsString(new Response(status, message, error)));
+        writer.flush();
+        writer.close();
+    }
+
+    public static void sendResponse(HttpServletResponse response, int status, Object object) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.write(mapper.writeValueAsString(object));
+        response.setStatus(status);
+        writer.flush();
+        writer.close();
+    }
+
     /**
      * Get the User object for the current user.
      */
@@ -65,7 +82,7 @@ public final class SecurityUtils {
         UserDetails springSecurityUser = null;
         String userName = null;
 
-        if(authentication != null) {
+        if (authentication != null) {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 springSecurityUser = (UserDetails) authentication.getPrincipal();
                 userName = springSecurityUser.getUsername();
@@ -77,27 +94,6 @@ public final class SecurityUtils {
         User user = userRepo.findByLogin(userName);
 
         return user;
-    }
-
-
-    public static void sendError(HttpServletResponse response, Exception exception, int status, String message) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(status);
-        PrintWriter writer = response.getWriter();
-        Error error = new Error("authError", exception.getMessage());
-        writer.write(mapper.writeValueAsString(new Response(status, message, error)));
-        writer.flush();
-        writer.close();
-    }
-
-
-    public static void sendResponse(HttpServletResponse response, int status, Object object) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(mapper.writeValueAsString(object));
-        response.setStatus(status);
-        writer.flush();
-        writer.close();
     }
 
 }

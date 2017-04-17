@@ -17,28 +17,36 @@ public class ProjectIDSlug {
     @Column(name = "id")
     private Long id;
 
-    @Column(name="slug")
+    @Column(name = "slug")
     private String slug;
 
-    @Column(name="team")
+    @Column(name = "team")
     private String team;
 
-    public ProjectIDSlug(){
+    public ProjectIDSlug() {
     }
 
-    public ProjectIDSlug(Long id, String slug, String team){
+    public ProjectIDSlug(Long id, String slug, String team) {
         this.id = id;
         this.slug = slug;
         this.team = team;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getSlug() { return slug; }
+    public String getSlug() {
+        return slug;
+    }
 
-    public void setSlug(String slug) { this.slug = slug; }
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
     public String getTeam() {
         return team;

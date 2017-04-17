@@ -9,12 +9,13 @@ describe('Controllers Tests ', function () {
 
         beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
             $httpBackend = _$httpBackend_;
-            $httpBackend.expectGET('resources/i18n/en.json').
-                respond({});
-            $httpBackend.expectGET('user/account').
-                respond({"preferences" : {"lang" : "en"}});
-            $httpBackend.expectGET('user/all').
-                respond([{"id":1,"firstName":"adminName","familyName":"adminFamily"}]);
+            $httpBackend.expectGET('resources/i18n/en.json').respond({});
+            $httpBackend.expectGET('user/account').respond({"preferences": {"lang": "en"}});
+            $httpBackend.expectGET('user/all').respond([{
+                "id": 1,
+                "firstName": "adminName",
+                "familyName": "adminFamily"
+            }]);
 
             $scope = $rootScope.$new();
             $controller('UsersListCtrl', {$scope: $scope});

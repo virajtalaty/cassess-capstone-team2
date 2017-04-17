@@ -3,32 +3,29 @@ package edu.asu.cassess.service.dto;
 import edu.asu.cassess.persist.entity.taiga.TaskTotalsID;
 import org.dozer.Mapping;
 
-import javax.persistence.Column;
-
 public class TaskTotalsDto {
 
 
+    @Mapping("compositeId")
+    private TaskTotalsID compositeId;
 
-        @Mapping("compositeId")
-        private TaskTotalsID compositeId;
+    @Mapping("fullName")
+    private String full_name;
 
-        @Mapping("fullName")
-        private String full_name;
+    @Mapping("project")
+    private String project_name;
 
-        @Mapping("project")
-        private String project_name;
+    @Mapping("team")
+    private String team;
 
-        @Mapping("team")
-        private String team;
+    @Mapping("course")
+    private String course;
 
-        @Mapping("course")
-        private String course;
+    @Mapping("tasksClosed")
+    private int tasks_closed;
 
-        @Mapping("tasksClosed")
-        private int tasks_closed;
-
-        @Mapping("tasksNew")
-        private int tasks_new;
+    @Mapping("tasksNew")
+    private int tasks_new;
 
     @Mapping("tasksInProgress")
     private int tasks_in_progress;
@@ -104,5 +101,4 @@ public class TaskTotalsDto {
     }
 
 
-
-    }
+}

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.persist.entity.rest.Channel;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
-import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.repo.rest.ChannelRepo;
 import org.json.JSONArray;
@@ -24,10 +23,9 @@ import java.util.List;
 @Transactional
 public class ChannelsServiceDao {
 
+    protected EntityManager entityManager;
     @Autowired
     private ChannelRepo channelRepo;
-
-    protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -38,15 +36,15 @@ public class ChannelsServiceDao {
         this.entityManager = entityManager;
     }
 
-    public <T> Object create(Channel channelInput){
+    public <T> Object create(Channel channelInput) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
         preQuery.setParameter(1, channelInput.getCourse());
         preQuery.setParameter(2, channelInput.getTeam_name());
         preQuery.setParameter(3, channelInput.getId());
         Channel channel = (Channel) preQuery.getSingleResult();
-        if(channel != null){
+        if (channel != null) {
             return new RestResponse(channelInput.getId() + " already exists in database");
-        }else{
+        } else {
             channelRepo.save(channelInput);
             return channelInput;
         }
@@ -71,11 +69,11 @@ public class ChannelsServiceDao {
         preQuery.setParameter(1, course);
         preQuery.setParameter(2, team);
         preQuery.setParameter(3, id);
-        Channel channel = (Channel) preQuery.getSingleResult();
-        if (channel != null) {
-            return channel;
+        List<Channel> results = preQuery.getResultList();
+        if (!results.isEmpty()) {
+            return (Channel) results.get(0);
         } else {
-            return new RestResponse(id + " does not exist in database");
+            return new RestResponse("Channel " + id + " does not exist in database");
         }
     }
 
@@ -106,7 +104,7 @@ public class ChannelsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Channel channelInput:channels) {
+        for (Channel channelInput : channels) {
             Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
@@ -137,7 +135,7 @@ public class ChannelsServiceDao {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
-        for(Channel channelInput:channels) {
+        for (Channel channelInput : channels) {
             Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
@@ -165,11 +163,11 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object deleteByTeam(Team team) {
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2");
-            query.setParameter(1, team.getCourse());
-            query.setParameter(2, team.getTeam_name());
-            query.executeUpdate();
-            return new RestResponse("All channels in team " + team.getTeam_name() + " have been removed from the database");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2");
+        query.setParameter(1, team.getCourse());
+        query.setParameter(2, team.getTeam_name());
+        query.executeUpdate();
+        return new RestResponse("All channels in team " + team.getTeam_name() + " have been removed from the database");
     }
 
 }

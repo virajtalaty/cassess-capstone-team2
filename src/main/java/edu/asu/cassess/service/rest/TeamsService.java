@@ -1,10 +1,10 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.TeamsServiceDao;
-import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.model.Taiga.TeamNames;
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,9 @@ public class TeamsService implements ITeamsService {
     }
 
     @Override
-    public <T> Object findOne(String team_name, String course) { return teamsDao.findOne(team_name, course);}
+    public <T> Object findOne(String team_name, String course) {
+        return teamsDao.findOne(team_name, course);
+    }
 
     @Override
     public <T> Object delete(Team team) {
