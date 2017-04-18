@@ -4,7 +4,6 @@ import edu.asu.cassess.dao.rest.AdminsServiceDao;
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +62,7 @@ public class AdminsService implements IAdminsService {
     }
 
     @Override
-    public List<CourseList> listGetCoursesForAdmin(String email){
+    public List<CourseList> listGetCoursesForAdmin(String email) {
         return adminsDao.listGetCoursesForAdmin(email);
     }
 }

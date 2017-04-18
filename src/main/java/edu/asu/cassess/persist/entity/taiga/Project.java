@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
 @Table(name = "project")
@@ -26,7 +25,7 @@ public class Project {
     public Project() {
     }
 
-    public Project(Long id, String name, String slug){
+    public Project(Long id, String name, String slug) {
         this.id = id;
         this.name = name;
         this.slug = slug;
@@ -36,7 +35,9 @@ public class Project {
         return id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

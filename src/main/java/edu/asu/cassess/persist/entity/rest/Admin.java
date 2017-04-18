@@ -7,7 +7,7 @@ import javax.persistence.*;
 import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 
 @Entity
-@Table(name="admins")
+@Table(name = "admins")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Admin {
 
@@ -48,7 +48,7 @@ public class Admin {
     }
 
     public void setCourse(String course) {
-        if(course == null){
+        if (course == null) {
             course = COURSE_STRING;
             System.out.println("-------------------!!!!!!!!!!!!!!!!!!!!!!!!!! Course :" + COURSE_STRING);
         }

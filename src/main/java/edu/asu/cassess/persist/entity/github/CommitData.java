@@ -1,32 +1,31 @@
 package edu.asu.cassess.persist.entity.github;
 
 
-import java.sql.Date;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.sql.Date;
 
 @Entity
-@Table(name="commit_data")
-public class CommitData{
+@Table(name = "commit_data")
+public class CommitData {
     @EmbeddedId
     private CommitDataPK commitDataPK;
 
-    @Column(name="lines_of_code_added")
+    @Column(name = "lines_of_code_added")
     private int linesOfCodeAdded;
 
-    @Column(name="lines_of_code_deleted")
+    @Column(name = "lines_of_code_deleted")
     private int linesOfCodeDeleted;
 
-    @Column(name="commits")
+    @Column(name = "commits")
     private int commits;
 
-    @Column(name="project_name")
+    @Column(name = "project_name")
     private String projectName;
 
-    @Column(name="course_name")
+    @Column(name = "course_name")
     private String courseName;
 
     public CommitData() {
