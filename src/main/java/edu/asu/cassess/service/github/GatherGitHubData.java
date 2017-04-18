@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.asu.cassess.dao.github.GitHubCommitDataDao;
+import edu.asu.cassess.dao.github.GitHubWeightDao;
+import edu.asu.cassess.model.github.GitHubAnalytics;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
-import edu.asu.cassess.persist.repo.CommitDataRepo;
+import edu.asu.cassess.persist.entity.github.GitHubWeight;
+import edu.asu.cassess.persist.repo.github.CommitDataRepo;
+import edu.asu.cassess.persist.repo.github.GitHubWeightRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +27,13 @@ import java.util.List;
 public class GatherGitHubData{
 
     @Autowired
-    private GitHubCommitDataDao dao;
+    private GitHubCommitDataDao commitDao;
 
     @Autowired
-    private CommitDataRepo repo;
+    private GitHubWeightRepo weightRepo;
+
+    @Autowired
+    private CommitDataRepo commitDataRepo;
 
     private RestTemplate restTemplate;
     private String accessToken;
@@ -99,7 +106,11 @@ public class GatherGitHubData{
                 }
 
                 CommitData commitData = new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner);
-                repo.save(commitData);
+                commitDataRepo.save(commitData);
+
+                int weight = GitHubAnalytics.calculateWeight(email, date);
+                GitHubWeight gitHubWeight = new GitHubWeight(email,date, weight);
+                weightRepo.save(gitHubWeight);
             }
         }
     }
@@ -109,6 +120,6 @@ public class GatherGitHubData{
      * @return      A list of CommitData Objects
      */
     public List<CommitData> getCommitList(){
-        return dao.getAllCommitData();
+        return commitDao.getAllCommitData();
     }
 }

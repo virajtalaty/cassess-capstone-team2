@@ -27,13 +27,14 @@ public class GitHubCommitDataDao{
     }
 
     @Transactional
-    public CommitData getCommit(String username, Date date) throws DataAccessException{
+    public CommitData getCommit(String email, Date date) throws DataAccessException{
 
         CommitData commitData;
         try{
+            //noinspection JpaQlInspection
             commitData = (CommitData) entityManager
-                    .createQuery("SELECT c FROM CommitData c  WHERE c.username = ?1 AND c.date = ?2")
-                    .setParameter(1, username)
+                    .createQuery("SELECT c FROM CommitData c  WHERE c.email = ?1 AND c.date = ?2")
+                    .setParameter(1, email)
                     .setParameter(2, date)
                     .getSingleResult();
         }catch(Exception e){
@@ -45,6 +46,7 @@ public class GitHubCommitDataDao{
 
     @Transactional
     public List<CommitData> getAllCommitData() throws DataAccessException{
+        //noinspection JpaQlInspection
         return entityManager
                     .createQuery("SELECT c FROM CommitData c")
                     .getResultList();
