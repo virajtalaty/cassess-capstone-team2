@@ -14,18 +14,22 @@ import javax.persistence.Id;
 public class Slugs {
 
     @Id
-    @Column(name="taiga_project_slug")
+    @Column(name = "taiga_project_slug")
     public String taiga_project_slug;
 
-    public Slugs(){
+    public Slugs() {
     }
 
-    public Slugs(String taiga_project_slug){
+    public Slugs(String taiga_project_slug) {
         this.taiga_project_slug = taiga_project_slug;
     }
 
-    public String getSlug() { return taiga_project_slug; }
+    public String getSlug() {
+        return taiga_project_slug;
+    }
 
-    public void setSlug(String taiga_project_slug) { this.taiga_project_slug = taiga_project_slug; }
+    public void setSlug(String taiga_project_slug) {
+        this.taiga_project_slug = taiga_project_slug;
+    }
 
 }

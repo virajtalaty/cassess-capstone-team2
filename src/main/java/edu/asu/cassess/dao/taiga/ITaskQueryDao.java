@@ -14,7 +14,7 @@ public interface ITaskQueryDao {
 
     /**
      * Get count of Tasks with status Closed based on Taiga user.
-     * 
+     *
      * @param full_name the username to filter tasks by
      * @return int value representing the number of Closed tasks
      * @throws DataAccessException
@@ -23,25 +23,25 @@ public interface ITaskQueryDao {
 
     /**
      * Get count of Tasks with status New based on Taiga user.
-     * 
+     *
      * @param full_name the username to filter tasks by
      * @return int value representing the number of New tasks
      * @throws DataAccessException
      */
     int getNewTasks(String full_name) throws DataAccessException;
-    
+
     /**
      * Get count of Tasks with status In Progress based on Taiga user.
-     * 
+     *
      * @param full_name the username to filter tasks by
      * @return int value representing the number of In Progress tasks
      * @throws DataAccessException
      */
     int getInProgressTasks(String full_name) throws DataAccessException;
-    
+
     /**
      * Get count of Tasks with status Ready For Test based on Taiga user.
-     * 
+     *
      * @param full_name the username to filter tasks by
      * @return int value representing the number of Ready For Test tasks
      * @throws DataAccessException

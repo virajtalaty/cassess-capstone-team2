@@ -5,13 +5,10 @@ import edu.asu.cassess.persist.entity.security.Token;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.TokenRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
@@ -26,12 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static edu.asu.cassess.config.SecurityConfig.REMEMBER_ME_KEY;
-
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+
+import static edu.asu.cassess.config.SecurityConfig.REMEMBER_ME_KEY;
 
 /**
  * Custom implementation of Spring Security's RememberMeServices.
@@ -51,17 +47,12 @@ import java.util.Date;
 public class RememberMeServices extends
         AbstractRememberMeServices {
 
-    private final Logger log = LoggerFactory.getLogger(RememberMeServices.class);
-
     // Token is valid for one month
     private static final int TOKEN_VALIDITY_DAYS = 31;
-
     private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * TOKEN_VALIDITY_DAYS;
-
     private static final int DEFAULT_SERIES_LENGTH = 16;
-
     private static final int DEFAULT_TOKEN_LENGTH = 16;
-
+    private final Logger log = LoggerFactory.getLogger(RememberMeServices.class);
     private SecureRandom random;
 
     @Autowired
@@ -161,7 +152,7 @@ public class RememberMeServices extends
         try {
             token = tokenRepo.findOne(presentedSeries);
         } catch (DataAccessException e) {
-            log.error("Error to access database", e );
+            log.error("Error to access database", e);
         }
 
         if (token == null) {

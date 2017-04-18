@@ -1,29 +1,18 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.UserQueryDao;
-import edu.asu.cassess.persist.entity.UserID;
-import edu.asu.cassess.persist.entity.security.Authority;
 import edu.asu.cassess.persist.entity.security.User;
-import edu.asu.cassess.persist.entity.registerUser;
-import edu.asu.cassess.persist.entity.security.UsersAuthority;
-import edu.asu.cassess.persist.repo.AuthorityRepo;
 import edu.asu.cassess.persist.repo.UserRepo;
-import edu.asu.cassess.persist.repo.UsersAuthorityRepo;
-
 import edu.asu.cassess.service.security.IUserService;
-import edu.asu.cassess.service.security.UserService;
-
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
+@Transactional
 @RestController
 @Api(description = "Users management API")
 public class UserController {
@@ -37,25 +26,40 @@ public class UserController {
     private IUserService usersService;
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public @ResponseBody List<User> usersList() {
+    public
+    @ResponseBody
+    List<User> usersList() {
         logger.debug("get users list");
         return userRepo.findAll();
     }
 
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-    public @ResponseBody User getUser(@PathVariable Long userId) {
+    public
+    @ResponseBody
+    User getUser(@PathVariable Long userId) {
         logger.debug("get user");
         return userRepo.findOne(userId);
     }
 
+
+    @RequestMapping(value = "/user_email", method = RequestMethod.GET)
+    public User getUserByEmail(@RequestHeader(name = "email", required = true) String email) {
+        System.out.println("*************************-----------------------+++++++++++++++++!!!!!!!!!!!!!!!Email: " + email);
+        logger.debug("get user");
+        User user = userRepo.findByEmail(email);
+        return user;
+    }
+
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public @ResponseBody <T> Object saveUser(@RequestHeader(name = "first_name", required = true) String first_name,
-                                       @RequestHeader(name = "family_name", required = true) String family_name,
-                                       @RequestHeader(name = "email", required = true) String email,
-                                       @RequestHeader(name = "password", required = true) String password,
-                                       @RequestHeader(name = "admin", required = true) boolean admin)  {
-    	//registerUser passes email address as login
-        return usersService.registerUser(first_name, family_name, email, password, admin);
+    public
+    @ResponseBody
+    <T> Object saveUser(@RequestHeader(name = "first_name", required = true) String first_name,
+                        @RequestHeader(name = "family_name", required = true) String family_name,
+                        @RequestHeader(name = "email", required = true) String email,
+                        @RequestHeader(name = "password", required = true) String password,
+                        @RequestHeader(name = "role", required = true) String role) {
+        //registerUser passes email address as login
+        return usersService.registerUser(first_name, family_name, email, password, role);
     }
 }
 

@@ -20,7 +20,7 @@ public class UsersAuthority {
     }
 
     public UsersAuthority(Long id_user, Long id_authority) {
-      
+
         this.id_user = id_user;
         this.id_authority = id_authority;
     }

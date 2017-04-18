@@ -1,9 +1,9 @@
 package edu.asu.cassess.service.rest;
 
-import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.model.Taiga.TeamNames;
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.Team;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -16,6 +16,8 @@ public interface ITeamsService {
     <T> Object update(Team team);
 
     <T> Object read(String team, String course);
+
+    <T> Object findOne(String team_name, String course);
 
     <T> Object delete(Team team);
 

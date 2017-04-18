@@ -65,16 +65,16 @@ public class Token implements Serializable {
         return userAgent;
     }
 
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     public String getUserLogin() {
         return userLogin;
     }
 
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
     }
 
 }

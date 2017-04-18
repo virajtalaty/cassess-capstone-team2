@@ -3,12 +3,6 @@ package edu.asu.cassess.persist.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Subselect;
-
 public class registerUser {
 
     private String firstName;
@@ -31,7 +25,7 @@ public class registerUser {
 
     private Boolean enabled;
 
-    public registerUser(String firstName, String familyName, String email, String login, String password ) {
+    public registerUser(String firstName, String familyName, String email, String login, String password) {
 
         this.firstName = firstName;
         this.familyName = familyName;
@@ -45,7 +39,8 @@ public class registerUser {
         this.enabled = true;
     }
 
-    public registerUser(){}
+    public registerUser() {
+    }
 
     public String getFirstName() {
         return firstName;

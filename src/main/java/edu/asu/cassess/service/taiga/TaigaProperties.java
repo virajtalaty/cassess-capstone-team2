@@ -8,46 +8,46 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 public class TaigaProperties {
-	Properties taigaprop;
-	BufferedReader reader;
-	String username;
-	String password;
+    Properties taigaprop;
+    BufferedReader reader;
+    String username;
+    String password;
 
 
-	public TaigaProperties() {
-		taigaprop = new Properties();
+    public TaigaProperties() {
+        taigaprop = new Properties();
 
-		try {
+        try {
 
-			InputStream in = getClass().getResourceAsStream("/taiga.properties");
-			reader = new BufferedReader(new InputStreamReader(in));
-			
-			taigaprop.load(reader);
+            InputStream in = getClass().getResourceAsStream("/taiga.properties");
+            reader = new BufferedReader(new InputStreamReader(in));
 
-			username = taigaprop.getProperty("username");
-			password = taigaprop.getProperty("password");
+            taigaprop.load(reader);
 
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+            username = taigaprop.getProperty("username");
+            password = taigaprop.getProperty("password");
 
-	}
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-	public String getUsername() {
-		return username;
-	}
-	public String getPassword() {
-		return password;
-	}
+    }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
 
 }

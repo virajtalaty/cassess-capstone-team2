@@ -13,19 +13,20 @@ import javax.persistence.Id;
 public class DailyTaskTotals {
 
     @Id
-    @Column(name="Date")
+    @Column(name = "Date")
     private String Date;
 
-    @Column(name="InProgress")
+    @Column(name = "InProgress")
     private int InProgress;
 
-    @Column(name="ToTest")
+    @Column(name = "ToTest")
     private int ToTest;
 
-    @Column(name="Done")
+    @Column(name = "Done")
     private int Done;
 
-    public DailyTaskTotals(){}
+    public DailyTaskTotals() {
+    }
 
     public DailyTaskTotals(String date, int inProgress, int toTest, int done) {
         Date = date;
