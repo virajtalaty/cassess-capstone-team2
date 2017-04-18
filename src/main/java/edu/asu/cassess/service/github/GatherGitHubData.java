@@ -87,11 +87,21 @@ public class GatherGitHubData{
                 int commits = week.getC();
                 String userName = contributor.getAuthor().getLogin();
 
-                CommitData commitData = new CommitData(date, userName, linesAdded, linesDeleted, commits, projectName, owner);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://api.github.com/users/" + userName)
+                        .queryParam("access_token", accessToken);
+                String urlPath = builder.build().toUriString();
+
+                GitHubUser user = restTemplate.getForObject(urlPath, GitHubUser.class);
+                String email = user.getEmail();
+
+                if(email == null){
+                    email = "hiddenEmail";
+                }
+
+                CommitData commitData = new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner);
                 repo.save(commitData);
             }
         }
-
     }
 
     /**

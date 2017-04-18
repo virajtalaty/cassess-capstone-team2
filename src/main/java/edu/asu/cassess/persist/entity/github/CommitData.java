@@ -29,11 +29,15 @@ public class CommitData{
     @Column(name="course_name")
     private String courseName;
 
+    @Column(name="email")
+    private String email;
+
     public CommitData() {
     }
 
-    public CommitData(Date date, String username, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
+    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
         this.commitDataPK = new CommitDataPK(date, username);
+        this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
         this.commits = commits;
