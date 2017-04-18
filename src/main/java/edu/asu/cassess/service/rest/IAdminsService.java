@@ -3,7 +3,6 @@ package edu.asu.cassess.service.rest;
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.security.User;
 import org.json.JSONObject;
 
 import java.util.List;

@@ -1,0 +1,48 @@
+<div class="well page">
+
+    <h2>User Profile:</h2>
+
+    <div class="row-content">
+        <h3 class="list-group-item-heading">{{userData.firstName}} {{userData.familyName}}</h3>
+    </div>
+
+    <div class="row-content">
+        <label style="color: black">Authority:</label>
+        <p class="list-group-item-text">{{userData.authorities[0].name}}</p>
+    </div>
+
+    <div class="row-content">
+        <label style="color: black">Email:</label>
+        <p class="list-group-item-text">{{userData.email}}</p>
+    </div>
+    <div class="row-content">
+        <label style="color: black">ID:</label>
+        <p class="list-group-item-text">{{userData.id}}</p>
+    </div>
+    <div class="row-content">
+        <label style="color: black">Enabled Flag:</label>
+        <p class="list-group-item-text">{{userData.enabled}}</p>
+    </div>
+    <div class="row-content">
+        <label style="color: black">Language:</label>
+        <p class="list-group-item-text">{{userData.language}}</p>
+    </div>
+    <br>
+    <div class="row-content">
+        <form >
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
+        </form>
+    </div>
+    <br>
+    <br>
+    <h3>Change Password</h3>
+    <form name="profileForm" autocomplete="off" novalidate="">
+        <fieldset>
+            <label style="color: black">New Password:</label>
+            <input class="form-control" type="password" name="newPassword" ng-model="password.new" required=""/>
+            <label style="color: black">Confirm Password:</label>
+            <input class="form-control" type="password" name="confirmPassword" ng-model="password.confirm" match-password="newPassword" required=""/>
+        </fieldset>
+        <button class="btn btn-primary" ng-really-message="Change Password?"? ng-really-click="submit()">Submit Change</button>
+    </form>
+</div>

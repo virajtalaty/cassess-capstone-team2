@@ -1,11 +1,10 @@
 package edu.asu.cassess.service.rest;
 
+import edu.asu.cassess.dao.rest.CourseServiceDao;
 import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.persist.entity.rest.Course;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-
-import edu.asu.cassess.dao.rest.CourseServiceDao;
-import edu.asu.cassess.persist.entity.rest.Course;
 
 import javax.ejb.EJB;
 import java.util.List;
@@ -13,53 +12,53 @@ import java.util.List;
 @Service
 public class CourseService implements ICourseService {
 
-	@EJB
+    @EJB
     private CourseServiceDao courseServiceDao;
 
-	@Override
-    public <T> Object create(Course course){
+    @Override
+    public <T> Object create(Course course) {
 
         return courseServiceDao.create(course);
     }
 
     @Override
-    public <T> Object update(Course course){
+    public <T> Object update(Course course) {
 
         return courseServiceDao.update(course);
     }
 
     @Override
-    public <T> Object read(String course){
+    public <T> Object read(String course) {
 
         return courseServiceDao.find(course);
     }
 
     @Override
-    public <T> Object delete(Course course){
+    public <T> Object delete(Course course) {
 
         return courseServiceDao.delete(course);
 
     }
 
     @Override
-    public List<CourseList> listGetCourses(){
+    public List<CourseList> listGetCourses() {
         return courseServiceDao.listGetCourses();
     }
 
     @Override
-    public <T> List<Course> listRead(){
+    public <T> List<Course> listRead() {
 
         return courseServiceDao.listRead();
     }
 
     @Override
-    public JSONObject listCreate(List<Course> courses){
+    public JSONObject listCreate(List<Course> courses) {
 
         return courseServiceDao.listCreate(courses);
     }
 
     @Override
-    public JSONObject listUpdate(List<Course> courses){
+    public JSONObject listUpdate(List<Course> courses) {
 
         return courseServiceDao.listUpdate(courses);
     }

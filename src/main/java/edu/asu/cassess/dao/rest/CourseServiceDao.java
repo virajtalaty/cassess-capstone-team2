@@ -1,40 +1,38 @@
 package edu.asu.cassess.dao.rest;
 
-import edu.asu.cassess.persist.entity.rest.*;
-import edu.asu.cassess.model.Taiga.CourseList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.asu.cassess.service.rest.AdminsService;
+import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Team;
+import edu.asu.cassess.persist.repo.rest.CourseRepo;
 import edu.asu.cassess.service.rest.IAdminsService;
 import edu.asu.cassess.service.rest.ITeamsService;
-import edu.asu.cassess.service.rest.TeamsService;
-import edu.asu.cassess.service.security.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import edu.asu.cassess.persist.repo.rest.CourseRepo;
-import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.List;
 
 @Component
 public class CourseServiceDao {
 
+    protected EntityManager entityManager;
     @Autowired
     private CourseRepo courseRepo;
-
     @Autowired
     private ITeamsService teamsService;
-
     @Autowired
     private IAdminsService adminsService;
-
-    protected EntityManager entityManager;
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -44,10 +42,10 @@ public class CourseServiceDao {
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-    
+
     /**
      * Save this course to the database.
-     * 
+     *
      * @param courseInput the Course object to save
      * @return courseInput or a message if the course is already in the database
      */
@@ -59,10 +57,10 @@ public class CourseServiceDao {
             return new RestResponse(courseInput.getCourse() + " already exists in database");
         } else {
             courseRepo.save(courseInput);
-            if(courseInput.getTeams() != null) {
+            if (courseInput.getTeams() != null) {
                 teamsService.listCreate(teams);
             }
-            if(courseInput.getAdmins() != null) {
+            if (courseInput.getAdmins() != null) {
                 adminsService.listCreate(admins);
             }
             return courseInput;
@@ -71,7 +69,7 @@ public class CourseServiceDao {
 
     /**
      * Update this course in the database.
-     * 
+     *
      * @param courseInput the Course to update
      * @return courseInput or a message indicating the course does not exist in the database
      */
@@ -84,10 +82,10 @@ public class CourseServiceDao {
         List<Admin> admins = courseInput.getAdmins();
         if (course != null) {
             courseRepo.save(courseInput);
-            if(course.getTeams() != null) {
+            if (course.getTeams() != null) {
                 teamsService.listUpdate(teams);
             }
-            if(course.getAdmins() != null) {
+            if (course.getAdmins() != null) {
                 adminsService.listUpdate(admins);
             }
             return courseInput;
@@ -98,7 +96,7 @@ public class CourseServiceDao {
 
     /**
      * Find a course in the database by its name.
-     * 
+     *
      * @param courseName the name to be used to find the course
      * @return the Course object or a message indicating the course does not exist
      */
@@ -106,9 +104,9 @@ public class CourseServiceDao {
     public <T> Object find(String courseName) {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
         query.setParameter(1, courseName);
-        Course course = (Course) query.getSingleResult();
-        if (course != null) {
-            return course;
+        List<Course> results = query.getResultList();
+        if (!results.isEmpty()) {
+            return (Course) results.get(0);
         } else {
             return new RestResponse(courseName + " does not exist in database");
         }
@@ -116,7 +114,7 @@ public class CourseServiceDao {
 
     /**
      * Delete a course from the database by its name.
-     * 
+     *
      * @param course the course to be removed from the database
      * @return a message indicating the course was deleted or not found
      */
@@ -136,7 +134,7 @@ public class CourseServiceDao {
 
     /**
      * Fetch a list of all courses from database.
-     * 
+     *
      * @return A List of Courses
      * @throws DataAccessException
      */
@@ -149,7 +147,7 @@ public class CourseServiceDao {
 
     /**
      * Fetch course list from students table.
-     * 
+     *
      * @return A List of CourseList
      * @throws DataAccessException
      */
@@ -159,10 +157,10 @@ public class CourseServiceDao {
         List<CourseList> resultList = query.getResultList();
         return resultList;
     }
-    
+
     /**
      * Create new courses in database from a List of Courses.
-     * 
+     *
      * @param courses List of Courses
      * @return JSONObject of courses or messages if course(s) already exist
      */
@@ -172,10 +170,10 @@ public class CourseServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Course course : courses) {
-            if(course.getTeams() != null) {
+            if (course.getTeams() != null) {
                 teamsService.listCreate(course.getTeams());
             }
-            if(course.getAdmins() != null) {
+            if (course.getAdmins() != null) {
                 adminsService.listCreate(course.getAdmins());
             }
             if (courseRepo.findOne(course.getCourse()) != null) {
@@ -201,7 +199,7 @@ public class CourseServiceDao {
 
     /**
      * Update courses from a List.
-     * 
+     *
      * @param courses List of Courses
      * @return JSONObject of course information or messages if course(s) do not exist
      */
@@ -211,10 +209,10 @@ public class CourseServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Course course : courses) {
-            if(course.getTeams() != null) {
+            if (course.getTeams() != null) {
                 teamsService.listUpdate(course.getTeams());
             }
-            if(course.getAdmins() != null) {
+            if (course.getAdmins() != null) {
                 adminsService.listUpdate(course.getAdmins());
             }
             if (courseRepo.findOne(course.getCourse()) == null) {
@@ -225,8 +223,8 @@ public class CourseServiceDao {
                 }
             } else {
                 courseRepo.save(course);
-                 try {
-                     successArray.put(new JSONObject(ow.writeValueAsString(course)));
+                try {
+                    successArray.put(new JSONObject(ow.writeValueAsString(course)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }

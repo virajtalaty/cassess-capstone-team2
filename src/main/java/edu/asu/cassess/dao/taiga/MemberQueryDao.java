@@ -4,13 +4,12 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
+import edu.asu.cassess.persist.entity.taiga.MemberData;
 import edu.asu.cassess.persist.repo.taiga.MemberRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import edu.asu.cassess.persist.entity.taiga.MemberData;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Component
 @Transactional
-public class MemberQueryDao implements IMemberQueryDao{
+public class MemberQueryDao implements IMemberQueryDao {
 
     protected EntityManager entityManager;
 
@@ -38,7 +37,7 @@ public class MemberQueryDao implements IMemberQueryDao{
     }
 
     @Override
-    public RestResponse deleteMembersByCourse(Course course) throws DataAccessException{
+    public RestResponse deleteMembersByCourse(Course course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1");
         query.setParameter(1, course.getCourse());
         query.executeUpdate();
@@ -46,7 +45,7 @@ public class MemberQueryDao implements IMemberQueryDao{
     }
 
     @Override
-    public RestResponse deleteMembersByTeam(Team team) throws DataAccessException{
+    public RestResponse deleteMembersByTeam(Team team) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2");
         query.setParameter(1, team.getCourse());
         query.setParameter(2, team.getTeam_name());
@@ -55,7 +54,7 @@ public class MemberQueryDao implements IMemberQueryDao{
     }
 
     @Override
-    public RestResponse deleteMembersByStudent(Student student) throws DataAccessException{
+    public RestResponse deleteMembersByStudent(Student student) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());

@@ -17,31 +17,31 @@ public class ChannelService implements IChannelService {
     private ChannelsServiceDao channelServiceDao;
 
     @Override
-    public <T> Object create(Channel channel){
+    public <T> Object create(Channel channel) {
 
         return channelServiceDao.create(channel);
     }
 
     @Override
-    public <T> Object update(Channel channel){
+    public <T> Object update(Channel channel) {
 
         return channelServiceDao.update(channel);
     }
 
     @Override
-    public <T> Object read(String id, String team, String course){
+    public <T> Object read(String id, String team, String course) {
 
         return channelServiceDao.find(id, team, course);
     }
 
     @Override
-    public <T> Object delete(Channel channel){
+    public <T> Object delete(Channel channel) {
 
         return channelServiceDao.delete(channel);
     }
 
     @Override
-    public <T> List<Channel> listRead(){
+    public <T> List<Channel> listRead() {
 
         return channelServiceDao.listRead();
     }
@@ -53,13 +53,13 @@ public class ChannelService implements IChannelService {
     }
 
     @Override
-    public JSONObject listCreate(List<Channel> channels){
+    public JSONObject listCreate(List<Channel> channels) {
 
         return channelServiceDao.listCreate(channels);
     }
 
     @Override
-    public JSONObject listUpdate(List<Channel> channels){
+    public JSONObject listUpdate(List<Channel> channels) {
 
         return channelServiceDao.listUpdate(channels);
     }

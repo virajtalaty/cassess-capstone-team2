@@ -5,9 +5,9 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
-import org.springframework.dao.DataAccessException;
-
 import edu.asu.cassess.persist.entity.taiga.TaskTotals;
+import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -35,6 +35,9 @@ public interface ITaskTotalsQueryDao {
     List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String student) throws DataAccessException;
 
     List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException;
+
+    @Transactional
+    List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException;
 
     List<WeeklyActivity> getWeeklyUpdatesByTeam(String course, String team) throws DataAccessException;
 

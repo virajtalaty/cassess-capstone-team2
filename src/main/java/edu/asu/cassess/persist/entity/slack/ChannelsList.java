@@ -1,75 +1,75 @@
 package edu.asu.cassess.persist.entity.slack;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelsList {
 
-	private boolean ok;
-	private List<ChannelObject> channels;
-	private String warning;
-	private String error;
-	
-	/**
-	 * @return the ok
-	 */
-	public boolean isOk() {
-		return ok;
-	}
+    private boolean ok;
+    private List<ChannelObject> channels;
+    private String warning;
+    private String error;
 
-	/**
-	 * @param ok the ok to set
-	 */
-	public void setOk(boolean ok) {
-		this.ok = ok;
-	}
+    public ChannelsList() {
 
-	/**
-	 * @return the channels
-	 */
-	public List<ChannelObject> getChannels() {
-		return channels;
-	}
+    }
 
-	/**
-	 * @param channels the channels to set
-	 */
-	public void setChannels(List<ChannelObject> channels) {
-		this.channels = channels;
-	}
+    /**
+     * @return the ok
+     */
+    public boolean isOk() {
+        return ok;
+    }
 
-	/**
-	 * @return the warning
-	 */
-	public String getWarning() {
-		return warning;
-	}
+    /**
+     * @param ok the ok to set
+     */
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
 
-	/**
-	 * @param warning the warning to set
-	 */
-	public void setWarning(String warning) {
-		this.warning = warning;
-	}
+    /**
+     * @return the channels
+     */
+    public List<ChannelObject> getChannels() {
+        return channels;
+    }
 
-	/**
-	 * @return the error
-	 */
-	public String getError() {
-		return error;
-	}
+    /**
+     * @param channels the channels to set
+     */
+    public void setChannels(List<ChannelObject> channels) {
+        this.channels = channels;
+    }
 
-	/**
-	 * @param error the error to set
-	 */
-	public void setError(String error) {
-		this.error = error;
-	}
+    /**
+     * @return the warning
+     */
+    public String getWarning() {
+        return warning;
+    }
 
-	public ChannelsList() {
-		
-	}
-	
+    /**
+     * @param warning the warning to set
+     */
+    public void setWarning(String warning) {
+        this.warning = warning;
+    }
+
+    /**
+     * @return the error
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * @param error the error to set
+     */
+    public void setError(String error) {
+        this.error = error;
+    }
+
 }

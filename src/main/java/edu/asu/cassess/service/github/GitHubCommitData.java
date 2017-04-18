@@ -84,7 +84,7 @@ public class GitHubCommitData {
          * https://api.github.com/repos/:owner/:repositoryName/commits/:sha
          */
         @JsonIgnoreProperties(ignoreUnknown = true)
-        class GitHubAuthor{
+        class GitHubAuthor {
             private String name;
             private String email;
             private Date date;
