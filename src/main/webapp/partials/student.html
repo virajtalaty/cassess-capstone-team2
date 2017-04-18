@@ -53,9 +53,9 @@
                         </table>
                     </div>
                     <div ng-show="isSet(2)">
-                        <h3>Taiga Data</h3>
-                        <br>
-                        <h3>Task Totals</h3>
+                       <h3>Taiga Data</h3>
+                       <br>
+                        <h3>Task Totals</h3><br>
                         <label style="color: black">Select Week Beginning:</label>
                         <select class="select_style" ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in studentIntervals"
                                 ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
@@ -65,47 +65,13 @@
                         <select class="select_style" ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in studentIntervals"
                                 ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
                         </select>
-                            <br>
-                        <table class="table table-bordered" fixed-header>
-                            <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Tasks In Progress</th>
-                                <th>Tasks To Test</th>
-                                <th>Tasks Done</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="x in studentTasks">
-                                <td>{{ x.date }}</td>
-                                <td>{{ x.inProgress }}</td>
-                                <td>{{ x.toTest }}</td>
-                                <td>{{ x.done }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <br>
-                        <h3>Task Status Update Activity</h3>
-                        <table class="table table-bordered" fixed-header>
-                            <thead>
-                            <tr>
-                                <th>Week Beginning</th>
-                                <th>Week Ending</th>
-                                <th>DoneActivity</th>
-                                <th>InProgressActivity</th>
-                                <th>ToTestActivity</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="x in studentActivity">
-                                <td>{{ x.weekBeginning }}</td>
-                                <td>{{ x.weekEnding }}</td>
-                                <td>{{ x.doneActivity }}</td>
-                                <td>{{ x.inProgressActivity }}</td>
-                                <td>{{ x.toTestActivity }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <br><br>
+                        <div ng-controller='StudentController'>
+                            <nvd3 options='optionsForTaigaStudentTasks' data='dataForTaigaStudentTasks'></nvd3>
+
+                            <h3>Task Status Update Activity</h3><br>
+                            <nvd3 options='optionsForTaigaStudentActivity' data='dataForTaigaStudentActivity'></nvd3>
+                        </div>
                     </div>
                     <div ng-show="isSet(3)">
                         <h1>GitHub Charts</h1>
