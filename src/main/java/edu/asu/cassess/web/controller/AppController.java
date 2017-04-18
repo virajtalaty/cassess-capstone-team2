@@ -1,9 +1,13 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.github.GitHubWeightDao;
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.persist.entity.github.GitHubWeight;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.security.SecurityUtils;
+import edu.asu.cassess.service.github.GatherGitHubData;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
@@ -52,6 +56,9 @@ public class AppController {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private GitHubWeightDao weightDao;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -395,6 +402,27 @@ public class AppController {
         for (CourseList course : courseList) {
             //System.out.print("Course: " + course.getCourse());
             taskService.updateTaskTotals(course.getCourse());
+        }
+    }
+
+    //---------- GitHub Routes --------------
+
+    //GET the weights for the selected email
+    @RequestMapping(value = "github/weight", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<GitHubWeight>> getWeight(@RequestHeader(name = "email") String email,
+                   HttpServletRequest request, HttpServletResponse response){
+        List<GitHubWeight> weightList = weightDao.getWeightByEmail(email);
+        return new ResponseEntity<List<GitHubWeight>>(weightList, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "github/weight", method = RequestMethod.POST)
+    public
+    void updateGitHubData(HttpServletRequest request, HttpServletResponse response){
+        GatherGitHubData gatherData = new GatherGitHubData();
+        List<Team> teams = teamsService.listReadAll();
+        for(Team team: teams){
+            gatherData.fetchData(team.getCourse(), team.getGithub_repo_id());
         }
     }
 }

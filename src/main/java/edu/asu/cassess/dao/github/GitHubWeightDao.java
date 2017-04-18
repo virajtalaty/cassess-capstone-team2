@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class GitHubWeightDao {
@@ -22,10 +24,11 @@ public class GitHubWeightDao {
     }
 
     @Transactional
-    public GitHubWeight getWeight(String email, Date date){
+    public GitHubWeight getWeightByDate(String email, Date date){
         GitHubWeight weight;
 
         try{
+            //noinspection JpaQlInspection
             weight = (GitHubWeight) entityManager
                     .createQuery("SELECT w " +
                                          "FROM GitHubWeight " +
@@ -37,6 +40,22 @@ public class GitHubWeightDao {
             weight = null;
         }
 
+        return weight;
+    }
+
+    @Transactional
+    public List<GitHubWeight> getWeightByEmail(String email){
+        List<GitHubWeight> weight;
+
+        try{
+            //noinspection JpaQlInspection
+            weight = (List<GitHubWeight>) entityManager
+                    .createQuery("SELECT w FROM GitHubWeight WHERE w.email =?1")
+                    .setParameter(1, email)
+                    .getResultList();
+        }catch(Exception e){
+            weight = new ArrayList();
+        }
         return weight;
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.asu.cassess.dao.github.GitHubCommitDataDao;
-import edu.asu.cassess.dao.github.GitHubWeightDao;
 import edu.asu.cassess.model.github.GitHubAnalytics;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
