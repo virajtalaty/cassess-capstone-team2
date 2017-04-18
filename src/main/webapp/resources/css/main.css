@@ -1,3 +1,7 @@
+.dashed {
+    stroke-dasharray: 5,5;
+}
+
 .fade {
     position: absolute;
     top: 0;

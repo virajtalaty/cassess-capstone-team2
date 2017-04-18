@@ -342,7 +342,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Admin Not Removed From Course";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.removeUser = function () {
             $http({
@@ -356,7 +356,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -394,7 +394,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     })
     .controller('TokensController', function ($scope, UsersService, TokensService, $q) {
 
-        var browsers = ["Firefox", 'Chrome', 'Trident']
+        var browsers = ["Firefox", 'Chrome', 'Trident'];
 
         $q.all([
             UsersService.getAll().$promise,
@@ -430,10 +430,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         switch ($scope.code) {
             case "403" :
-                $scope.message = "Oops! you have come to unauthorized page."
+                $scope.message = "Oops! you have come to unauthorized page.";
                 break;
             case "404" :
-                $scope.message = "Page not found."
+                $scope.message = "Page not found.";
                 break;
             default:
                 $scope.code = 500;
@@ -531,7 +531,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         $scope.teams = response.data;
                     });
                 }
-            }
+            };
 
             $scope.selectedTeamChanged = function (team) {
                 if (userService.getAuth() == 'super_user') {
@@ -578,7 +578,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 }
 
-            }
+            };
             $scope.selectedStudentChanged = function (email, full_name) {
                 studentService.setStudentEmail(email);
                 studentService.setStudentName(full_name);
@@ -724,11 +724,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getDataForCourseTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done =[];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
                 valueset1.push(Date.parse(array[i].weekEnding));
                 valueset1.push(array[i].inProgressActivity);
@@ -739,18 +739,22 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset3.push(Date.parse(array[i].weekEnding));
                 valueset3.push(array[i].doneActivity);
 
+                valueset4.push(Date.parse(array[i].weekEnding));
+                valueset4.push(3);
+
                 inProgress.push(valueset1);
                 toTest.push(valueset2);
                 done.push(valueset3);
+                expected.push(valueset4);
             }
 
-            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
-            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
-            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
 
             return data;
         }
-        // End here //
 
         function getTaigaIntervals() {
             $http({
@@ -783,7 +787,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -804,7 +808,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.optionsForTaigaCourseTasks = {
 
@@ -983,11 +987,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getDataForTeamTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done =[];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
                 valueset1.push(Date.parse(array[i].weekEnding));
                 valueset1.push(array[i].inProgressActivity);
@@ -998,14 +1002,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset3.push(Date.parse(array[i].weekEnding));
                 valueset3.push(array[i].doneActivity);
 
+                valueset4.push(Date.parse(array[i].weekEnding));
+                valueset4.push(3);
+
                 inProgress.push(valueset1);
                 toTest.push(valueset2);
                 done.push(valueset3);
+                expected.push(valueset4);
             }
 
-            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
-            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
-            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
 
             return data;
         }
@@ -1042,7 +1051,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -1064,7 +1073,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.optionsForTaigaTeamTasks = {
 
@@ -1266,11 +1275,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getDataForStudentTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done =[];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
                 valueset1.push(Date.parse(array[i].weekEnding));
                 valueset1.push(array[i].inProgressActivity);
@@ -1281,14 +1290,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset3.push(Date.parse(array[i].weekEnding));
                 valueset3.push(array[i].doneActivity);
 
+                valueset4.push(Date.parse(array[i].weekEnding));
+                valueset4.push(3);
+
                 inProgress.push(valueset1);
                 toTest.push(valueset2);
                 done.push(valueset3);
+                expected.push(valueset4);
             }
 
-            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
-            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
-            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
 
             return data;
         }
