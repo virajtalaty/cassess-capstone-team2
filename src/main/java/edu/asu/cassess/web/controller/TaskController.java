@@ -1,20 +1,23 @@
 package edu.asu.cassess.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.asu.cassess.service.taiga.TaskDataService;
+import edu.asu.cassess.service.taiga.ITaskDataService;
 
 @RestController
+@PropertySource("classpath:scheduling.properties")
 public class TaskController {
 
 	@Autowired
-	TaskDataService taigaDataService;
+	ITaskDataService taigaDataService;
 	
-	@Scheduled(cron="0 20 * * * ?")
+	@Scheduled(cron = "${taiga.cron.expression}")
 	public void TaigaTasks() {
-		System.out.println("timer running");
+		System.out.println("cron ran as scheduled");
+		//taigaDataService = new TaskDataService();
 		taigaDataService.updateTaskTotals("SER_402");
 	}
 }
