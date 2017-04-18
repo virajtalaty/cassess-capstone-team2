@@ -110,13 +110,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("didn't work");
                 //console.log(response);
             });
-        }
+        };
 
         $scope.selectedTeamChanged = function () {
             //console.log(response.data);
             $scope.team = $scope.studentTeam.value.team;
             console.log($scope.team);
-        }
+        };
 
         $scope.studentTeamRemove = function () {
             $http({
@@ -134,7 +134,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Student Not Removed From Team";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.studentCourseRemove = function () {
             $http({
@@ -148,7 +148,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Student Not Removed From Course";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.removeUser = function () {
             $http({
@@ -162,7 +162,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -243,7 +243,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Account Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -328,7 +328,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.selectedCourseChanged = function () {
             $scope.course = $scope.adminCourse.value.course;
-        }
+        };
 
         $scope.adminCourseRemove = function () {
             $http({
@@ -450,7 +450,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if (userService.getAuth() == 'super_user') {
                     $http({
                         url: './taigaCourses',
-                        method: "GET",
+                        method: "GET"
                     }).then(function (response) {
                         console.log("Worked!");
                         console.log(response.data);
@@ -679,9 +679,78 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.courseActivity = response.data;
+                $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
                 getTaigaIntervals();
             });
         }
+
+        $scope.optionsForTaigaCourseActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForCourseTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(Date.parse(array[i].weekEnding));
+                valueset1.push(array[i].inProgressActivity);
+
+                valueset2.push(Date.parse(array[i].weekEnding));
+                valueset2.push(array[i].toTestActivity);
+
+                valueset3.push(Date.parse(array[i].weekEnding));
+                valueset3.push(array[i].doneActivity);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+        // End here //
 
         function getTaigaIntervals() {
             $http({
@@ -708,9 +777,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
+                    console.log("Worked, these are the averages for the week for weekBegin");
                     console.log(response.data);
                     $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
         }
@@ -728,15 +798,75 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
+                    console.log("Worked, these are the averages for the week for weekEnd!");
                     console.log(response.data);
                     $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
         }
 
-    }])
+        $scope.optionsForTaigaCourseTasks = {
 
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaCourseTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+
+    }])
     .controller('TeamController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
         var course = courseService.getCourse();
@@ -808,8 +938,76 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.teamActivity = response.data;
+                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
             });
+        }
+
+        $scope.optionsForTaigaTeamActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForTeamTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(Date.parse(array[i].weekEnding));
+                valueset1.push(array[i].inProgressActivity);
+
+                valueset2.push(Date.parse(array[i].weekEnding));
+                valueset2.push(array[i].toTestActivity);
+
+                valueset3.push(Date.parse(array[i].weekEnding));
+                valueset3.push(array[i].doneActivity);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
         }
 
         function getTaigaIntervals() {
@@ -841,6 +1039,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     console.log("Worked!");
                     console.log(response.data);
                     $scope.teamTasks = response.data;
+                    $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
         }
@@ -862,12 +1061,72 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     console.log("Worked!");
                     console.log(response.data);
                     $scope.teamTasks = response.data;
+                    $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
         }
 
-    }])
+        $scope.optionsForTaigaTeamTasks = {
 
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaTeamTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+
+    }])
     .controller('StudentController', ['$filter', '$scope', '$location', '$routeParams', 'courseService', 'teamService', 'studentService', 'userService', '$http', function ($filter, $scope, $location, $routeParams, courseService, teamService, studentService, userService, $http) {
         $scope.studentid = $routeParams.student_id;
         $scope.courseid = courseService.getCourse();
@@ -1068,7 +1327,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -1092,7 +1351,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.optionsForTaigaStudentTasks = {
 
@@ -1115,12 +1374,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 xAxis: {
                     axisLabel: 'Days',
-                    showMaxMin: false,
+                    showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Taiga Task Totals',
-                    axisLabelDistance: -10,
+                    axisLabelDistance: -10
                 }
             }
         };
