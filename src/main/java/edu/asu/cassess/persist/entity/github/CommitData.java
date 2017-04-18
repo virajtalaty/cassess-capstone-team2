@@ -26,8 +26,8 @@ public class CommitData{
     @Column(name="project_name")
     private String projectName;
 
-    @Column(name="course_name")
-    private String courseName;
+    @Column(name="github_owner")
+    private String gitHubOwner;
 
     @Column(name="email")
     private String email;
@@ -35,14 +35,14 @@ public class CommitData{
     public CommitData() {
     }
 
-    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
+    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner) {
         this.commitDataPK = new CommitDataPK(date, username);
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
         this.commits = commits;
         this.projectName = projectName;
-        this.courseName = courseName;
+        this.gitHubOwner = gitHubOwner;
     }
 
     public CommitDataPK getCommitDataPK() {
@@ -86,11 +86,11 @@ public class CommitData{
     }
 
     public String getCourseName() {
-        return courseName;
+        return gitHubOwner;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseName(String gitHubOwner) {
+        this.gitHubOwner = gitHubOwner;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CommitData{
                 ", linesOfCodeDeleted=" + linesOfCodeDeleted +
                 ", commits=" + commits +
                 ", projectName='" + projectName + '\'' +
-                ", courseName='" + courseName + '\'' +
+                ", gitHubOwner='" + gitHubOwner + '\'' +
                 '}';
     }
 }

@@ -1,8 +1,11 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.github.GitHubCommitDataDao;
 import edu.asu.cassess.dao.github.GitHubWeightDao;
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.persist.entity.github.CommitData;
 import edu.asu.cassess.persist.entity.github.GitHubWeight;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
@@ -59,6 +62,9 @@ public class AppController {
 
     @Autowired
     private GitHubWeightDao weightDao;
+
+    @Autowired
+    private GitHubCommitDataDao commitDao;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -422,7 +428,17 @@ public class AppController {
         GatherGitHubData gatherData = new GatherGitHubData();
         List<Team> teams = teamsService.listReadAll();
         for(Team team: teams){
-            gatherData.fetchData(team.getCourse(), team.getGithub_repo_id());
+            Course course = (Course) coursesService.read(team.getCourse());
+            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
         }
+    }
+
+    //GET the commits for the selected email
+    @RequestMapping(value = "github/commits", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<CommitData>> getCommits(@RequestHeader(name = "email") String email,
+                                                HttpServletRequest request, HttpServletResponse response){
+        List<CommitData> commitList = commitDao.getCommitByEmail(email);
+        return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);
     }
 }
