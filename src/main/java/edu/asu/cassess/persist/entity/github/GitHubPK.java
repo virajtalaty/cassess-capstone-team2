@@ -6,17 +6,18 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Embeddable
-public class CommitDataPK implements Serializable {
-    @Column(name = "date")
+public class GitHubPK implements Serializable {
+
+    @Column(name="date")
     protected Date date;
 
-    @Column(name = "username")
+    @Column(name="username")
     protected String username;
 
-    public CommitDataPK() {
+    public GitHubPK() {
     }
 
-    public CommitDataPK(Date date, String username) {
+    public GitHubPK(Date date, String username) {
         this.date = date;
         this.username = username;
     }
@@ -39,7 +40,7 @@ public class CommitDataPK implements Serializable {
 
     @Override
     public String toString() {
-        return "CommitDataPK{" +
+        return "GitHubPK{" +
                 "date=" + date +
                 ", username='" + username + '\'' +
                 '}';
