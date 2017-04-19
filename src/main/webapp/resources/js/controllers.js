@@ -481,7 +481,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
 
             }
-
             $http({
                 url: './current_user',
                 method: "GET"
@@ -1423,6 +1422,37 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
             data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
 
             return data;
         }
