@@ -4,31 +4,31 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
-import static edu.asu.cassess.persist.entity.rest.Team.TEAM_STRING;
 import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
+import static edu.asu.cassess.persist.entity.rest.Team.TEAM_STRING;
 
 @Entity
-@Table(name="students")
+@Table(name = "students")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student {
-    
+
     @Id
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name="full_name")
+    @Column(name = "full_name")
     private String full_name;
 
-    @Column(name="team_name")
+    @Column(name = "team_name")
     private String team_name;
 
-    @Column(name="course")
+    @Column(name = "course")
     private String course;
 
     @Transient
     private String password;
 
-    public Student(){
+    public Student() {
 
     }
 
@@ -53,7 +53,7 @@ public class Student {
     }
 
     public void setTeam_name(String team_name) {
-        if(team_name == null){
+        if (team_name == null) {
             team_name = TEAM_STRING;
         }
         this.team_name = team_name;
@@ -64,7 +64,7 @@ public class Student {
     }
 
     public void setCourse(String course) {
-        if(course == null){
+        if (course == null) {
             course = COURSE_STRING;
         }
         this.course = course;
@@ -77,9 +77,6 @@ public class Student {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
-
 
 
 }

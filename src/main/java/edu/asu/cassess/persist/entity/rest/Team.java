@@ -1,7 +1,6 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.asu.cassess.persist.entity.security.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -11,38 +10,31 @@ import java.util.List;
 import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 
 @Entity
-@Table(name="teams")
+@Table(name = "teams")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Team {
 
-    @Id
-    @Column(name="team_name")
-    public String team_name;
-
     @Transient
     public static String TEAM_STRING;
-
-    @Column(name="course")
+    @Id
+    @Column(name = "team_name")
+    public String team_name;
+    @Column(name = "course")
     public String course;
-
-    @Column(name="slack_team_id")
-    protected String slack_team_id;
-
-    @Column(name="github_repo_id")
-    protected String github_repo_id;
-
-    @Column(name="taiga_project_slug")
-    protected String taiga_project_slug;
-
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team_name", fetch = FetchType.EAGER)
     public List<Student> students;
-
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "team_name", fetch = FetchType.EAGER)
     public List<Channel> channels;
+    @Column(name = "slack_team_id")
+    protected String slack_team_id;
+    @Column(name = "github_repo_id")
+    protected String github_repo_id;
+    @Column(name = "taiga_project_slug")
+    protected String taiga_project_slug;
 
-    public Team(){
+    public Team() {
 
     }
 
@@ -51,8 +43,8 @@ public class Team {
     }
 
     public void setTeam_name(String team_name) {
-            TEAM_STRING = team_name;
-            this.team_name = team_name;
+        TEAM_STRING = team_name;
+        this.team_name = team_name;
     }
 
     public String getCourse() {
@@ -60,7 +52,7 @@ public class Team {
     }
 
     public void setCourse(String course) {
-        if(course == null){
+        if (course == null) {
             course = COURSE_STRING;
         }
         this.course = course;
@@ -95,7 +87,7 @@ public class Team {
     }
 
     public void setStudents(List<Student> students) {
-        for(Student student:students){
+        for (Student student : students) {
             student.setCourse(COURSE_STRING);
             student.setTeam_name(TEAM_STRING);
         }
@@ -107,7 +99,7 @@ public class Team {
     }
 
     public void setChannels(List<Channel> channels) {
-        for(Channel channel:channels){
+        for (Channel channel : channels) {
             channel.setCourse(COURSE_STRING);
             channel.setTeam_name(TEAM_STRING);
         }

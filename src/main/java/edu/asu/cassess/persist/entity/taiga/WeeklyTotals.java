@@ -3,7 +3,9 @@ package edu.asu.cassess.persist.entity.taiga;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,19 +15,19 @@ import java.util.Date;
 public class WeeklyTotals {
 
     @Id
-    @Column(name="WeekEnding")
+    @Column(name = "WeekEnding")
     private String WeekEnding;
 
-    @Column(name="fullName")
+    @Column(name = "fullName")
     private String fullName;
 
-    @Column(name="ClosedTasks")
+    @Column(name = "ClosedTasks")
     private int ClosedTasks;
 
-    @Column(name="OpenTasks")
+    @Column(name = "OpenTasks")
     private int OpenTasks;
 
-    public WeeklyTotals(){
+    public WeeklyTotals() {
 
     }
 

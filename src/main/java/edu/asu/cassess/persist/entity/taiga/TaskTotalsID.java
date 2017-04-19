@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Embeddable
-public class TaskTotalsID implements Serializable{
+public class TaskTotalsID implements Serializable {
 
     @Column(name = "email")
     public String email;
@@ -21,12 +21,16 @@ public class TaskTotalsID implements Serializable{
     public TaskTotalsID(String email) {
         this.email = email;
         Date date = new Date();
-        this.retrievalDate =  new SimpleDateFormat("yyyy-MM-dd").format(date);
+        this.retrievalDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 
     public String getRetrievalDate() {

@@ -1,9 +1,8 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.model.Taiga.CourseList;
-import org.json.JSONObject;
-
 import edu.asu.cassess.persist.entity.rest.Course;
+import org.json.JSONObject;
 
 import java.util.List;
 

@@ -6,9 +6,6 @@ import org.hibernate.annotations.Subselect;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Subselect;
 
 
 @Entity
@@ -17,18 +14,22 @@ import org.hibernate.annotations.Subselect;
 public class CourseList {
 
     @Id
-    @Column(name="course")
+    @Column(name = "course")
     public String course;
 
-    public CourseList(){
+    public CourseList() {
     }
 
-    public CourseList(String course){
+    public CourseList(String course) {
         this.course = course;
     }
 
-    public String getCourse() { return course; }
+    public String getCourse() {
+        return course;
+    }
 
-    public void setCourse(String course) { this.course = course; }
+    public void setCourse(String course) {
+        this.course = course;
+    }
 
 }

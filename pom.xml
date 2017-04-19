@@ -25,7 +25,12 @@
             <artifactId>spring-context</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
-
+        
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
 
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -43,7 +48,6 @@
             </exclusions>
         </dependency>
 
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -55,7 +59,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.6.1</version>
         </dependency>
-
 
         <!-- security -->
         <dependency>
@@ -109,7 +112,6 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
-
 
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
@@ -244,6 +246,7 @@
         	<artifactId>spring-web</artifactId>
         	<version>${org.springframework-version}</version>
         </dependency>
+   
     </dependencies>
 
     <build>

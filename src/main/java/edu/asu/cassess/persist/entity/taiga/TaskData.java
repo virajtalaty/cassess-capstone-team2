@@ -2,18 +2,21 @@ package edu.asu.cassess.persist.entity.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-@Table(name="taskdata")
+@Table(name = "taskdata")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskData {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     public int id;
 
-    @Column(name="project")
+    @Column(name = "project")
     public Long project;
     public AssignmentData assigned_to_extra_info;
     public StatusData status_extra_info;
@@ -37,10 +40,16 @@ public class TaskData {
         this.project = project;
     }
 
-    public AssignmentData getAssignmentData() { return assigned_to_extra_info; }
+    public AssignmentData getAssignmentData() {
+        return assigned_to_extra_info;
+    }
 
-    public StatusData getStatusData() { return status_extra_info; }
+    public StatusData getStatusData() {
+        return status_extra_info;
+    }
 
-    public void setStatusData (StatusData status_extra_info) { this.status_extra_info = status_extra_info; }
+    public void setStatusData(StatusData status_extra_info) {
+        this.status_extra_info = status_extra_info;
+    }
 
 }

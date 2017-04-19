@@ -52,8 +52,8 @@ public class GatherGitHubData implements IGatherGitHubData {
      * The github owner and project name can be found in the repo url as follows
      * www.github.com/:owner/:projectName
      *
-     * @param owner                 the owner of the repo
-     * @param projectName           the project name of the repo
+     * @param owner       the owner of the repo
+     * @param projectName the project name of the repo
      */
     @Override
     public void fetchData(String owner, String projectName){
@@ -64,7 +64,7 @@ public class GatherGitHubData implements IGatherGitHubData {
     }
 
 
-    private void getStats(){
+    private void getStats() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken);
         String urlPath = builder.build().toUriString();
@@ -74,20 +74,21 @@ public class GatherGitHubData implements IGatherGitHubData {
         ArrayList<GitHubContributors> contributors = null;
         ObjectMapper mapper = new ObjectMapper();
 
-        try{
-            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {});
-        }catch(IOException e){
+        try {
+            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {
+            });
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         storeStats(contributors);
     }
 
-    private void storeStats(ArrayList<GitHubContributors> contributors){
-        for(GitHubContributors contributor: contributors){
+    private void storeStats(ArrayList<GitHubContributors> contributors) {
+        for (GitHubContributors contributor : contributors) {
             ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
 
-            for(GitHubContributors.Weeks week: weeks){
+            for (GitHubContributors.Weeks week : weeks) {
                 Date date = new Date(week.getW() * 1000L);
                 int linesAdded = week.getA();
                 int linesDeleted = week.getD();
@@ -116,7 +117,8 @@ public class GatherGitHubData implements IGatherGitHubData {
 
     /**
      * Gathers all the rows in the commit_data table
-     * @return      A list of CommitData Objects
+     *
+     * @return A list of CommitData Objects
      */
     @Override
     public List<CommitData> getCommitList(){

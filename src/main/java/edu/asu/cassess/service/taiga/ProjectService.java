@@ -1,18 +1,19 @@
 package edu.asu.cassess.service.taiga;
 
+import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.Project;
-import edu.asu.cassess.model.Taiga.Slugs;
 import edu.asu.cassess.persist.repo.taiga.ProjectRepo;
 import edu.asu.cassess.service.rest.ICourseService;
-import edu.asu.cassess.service.rest.IStudentsService;
 import edu.asu.cassess.service.rest.ITeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -31,7 +32,6 @@ public class ProjectService implements IProjectService {
 
     @Autowired
     private ITeamsService teamsService;
-
 
 
     public ProjectService() {
@@ -63,13 +63,13 @@ public class ProjectService implements IProjectService {
     updating the projects table based on the course and student tables
      */
     @Override
-    public void updateProjects(String course){
+    public void updateProjects(String course) {
         System.out.println("Updating Projects");
-        if (courseService.read(course).getClass() == Course.class){
+        if (courseService.read(course).getClass() == Course.class) {
             Course tempCourse = (Course) courseService.read(course);
             String token = tempCourse.getTaiga_token();
             List<Slugs> slugList = teamsService.listGetSlugs(course);
-            if(token != null) {
+            if (token != null) {
                 for (Slugs slug : slugList) {
                     System.out.println("Slug: " + slug);
                     getProjectInfo(token, slug.getSlug());

@@ -1,4 +1,14 @@
-<div class="well page">
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <div class="navbar-collapse collapse navbar-responsive-collapse" ng-controller="StudentController">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a class="navbar-brand">Course Selected: {{courseid}}</a></li>
+                <li><a class="navbar-brand">Team Selected: {{teamid}}</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="well page" ng-controller="StudentController">
     <h1 class="page-header">{{studentid}} Data</h1>
 
     <div class="container" ng-controller="TabController">
@@ -22,7 +32,7 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h1>Overall Charts</h1>
+                        <h3>Taiga Frequency and Weight</h3>
                         <table class="table table-bordered" fixed-header>
                             <thead>
                             <tr>
@@ -41,10 +51,41 @@
                             </tr>
                             </tbody>
                         </table>
-                        <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(2)">
-                        <h1>Taiga Charts</h1>
+                        <h3>Taiga Data</h3>
+                        <br>
+                        <h3>Task Totals</h3>
+                        <label style="color: black">Select Week Beginning:</label>
+                        <select class="select_style" ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in studentIntervals"
+                                ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
+                        </select>
+                        <br>
+                        <label style="color: black">Select Week Ending:</label>
+                        <select class="select_style" ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in studentIntervals"
+                                ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
+                        </select>
+                            <br>
+                        <table class="table table-bordered" fixed-header>
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tasks In Progress</th>
+                                <th>Tasks To Test</th>
+                                <th>Tasks Done</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="x in studentTasks">
+                                <td>{{ x.date }}</td>
+                                <td>{{ x.inProgress }}</td>
+                                <td>{{ x.toTest }}</td>
+                                <td>{{ x.done }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <h3>Task Status Update Activity</h3>
                         <table class="table table-bordered" fixed-header>
                             <thead>
                             <tr>
@@ -65,7 +106,6 @@
                             </tr>
                             </tbody>
                         </table>
-                        <p> Content coming soon... </p>
                     </div>
                     <div ng-show="isSet(3)">
                         <h1>GitHub Charts</h1>

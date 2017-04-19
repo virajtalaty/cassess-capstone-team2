@@ -1,13 +1,12 @@
 package edu.asu.cassess.initializer;
 
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
 import edu.asu.cassess.config.DBConfig;
 import edu.asu.cassess.config.MvcConfig;
 import edu.asu.cassess.config.SecurityConfig;
 import edu.asu.cassess.config.ServiceConfig;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class MvcWebApplicationInitializer  extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -16,7 +15,7 @@ public class MvcWebApplicationInitializer  extends AbstractAnnotationConfigDispa
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {MvcConfig.class};
+        return new Class[]{MvcConfig.class};
     }
 
     @Override

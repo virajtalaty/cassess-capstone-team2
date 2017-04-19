@@ -14,18 +14,22 @@ import javax.persistence.Id;
 public class TeamNames {
 
     @Id
-    @Column(name="team")
+    @Column(name = "team")
     public String team;
 
-    public TeamNames(){
+    public TeamNames() {
     }
 
-    public TeamNames(String team){
+    public TeamNames(String team) {
         this.team = team;
     }
 
-    public String getTeam() { return team; }
+    public String getTeam() {
+        return team;
+    }
 
-    public void setTeam(String project_name) { this.team = team; }
+    public void setTeam(String project_name) {
+        this.team = team;
+    }
 
 }
