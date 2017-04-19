@@ -7,6 +7,7 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.persist.repo.taiga.TaskRepo;
 import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
+import edu.asu.cassess.service.rest.CourseService;
 import edu.asu.cassess.service.rest.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -111,6 +112,7 @@ public class TaskDataService implements ITaskDataService {
     @Override
     public void updateTaskTotals(String course) {
         System.out.println("Updating Tasks");
+        if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
         String formatted = df.format(new Date());

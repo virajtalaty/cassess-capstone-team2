@@ -2,6 +2,7 @@ package edu.asu.cassess.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -18,6 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @ComponentScan(basePackages = {"edu.asu.cassess.web.controller"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableScheduling
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Bean
