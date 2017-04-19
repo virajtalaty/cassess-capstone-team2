@@ -7,6 +7,7 @@ import java.sql.Date;
 
 @Embeddable
 public class CommitDataPK implements Serializable {
+
     @Column(name="date")
     protected Date date;
 

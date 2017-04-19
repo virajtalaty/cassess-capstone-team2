@@ -11,18 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GitHubWeightDao {
+public class GitHubWeightDao implements IGitHubWeightDao {
     protected EntityManager entityManager;
 
+    @Override
     public EntityManager getEntityManager(){
         return entityManager;
     }
 
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager){
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
     public GitHubWeight getWeightByDate(String email, Date date){
         GitHubWeight weight;
@@ -43,6 +46,7 @@ public class GitHubWeightDao {
         return weight;
     }
 
+    @Override
     @Transactional
     public List<GitHubWeight> getWeightByEmail(String email){
         List<GitHubWeight> weight;

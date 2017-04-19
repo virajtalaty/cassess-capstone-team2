@@ -1,7 +1,7 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.github.GitHubCommitDataDao;
-import edu.asu.cassess.dao.github.GitHubWeightDao;
+import edu.asu.cassess.dao.github.IGitHubCommitDataDao;
+import edu.asu.cassess.dao.github.IGitHubWeightDao;
 import edu.asu.cassess.model.Taiga.*;
 import edu.asu.cassess.persist.entity.github.CommitData;
 import edu.asu.cassess.persist.entity.github.GitHubWeight;
@@ -10,7 +10,7 @@ import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.security.SecurityUtils;
-import edu.asu.cassess.service.github.GatherGitHubData;
+import edu.asu.cassess.service.github.IGatherGitHubData;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
@@ -61,10 +61,13 @@ public class AppController {
     private SecurityUtils securityUtils;
 
     @Autowired
-    private GitHubWeightDao weightDao;
+    private IGitHubWeightDao weightDao;
 
     @Autowired
-    private GitHubCommitDataDao commitDao;
+    private IGitHubCommitDataDao commitDao;
+
+    @Autowired
+    private IGatherGitHubData gatherData;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -425,7 +428,6 @@ public class AppController {
     @RequestMapping(value = "github/weight", method = RequestMethod.POST)
     public
     void updateGitHubData(HttpServletRequest request, HttpServletResponse response){
-        GatherGitHubData gatherData = new GatherGitHubData();
         List<Team> teams = teamsService.listReadAll();
         for(Team team: teams){
             Course course = (Course) coursesService.read(team.getCourse());

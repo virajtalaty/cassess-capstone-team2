@@ -13,20 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GitHubCommitDataDao{
+public class GitHubCommitDataDao implements IGitHubCommitDataDao {
     protected EntityManager entityManager;
 
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }
 
 
+    @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    @Override
     @Transactional
     public CommitData getCommit(String email, Date date) throws DataAccessException{
 
@@ -45,6 +48,7 @@ public class GitHubCommitDataDao{
         return commitData;
     }
 
+    @Override
     @Transactional
     public List<CommitData> getCommitByEmail(String email){
         List<CommitData> commitData;
@@ -61,6 +65,7 @@ public class GitHubCommitDataDao{
         return commitData;
     }
 
+    @Override
     @Transactional
     public List<CommitData> getAllCommitData() throws DataAccessException{
         //noinspection JpaQlInspection

@@ -3,7 +3,7 @@ package edu.asu.cassess.service.github;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.asu.cassess.dao.github.GitHubCommitDataDao;
+import edu.asu.cassess.dao.github.IGitHubCommitDataDao;
 import edu.asu.cassess.model.github.GitHubAnalytics;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
@@ -23,10 +23,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class GatherGitHubData{
+public class GatherGitHubData implements IGatherGitHubData {
 
     @Autowired
-    private GitHubCommitDataDao commitDao;
+    private IGitHubCommitDataDao commitDao;
 
     @Autowired
     private GitHubWeightRepo weightRepo;
@@ -55,6 +55,7 @@ public class GatherGitHubData{
      * @param owner                 the owner of the repo
      * @param projectName           the project name of the repo
      */
+    @Override
     public void fetchData(String owner, String projectName){
         this.projectName = projectName;
         this.owner = owner;
@@ -104,8 +105,7 @@ public class GatherGitHubData{
                     email = "hiddenEmail";
                 }
 
-                CommitData commitData = new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner);
-                commitDataRepo.save(commitData);
+                commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner));
 
                 int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
                 GitHubWeight gitHubWeight = new GitHubWeight(email,date, weight);
@@ -118,6 +118,7 @@ public class GatherGitHubData{
      * Gathers all the rows in the commit_data table
      * @return      A list of CommitData Objects
      */
+    @Override
     public List<CommitData> getCommitList(){
         return commitDao.getAllCommitData();
     }

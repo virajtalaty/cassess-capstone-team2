@@ -85,12 +85,20 @@ public class CommitData{
         this.projectName = projectName;
     }
 
-    public String getCourseName() {
+    public String getGitHubOwner() {
         return gitHubOwner;
     }
 
-    public void setCourseName(String gitHubOwner) {
+    public void setGitHubOwner(String gitHubOwner) {
         this.gitHubOwner = gitHubOwner;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -102,6 +110,7 @@ public class CommitData{
                 ", commits=" + commits +
                 ", projectName='" + projectName + '\'' +
                 ", gitHubOwner='" + gitHubOwner + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
