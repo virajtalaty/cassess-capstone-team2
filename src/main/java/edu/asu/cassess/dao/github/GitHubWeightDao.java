@@ -54,10 +54,11 @@ public class GitHubWeightDao implements IGitHubWeightDao {
         try{
             //noinspection JpaQlInspection
             weight = (List<GitHubWeight>) entityManager
-                    .createQuery("SELECT w FROM GitHubWeight WHERE w.email =?1")
+                    .createQuery("SELECT w FROM GitHubWeight w WHERE w.email =?1")
                     .setParameter(1, email)
                     .getResultList();
         }catch(Exception e){
+            e.printStackTrace();
             weight = new ArrayList();
         }
         return weight;

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name="commit_data")
 public class CommitData{
     @EmbeddedId
-    private CommitDataPK commitDataPK;
+    private GitHubPK gitHubPK;
 
     @Column(name="lines_of_code_added")
     private int linesOfCodeAdded;
@@ -36,7 +36,7 @@ public class CommitData{
     }
 
     public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner) {
-        this.commitDataPK = new CommitDataPK(date, username);
+        this.gitHubPK = new GitHubPK(date, username);
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
@@ -45,12 +45,12 @@ public class CommitData{
         this.gitHubOwner = gitHubOwner;
     }
 
-    public CommitDataPK getCommitDataPK() {
-        return commitDataPK;
+    public GitHubPK getGitHubPK() {
+        return gitHubPK;
     }
 
-    public void setCommitDataPK(CommitDataPK commitDataPK) {
-        this.commitDataPK = commitDataPK;
+    public void setGitHubPK(GitHubPK gitHubPK) {
+        this.gitHubPK = gitHubPK;
     }
 
     public int getLinesOfCodeAdded() {
@@ -104,7 +104,7 @@ public class CommitData{
     @Override
     public String toString() {
         return "CommitData{" +
-                "commitDataPK=" + commitDataPK +
+                "gitHubPK=" + gitHubPK +
                 ", linesOfCodeAdded=" + linesOfCodeAdded +
                 ", linesOfCodeDeleted=" + linesOfCodeDeleted +
                 ", commits=" + commits +

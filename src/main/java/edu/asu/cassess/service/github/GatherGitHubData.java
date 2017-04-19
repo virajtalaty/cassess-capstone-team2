@@ -108,7 +108,7 @@ public class GatherGitHubData implements IGatherGitHubData {
                 commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner));
 
                 int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
-                GitHubWeight gitHubWeight = new GitHubWeight(email,date, weight);
+                GitHubWeight gitHubWeight = new GitHubWeight(email,date, weight, userName);
                 weightRepo.save(gitHubWeight);
             }
         }

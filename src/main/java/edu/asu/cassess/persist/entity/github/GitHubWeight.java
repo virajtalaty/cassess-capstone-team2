@@ -6,39 +6,31 @@ import java.sql.Date;
 @Entity
 @Table(name="github_weight")
 public class GitHubWeight {
-    @Id
-    private String Email;
-
-    @Column(name="date")
-    private Date date;
+    @EmbeddedId
+    private GitHubPK gitHubPK;
 
     @Column(name="weight")
     private int weight;
+
+    @Column(name ="email")
+    private String email;
 
     public GitHubWeight(){
 
     }
 
-    public GitHubWeight(String email, Date date, int weight) {
-        Email = email;
-        this.date = date;
+    public GitHubWeight(String email, Date date, int weight, String username) {
+        gitHubPK = new GitHubPK(date, username);
+        this.email = email;
         this.weight = weight;
     }
 
-    public String getEmail() {
-        return Email;
+    public GitHubPK getGitHubPK() {
+        return gitHubPK;
     }
 
-    public void setEmail(String email) {
-        Email = email;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public void setGitHubPK(GitHubPK gitHubPK) {
+        this.gitHubPK = gitHubPK;
     }
 
     public int getWeight() {
@@ -49,12 +41,20 @@ public class GitHubWeight {
         this.weight = weight;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "GitHubWeight{" +
-                "Email='" + Email + '\'' +
-                ", date=" + date +
+                "gitHubPK=" + gitHubPK +
                 ", weight=" + weight +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
