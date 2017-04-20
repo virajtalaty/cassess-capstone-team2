@@ -869,6 +869,63 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubStudentCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubStudentWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
     }])
     .controller('TeamController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
@@ -1130,6 +1187,63 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
             data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubStudentCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubStudentWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
 
             return data;
         }
@@ -1428,13 +1542,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
-        function getDataForGitHubCommitsCharts(array){
+        function getDataForGitHubStudentCommitsCharts(array){
 
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
 
                 valueset1.push(array[i].GitHubDataPK.date);
                 valueset1.push(array[i].commits);
@@ -1457,6 +1571,31 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubStudentWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
     }])
     .controller("TaigaAdmin", ['$scope', '$http', function ($scope, $http) {
 
