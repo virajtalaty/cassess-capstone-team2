@@ -871,7 +871,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
-        function getDataForGitHubStudentCommitsCharts(array){
+        function getDataForGitHubCourseCommitsCharts(array){
 
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
 
@@ -902,7 +902,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         ////* Function to Parse GitHub Weight for Line Chart * ////
 
-        function getDataForGitHubStudentWeightCharts(array){
+        function getDataForGitHubCourseWeightCharts(array){
 
             var weight = []; var expected = []; var data = [];
 
@@ -1193,7 +1193,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
-        function getDataForGitHubStudentCommitsCharts(array){
+        function getDataForGitHubTeamCommitsCharts(array){
 
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
 
@@ -1224,7 +1224,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         ////* Function to Parse GitHub Weight for Line Chart * ////
 
-        function getDataForGitHubStudentWeightCharts(array){
+        function getDataForGitHubTeamWeightCharts(array){
 
             var weight = []; var expected = []; var data = [];
 
