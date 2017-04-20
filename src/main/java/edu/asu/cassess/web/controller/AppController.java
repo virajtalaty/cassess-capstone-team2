@@ -1,15 +1,19 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.GitHub.IGitHubQueryDao;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.persist.entity.github.CommitData;
+import edu.asu.cassess.persist.entity.github.GitHubWeight;
 import edu.asu.cassess.persist.entity.rest.Admin;
+import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.security.SecurityUtils;
+import edu.asu.cassess.service.github.IGatherGitHubData;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.security.IUserService;
 import edu.asu.cassess.service.taiga.IMembersService;
@@ -59,6 +63,15 @@ public class AppController {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private IGitHubWeightDao weightDao;
+
+    @Autowired
+    private IGitHubCommitDataDao commitDao;
+
+    @Autowired
+    private IGatherGitHubData gatherData;
 
     @EJB
     private ICourseService courseService;
@@ -489,6 +502,36 @@ public class AppController {
             //System.out.print("Course: " + course.getCourse());
             taskService.updateTaskTotals(course.getCourse());
         }
+    }
+
+    //---------- GitHub Routes --------------
+
+    //GET the weights for the selected email
+    @RequestMapping(value = "github/weight", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<GitHubWeight>> getWeight(@RequestHeader(name = "email") String email,
+                   HttpServletRequest request, HttpServletResponse response){
+        List<GitHubWeight> weightList = weightDao.getWeightByEmail(email);
+        return new ResponseEntity<List<GitHubWeight>>(weightList, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "github/weight", method = RequestMethod.POST)
+    public
+    void updateGitHubData(HttpServletRequest request, HttpServletResponse response){
+        List<Team> teams = teamsService.listReadAll();
+        for(Team team: teams){
+            Course course = (Course) coursesService.read(team.getCourse());
+            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
+        }
+    }
+
+    //GET the commits for the selected email
+    @RequestMapping(value = "github/commits", method = RequestMethod.GET)
+    public
+    ResponseEntity<List<CommitData>> getCommits(@RequestHeader(name = "email") String email,
+                                                HttpServletRequest request, HttpServletResponse response){
+        List<CommitData> commitList = commitDao.getCommitByEmail(email);
+        return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.OK)

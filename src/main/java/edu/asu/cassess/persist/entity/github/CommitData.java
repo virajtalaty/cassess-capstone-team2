@@ -11,7 +11,7 @@ import java.sql.Date;
 @Table(name = "commit_data")
 public class CommitData {
     @EmbeddedId
-    private CommitDataPK commitDataPK;
+    private GitHubPK gitHubPK;
 
     @Column(name = "lines_of_code_added")
     private int linesOfCodeAdded;
@@ -25,27 +25,31 @@ public class CommitData {
     @Column(name = "project_name")
     private String projectName;
 
-    @Column(name = "course_name")
-    private String courseName;
+    @Column(name="github_owner")
+    private String gitHubOwner;
+
+    @Column(name="email")
+    private String email;
 
     public CommitData() {
     }
 
-    public CommitData(Date date, String username, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String courseName) {
-        this.commitDataPK = new CommitDataPK(date, username);
+    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner) {
+        this.gitHubPK = new GitHubPK(date, username);
+        this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
         this.commits = commits;
         this.projectName = projectName;
-        this.courseName = courseName;
+        this.gitHubOwner = gitHubOwner;
     }
 
-    public CommitDataPK getCommitDataPK() {
-        return commitDataPK;
+    public GitHubPK getGitHubPK() {
+        return gitHubPK;
     }
 
-    public void setCommitDataPK(CommitDataPK commitDataPK) {
-        this.commitDataPK = commitDataPK;
+    public void setGitHubPK(GitHubPK gitHubPK) {
+        this.gitHubPK = gitHubPK;
     }
 
     public int getLinesOfCodeAdded() {
@@ -80,23 +84,32 @@ public class CommitData {
         this.projectName = projectName;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public String getGitHubOwner() {
+        return gitHubOwner;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setGitHubOwner(String gitHubOwner) {
+        this.gitHubOwner = gitHubOwner;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
     public String toString() {
         return "CommitData{" +
-                "commitDataPK=" + commitDataPK +
+                "gitHubPK=" + gitHubPK +
                 ", linesOfCodeAdded=" + linesOfCodeAdded +
                 ", linesOfCodeDeleted=" + linesOfCodeDeleted +
                 ", commits=" + commits +
                 ", projectName='" + projectName + '\'' +
-                ", courseName='" + courseName + '\'' +
+                ", gitHubOwner='" + gitHubOwner + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

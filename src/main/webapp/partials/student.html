@@ -65,7 +65,12 @@
                     </div>
                     <div ng-show="isSet(3)">
                         <h1>GitHub Charts</h1>
-                        <p> Github Charts::: </p>
+                        <div ng-controller='StudentController'>
+                            <nvd3 options='optionsForGitHubStudentCommits' data='dataForGitHubStudentCommits'></nvd3>
+
+                            <h3>Task Status Update Activity</h3><br>
+                            <nvd3 options='optionsForGitHubStudentWeight' data='dataForGitHubStudentWeight'></nvd3>
+                        </div>
                     </div>
                     <div ng-show="isSet(4)">
                         <h1>Slack Charts</h1>

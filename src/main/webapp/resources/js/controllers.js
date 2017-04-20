@@ -989,6 +989,63 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubCourseCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubCourseWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
 
 
         var fireRefreshEventOnWindow = function () {
@@ -1418,6 +1475,63 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubTeamCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubTeamWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
         var fireRefreshEventOnWindow = function () {
             var evt = document.createEvent("HTMLEvents");
             evt.initEvent('resize', true, false);
@@ -1737,6 +1851,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     tickFormat: function(d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },
+
                     showMaxMin: false,
                     staggerLabels: false
                 },
@@ -1783,12 +1898,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
             data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
 
-            console.log(data);
-
             return data;
         }
-
-
 
         function getTaigaIntervals() {
             $http({
@@ -1799,6 +1910,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked This shows the intervals!");
                 console.log(response.data);
                 $scope.studentIntervals = response.data;
+                getGitHubCommitsData();
             });
         }
 
@@ -1910,6 +2022,157 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        function getGitHubCommitsData() {
+            $http({
+                url: './github/commits',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Data is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
+                getGitHubWeightData();
+            });
+        }
+
+        $scope.optionsForGitHubStudentCommits = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Commit Counts',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubStudentCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        function getGitHubWeightData() {
+            $http({
+                url: './github/weight',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Weight is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+            });
+        }
+
+        $scope.optionsForGitHubStudentWeight = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Task Updates Weight',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 3, 6, 9, 12, 15]
+                },
+
+                yDomain:[0, 15]
+
+            }
+        };
+
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubStudentWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
 
 
         var fireRefreshEventOnWindow = function () {
@@ -1976,4 +2239,4 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         };
 
-    }])
+    }]);
