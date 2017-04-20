@@ -29,19 +29,19 @@ myapp.service('userService', function () {
 
     var setUser = function (userObject) {
         user = userObject;
-    }
+    };
 
     var getUser = function () {
         return user;
-    }
+    };
 
     var setAuth = function (authObject) {
         auth = authObject;
-    }
+    };
 
     var getAuth = function () {
         return auth;
-    }
+    };
     return {
         setUser: setUser,
         getUser: getUser,
@@ -54,11 +54,11 @@ myapp.service('userService', function () {
 
         var setCourse = function (courseObject) {
             course = courseObject;
-        }
+        };
 
         var getCourse = function () {
             return course;
-        }
+        };
         return {
             setCourse: setCourse,
             getCourse: getCourse
@@ -69,11 +69,11 @@ myapp.service('userService', function () {
 
         var setTeam = function (teamName) {
             team = teamName;
-        }
+        };
 
         var getTeam = function () {
             return team;
-        }
+        };
         return {
             setTeam: setTeam,
             getTeam: getTeam
@@ -85,19 +85,19 @@ myapp.service('userService', function () {
 
         var setStudentEmail = function (email) {
             studentEmail = email;
-        }
+        };
 
         var getStudentEmail = function () {
             return studentEmail;
-        }
+        };
 
         var setStudentName = function (studentname) {
             studentName = studentname;
-        }
+        };
 
         var getStudentName = function () {
             return studentName;
-        }
+        };
         return {
             setStudentEmail: setStudentEmail,
             getStudentEmail: getStudentEmail,
@@ -195,6 +195,7 @@ myapp.service('TokensService', function ($log, $resource) {
             return tokensResource.query();
         }
     }
+
 });
 
 

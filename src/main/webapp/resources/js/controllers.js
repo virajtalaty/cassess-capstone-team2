@@ -110,13 +110,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("didn't work");
                 //console.log(response);
             });
-        }
+        };
 
         $scope.selectedTeamChanged = function () {
             //console.log(response.data);
             $scope.team = $scope.studentTeam.value.team;
             console.log($scope.team);
-        }
+        };
 
         $scope.studentTeamRemove = function () {
             $http({
@@ -134,7 +134,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Student Not Removed From Team";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.studentCourseRemove = function () {
             $http({
@@ -148,7 +148,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Student Not Removed From Course";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.removeUser = function () {
             $http({
@@ -162,7 +162,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -243,7 +243,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Account Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -328,7 +328,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.selectedCourseChanged = function () {
             $scope.course = $scope.adminCourse.value.course;
-        }
+        };
 
         $scope.adminCourseRemove = function () {
             $http({
@@ -342,7 +342,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "Admin Not Removed From Course";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.removeUser = function () {
             $http({
@@ -356,7 +356,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.message = "User Not Deleted";
                 $window.alert($scope.message);
             });
-        }
+        };
 
         $scope.submit = function () {
             if($scope.password.new!=$scope.password.confirm){
@@ -394,7 +394,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     })
     .controller('TokensController', function ($scope, UsersService, TokensService, $q) {
 
-        var browsers = ["Firefox", 'Chrome', 'Trident']
+        var browsers = ["Firefox", 'Chrome', 'Trident'];
 
         $q.all([
             UsersService.getAll().$promise,
@@ -430,10 +430,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         switch ($scope.code) {
             case "403" :
-                $scope.message = "Oops! you have come to unauthorized page."
+                $scope.message = "Oops! you have come to unauthorized page.";
                 break;
             case "404" :
-                $scope.message = "Page not found."
+                $scope.message = "Page not found.";
                 break;
             default:
                 $scope.code = 500;
@@ -450,7 +450,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if (userService.getAuth() == 'super_user') {
                     $http({
                         url: './taigaCourses',
-                        method: "GET",
+                        method: "GET"
                     }).then(function (response) {
                         console.log("Worked!");
                         console.log(response.data);
@@ -531,7 +531,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         $scope.teams = response.data;
                     });
                 }
-            }
+            };
 
             $scope.selectedTeamChanged = function (team) {
                 if (userService.getAuth() == 'super_user') {
@@ -578,7 +578,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 }
 
-            }
+            };
             $scope.selectedStudentChanged = function (email, full_name) {
                 studentService.setStudentEmail(email);
                 studentService.setStudentName(full_name);
@@ -653,21 +653,140 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if (response.data == false) {
                 $location.path('/home');
             } else {
-                getWeightFreq();
+                getTaigaWeightFreq();
             }
         });
 
-        function getWeightFreq() {
+        function getTaigaWeightFreq() {
             $http({
-                url: './taiga/course_weightFreq',
+                url: './taiga/course_quickweightFreq',
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.weightFreq = response.data;
-                getTaigaActivity();
+                $scope.courseArrayTG = response.data;
+                getGitHubWeightFreq();
             });
+        }
+
+        function getGitHubWeightFreq() {
+            $http({
+                url: './github/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                $scope.courseArrayGH = response.data;
+                plotCurrentWeek();
+            });
+        }
+
+        function plotCurrentWeek() {
+            var trace1 = {
+                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var data = [trace1];
+
+            var layout = {
+                title: $scope.courseArrayTG[0].weekBeginning + ' to ' + $scope.courseArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1,
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+
+            };
+
+            Plotly.newPlot('currentWeek', data, layout);
+            plotPreviousWeek();
+        }
+
+        function plotPreviousWeek() {
+
+            var trace1 = {
+                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 20,
+                showlegend: true,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+
+            var data = [trace1];
+
+            var layout = {
+                title: $scope.courseArrayTG[0].weekBeginning + ' to ' + $scope.courseArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1,
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('previousWeek', data, layout);
+            getTaigaActivity();
         }
 
         function getTaigaActivity() {
@@ -679,8 +798,81 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.courseActivity = response.data;
+                $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
                 getTaigaIntervals();
             });
+        }
+
+        $scope.optionsForTaigaCourseActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForCourseTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].inProgressActivity);
+
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(array[i].toTestActivity);
+
+                valueset3.push(array[i].rawWeekEnding*1000);
+                valueset3.push(array[i].doneActivity);
+
+                valueset4.push(array[i].rawWeekEnding*1000);
+                valueset4.push(3);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+                expected.push(valueset4);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
         }
 
         function getTaigaIntervals() {
@@ -708,12 +900,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
+                    console.log("Worked, these are the averages for the week for weekBegin");
                     console.log(response.data);
                     $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -728,15 +921,140 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
+                    console.log("Worked, these are the averages for the week for weekEnd!");
                     console.log(response.data);
                     $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
             }
+        };
+
+        $scope.optionsForTaigaCourseTasks = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaCourseTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
         }
 
-    }])
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
+        function getDataForGitHubCourseCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubCourseWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
+
+
+        var fireRefreshEventOnWindow = function () {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent('resize', true, false);
+            window.dispatchEvent(evt);
+        };
+
+    }])
     .controller('TeamController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
         var course = courseService.getCourse();
@@ -769,34 +1087,190 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if (response.data == false) {
                 $location.path('/home');
             } else {
-                getCourseWeightFreq();
+                getTaigaCourseWeightFreq();
             }
         });
 
-        function getCourseWeightFreq() {
+        function getTaigaCourseWeightFreq() {
             $http({
-                url: './taiga/course_weightFreq',
+                url: './taiga/course_quickweightFreq',
                 method: "GET",
                 headers: {'course': course}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.courseWeightFreq = response.data;
-                getTeamWeightFreq();
+                $scope.courseArrayTG = response.data;
+                getGitHubCourseWeightFreq();
             });
         }
 
-        function getTeamWeightFreq() {
+        function getGitHubCourseWeightFreq() {
             $http({
-                url: './taiga/team_weightFreq',
+                url: './github/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                $scope.courseArrayGH = response.data;
+                getTaigaTeamWeightFreq();
+            });
+        }
+
+        function getTaigaTeamWeightFreq() {
+            $http({
+                url: './taiga/team_quickweightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.weightFreq = response.data;
-                getTaigaActivity();
+                $scope.teamArrayTG = response.data;
+                getGitHubTeamWeightFreq();
             });
+        }
+
+        function getGitHubTeamWeightFreq() {
+            $http({
+                url: './github/team_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                $scope.teamArrayGH = response.data;
+                plotCurrentWeek();
+            });
+        }
+
+        function plotCurrentWeek() {
+            var trace1 = {
+                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace2 = {
+                r: [$scope.teamArrayTG[0].weight*.75, $scope.teamArrayTG[0].frequency*.75, $scope.teamArrayGH[0].weight*.75, $scope.teamArrayGH[0].frequency*.75],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Team',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#180',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var data = [trace1, trace2];
+
+            var layout = {
+                title: $scope.teamArrayTG[0].weekBeginning + ' to ' + $scope.teamArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1,
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+
+            };
+
+            Plotly.newPlot('currentWeek', data, layout);
+            plotPreviousWeek();
+        }
+
+        function plotPreviousWeek() {
+
+            var trace1 = {
+                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 20,
+                showlegend: true,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace2 = {
+                r: [$scope.teamArrayTG[1].weight*.75, $scope.teamArrayTG[1].frequency*.75, $scope.teamArrayGH[1].weight*.75, $scope.teamArrayGH[1].frequency*.75],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Team',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#180',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+
+            var data = [trace1, trace2];
+
+            var layout = {
+                title: $scope.teamArrayTG[0].weekBeginning + ' to ' + $scope.teamArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1,
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('previousWeek', data, layout);
+            getTaigaActivity();
         }
 
         function getTaigaActivity() {
@@ -808,8 +1282,81 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.teamActivity = response.data;
+                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
             });
+        }
+
+        $scope.optionsForTaigaTeamActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForTeamTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].inProgressActivity);
+
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(array[i].toTestActivity);
+
+                valueset3.push(array[i].rawWeekEnding*1000);
+                valueset3.push(array[i].doneActivity);
+
+                valueset4.push(array[i].rawWeekEnding*1000);
+                valueset4.push(3);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+                expected.push(valueset4);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
         }
 
         function getTaigaIntervals() {
@@ -841,9 +1388,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     console.log("Worked!");
                     console.log(response.data);
                     $scope.teamTasks = response.data;
+                    $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -862,12 +1410,135 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     console.log("Worked!");
                     console.log(response.data);
                     $scope.teamTasks = response.data;
+                    $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
             }
+        };
+
+        $scope.optionsForTaigaTeamTasks = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaTeamTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
         }
 
-    }])
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
+        function getDataForGitHubTeamCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubTeamWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
+        var fireRefreshEventOnWindow = function () {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent('resize', true, false);
+            window.dispatchEvent(evt);
+        };
+
+    }])
     .controller('StudentController', ['$filter', '$scope', '$location', '$routeParams', 'courseService', 'teamService', 'studentService', 'userService', '$http', function ($filter, $scope, $location, $routeParams, courseService, teamService, studentService, userService, $http) {
         $scope.studentid = $routeParams.student_id;
         $scope.courseid = courseService.getCourse();
@@ -910,47 +1581,238 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if (response.data == false) {
                 $location.path('/home');
             } else {
-                getCourseWeightFreq();
+                getTaigaCourseWeightFreq();
             }
         });
 
-        function getCourseWeightFreq() {
+        function getTaigaCourseWeightFreq() {
             $http({
-                url: './taiga/course_weightFreq',
+                url: './taiga/course_quickweightFreq',
                 method: "GET",
                 headers: {'course': course}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.courseWeightFreq = response.data;
-                getTeamWeightFreq();
+                $scope.courseArrayTG = response.data;
+                getGitHubCourseWeightFreq();
             });
         }
 
-        function getTeamWeightFreq() {
+        function getGitHubCourseWeightFreq() {
             $http({
-                url: './taiga/team_weightFreq',
+                url: './github/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                $scope.courseArrayGH = response.data;
+                getTaigaTeamWeightFreq();
+            });
+        }
+
+        function getTaigaTeamWeightFreq() {
+            $http({
+                url: './taiga/team_quickweightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.teamWeightFreq = response.data;
-                getStudentWeightFreq();
+                $scope.teamArrayTG = response.data;
+                getGitHubTeamWeightFreq();
             });
         }
 
-        function getStudentWeightFreq() {
+        function getGitHubTeamWeightFreq() {
             $http({
-                url: './taiga/student_weightFreq',
+                url: './github/team_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': team}
+            }).then(function (response) {
+                $scope.teamArrayGH = response.data;
+                getTaigaStudentWeightFreq();
+            });
+        }
+
+        function getTaigaStudentWeightFreq() {
+            $http({
+                url: './taiga/student_quickweightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
-                $scope.weightFreq = response.data;
-                getTaigaActivity();
+                $scope.studentArrayTG = response.data;
+                getGitHubStudentWeightFreq();
             });
+        }
+
+        function getGitHubStudentWeightFreq() {
+            $http({
+                url: './github/student_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': team, 'email': studentemail}
+            }).then(function (response) {
+                $scope.studentArrayGH = response.data;
+                plotCurrentWeek();
+            });
+        }
+
+        function plotCurrentWeek() {
+            var trace1 = {
+                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace2 = {
+                r: [$scope.teamArrayTG[0].weight*.75, $scope.teamArrayTG[0].frequency*.75, $scope.teamArrayGH[0].weight*.75, $scope.teamArrayGH[0].frequency*.75],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#180',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace3 = {
+                r: [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#118',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var data = [trace1, trace2, trace3];
+
+            var layout = {
+                title: $scope.studentArrayTG[0].weekBeginning + ' to ' + $scope.studentArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+
+            };
+
+            Plotly.newPlot('currentWeek', data, layout);
+            plotPreviousWeek();
+        }
+
+        function plotPreviousWeek() {
+
+            var trace1 = {
+                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#810',
+                width: 20,
+                showlegend: true,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace2 = {
+                r: [$scope.teamArrayTG[1].weight*.75, $scope.teamArrayTG[1].frequency*.75, $scope.teamArrayGH[1].weight*.75, $scope.teamArrayGH[1].frequency*.75],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#180',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var trace3 = {
+                r: [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency],
+                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
+                mode: 'lines+markers',
+                name: 'Course',
+                marker: {size:16},
+                line: {width: 50},
+                color: '#118',
+                width: 50,
+                type: 'scatter',
+                hoverinfo: ["r"],
+                connectgaps: true
+            };
+
+            var data = [trace1, trace2, trace3];
+            var layout = {
+                title: $scope.studentArrayTG[0].weekBeginning + ' to ' + $scope.studentArrayTG[0].weekEnding,
+                autosize: false,
+                width: 500,
+                height: 400,
+                margin: {
+                    l: 100,
+                    r: 100,
+                    b: 20,
+                    t: 50,
+                    pad: 0
+                },
+                legend: {traceorder: 'reversed'
+                },
+                font: {
+                    family: 'Arial',
+                    size: 16,
+                    color: '#066'
+                },
+                angularaxis: {
+                    tickorientation:'vertical'
+                },
+                radialaxis: {
+                    range:[0,3],
+                    tickfont: {
+                        size: 1
+                    }
+                },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)'
+            };
+
+            Plotly.newPlot('previousWeek', data, layout);
+            getTaigaActivity();
         }
 
         function getTaigaActivity() {
@@ -963,7 +1825,80 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log(response.data);
                 $scope.studentActivity = response.data;
                 getTaigaIntervals();
+                $scope.dataForTaigaStudentActivity =  getDataForStudentTaigaActivityCharts(response.data);
             });
+        }
+
+        $scope.optionsForTaigaStudentActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForStudentTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].inProgressActivity);
+
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(array[i].toTestActivity);
+
+                valueset3.push(array[i].rawWeekEnding*1000);
+                valueset3.push(array[i].doneActivity);
+
+                valueset4.push(array[i].rawWeekEnding*1000);
+                valueset4.push(3);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+                expected.push(valueset4);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
         }
 
         function getTaigaIntervals() {
@@ -972,9 +1907,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked!");
+                console.log("Worked This shows the intervals!");
                 console.log(response.data);
                 $scope.studentIntervals = response.data;
+                getGitHubCommitsData();
             });
         }
 
@@ -993,12 +1929,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
+                    console.log("Worked! Begin Changed: ");
                     console.log(response.data);
+
                     $scope.studentTasks = response.data;
+                    $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
                 });
             }
-        }
+        };
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
@@ -1017,10 +1955,233 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }).then(function (response) {
                     console.log("Worked!");
                     console.log(response.data);
+
                     $scope.studentTasks = response.data;
+                    $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
                 });
             }
+        };
+
+        $scope.optionsForTaigaStudentTasks = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaStudentTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
         }
+
+        function getGitHubCommitsData() {
+            $http({
+                url: './github/commits',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Data is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
+                getGitHubWeightData();
+            });
+        }
+
+        $scope.optionsForGitHubStudentCommits = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Commit Counts',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubStudentCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        function getGitHubWeightData() {
+            $http({
+                url: './github/weight',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Weight is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+            });
+        }
+
+        $scope.optionsForGitHubStudentWeight = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Task Updates Weight',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 3, 6, 9, 12, 15]
+                },
+
+                yDomain:[0, 15]
+
+            }
+        };
+
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubStudentWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
+
+        var fireRefreshEventOnWindow = function () {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent('resize', true, false);
+            window.dispatchEvent(evt);
+        };
+
+
 
     }])
     .controller("TaigaAdmin", ['$scope', '$http', function ($scope, $http) {

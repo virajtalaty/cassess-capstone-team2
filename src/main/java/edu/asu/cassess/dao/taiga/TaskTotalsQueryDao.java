@@ -140,7 +140,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyActivity> getWeeklyUpdatesByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, \n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding,\n" +
                 "                ROUND(AVG(DoneActivity), 3) as 'DoneActivity', ROUND(AVG(InProgressActivity), 3) as 'InProgressActivity', ROUND(AVG(ToTestActivity), 3) as 'ToTestActivity'\n" +
                 "                FROM\n" +
                 "                (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +
@@ -182,7 +182,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyActivity> getWeeklyUpdatesByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, DoneActivity, InProgressActivity, ToTestActivity\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, DoneActivity, InProgressActivity, ToTestActivity, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding\n" +
                 "FROM\n" +
                 "                               (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning',\n" +
                 "                                DATE(retrievalDate + INTERVAL (7 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding', SUM(tasksClosedDIFF) as 'DoneActivity', \n" +
@@ -224,7 +224,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyActivity> getWeeklyUpdatesByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, \n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding,\n" +
                 "                ROUND(AVG(DoneActivity), 3) as 'DoneActivity', ROUND(AVG(InProgressActivity), 3) as 'InProgressActivity', ROUND(AVG(ToTestActivity), 3) as 'ToTestActivity'\n" +
                 "                FROM\n" +
                 "                (SELECT DATE(retrievalDate + INTERVAL (1 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', \n" +

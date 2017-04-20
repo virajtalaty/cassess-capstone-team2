@@ -14,7 +14,9 @@
     "bootstrap-material-design": "0.4.4",
     "angular-swagger-ui": "~0.2.3",
     "font-awesome": "4.5.0",
-    "angular-password": "1.0.3"
+    "angular-password": "1.0.3",
+    "angular-nvd3": "^1.0.9",
+    "angular-plotly": "0.1.3"
   },
   "private": true,
   "overrides": {
@@ -46,7 +48,7 @@
         "dist/css/swagger-ui.css"
       ]
     },
-    "font-awesome" : {
+    "font-awesome": {
       "main": [
         "css/font-awesome.css",
         "fonts/FontAwesome.otf",
