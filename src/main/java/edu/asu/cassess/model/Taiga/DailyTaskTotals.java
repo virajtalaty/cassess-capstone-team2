@@ -17,18 +17,18 @@ public class DailyTaskTotals {
     private String Date;
 
     @Column(name = "InProgress")
-    private int InProgress;
+    private long InProgress;
 
     @Column(name = "ToTest")
-    private int ToTest;
+    private long ToTest;
 
     @Column(name = "Done")
-    private int Done;
+    private long Done;
 
     public DailyTaskTotals() {
     }
 
-    public DailyTaskTotals(String date, int inProgress, int toTest, int done) {
+    public DailyTaskTotals(String date, long inProgress, long toTest, long done) {
         Date = date;
         InProgress = inProgress;
         ToTest = toTest;
@@ -43,27 +43,27 @@ public class DailyTaskTotals {
         Date = date;
     }
 
-    public int getInProgress() {
+    public long getInProgress() {
         return InProgress;
     }
 
-    public void setInProgress(int inProgress) {
+    public void setInProgress(long inProgress) {
         InProgress = inProgress;
     }
 
-    public int getToTest() {
+    public long getToTest() {
         return ToTest;
     }
 
-    public void setToTest(int toTest) {
+    public void setToTest(long toTest) {
         ToTest = toTest;
     }
 
-    public int getDone() {
+    public long getDone() {
         return Done;
     }
 
-    public void setDone(int done) {
+    public void setDone(long done) {
         Done = done;
     }
 }

@@ -32,25 +32,14 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h3>Taiga Frequency and Weight</h3>
-                        <table class="table table-bordered" fixed-header>
-                            <thead>
-                            <tr>
-                                <th>Week Beginning</th>
-                                <th>Week Ending</th>
-                                <th>Weight</th>
-                                <th>Frequency</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="x in weightFreq">
-                                <td>{{ x.weekBeginning }}</td>
-                                <td>{{ x.weekEnding }}</td>
-                                <td>{{ x.weight }}</td>
-                                <td>{{ x.frequency }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <h3>Taiga and Github Frequency/Impact</h3>
+                        <div ng-controller='StudentController' id="currentWeek" style="width: 520px; height: 400px;">
+                            <!-- Plotly chart will be drawn inside this DIV -->
+                        </div>
+
+                        <div ng-controller='StudentController' id="previousWeek" style="width: 520px; height: 400px;">
+                            <!-- Plotly chart will be drawn inside this DIV -->
+                        </div>
                     </div>
                     <div ng-show="isSet(2)">
                         <h3>Taiga Data</h3>
@@ -68,7 +57,8 @@
                         <br><br>
                         <div ng-controller='StudentController'>
                             <nvd3 options='optionsForTaigaStudentTasks' data='dataForTaigaStudentTasks'></nvd3>
-
+                        </div>
+                        <div afterRender='fireRefreshEventOnWindow()' ng-controller='StudentController'>
                             <h3>Task Status Update Activity</h3><br>
                             <nvd3 options='optionsForTaigaStudentActivity' data='dataForTaigaStudentActivity'></nvd3>
                         </div>

@@ -22,6 +22,12 @@ public class WeeklyActivity {
     @Column(name = "weekEnding")
     private String weekEnding;
 
+    @Column(name = "rawWeekBeginning")
+    private long rawWeekBeginning;
+
+    @Column(name = "rawWeekEnding")
+    private long rawWeekEnding;
+
     @Column(name = "DoneActivity")
     private String DoneActivity;
 
@@ -34,15 +40,18 @@ public class WeeklyActivity {
     public WeeklyActivity() {
     }
 
-
-    public WeeklyActivity(String week, String weekBeginning, String weekEnding, String doneActivity, String inProgressActivity, String toTestActivity) {
+    public WeeklyActivity(String week, String weekBeginning, String weekEnding, long rawWeekBeginning, long rawWeekEnding, String doneActivity, String inProgressActivity, String toTestActivity) {
         this.week = week;
         this.weekBeginning = weekBeginning;
         this.weekEnding = weekEnding;
+        this.rawWeekBeginning = rawWeekBeginning;
+        this.rawWeekEnding = rawWeekEnding;
         this.DoneActivity = doneActivity;
         this.InProgressActivity = inProgressActivity;
         this.ToTestActivity = toTestActivity;
     }
+
+
 
 
     public String getWeek() {
@@ -67,6 +76,22 @@ public class WeeklyActivity {
 
     public void setWeekEnding(String weekEnding) {
         this.weekEnding = weekEnding;
+    }
+
+    public long getRawWeekBeginning() {
+        return rawWeekBeginning;
+    }
+
+    public void setRawWeekBeginning(long rawWeekBeginning) {
+        this.rawWeekBeginning = rawWeekBeginning;
+    }
+
+    public long getRawWeekEnding() {
+        return rawWeekEnding;
+    }
+
+    public void setRawWeekEnding(long rawWeekEnding) {
+        this.rawWeekEnding = rawWeekEnding;
     }
 
     public String getDoneActivity() {
