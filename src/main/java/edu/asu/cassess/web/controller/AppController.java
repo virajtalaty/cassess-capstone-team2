@@ -1,5 +1,6 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.GitHub.IGitHubQueryDao;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
@@ -35,6 +36,8 @@ import java.util.List;
 @Api(description = "Internal Calls API")
 public class AppController {
 
+    @Autowired
+    private IGitHubQueryDao gitHubQueryDao;
 
     @Autowired
     private ITaskTotalsQueryDao taskTotalService;
@@ -325,10 +328,10 @@ public class AppController {
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
 
-    //Current and last week weight for a student
+    //Current and last week Taiga weight for a student
     @ResponseBody
     @RequestMapping(value = "/taiga/student_quickweightFreq", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekStudentWeightFreq(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekStudentWeightFreqTG(@RequestHeader(name = "course", required = true) String course,
                                                                            @RequestHeader(name = "team", required = true) String team,
                                                                            @RequestHeader(name = "email", required = true) String email,
                                                                            String weekEnding, HttpServletRequest request, HttpServletResponse response) {
@@ -336,24 +339,55 @@ public class AppController {
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
 
-    //Current and last week average weight for a project
+    //Current and last week Taiga average weight for a project
     @ResponseBody
     @RequestMapping(value = "/taiga/team_quickweightFreq", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekProjectWeightFreq(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekTeamWeightFreqTG(@RequestHeader(name = "course", required = true) String course,
                                                                            @RequestHeader(name = "team", required = true) String team,
                                                                            String weekEnding, HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) taskTotalService.twoWeekWeightFreqByTeam(course, team);
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
 
-    //Current and last week average weight for a course
+    //Current and last week Taiga average weight for a course
     @ResponseBody
     @RequestMapping(value = "/taiga/course_quickweightFreq", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekCourseWeightFreq(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekCourseWeightFreqTG(@RequestHeader(name = "course", required = true) String course,
                                                                           String weekEnding, HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) taskTotalService.twoWeekWeightFreqByCourse(course);
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
+
+    //Current and last week GH weight for a student
+    @ResponseBody
+    @RequestMapping(value = "/github/student_quickweightFreq", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekStudentWeightFreqGH(@RequestHeader(name = "course", required = true) String course,
+                                                                             @RequestHeader(name = "team", required = true) String team,
+                                                                             @RequestHeader(name = "email", required = true) String email,
+                                                                             String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) gitHubQueryDao.getWeightFreqByStudent(course, team, email);
+        return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
+    }
+
+    //Current and last week GH average weight for a project
+    @ResponseBody
+    @RequestMapping(value = "/github/team_quickweightFreq", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekProjectWeightFreqGH(@RequestHeader(name = "course", required = true) String course,
+                                                                             @RequestHeader(name = "team", required = true) String team,
+                                                                             String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) gitHubQueryDao.getWeightFreqByTeam(course, team);
+        return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
+    }
+
+    //Current and last week GH average weight for a course
+    @ResponseBody
+    @RequestMapping(value = "/github/course_quickweightFreq", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyFreqWeight>> twoWeekCourseWeightFreqGH(@RequestHeader(name = "course", required = true) String course,
+                                                                            String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) gitHubQueryDao.getWeightFreqByCourse(course);
+        return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
+    }
+
 
     //Weekly task status averages for a student
     @ResponseBody
@@ -414,6 +448,7 @@ public class AppController {
         List<WeeklyAverages> averageList = (List<WeeklyAverages>) taskTotalService.lastTwoWeekAveragesByCourse(course);
         return new ResponseEntity<List<WeeklyAverages>>(averageList, HttpStatus.OK);
     }
+
 
     //End of New Charting Methods for Sprint 4
 
@@ -550,5 +585,7 @@ public class AppController {
             return null;
         }
     }
+
+
 
 }
