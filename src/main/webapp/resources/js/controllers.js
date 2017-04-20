@@ -688,7 +688,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 marker: {size:16},
                 line: {width: 50},
                 color: '#810',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -698,17 +698,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var layout = {
                 title: $scope.courseArrayTG[0].weekBeginning + ' to ' + $scope.courseArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
@@ -744,7 +751,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 line: {width: 50},
                 color: '#810',
                 width: 20,
-                showlegend: true,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -754,18 +760,25 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1];
 
             var layout = {
-                title: $scope.courseArrayTG[0].weekBeginning + ' to ' + $scope.courseArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                title: $scope.courseArrayTG[1].weekBeginning + ' to ' + $scope.courseArrayTG[1].weekEnding,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
@@ -1144,9 +1157,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 marker: {size:16},
                 line: {width: 50},
                 color: '#810',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
+                showlegend: true,
                 connectgaps: true
             };
 
@@ -1158,7 +1172,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 marker: {size:16},
                 line: {width: 50},
                 color: '#180',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1168,17 +1182,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var layout = {
                 title: $scope.teamArrayTG[0].weekBeginning + ' to ' + $scope.teamArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
@@ -1214,7 +1235,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 line: {width: 50},
                 color: '#810',
                 width: 20,
-                showlegend: true,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1228,7 +1248,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 marker: {size:16},
                 line: {width: 50},
                 color: '#180',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1238,18 +1258,25 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1, trace2];
 
             var layout = {
-                title: $scope.teamArrayTG[0].weekBeginning + ' to ' + $scope.teamArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                title: $scope.teamArrayTG[1].weekBeginning + ' to ' + $scope.teamArrayTG[1].weekEnding,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
@@ -1660,7 +1687,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 marker: {size:16},
                 line: {width: 50},
                 color: '#810',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1670,11 +1697,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 r: [$scope.teamArrayTG[0].weight*.75, $scope.teamArrayTG[0].frequency*.75, $scope.teamArrayGH[0].weight*.75, $scope.teamArrayGH[0].frequency*.75],
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
-                name: 'Course',
+                name: 'Team',
                 marker: {size:16},
                 line: {width: 50},
                 color: '#180',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1684,11 +1711,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 r: [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency],
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
-                name: 'Course',
+                name: 'Student',
                 marker: {size:16},
                 line: {width: 50},
                 color: '#118',
-                width: 50,
+                width: 2,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1698,17 +1725,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var layout = {
                 title: $scope.studentArrayTG[0].weekBeginning + ' to ' + $scope.studentArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
@@ -1744,7 +1778,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 line: {width: 50},
                 color: '#810',
                 width: 20,
-                showlegend: true,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1754,11 +1787,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 r: [$scope.teamArrayTG[1].weight*.75, $scope.teamArrayTG[1].frequency*.75, $scope.teamArrayGH[1].weight*.75, $scope.teamArrayGH[1].frequency*.75],
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
-                name: 'Course',
+                name: 'Team',
                 marker: {size:16},
                 line: {width: 50},
                 color: '#180',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1768,11 +1801,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 r: [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency],
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
-                name: 'Course',
+                name: 'Student',
                 marker: {size:16},
                 line: {width: 50},
                 color: '#118',
-                width: 50,
+                width: 20,
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1780,18 +1813,25 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var data = [trace1, trace2, trace3];
             var layout = {
-                title: $scope.studentArrayTG[0].weekBeginning + ' to ' + $scope.studentArrayTG[0].weekEnding,
-                autosize: false,
-                width: 500,
+                title: $scope.studentArrayTG[1].weekBeginning + ' to ' + $scope.studentArrayTG[1].weekEnding,
+                showlegend: true,
+                width: 600,
                 height: 400,
                 margin: {
-                    l: 100,
-                    r: 100,
+                    l: 40,
+                    r: 250,
                     b: 20,
-                    t: 50,
+                    t: 40,
                     pad: 0
                 },
-                legend: {traceorder: 'reversed'
+                legend: {
+                    r: 4,
+                    t: 340,
+                    font: {
+                        family: 'sans-serif',
+                        size: 10,
+                        color: '#000'
+                    }
                 },
                 font: {
                     family: 'Arial',
