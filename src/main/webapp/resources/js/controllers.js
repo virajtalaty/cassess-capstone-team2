@@ -1008,21 +1008,25 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             chart: {
                 type: 'lineChart',
                 height: 450,
-                margin : {
+                margin: {
                     top: 50,
                     right: 150,
                     bottom: 100,
-                    left:100
+                    left: 100
                 },
 
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
+                x: function (d) {
+                    return d[0];
+                },
+                y: function (d) {
+                    return d[1];
+                },
 
                 useInteractiveGuideline: true,
 
                 xAxis: {
                     axisLabel: 'Week Ending On',
-                    tickFormat: function(d) {
+                    tickFormat: function (d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },
 
@@ -1033,21 +1037,28 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 yAxis: {
                     axisLabel: 'Taiga Task Activity',
                     axisLabelDistance: 0,
-                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                    tickValues: [0, 5, 10, 15, 20, 25, 30]
                 },
 
-                yDomain:[0, 30]
+                yDomain: [0, 30]
 
             }
         };
 
-        function getDataForTeamTaigaActivityCharts(array){
+        function getDataForTeamTaigaActivityCharts(array) {
 
-            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+            var data = [];
+            var inProgress = [];
+            var toTest = [];
+            var done = [];
+            var expected = [];
 
-            for (var i = 0; i < array.length; i++){
+            for (var i = 0; i < array.length; i++) {
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
+                var valueset1 = [];
+                var valueset2 = [];
+                var valueset3 = [];
+                var valueset4 = [];
 
                 valueset1.push(Date.parse(array[i].weekEnding));
                 valueset1.push(array[i].inProgressActivity);
@@ -1136,15 +1147,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             chart: {
                 type: 'multiBarChart',
                 height: 450,
-                margin : {
+                margin: {
                     top: 50,
                     right: 150,
                     bottom: 100,
-                    left:100
+                    left: 100
                 },
 
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
+                x: function (d) {
+                    return d[0];
+                },
+                y: function (d) {
+                    return d[1];
+                },
 
                 clipEdge: true,
                 duration: 500,
@@ -1162,13 +1177,18 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
         };
 
-        function getDataForTaigaTeamTasks(array){
+        function getDataForTaigaTeamTasks(array) {
 
-            var data = []; var inProgress = []; var toTest = []; var done =[];
+            var data = [];
+            var inProgress = [];
+            var toTest = [];
+            var done = [];
 
-            for (var i = 0; i < array.length; i++){
+            for (var i = 0; i < array.length; i++) {
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+                var valueset1 = [];
+                var valueset2 = [];
+                var valueset3 = [];
 
                 valueset1.push(array[i].date);
                 valueset1.push(array[i].inProgress);
@@ -1191,7 +1211,68 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        function getTeamData() {
+            $http({
+                url: './team_students',
+                method: "GET",
+                headers: {'course': courseService.getCourse(), 'team': teamService.getTeam()}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.students = response.data;
+            });
+        }
+
+        function getEmails(array){
+
+            var emails = [];
+
+            for (var i = 0; i < array.length; i++){
+                var emails = [];
+               emails.push(array[i].email);
+            }
+
+            sendRequests(emails);
+        }
+
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function sendRequests(array) {
+            var teamCommits = [];
+
+            for (var i = 0; i < array.length; i++) {
+
+                var list = getGitHubCommitsData(array[i]);
+
+                for (var j = 0; j < list.length; i++){
+                    teamCommits.concat(list[j]);
+                }
+            }
+
+            getDataForGitHubTeamCommitsCharts(teamCommits);
+        }
+
+        function getGitHubCommitsData(email) {
+            var teamCommits = [];
+
+            $http({
+                url: './github/commits',
+                method: "GET",
+                headers: {'email': email}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Data is showing: !");
+                console.log(response.data);
+                return response.data;
+            });
+        }
+
+        var teamCommits = [];
+
+        function gatherTeamCommits(array){
+            teamCommits.concat(array);
+        }
+
+
 
         function getDataForGitHubTeamCommitsCharts(array){
 
@@ -1215,9 +1296,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeDeleted.push(valueset3);
             }
 
+            for(var i = 0; i < array.length; i++){
+
+            }
+
             data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
             return data;
         }
@@ -1585,8 +1670,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
         };
 
-        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
-
         function getDataForGitHubStudentCommitsCharts(array){
 
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
@@ -1595,13 +1678,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = [];var valueset3 = [];
 
-                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].gitHubDataPK.date);
                 valueset1.push(array[i].commits);
 
-                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].gitHubDataPK.date);
                 valueset2.push(array[i].linesOfCodeAdded/1000);
 
-                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].gitHubDataPK.date);
                 valueset3.push(array[i].linesOfCodeDeleted/100);
 
                 commits.push(valueset1);
@@ -1667,8 +1750,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
 
-        ////* Function to Parse GitHub Weight for Line Chart * ////
-
         function getDataForGitHubStudentWeightCharts(array){
 
             var weight = []; var expected = []; var data = [];
@@ -1677,10 +1758,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = [];
 
-                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(Date.parse(array[i].gitHubDataPK.date));
                 valueset1.push(array[i].weight);
 
-                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(Date.parse(array[i].gitHubDataPK.date));
                 valueset2.push(2);
 
                 weight.push(valueset1);
