@@ -1429,6 +1429,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked This shows the intervals!");
                 console.log(response.data);
                 $scope.studentIntervals = response.data;
+                getGitHubCommitsData();
             });
         }
 
@@ -1540,6 +1541,50 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        function getGitHubCommitsData() {
+            $http({
+                url: './github/commits',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Data is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
+                getGitHubWeightData();
+            });
+        }
+
+        $scope.optionsForGitHubStudentCommits = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Commit Counts',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
         function getDataForGitHubStudentCommitsCharts(array){
@@ -1565,11 +1610,62 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
 
             data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
             return data;
         }
+
+        function getGitHubWeightData() {
+            $http({
+                url: './github/weight',
+                method: "GET",
+                headers: {'email': studentemail}
+            }).then(function (response) {
+                console.log("Worked This is what the GitHub Weight is showing: !");
+                console.log(response.data);
+                $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+            });
+        }
+
+        $scope.optionsForGitHubStudentWeight = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Task Updates Weight',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 3, 6, 9, 12, 15]
+                },
+
+                yDomain:[0, 15]
+
+            }
+        };
+
 
         ////* Function to Parse GitHub Weight for Line Chart * ////
 
