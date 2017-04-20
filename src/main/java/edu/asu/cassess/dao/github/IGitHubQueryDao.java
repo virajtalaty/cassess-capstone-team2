@@ -1,4 +1,4 @@
-package edu.asu.cassess.dao.GitHub;
+package edu.asu.cassess.dao.github;
 
 import edu.asu.cassess.model.Taiga.WeeklyFreqWeight;
 import org.springframework.dao.DataAccessException;

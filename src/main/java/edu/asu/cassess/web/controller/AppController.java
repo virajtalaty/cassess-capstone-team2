@@ -1,5 +1,8 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.github.IGitHubCommitDataDao;
+import edu.asu.cassess.dao.github.IGitHubQueryDao;
+import edu.asu.cassess.dao.github.IGitHubWeightDao;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
