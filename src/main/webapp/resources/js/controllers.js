@@ -2116,13 +2116,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = [];var valueset3 = [];
 
-                valueset1.push(array[i].GitHubDataPK.date);
+                valueset1.push(array[i].gitHubDataPK.date);
                 valueset1.push(array[i].commits);
 
-                valueset2.push(array[i].GitHubDataPK.date);
+                valueset2.push(array[i].gitHubDataPK.date);
                 valueset2.push(array[i].linesOfCodeAdded/1000);
 
-                valueset3.push(array[i].GitHubDataPK.date);
+                valueset3.push(array[i].gitHubDataPK.date);
                 valueset3.push(array[i].linesOfCodeDeleted/100);
 
                 commits.push(valueset1);
@@ -2198,10 +2198,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = [];
 
-                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset1.push(Date.parse(array[i].gitHubDataPK.date));
                 valueset1.push(array[i].weight);
 
-                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
+                valueset2.push(Date.parse(array[i].gitHubDataPK.date));
                 valueset2.push(2);
 
                 weight.push(valueset1);
