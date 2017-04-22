@@ -15,7 +15,7 @@ public class SlackMessage {
     private String type;
     private String user;
     private String text;
-    private String ts;
+    private long ts;
 
     public SlackMessage() {
 
@@ -80,14 +80,14 @@ public class SlackMessage {
     /**
      * @return the ts
      */
-    public String getTs() {
+    public long getTs() {
         return ts;
     }
 
     /**
      * @param ts the ts to set
      */
-    public void setTs(String ts) {
+    public void setTs(long ts) {
         this.ts = ts;
     }
 

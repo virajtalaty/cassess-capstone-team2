@@ -11,25 +11,17 @@ public class UserObject {
 
     @Transient
     private boolean ok;
-    private String warning;
-    private String error;
-    private long cache_ts; //time stamp of retrieval
     @Id
     private String id;
     private String team_id;
     private String name;
     private boolean deleted;
     private String status;
-    private String color;
     private String real_name;
-    private String tz;
-    private String tz_label;
-    private long tz_offset;
     @Embedded
     private UserProfile profile;
     private boolean is_admin;
     private boolean is_owner;
-    private boolean has_2fa;
 
     /**
      * @return the ok
@@ -43,48 +35,6 @@ public class UserObject {
      */
     public void setOk(boolean ok) {
         this.ok = ok;
-    }
-
-    /**
-     * @return the warning
-     */
-    public String getWarning() {
-        return warning;
-    }
-
-    /**
-     * @param warning the warning to set
-     */
-    public void setWarning(String warning) {
-        this.warning = warning;
-    }
-
-    /**
-     * @return the error
-     */
-    public String getError() {
-        return error;
-    }
-
-    /**
-     * @param error the error to set
-     */
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    /**
-     * @return the cache_ts
-     */
-    public long getCache_ts() {
-        return cache_ts;
-    }
-
-    /**
-     * @param cache_ts the cache_ts to set
-     */
-    public void setCache_ts(long cache_ts) {
-        this.cache_ts = cache_ts;
     }
 
     /**
@@ -158,20 +108,6 @@ public class UserObject {
     }
 
     /**
-     * @return the color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    /**
      * @return the real_name
      */
     public String getReal_name() {
@@ -183,48 +119,6 @@ public class UserObject {
      */
     public void setReal_name(String real_name) {
         this.real_name = real_name;
-    }
-
-    /**
-     * @return the tz
-     */
-    public String getTz() {
-        return tz;
-    }
-
-    /**
-     * @param tz the tz to set
-     */
-    public void setTz(String tz) {
-        this.tz = tz;
-    }
-
-    /**
-     * @return the tz_label
-     */
-    public String getTz_label() {
-        return tz_label;
-    }
-
-    /**
-     * @param tz_label the tz_label to set
-     */
-    public void setTz_label(String tz_label) {
-        this.tz_label = tz_label;
-    }
-
-    /**
-     * @return the tz_offset
-     */
-    public long getTz_offset() {
-        return tz_offset;
-    }
-
-    /**
-     * @param tz_offset the tz_offset to set
-     */
-    public void setTz_offset(long tz_offset) {
-        this.tz_offset = tz_offset;
     }
 
     /**
@@ -267,20 +161,6 @@ public class UserObject {
      */
     public void setIs_owner(boolean is_owner) {
         this.is_owner = is_owner;
-    }
-
-    /**
-     * @return the has_2fa
-     */
-    public boolean isHas_2fa() {
-        return has_2fa;
-    }
-
-    /**
-     * @param has_2fa the has_2fa to set
-     */
-    public void setHas_2fa(boolean has_2fa) {
-        this.has_2fa = has_2fa;
     }
 
 }
