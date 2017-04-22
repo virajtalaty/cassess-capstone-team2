@@ -685,10 +685,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#810',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -697,39 +699,42 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1];
 
             var layout = {
-                title: $scope.courseArrayTG[0].weekBeginning + ' to ' + $scope.courseArrayTG[0].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1,
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
@@ -747,10 +752,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#810',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -760,42 +767,46 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1];
 
             var layout = {
-                title: $scope.courseArrayTG[1].weekBeginning + ' to ' + $scope.courseArrayTG[1].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1,
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
+
             };
 
             Plotly.newPlot('previousWeek', data, layout);
@@ -1154,10 +1165,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#810',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 showlegend: true,
@@ -1169,10 +1182,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Team',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#180',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#180',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1181,39 +1196,42 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1, trace2];
 
             var layout = {
-                title: $scope.teamArrayTG[0].weekBeginning + ' to ' + $scope.teamArrayTG[0].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1,
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
@@ -1231,10 +1249,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#810',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1245,10 +1265,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Team',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#180',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#180',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1258,42 +1280,46 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1, trace2];
 
             var layout = {
-                title: $scope.teamArrayTG[1].weekBeginning + ' to ' + $scope.teamArrayTG[1].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1,
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
+
             };
 
             Plotly.newPlot('previousWeek', data, layout);
@@ -1679,15 +1705,18 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function plotCurrentWeek() {
+
             var trace1 = {
                 r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                        line: {
+                            color: '#810',
+                            width: 4
+                            }
+                        },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1698,10 +1727,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Team',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#180',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#180',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1712,10 +1743,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Student',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#118',
-                width: 2,
+                marker: {size:16,
+                    line: {
+                        color: '#118',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1724,39 +1757,42 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var data = [trace1, trace2, trace3];
 
             var layout = {
-                title: $scope.studentArrayTG[0].weekBeginning + ' to ' + $scope.studentArrayTG[0].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
@@ -1774,10 +1810,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Course',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#810',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#810',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1788,10 +1826,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Team',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#180',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#180',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1802,10 +1842,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
                 mode: 'lines+markers',
                 name: 'Student',
-                marker: {size:16},
-                line: {width: 50},
-                color: '#118',
-                width: 20,
+                marker: {size:16,
+                    line: {
+                        color: '#118',
+                        width: 4
+                    }
+                },
                 type: 'scatter',
                 hoverinfo: ["r"],
                 connectgaps: true
@@ -1813,44 +1855,47 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var data = [trace1, trace2, trace3];
             var layout = {
-                title: $scope.studentArrayTG[1].weekBeginning + ' to ' + $scope.studentArrayTG[1].weekEnding,
+                font: {
+                    family: 'Arial',
+                    size: 12,
+                    color: '#066'
+                },
                 showlegend: true,
                 width: 600,
                 height: 400,
                 margin: {
                     l: 40,
                     r: 250,
-                    b: 20,
-                    t: 40,
+                    b: 30,
+                    t: 10,
                     pad: 0
                 },
                 legend: {
                     r: 4,
                     t: 340,
                     font: {
-                        family: 'sans-serif',
-                        size: 10,
+                        family: 'arial, sans-serif',
+                        size: 14,
                         color: '#000'
-                    }
-                },
-                font: {
-                    family: 'Arial',
-                    size: 16,
-                    color: '#066'
+                    },
                 },
                 angularaxis: {
-                    tickorientation:'vertical'
+                    tickorientation:'vertical',
+                    tickfont:
+                        {
+                            family: 'sans-serif',
+                            size: 10,
+                            color: '#000'
+                        }
                 },
                 radialaxis: {
                     range:[0,3],
-                    tickfont: {
-                        size: 1
-                    }
+                    showticklabels: false,
                 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)'
-            };
 
+            };
             Plotly.newPlot('previousWeek', data, layout);
             getTaigaActivity();
         }
@@ -2224,40 +2269,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
     }])
-    .controller("TaigaAdmin", ['$scope', '$http', function ($scope, $http) {
+    .controller("TaigaGitHubAdmin", ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
-        $scope.updateTaigaProjects = function () {
+        $scope.updateGitHubCommitWeight = function () {
             $http({
-                url: './taiga/Update/Projects',
+                url: './github/weight',
                 method: "POST"
             }).then(function (response) {
                 console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("GitHub Commit and Weight Data Successfully Updated");
             }, function (response) {
-                //fail case
                 console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
-            });
-
-        };
-
-        $scope.updateTaigaMemberships = function () {
-            $http({
-                url: './taiga/Update/Memberships',
-                method: "POST"
-            }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
-            }, function (response) {
-                //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("GitHub Commit and Weight Data Not Successfully Updated");
             });
 
         };
@@ -2267,14 +2292,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/Update/Tasks',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("Taiga Task Totals Data Successfully Updated");
             }, function (response) {
-                //fail case
                 console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("Taiga Task Totals Data Not Successfully Updated");
             });
 
         };

@@ -31,10 +31,13 @@
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
                         <h3>Taiga and Github Frequency/Impact</h3>
+                        <br>
+                        <br>
+                        <label style="color: #066" >{{courseArrayTG[0].weekBeginning}}  To  {{courseArrayTG[0].weekEnding}}</label>
                         <div ng-controller='CourseController' id="currentWeek">
                             <!-- Plotly chart will be drawn inside this DIV -->
                         </div>
-
+                        <label style="color: #066">{{courseArrayTG[1].weekBeginning}}  To  {{courseArrayTG[1].weekEnding}}</label>
                         <div ng-controller='CourseController' id="previousWeek">
                             <!-- Plotly chart will be drawn inside this DIV -->
                         </div>
