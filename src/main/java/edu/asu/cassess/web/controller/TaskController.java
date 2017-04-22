@@ -1,6 +1,5 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.dao.github.IGitHubCommitDataDao;
 import edu.asu.cassess.model.Taiga.CourseList;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Team;
@@ -22,7 +21,7 @@ import java.util.List;
 public class TaskController {
 
 	@Autowired
-	ITaskDataService taigaDataService;
+	private ITaskDataService taigaDataService;
 
     @EJB
     private ICourseService coursesService;
@@ -31,22 +30,24 @@ public class TaskController {
     private ITeamsService teamsService;
 
     @Autowired
-    private IGitHubCommitDataDao commitDao;
-
-    @Autowired
     private IGatherGitHubData gatherData;
 	
 	@Scheduled(cron = "${taiga.cron.expression}")
 	public void TaigaTasks() {
-		System.out.println("cron ran as scheduled");
+        List<CourseList> courseList = coursesService.listGetCourses();
+        for (CourseList course : courseList) {
+            taigaDataService.updateTaskTotals(course.getCourse());
+        }
+		System.out.println("taiga cron ran as scheduled");
+	}
+
+    @Scheduled(cron = "${github.cron.expression}")
+    public void GitHubCommits() {
         List<Team> teams = teamsService.listReadAll();
         for(Team team: teams){
             Course course = (Course) coursesService.read(team.getCourse());
             gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
         }
-        List<CourseList> courseList = coursesService.listGetCourses();
-        for (CourseList course : courseList) {
-            taigaDataService.updateTaskTotals(course.getCourse());
-        }
-	}
+        System.out.println("github cron ran as scheduled");
+    }
 }
