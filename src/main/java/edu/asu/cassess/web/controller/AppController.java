@@ -3,6 +3,7 @@ package edu.asu.cassess.web.controller;
 import edu.asu.cassess.dao.github.IGitHubCommitDataDao;
 import edu.asu.cassess.dao.github.IGitHubQueryDao;
 import edu.asu.cassess.dao.github.IGitHubWeightDao;
+import edu.asu.cassess.dao.slack.IConsumeUsers;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
@@ -19,6 +20,7 @@ import edu.asu.cassess.security.SecurityUtils;
 import edu.asu.cassess.service.github.IGatherGitHubData;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.security.IUserService;
+import edu.asu.cassess.service.slack.IChannelHistoryService;
 import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
 import edu.asu.cassess.service.taiga.ITaskDataService;
@@ -44,22 +46,16 @@ import java.util.List;
 public class AppController {
 
     @Autowired
+    private IConsumeUsers consumeUsers;
+
+    @Autowired
+    private IChannelHistoryService channelHistoryService;
+
+    @Autowired
     private IGitHubQueryDao gitHubQueryDao;
 
     @Autowired
     private ITaskTotalsQueryDao taskTotalService;
-
-    @Autowired
-    private ICourseService coursesService;
-
-    @Autowired
-    private ITeamsService teamsService;
-
-    @Autowired
-    private IStudentsService studentsService;
-
-    @Autowired
-    private IAdminsService adminsService;
 
     @Autowired
     private ITaskDataService taskService;
@@ -124,7 +120,7 @@ public class AppController {
     @RequestMapping(value = "/admin_courses", method = RequestMethod.GET)
     public List<CourseList> getAdminCourses(@RequestHeader(name = "email", required = true) String email,
                                             HttpServletRequest request, HttpServletResponse response) {
-        return adminsService.listGetCoursesForAdmin(email);
+        return adminService.listGetCoursesForAdmin(email);
 
     }
 
@@ -136,7 +132,7 @@ public class AppController {
     public ResponseEntity<List<TeamNames>> getCourseTeams(@RequestHeader(name = "course", required = true) String course,
                                                           HttpServletRequest request, HttpServletResponse response) {
         //System.out.print("Course: " + course);
-        List<TeamNames> teamList = (List<TeamNames>) teamsService.listGetTeamNames(course);
+        List<TeamNames> teamList = (List<TeamNames>) teamService.listGetTeamNames(course);
         //for(TeamNames team:teamList){
         //System.out.print("Team: " + team.getTeam());
         //}
@@ -150,7 +146,7 @@ public class AppController {
                                                          @RequestHeader(name = "team", required = true) String team,
                                                          HttpServletRequest request, HttpServletResponse response) {
         //System.out.print("Team: " + team);
-        List<Student> studentList = (List<Student>) studentsService.listReadByTeam(course, team);
+        List<Student> studentList = (List<Student>) studentService.listReadByTeam(course, team);
         //for(Student student:studentList){
         //System.out.print("Student: " + student.getFull_name());
         //}
@@ -164,7 +160,7 @@ public class AppController {
     @RequestMapping(value = "/student_courses", method = RequestMethod.GET)
     public List<CourseList> getStudentCourses(@RequestHeader(name = "email", required = true) String email,
                                               HttpServletRequest request, HttpServletResponse response) {
-        return studentsService.listGetCoursesForStudent(email);
+        return studentService.listGetCoursesForStudent(email);
 
     }
 
@@ -175,7 +171,7 @@ public class AppController {
                                             @RequestHeader(name = "course", required = true) String course,
                                             HttpServletRequest request, HttpServletResponse response) {
 
-        return studentsService.listGetAssignedTeams(email, course);
+        return studentService.listGetAssignedTeams(email, course);
     }
 
     @ResponseBody
@@ -185,7 +181,7 @@ public class AppController {
                                     @RequestHeader(name = "course", required = true) String course,
                                     HttpServletRequest request, HttpServletResponse response) {
 
-        return studentsService.listReadSingleStudent(course, team, email);
+        return studentService.listReadSingleStudent(course, team, email);
     }
     //End of New Student Course and Project list methods
 
@@ -193,7 +189,7 @@ public class AppController {
     //---------------------------------------------------------------------------------------------
 
 
-    //New Charting Query Based Methods for Sprint 4
+    //New Taiga Charting Query Based Methods for Sprint 4
 
     //Daily task totals for a student
     @ResponseBody
@@ -466,7 +462,7 @@ public class AppController {
     }
 
 
-    //End of New Charting Methods for Sprint 4
+    //End of New Taiga Charting Methods for Sprint 4
 
     //-----------------------------------------------------------------------------------
 
@@ -475,14 +471,14 @@ public class AppController {
     //For Admins not assigned to a particular course, but system-Admins
     @RequestMapping(value = "/taigaCourses", method = RequestMethod.GET)
     public ResponseEntity<List<CourseList>> getCourses(HttpServletRequest request, HttpServletResponse response) {
-        List<CourseList> courseList = (List<CourseList>) coursesService.listGetCourses();
+        List<CourseList> courseList = (List<CourseList>) courseService.listGetCourses();
         return new ResponseEntity<List<CourseList>>(courseList, HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/taiga/Update/Projects", method = RequestMethod.POST)
-    public void updateProjects(HttpServletRequest request, HttpServletResponse response) {
-        List<CourseList> courseList = coursesService.listGetCourses();
+    public void updateTaigaProjects(HttpServletRequest request, HttpServletResponse response) {
+        List<CourseList> courseList = courseService.listGetCourses();
         for (CourseList course : courseList) {
             //System.out.print("Course: " + course.getCourse());
             projects.updateProjects(course.getCourse());
@@ -490,8 +486,8 @@ public class AppController {
     }
 
     @RequestMapping(value = "/taiga/Update/Memberships", method = RequestMethod.POST)
-    public void updateMemberships(HttpServletRequest request, HttpServletResponse response) {
-        List<CourseList> courseList = coursesService.listGetCourses();
+    public void updateTaigaMemberships(HttpServletRequest request, HttpServletResponse response) {
+        List<CourseList> courseList = courseService.listGetCourses();
         for (CourseList course : courseList) {
             //System.out.print("Course: " + course.getCourse());
             members.updateMembership(course.getCourse());
@@ -499,11 +495,31 @@ public class AppController {
     }
 
     @RequestMapping(value = "/taiga/Update/Tasks", method = RequestMethod.POST)
-    public void updateTasks(HttpServletRequest request, HttpServletResponse response) {
-        List<CourseList> courseList = coursesService.listGetCourses();
+    public void updateTaigaTasks(HttpServletRequest request, HttpServletResponse response) {
+        List<CourseList> courseList = courseService.listGetCourses();
         for (CourseList course : courseList) {
             //System.out.print("Course: " + course.getCourse());
             taskService.updateTaskTotals(course.getCourse());
+        }
+    }
+
+    //---------- Slack Routes -----------------
+
+    @RequestMapping(value = "/slack/update_users", method = RequestMethod.POST)
+    public void updateSlackUses(HttpServletRequest request, HttpServletResponse response) {
+        List<CourseList> courseList = courseService.listGetCourses();
+        for (CourseList course : courseList) {
+            //System.out.print("Course: " + course.getCourse());
+            consumeUsers.updateSlackUsers(course.getCourse());
+        }
+    }
+
+    @RequestMapping(value = "/slack/update_messageTotals", method = RequestMethod.POST)
+    public void updateSlackMessageTotals(HttpServletRequest request, HttpServletResponse response) {
+        List<CourseList> courseList = courseService.listGetCourses();
+        for (CourseList course : courseList) {
+            //System.out.print("Course: " + course.getCourse());
+            channelHistoryService.updateMessageTotals(course.getCourse());
         }
     }
 
@@ -512,7 +528,7 @@ public class AppController {
     //GET the weights for the selected email
     @RequestMapping(value = "github/weight", method = RequestMethod.GET)
     public
-    ResponseEntity<List<GitHubWeight>> getWeight(@RequestHeader(name = "email") String email,
+    ResponseEntity<List<GitHubWeight>> getGitHubWeight(@RequestHeader(name = "email") String email,
                    HttpServletRequest request, HttpServletResponse response){
         List<GitHubWeight> weightList = weightDao.getWeightByEmail(email);
         return new ResponseEntity<List<GitHubWeight>>(weightList, HttpStatus.OK);
@@ -521,9 +537,9 @@ public class AppController {
     @RequestMapping(value = "github/weight", method = RequestMethod.POST)
     public
     void updateGitHubData(HttpServletRequest request, HttpServletResponse response){
-        List<Team> teams = teamsService.listReadAll();
+        List<Team> teams = teamService.listReadAll();
         for(Team team: teams){
-            Course course = (Course) coursesService.read(team.getCourse());
+            Course course = (Course) courseService.read(team.getCourse());
             gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
         }
     }
@@ -531,7 +547,7 @@ public class AppController {
     //GET the commits for the selected email
     @RequestMapping(value = "github/commits", method = RequestMethod.GET)
     public
-    ResponseEntity<List<CommitData>> getCommits(@RequestHeader(name = "email") String email,
+    ResponseEntity<List<CommitData>> getGitHubCommits(@RequestHeader(name = "email") String email,
                                                 HttpServletRequest request, HttpServletResponse response){
         List<CommitData> commitList = commitDao.getCommitByEmail(email);
         return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);

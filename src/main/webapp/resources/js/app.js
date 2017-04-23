@@ -43,9 +43,9 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.super_user]
         }
-    }).when('/taiga_github_admin', {
-        templateUrl: 'partials/taigaGithubAdmin.html',
-        controller: 'TaigaGitHubAdmin',
+    }).when('/agile_tool_admin', {
+        templateUrl: 'partials/AgileToolAdmin.html',
+        controller: 'AgileToolAdmin',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.super_user]

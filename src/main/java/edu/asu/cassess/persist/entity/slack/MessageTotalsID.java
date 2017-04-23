@@ -3,6 +3,7 @@ package edu.asu.cassess.persist.entity.slack;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -48,8 +49,7 @@ public class MessageTotalsID implements Serializable {
             return retrievalDate;
         }
 
-        public void setRetrievalDate(String retrievalDate) {
-
+        public void setRetrievalDate() {
             Date date = new Date();
             this.retrievalDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
         }

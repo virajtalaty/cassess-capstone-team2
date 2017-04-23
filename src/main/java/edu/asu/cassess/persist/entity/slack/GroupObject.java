@@ -35,9 +35,6 @@ public class GroupObject {
     })
     private SlackGroupObject purpose;
     private String last_read;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private SlackMessage latest;
     private long unread_count;
     private long unread_count_display;
 
@@ -197,20 +194,6 @@ public class GroupObject {
      */
     public void setLast_read(String last_read) {
         this.last_read = last_read;
-    }
-
-    /**
-     * @return the latest
-     */
-    public SlackMessage getLatest() {
-        return latest;
-    }
-
-    /**
-     * @param latest the latest to set
-     */
-    public void setLatest(SlackMessage latest) {
-        this.latest = latest;
     }
 
     /**

@@ -2269,7 +2269,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
     }])
-    .controller("TaigaGitHubAdmin", ['$scope', '$http', '$window', function ($scope, $http, $window) {
+    .controller("AgileToolAdmin", ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
@@ -2296,6 +2296,32 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }, function (response) {
                 console.log("didn't work");
                 $window.alert("Taiga Task Totals Data Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateSlackUsers = function () {
+            $http({
+                url: './slack/update_users',
+                method: "POST"
+            }).then(function (response) {
+                $window.alert("Slack Users Successfully Updated");
+            }, function (response) {
+                console.log("didn't work");
+                $window.alert("Slack Users Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateSlackMessageTotals = function () {
+            $http({
+                url: './slack/update_messageTotals',
+                method: "POST"
+            }).then(function (response) {
+                $window.alert("Slack Message Totals Successfully Updated");
+            }, function (response) {
+                console.log("didn't work");
+                $window.alert("Slack Message Totals Not Successfully Updated");
             });
 
         };

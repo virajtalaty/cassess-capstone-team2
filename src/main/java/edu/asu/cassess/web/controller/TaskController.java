@@ -6,6 +6,7 @@ import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.service.github.IGatherGitHubData;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.ITeamsService;
+import edu.asu.cassess.service.slack.IChannelHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +23,9 @@ public class TaskController {
 
 	@Autowired
 	private ITaskDataService taigaDataService;
+
+    @Autowired
+    private IChannelHistoryService channelHistoryService;
 
     @EJB
     private ICourseService coursesService;
@@ -49,5 +53,15 @@ public class TaskController {
             gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
         }
         System.out.println("github cron ran as scheduled");
+    }
+
+    @Scheduled(cron = "${slack.cron.expression}")
+    public void SlackMessages() {
+    List<CourseList> courseList = coursesService.listGetCourses();
+        for (CourseList course : courseList) {
+        //System.out.print("Course: " + course.getCourse());
+        channelHistoryService.updateMessageTotals(course.getCourse());
+        }
+        System.out.println("slack cron ran as scheduled");
     }
 }
