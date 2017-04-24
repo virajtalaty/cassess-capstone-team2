@@ -42,7 +42,7 @@ public class SlackMessageQueryDao implements ISlackMessageQueryDao{
     @Override
     @Transactional
     public int getMessageCount(String user) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.slack_messages WHERE user = ?1", MessageCount.class);
+        Query query = getEntityManager().createNativeQuery("SELECT COUNT(*) AS total FROM cassess.slack_messages WHERE user = ?1 AND LENGTH(text) > 20", MessageCount.class);
         query.setParameter(1, user);
         List<MessageCount> messageCount = query.getResultList();
         int result = messageCount.get(0).getTotal();

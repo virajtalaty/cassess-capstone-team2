@@ -28,7 +28,6 @@ public class SlackMessage implements Serializable {
     @Column(name="text")
     private String text;
 
-
     public SlackMessage() {
 
     }
@@ -65,6 +64,8 @@ public class SlackMessage implements Serializable {
      * @param text the text to set
      */
     public void setText(String text) {
+        int maxLength = (text.length() < 255)?text.length():255;
+        text = text.substring(0, maxLength);
         this.text = text;
     }
 

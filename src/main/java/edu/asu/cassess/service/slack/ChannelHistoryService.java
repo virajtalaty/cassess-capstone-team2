@@ -57,9 +57,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
     @Override
     public MessageList getMessages(String channel, String token, long unixOldest, long unixCurrent) {
 
-        long nextUnixOldest = 0;
-
-        long nextUnixCurrent = unixOldest;
+        long nextUnixCurrent = 0;
 
         System.out.println("----------------------------**********************************************=========UnixCurrent: " + unixCurrent);
 
@@ -89,15 +87,15 @@ public class ChannelHistoryService implements IChannelHistoryService {
             slackMessageRepo.save(slackMessage);
             index++;
             if(index == (slackMessages.length -1)){
-                nextUnixOldest = (long) Math.floor(slackMessage.getTs());
-                System.out.println("----------------------------**********************************************=========NextUnixOldest: " + nextUnixOldest);
+                nextUnixCurrent = (long) Math.floor(slackMessage.getTs());
+                System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
             }
         }
 
         System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
-            return getMessages(channel, token, nextUnixOldest, nextUnixCurrent);
+            return getMessages(channel, token, unixOldest, nextUnixCurrent);
         } else {
             return messageList.getBody();
         }
