@@ -59,7 +59,6 @@ public class TaskController {
     public void SlackMessages() {
     List<CourseList> courseList = coursesService.listGetCourses();
         for (CourseList course : courseList) {
-        //System.out.print("Course: " + course.getCourse());
         channelHistoryService.updateMessageTotals(course.getCourse());
         }
         System.out.println("slack cron ran as scheduled");

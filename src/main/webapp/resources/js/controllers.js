@@ -696,7 +696,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course"];
-            $scope.currentWeekData = [[$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency]];
+            $scope.currentWeekData = [[$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94]];
 
             plotPreviousWeek();
         }
@@ -706,11 +706,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course"];
-            $scope.previousWeekData = [[$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency]];
+            $scope.previousWeekData = [[$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88]];
 
             getTaigaActivity();
         }
-
 
         function getTaigaActivity() {
             $http({
@@ -1028,7 +1027,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var valueset1 = [];var valueset2 = []
 
                 valueset1.push(array[i].rawWeekEnding*1000);
-                valueset1.push(array[i].total);
+
+                if(array[i]==null){
+                    valueset1.push(0);
+                }else{
+                    valueset1.push(array[i].total);
+                }
 
                 valueset2.push(array[i].rawWeekEnding*1000);
                 valueset2.push(100);
@@ -1210,7 +1214,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team"];
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency],
+                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
                 [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency]
             ];
 
@@ -1224,7 +1228,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency],
+                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
                 [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency]
             ];
 
@@ -1669,7 +1673,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var valueset1 = [];var valueset2 = []
 
                 valueset1.push(array[i].rawWeekEnding*1000);
-                valueset1.push(array[i].total);
+                if(array[i]==null){
+                    valueset1.push(0);
+                }else{
+                    valueset1.push(array[i].total);
+                }
 
                 valueset2.push(array[i].rawWeekEnding*1000);
                 valueset2.push(100);
@@ -1881,6 +1889,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
+                console.log("Slack");
+                console.log(response.data);
                 $scope.studentArraySK = response.data;
                 plotCurrentWeek();
             });
@@ -1892,7 +1902,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team", "Student"];
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency],
+                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
                     [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency],
                 [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency, $scope.studentArraySK[0].weight, $scope.studentArraySK[0].frequency]
             ];
@@ -1906,7 +1916,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team", "Student"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency],
+                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
                     [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency],
                 [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency, $scope.studentArraySK[1].weight, $scope.studentArraySK[1].frequency]
             ];
@@ -2450,8 +2460,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var valueset1 = [];
 
                 valueset1.push(array[i].date);
-                valueset1.push(array[i].total);
-
+                if(array[i]==null){
+                    valueset1.push(0);
+                }else{
+                    valueset1.push(array[i].total);
+                }
                 total.push(valueset1);
             }
 

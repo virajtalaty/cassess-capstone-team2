@@ -83,7 +83,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
             //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
             //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
 
-            if(slackMessage.getText().length() > 10) {
+            if(slackMessage.getText().length() > 20) {
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
