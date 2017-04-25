@@ -1,7 +1,7 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword', 'nvd3', 'plotly']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword', 'nvd3', 'chart.js']);
 
 myapp.constant('USER_ROLES', {
     all: '*',
@@ -10,6 +10,19 @@ myapp.constant('USER_ROLES', {
     super_user: 'super_user',
     rest: 'rest'
 });
+
+myapp.config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+        chartColors: ['#FF5252', '#FF8A80', '#80b6ff', '#c980ff'],
+        responsive: true,
+        scale: {
+            pointLabels: {
+                fontSize: 15
+            }
+        }
+    });
+}]);
 
 myapp.config(function ($routeProvider, USER_ROLES) {
 
@@ -43,9 +56,9 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.super_user]
         }
-    }).when('/taiga_github_admin', {
-        templateUrl: 'partials/taigaGithubAdmin.html',
-        controller: 'TaigaGitHubAdmin',
+    }).when('/agile_tool_admin', {
+        templateUrl: 'partials/AgileToolAdmin.html',
+        controller: 'AgileToolAdmin',
         access: {
             loginRequired: true,
             authorizedRoles: [USER_ROLES.super_user]

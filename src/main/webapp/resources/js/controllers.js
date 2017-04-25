@@ -1,5 +1,6 @@
 'use strict';
 
+
 myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedService) {
     $scope.rememberMe = true;
     $scope.login = function () {
@@ -675,143 +676,41 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackWeightFreq();
+            });
+        }
+
+        function getSlackWeightFreq() {
+            $http({
+                url: './slack/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                $scope.courseArraySK = response.data;
                 plotCurrentWeek();
             });
         }
 
         function plotCurrentWeek() {
-            var trace1 = {
-                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                    line: {
-                        color: '#810',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
 
-            var data = [trace1];
+            $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.currentWeekOptions = { legend: { display: true }};
+            $scope.currentWeekSeries = ["Course"];
+            $scope.currentWeekData = [[$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency]];
 
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-
-            Plotly.newPlot('currentWeek', data, layout);
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
 
-            var trace1 = {
-                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                    line: {
-                        color: '#810',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
+            $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.previousWeekOptions = { legend: { display: true }};
+            $scope.previousWeekSeries = ["Course"];
+            $scope.previousWeekData = [[$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency]];
 
-
-            var data = [trace1];
-
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-
-            Plotly.newPlot('previousWeek', data, layout);
             getTaigaActivity();
         }
+
 
         function getTaigaActivity() {
             $http({
@@ -908,6 +807,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.courseIntervals = response.data;
+                getSlackActivity();
             });
         }
 
@@ -1013,59 +913,182 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
-        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+        function getSlackActivity() {
+            $http({
+                url: './slack/course_totals',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                console.log("SlackActivity");
+                console.log(response.data);
+                $scope.slackCourseActivity = response.data;
+                $scope.dataForSlackCourseActivity = getDataForCourseSlackActivityCharts(response.data);
+                getSlackIntervals();
+            });
+        }
 
-        function getDataForGitHubCourseCommitsCharts(array){
+        function getSlackIntervals() {
+            $http({
+                url: './slack/course_intervals',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                console.log("Slack Course Intervals");
+                console.log(response.data);
+                $scope.slackCourseIntervals = response.data;
+            });
+        }
 
-            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+        $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.slackRawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+            if ($scope.slackRawWeekEnding != null) {
+                $http({
+                    url: './slack/course_messages',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("SlackCourseMessages");
+                    console.log(response.data);
+                    $scope.courseTasks = response.data;
+                    $scope.dataForSlackCourseMessages = getDataForSlackTeamMessages(response.data);
+                });
+            }
+        };
+
+        $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
+            $scope.slackRawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            if ($scope.slackRawWeekBeginning != null) {
+                $http({
+                    url: './slack/course_messages',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("SlackCourseMessages");
+                    console.log(response.data);
+                    $scope.courseMessages = response.data;
+                    $scope.dataForSlackCourseMessages = getDataForSlackCourseMessages(response.data);
+                });
+            }
+        };
+
+        $scope.optionsForSlackCourseActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 25, 50, 100, 125, 125, 175, 200]
+                },
+
+                yDomain:[0, 200]
+
+            }
+        };
+
+        function getDataForCourseSlackActivityCharts(array){
+
+            var data = []; var total = [];var expected = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+                var valueset1 = [];var valueset2 = []
 
-                valueset1.push(array[i].GitHubDataPK.date);
-                valueset1.push(array[i].commits);
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].total);
 
-                valueset2.push(array[i].GitHubDataPK.date);
-                valueset2.push(array[i].linesOfCodeAdded/1000);
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(100);
 
-                valueset3.push(array[i].GitHubDataPK.date);
-                valueset3.push(array[i].linesOfCodeDeleted/100);
-
-                commits.push(valueset1);
-                linesOfCodeAdded.push(valueset2);
-                linesOfCodeDeleted.push(valueset3);
+                total.push(valueset1);
+                expected.push(valueset2);
             }
 
-            data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
+            data.push({color: "#2E8B57", key: "TOTAL", values: total, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
 
             return data;
         }
 
-        ////* Function to Parse GitHub Weight for Line Chart * ////
+        $scope.optionsForSlackCourseMessages = {
 
-        function getDataForGitHubCourseWeightCharts(array){
+            chart: {
+                type: 'discreteBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
 
-            var weight = []; var expected = []; var data = [];
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForSlackCourseMessages(array){
+
+            var data = []; var total = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];
+                var valueset1 = [];
 
-                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
-                valueset1.push(array[i].weight);
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].total);
 
-                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
-                valueset2.push(2);
-
-                weight.push(valueset1);
-                expected.push(valueset2);
+                total.push(valueset1);
             }
 
-            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
-            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "TOTAL", values: total});
 
             return data;
         }
@@ -1133,6 +1156,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackCourseWeightFreq();
+            });
+        }
+
+        function getSlackCourseWeightFreq() {
+            $http({
+                url: './slack/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                $scope.courseArraySK = response.data;
                 getTaigaTeamWeightFreq();
             });
         }
@@ -1155,176 +1189,48 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
+                getSlackTeamWeightFreq();
+            });
+        }
+
+        function getSlackTeamWeightFreq() {
+            $http({
+                url: './slack/team_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                $scope.teamArraySK = response.data;
                 plotCurrentWeek();
             });
         }
 
         function plotCurrentWeek() {
-            var trace1 = {
-                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                    line: {
-                        color: '#810',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                showlegend: true,
-                connectgaps: true
-            };
 
-            var trace2 = {
-                r: [$scope.teamArrayTG[0].weight*.75, $scope.teamArrayTG[0].frequency*.75, $scope.teamArrayGH[0].weight*.75, $scope.teamArrayGH[0].frequency*.75],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Team',
-                marker: {size:16,
-                    line: {
-                        color: '#180',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
+            $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.currentWeekOptions = { legend: { display: true }};
+            $scope.currentWeekSeries = ["Course", "Team"];
+            $scope.currentWeekData = [
+                [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency],
+                [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency]
+            ];
 
-            var data = [trace1, trace2];
-
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-
-            Plotly.newPlot('currentWeek', data, layout);
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
 
-            var trace1 = {
-                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                    line: {
-                        color: '#810',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
 
-            var trace2 = {
-                r: [$scope.teamArrayTG[1].weight*.75, $scope.teamArrayTG[1].frequency*.75, $scope.teamArrayGH[1].weight*.75, $scope.teamArrayGH[1].frequency*.75],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Team',
-                marker: {size:16,
-                    line: {
-                        color: '#180',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
+            $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.previousWeekOptions = { legend: { display: true }};
+            $scope.previousWeekSeries = ["Course", "Team"];
+            $scope.previousWeekData = [
+                [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency],
+                [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency]
+            ];
 
-
-            var data = [trace1, trace2];
-
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-
-            Plotly.newPlot('previousWeek', data, layout);
             getTaigaActivity();
         }
+
 
         function getTaigaActivity() {
             $http({
@@ -1332,8 +1238,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.teamActivity = response.data;
                 $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
@@ -1421,6 +1327,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked!");
                 console.log(response.data);
                 $scope.teamIntervals = response.data;
+                getSlackActivity();
             });
         }
 
@@ -1438,8 +1345,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
-                    console.log(response.data);
+                    //console.log("Worked!");
+                    //console.log(response.data);
                     $scope.teamTasks = response.data;
                     $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
@@ -1460,8 +1367,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
-                    console.log(response.data);
+                    //console.log("Worked!");
+                    //console.log(response.data);
                     $scope.teamTasks = response.data;
                     $scope.dataForTaigaTeamTasks = getDataForTaigaTeamTasks(response.data);
                 });
@@ -1559,28 +1466,270 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
-        ////* Function to Parse GitHub Weight for Line Chart * ////
+        function getTaigaActivity() {
+            $http({
+                url: './taiga/team_activity',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                console.log("Worked!");
+                console.log(response.data);
+                $scope.teamActivity = response.data;
+                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
+                getTaigaIntervals();
+            });
+        }
 
-        function getDataForGitHubTeamWeightCharts(array){
+        $scope.optionsForTaigaTeamActivity = {
 
-            var weight = []; var expected = []; var data = [];
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                },
+
+                yDomain:[0, 30]
+
+            }
+        };
+
+        function getDataForTeamTaigaActivityCharts(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = [];
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
-                valueset1.push(Date.parse(array[i].GitHubDataPK.date));
-                valueset1.push(array[i].weight);
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].inProgressActivity);
 
-                valueset2.push(Date.parse(array[i].GitHubDataPK.date));
-                valueset2.push(2);
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(array[i].toTestActivity);
 
-                weight.push(valueset1);
+                valueset3.push(array[i].rawWeekEnding*1000);
+                valueset3.push(array[i].doneActivity);
+
+                valueset4.push(array[i].rawWeekEnding*1000);
+                valueset4.push(3);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+                expected.push(valueset4);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
+        }
+
+        function getSlackActivity() {
+            $http({
+                url: './slack/team_totals',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                //console.log("SlackActivity");
+                //console.log(response.data);
+                $scope.slackTeamActivity = response.data;
+                $scope.dataForSlackTeamActivity = getDataForTeamSlackActivityCharts(response.data);
+                getSlackIntervals();
+            });
+        }
+
+        function getSlackIntervals() {
+            $http({
+                url: './slack/team_intervals',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                //console.log("Slack Team Intervals");
+                //console.log(response.data);
+                $scope.slackTeamIntervals = response.data;
+            });
+        }
+
+        $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.slackRawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+            if ($scope.slackRawWeekEnding != null) {
+                $http({
+                    url: './slack/team_messages',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': $scope.teamid,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    //console.log("SlackTeamMessages");
+                    //console.log(response.data);
+                    $scope.teamTasks = response.data;
+                    $scope.dataForSlackTeamMessages = getDataForSlackTeamMessages(response.data);
+                });
+            }
+        };
+
+        $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
+            $scope.slackRawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            if ($scope.slackRawWeekBeginning != null) {
+                $http({
+                    url: './slack/team_messages',
+                    method: "GET",
+                    headers: {
+                        'course': course,
+                        'team': $scope.teamid,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    //console.log("SlackTeamMessages");
+                    //console.log(response.data);
+                    $scope.teamTasks = response.data;
+                    $scope.dataForSlackTeamMessages = getDataForSlackTeamMessages(response.data);
+                });
+            }
+        };
+
+        $scope.optionsForSlackTeamActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 25, 50, 100, 125, 125, 175, 200]
+                },
+
+                yDomain:[0, 200]
+
+            }
+        };
+
+        function getDataForTeamSlackActivityCharts(array){
+
+            var data = []; var total = [];var expected = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = []
+
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].total);
+
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(100);
+
+                total.push(valueset1);
                 expected.push(valueset2);
             }
 
-            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
-            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+            data.push({color: "#2E8B57", key: "TOTAL", values: total, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
+        }
+
+        $scope.optionsForSlackTeamMessages = {
+
+            chart: {
+                type: 'discreteBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForSlackTeamMessages(array){
+
+            var data = []; var total = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].total);
+
+               total.push(valueset1);
+            }
+
+            data.push({color: "#2E8B57", key: "TOTAL", values: total});
 
             return data;
         }
@@ -1656,6 +1805,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackCourseWeightFreq();
+            });
+        }
+
+        function getSlackCourseWeightFreq() {
+            $http({
+                url: './slack/course_quickweightFreq',
+                method: "GET",
+                headers: {'course': course}
+            }).then(function (response) {
+                $scope.courseArraySK = response.data;
                 getTaigaTeamWeightFreq();
             });
         }
@@ -1678,6 +1838,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
+                getSlackTeamWeightFreq();
+            });
+        }
+
+        function getSlackTeamWeightFreq() {
+            $http({
+                url: './slack/team_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': team}
+            }).then(function (response) {
+                $scope.teamArraySK = response.data;
                 getTaigaStudentWeightFreq();
             });
         }
@@ -1700,205 +1871,50 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
                 $scope.studentArrayGH = response.data;
+                getSlackStudentWeightFreq();
+            });
+        }
+
+        function getSlackStudentWeightFreq() {
+            $http({
+                url: './slack/student_quickweightFreq',
+                method: "GET",
+                headers: {'course': course, 'team': team, 'email': studentemail}
+            }).then(function (response) {
+                $scope.studentArraySK = response.data;
                 plotCurrentWeek();
             });
         }
 
         function plotCurrentWeek() {
 
-            var trace1 = {
-                r: [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                        line: {
-                            color: '#810',
-                            width: 4
-                            }
-                        },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
+            $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.currentWeekOptions = { legend: { display: true }};
+            $scope.currentWeekSeries = ["Course", "Team", "Student"];
+            $scope.currentWeekData = [
+                [$scope.courseArrayTG[0].weight, $scope.courseArrayTG[0].frequency, $scope.courseArrayGH[0].weight, $scope.courseArrayGH[0].frequency, $scope.courseArraySK[0].weight, $scope.courseArraySK[0].frequency],
+                    [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency],
+                [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency, $scope.studentArraySK[0].weight, $scope.studentArraySK[0].frequency]
+            ];
 
-            var trace2 = {
-                r: [$scope.teamArrayTG[0].weight*.75, $scope.teamArrayTG[0].frequency*.75, $scope.teamArrayGH[0].weight*.75, $scope.teamArrayGH[0].frequency*.75],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Team',
-                marker: {size:16,
-                    line: {
-                        color: '#180',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
-
-            var trace3 = {
-                r: [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Student',
-                marker: {size:16,
-                    line: {
-                        color: '#118',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
-
-            var data = [trace1, trace2, trace3];
-
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-
-            Plotly.newPlot('currentWeek', data, layout);
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
 
-            var trace1 = {
-                r: [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Course',
-                marker: {size:16,
-                    line: {
-                        color: '#810',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
+            $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.previousWeekOptions = { legend: { display: true }};
+            $scope.previousWeekSeries = ["Course", "Team", "Student"];
+            $scope.previousWeekData = [
+                [$scope.courseArrayTG[1].weight, $scope.courseArrayTG[1].frequency, $scope.courseArrayGH[1].weight, $scope.courseArrayGH[1].frequency, $scope.courseArraySK[1].weight, $scope.courseArraySK[1].frequency],
+                    [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency],
+                [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency, $scope.studentArraySK[1].weight, $scope.studentArraySK[1].frequency]
+            ];
 
-            var trace2 = {
-                r: [$scope.teamArrayTG[1].weight*.75, $scope.teamArrayTG[1].frequency*.75, $scope.teamArrayGH[1].weight*.75, $scope.teamArrayGH[1].frequency*.75],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Team',
-                marker: {size:16,
-                    line: {
-                        color: '#180',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
-
-            var trace3 = {
-                r: [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency],
-                t: ['TG Impact', 'TG Freq', 'GH Impact', 'GH Freq'],
-                mode: 'lines+markers',
-                name: 'Student',
-                marker: {size:16,
-                    line: {
-                        color: '#118',
-                        width: 4
-                    }
-                },
-                type: 'scatter',
-                hoverinfo: ["r"],
-                connectgaps: true
-            };
-
-            var data = [trace1, trace2, trace3];
-            var layout = {
-                font: {
-                    family: 'Arial',
-                    size: 12,
-                    color: '#066'
-                },
-                showlegend: true,
-                width: 600,
-                height: 400,
-                margin: {
-                    l: 40,
-                    r: 250,
-                    b: 30,
-                    t: 10,
-                    pad: 0
-                },
-                legend: {
-                    r: 4,
-                    t: 340,
-                    font: {
-                        family: 'arial, sans-serif',
-                        size: 14,
-                        color: '#000'
-                    },
-                },
-                angularaxis: {
-                    tickorientation:'vertical',
-                    tickfont:
-                        {
-                            family: 'sans-serif',
-                            size: 10,
-                            color: '#000'
-                        }
-                },
-                radialaxis: {
-                    range:[0,3],
-                    showticklabels: false,
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-
-            };
-            Plotly.newPlot('previousWeek', data, layout);
             getTaigaActivity();
         }
+
+
 
         function getTaigaActivity() {
             $http({
@@ -1913,6 +1929,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.dataForTaigaStudentActivity =  getDataForStudentTaigaActivityCharts(response.data);
             });
         }
+
+
 
         $scope.optionsForTaigaStudentActivity = {
 
@@ -2191,6 +2209,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 console.log("Worked This is what the GitHub Weight is showing: !");
                 console.log(response.data);
                 $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+                getSlackActivity();
             });
         }
 
@@ -2259,6 +2278,187 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
+        function getSlackActivity() {
+            $http({
+                url: './slack/student_totals',
+                method: "GET",
+                headers: {'course': course, 'team': team, 'email': studentemail}
+            }).then(function (response) {
+                console.log("SlackActivity");
+                console.log(response.data);
+                $scope.slackStudentActivity = response.data;
+                $scope.dataForSlackStudentActivity = getDataForStudentSlackActivityCharts(response.data);
+                getSlackIntervals();
+            });
+        }
+
+        function getSlackIntervals() {
+            $http({
+                url: './slack/student_intervals',
+                method: "GET",
+                headers: {'course': course, 'team': team, 'email': studentemail}
+            }).then(function (response) {
+                console.log("Slack Student Intervals");
+                console.log(response.data);
+                $scope.slackStudentIntervals = response.data;
+            });
+        }
+
+        $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.slackRawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+            if ($scope.slackRawWeekEnding != null) {
+                $http({
+                    url: './slack/student_messages',
+                    method: "GET",
+                    headers: {'course': course,
+                        'team': team,
+                        'email': studentemail,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("SlackStudentMessages");
+                    console.log(response.data);
+                    $scope.studentMessages = response.data;
+                    $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
+                });
+            }
+        };
+
+        $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
+            $scope.slackRawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            if ($scope.slackRawWeekBeginning != null) {
+                $http({
+                    url: './slack/student_messages',
+                    method: "GET",
+                    headers: {'course': course,
+                        'team': team,
+                        'email': studentemail,
+                        'weekBeginning': $scope.slackRawWeekBeginning,
+                        'weekEnding': $scope.slackRawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("SlackStudentMessages");
+                    console.log(response.data);
+                    $scope.studentTasks = response.data;
+                    $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
+                });
+            }
+        };
+
+        $scope.optionsForSlackStudentActivity = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Of',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Activity',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 25, 50, 100, 125, 125, 175, 200]
+                },
+
+                yDomain:[0, 200]
+
+            }
+        };
+
+        function getDataForStudentSlackActivityCharts(array){
+
+            var data = []; var total = [];var expected = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = []
+
+                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].total);
+
+                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(100);
+
+                total.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#2E8B57", key: "TOTAL", values: total, strokeWidth: 2});
+            data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
+
+            return data;
+        }
+
+        $scope.optionsForSlackStudentMessages = {
+
+            chart: {
+                type: 'discreteBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Slack Message Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForSlackStudentMessages(array){
+
+            var data = []; var total = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].total);
+
+                total.push(valueset1);
+            }
+
+            data.push({color: "#2E8B57", key: "TOTAL", values: total});
+
+            return data;
+        }
 
         var fireRefreshEventOnWindow = function () {
             var evt = document.createEvent("HTMLEvents");
@@ -2266,10 +2466,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             window.dispatchEvent(evt);
         };
 
-
-
     }])
-    .controller("TaigaGitHubAdmin", ['$scope', '$http', '$window', function ($scope, $http, $window) {
+    .controller("AgileToolAdmin", ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
@@ -2296,6 +2494,32 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }, function (response) {
                 console.log("didn't work");
                 $window.alert("Taiga Task Totals Data Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateSlackUsers = function () {
+            $http({
+                url: './slack/update_users',
+                method: "POST"
+            }).then(function (response) {
+                $window.alert("Slack Users Successfully Updated");
+            }, function (response) {
+                console.log("didn't work");
+                $window.alert("Slack Users Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateSlackMessageTotals = function () {
+            $http({
+                url: './slack/update_messageTotals',
+                method: "POST"
+            }).then(function (response) {
+                $window.alert("Slack Message Totals Successfully Updated");
+            }, function (response) {
+                console.log("didn't work");
+                $window.alert("Slack Message Totals Not Successfully Updated");
             });
 
         };

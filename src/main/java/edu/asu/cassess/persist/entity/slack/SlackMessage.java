@@ -3,35 +3,39 @@ package edu.asu.cassess.persist.entity.slack;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "slack_messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlackMessage {
+public class SlackMessage implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-    private String type;
+    @GeneratedValue
+    @Column(name = "id")
+    private int id;
+
+    @Column(name="ts")
+    private double ts;
+
+    @Column(name="user")
     private String user;
+
+    @Column(name="type")
+    private String type;
+
+    @Column(name="text")
     private String text;
-    private String ts;
 
     public SlackMessage() {
 
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
+    public int getId() {
         return id;
     }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -50,20 +54,6 @@ public class SlackMessage {
     }
 
     /**
-     * @return the user
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    /**
      * @return the text
      */
     public String getText() {
@@ -74,21 +64,25 @@ public class SlackMessage {
      * @param text the text to set
      */
     public void setText(String text) {
+        int maxLength = (text.length() < 255)?text.length():255;
+        text = text.substring(0, maxLength);
         this.text = text;
     }
 
-    /**
-     * @return the ts
-     */
-    public String getTs() {
+    public double getTs() {
         return ts;
     }
 
-    /**
-     * @param ts the ts to set
-     */
-    public void setTs(String ts) {
+    public void setTs(double ts) {
         this.ts = ts;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
 

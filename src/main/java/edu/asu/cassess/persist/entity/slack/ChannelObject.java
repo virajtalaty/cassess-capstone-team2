@@ -19,9 +19,6 @@ public class ChannelObject {
     private boolean is_general;
     private boolean is_member;
     private String last_read;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private SlackMessage latest;
     private int unread_count;
     private int unread_count_display;
     @OrderColumn(name = "slack_channel_member_sequence")
@@ -176,19 +173,6 @@ public class ChannelObject {
         this.last_read = last_read;
     }
 
-    /**
-     * @return the latest
-     */
-    public SlackMessage getLatest() {
-        return latest;
-    }
-
-    /**
-     * @param latest the latest to set
-     */
-    public void setLatest(SlackMessage latest) {
-        this.latest = latest;
-    }
 
     /**
      * @return the unread_count
