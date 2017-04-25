@@ -631,7 +631,7 @@ public class AppController {
 
     //Weekly Message Totals for a team
     @ResponseBody
-    @RequestMapping(value = "/taiga/team_activity", method = RequestMethod.GET)
+    @RequestMapping(value = "/slack/team_totals", method = RequestMethod.GET)
     public ResponseEntity<List<WeeklyMessageTotals>> getTeamMessageTotals(@RequestHeader(name = "course", required = true) String course,
                                                                    @RequestHeader(name = "team", required = true) String team,
                                                                    HttpServletRequest request, HttpServletResponse response) {
@@ -641,7 +641,7 @@ public class AppController {
 
     //Weekly Message Totals for a course
     @ResponseBody
-    @RequestMapping(value = "/taiga/course_activity", method = RequestMethod.GET)
+    @RequestMapping(value = "/slack/course_totals", method = RequestMethod.GET)
     public ResponseEntity<List<WeeklyMessageTotals>> getCourseMessageTotals(@RequestHeader(name = "course", required = true) String course,
                                                                   HttpServletRequest request, HttpServletResponse response) {
         List<WeeklyMessageTotals> totalsList = (List<WeeklyMessageTotals>) slackMessageTotalsService.getWeeklyTotalsByCourse(course);
@@ -680,7 +680,7 @@ public class AppController {
 
     //Current and last week Slack weight/frequency for a student
     @ResponseBody
-    @RequestMapping(value = "/taiga/student_quickweightFreq", method = RequestMethod.GET)
+    @RequestMapping(value = "/slack/student_quickweightFreq", method = RequestMethod.GET)
     public ResponseEntity<List<WeeklyFreqWeight>> twoWeekStudentWeightFreqSK(@RequestHeader(name = "course", required = true) String course,
                                                                              @RequestHeader(name = "team", required = true) String team,
                                                                              @RequestHeader(name = "email", required = true) String email,

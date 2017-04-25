@@ -2,10 +2,8 @@ package edu.asu.cassess.service.taiga;
 
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
-import edu.asu.cassess.dao.taiga.ITaskQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.*;
-import edu.asu.cassess.persist.repo.taiga.TaskRepo;
 import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
 import edu.asu.cassess.service.rest.CourseService;
 import edu.asu.cassess.service.rest.ICourseService;
@@ -21,24 +19,32 @@ import org.springframework.web.client.RestTemplate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
 public class TaskDataService implements ITaskDataService {
 
+    class MutableInt {
+        int value = 1; // note that we start at 1 since we're counting
+        public void increment () { ++value;      }
+        public int  get ()       { return value; }
+    }
+
     private RestTemplate restTemplate;
 
     private String tasksListURL;
 
-    @Autowired
-    private TaskRepo TaskDao;
+    private Map<String, MutableInt> closedMap = new HashMap<String, MutableInt>();
+    private Map<String, MutableInt> newMap = new HashMap<String, MutableInt>();
+    private Map<String, MutableInt> inProgressMap = new HashMap<String, MutableInt>();
+    private Map<String, MutableInt> readyForTestMap = new HashMap<String, MutableInt>();
+
 
     @Autowired
     private TaskTotalsRepo TaskTotalsRepo;
-
-    @Autowired
-    private ITaskQueryDao TaskQueryDao;
 
     @Autowired
     private IMemberQueryDao MemberQueryDao;
@@ -73,11 +79,44 @@ public class TaskDataService implements ITaskDataService {
 
         TaskData[] tasks = taskList.getBody();
 
-        //System.out.println("Number Results: " + tasks.length);
+        for (TaskData task:tasks) {
+            if (task.getAssignmentData() != null) {
+                //System.out.println("-----------------------------****************************************Full Name Display: " + task.getAssignmentData().getFull_name_display());
+                MutableInt closedCount = closedMap.get(task.getAssignmentData().getFull_name_display());
+                MutableInt newCount = newMap.get(task.getAssignmentData().getFull_name_display());
+                MutableInt inProgressCount = inProgressMap.get(task.getAssignmentData().getFull_name_display());
+                MutableInt readyForTestCount = readyForTestMap.get(task.getAssignmentData().getFull_name_display());
 
-        for (int i = 0; i < tasks.length - 1; i++) {
+                if (task.getStatusData().getName().equalsIgnoreCase("Closed")) {
+                    if (closedCount == null) {
+                        closedMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                    } else {
+                        closedCount.increment();
+                    }
+                }
+                if (task.getStatusData().getName().equalsIgnoreCase("New")) {
+                    if (newCount == null) {
+                        newMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                    } else {
+                        newCount.increment();
+                    }
+                }
+                if (task.getStatusData().getName().equalsIgnoreCase("In Progress")) {
+                    if (inProgressCount == null) {
+                        inProgressMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                    } else {
+                        inProgressCount.increment();
+                    }
+                }
+                if (task.getStatusData().getName().equalsIgnoreCase("Ready For Test")) {
+                    if (readyForTestCount == null) {
+                        readyForTestMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                    } else {
+                        readyForTestCount.increment();
+                    }
+                }
 
-            TaskDao.save(tasks[i]);
+            }
         }
         //System.out.println("Headers Response" + taskList.getHeaders());
 
@@ -95,15 +134,31 @@ public class TaskDataService implements ITaskDataService {
         List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member : memberNames) {
             String name = member.getFull_name();
-            int closedTasks = TaskQueryDao.getClosedTasks(name);
-            int newTasks = TaskQueryDao.getNewTasks(name);
-            int inProgressTasks = TaskQueryDao.getInProgressTasks(name);
-            int readyForTestTasks = TaskQueryDao.getReadyForTestTasks(name);
+            int closedTasks = 0;
+            int newTasks = 0;
+            int inProgressTasks = 0;
+            int readyForTestTasks = 0;
+            if(closedMap.get(name) != null) {
+                closedTasks = closedMap.get(name).get();
+            }
+            if(newMap.get(name) != null) {
+                newTasks = newMap.get(name).get();
+            }
+            if(inProgressMap.get(name) != null) {
+                inProgressTasks = inProgressMap.get(name).get();
+            }
+            if(readyForTestMap.get(name) != null) {
+                readyForTestTasks = readyForTestMap.get(name).get();
+            }
             int openTasks = newTasks + inProgressTasks + readyForTestTasks;
+            //System.out.println("----------------------------**********************************************=========User: " + name);
+            //System.out.println("----------------------------**********************************************=========ClosedCount: " + closedTasks);
+            //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
+            //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
+            //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
             TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), member.getTeam(), course, closedTasks, newTasks, inProgressTasks,
                     readyForTestTasks, openTasks));
         }
-        TaskQueryDao.truncateTaskData();
     }
 
     /* Method to obtain all task totals for members of a particular course,
@@ -126,9 +181,13 @@ public class TaskDataService implements ITaskDataService {
             String token = tempCourse.getTaiga_token();
             List<ProjectIDSlug> idSlugList = projectsDao.listGetTaigaProjectIDSlug(course);
             for (ProjectIDSlug idSlug : idSlugList) {
-                System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
+                //System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
                 getTasks(idSlug.getId(), token, 1);
                 getTaskTotals(idSlug.getSlug(), course);
+                closedMap.clear();
+                newMap.clear();
+                inProgressMap.clear();
+                readyForTestMap.clear();
             }
         }
     }

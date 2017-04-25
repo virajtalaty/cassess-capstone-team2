@@ -30,19 +30,25 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h3>Taiga and Github Frequency/Impact</h3>
+                        <h3>Taiga-Github-Slack Frequency/Impact</h3>
                         <br>
                         <br>
                         <label style="color: #066" >{{courseArrayTG[0].weekBeginning}}  To  {{courseArrayTG[0].weekEnding}}</label>
                         <div ng-controller='CourseController' id="currentWeek">
-                            <!-- Plotly chart will be drawn inside this DIV -->
+                            <canvas id="radarCurrent" class="chart chart-radar"
+                                    chart-data="currentWeekData" chart-options="currentWeekOptions" chart-labels="currentWeekLabels" chart-series="currentWeekSeries"
+                                    style="width:400px; height:400px;">
+                            </canvas>
                         </div>
                         <label style="color: #066">{{courseArrayTG[1].weekBeginning}}  To  {{courseArrayTG[1].weekEnding}}</label>
                         <div ng-controller='CourseController' id="previousWeek">
-                            <!-- Plotly chart will be drawn inside this DIV -->
+                            <canvas id="radarPrevious" class="chart chart-radar"
+                                    chart-data="previousWeekData" chart-options="previousWeekOptions" chart-labels="previousWeekLabels" chart-series="previousWeekSeries"
+                                    style="width:400px; height:400px;">
+                            </canvas>
                         </div>
                     </div>
-                    <div ng-show="isSet(2)">
+                    <div ng-if="isSet(2)">
                         <h2>Taiga Data</h2>
                         <br>
                         <h3>Average Task Totals</h3><br>
@@ -69,9 +75,27 @@
                         <h1>GitHub Charts</h1>
                         <p> Content coming soon... </p>
                     </div>
-                    <div ng-show="isSet(4)">
-                        <h1>Slack Charts</h1>
-                        <p> Content coming soon... </p>
+                    <div ng-if="isSet(4)">
+                        <h2>Slack Data</h2>
+                        <br>
+                        <h3>Average Message Totals</h3><br>
+                        <label style="color: black">Select Week Beginning:</label>
+                        <select class="select_style"  ng-model="SlackSelectedWeekBeginning" ng-options="x.weekBeginning for x in slackCourseIntervals"
+                                ng-change="slackIntervalChangedBegin(SlackSelectedWeekBeginning.rawWeekBeginning)">
+                        </select>
+                        <br>
+                        <label style="color: black">Select Week Ending:</label>
+                        <select class="select_style"  ng-model="SlackSelectedWeekEnding" ng-options="x.weekEnding for x in slackCourseIntervals"
+                                ng-change="slackIntervalChangedEnd(SlackSelectedWeekEnding.rawWeekEnding)">
+                        </select>
+                        <br><br>
+                        <div ng-controller='CourseController'>
+                            <nvd3 options='optionsForSlackCourseMessages' data='dataForSlackCourseMessages'></nvd3>
+                        </div>
+                        <div afterRender='fireRefreshEventOnWindow()' ng-controller='CourseController'>
+                            <h3>Average Message Activity</h3><br>
+                            <nvd3 options='optionsForSlackCourseActivity' data='dataForSlackCourseActivity'></nvd3>
+                        </div>
                     </div>
                 </div>
             </div>

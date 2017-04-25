@@ -32,19 +32,25 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h3>Taiga and Github Frequency/Impact</h3>
+                        <h3>Taiga-Github-Slack Frequency/Impact</h3>
                         <br>
                         <br>
                         <label style="color: #066" >{{studentArrayTG[0].weekBeginning}}  To  {{studentArrayTG[0].weekEnding}}</label>
                         <div ng-controller='StudentController' id="currentWeek">
-                            <!-- Plotly chart will be drawn inside this DIV -->
+                            <canvas id="radarCurrent" class="chart chart-radar"
+                                    chart-data="currentWeekData" chart-options="currentWeekOptions" chart-labels="currentWeekLabels" chart-series="currentWeekSeries"
+                                    style="width:400px; height:400px;">
+                            </canvas>
                         </div>
                         <label style="color: #066">{{studentArrayTG[1].weekBeginning}}  To  {{studentArrayTG[1].weekEnding}}</label>
                         <div ng-controller='StudentController' id="previousWeek">
-                            <!-- Plotly chart will be drawn inside this DIV -->
+                            <canvas id="radarPrevious" class="chart chart-radar"
+                                    chart-data="previousWeekData" chart-options="previousWeekOptions" chart-labels="previousWeekLabels" chart-series="previousWeekSeries"
+                                    style="width:400px; height:400px;">
+                            </canvas>
                         </div>
                     </div>
-                    <div ng-show="isSet(2)">
+                    <div ng-if="isSet(2)">
                         <h3>Taiga Data</h3>
                         <br>
                         <h3>Task Totals</h3><br>
@@ -66,7 +72,7 @@
                             <nvd3 options='optionsForTaigaStudentActivity' data='dataForTaigaStudentActivity'></nvd3>
                         </div>
                     </div>
-                    <div ng-show="isSet(3)">
+                    <div ng-if="isSet(3)">
                         <h3>GitHub Data</h3>
                         <br>
                         <br>
@@ -78,9 +84,27 @@
                             <nvd3 options='optionsForGitHubStudentWeight' data='dataForGitHubStudentWeight'></nvd3>
                         </div>
                     </div>
-                    <div ng-show="isSet(4)">
-                        <h1>Slack Charts</h1>
-                        <p> Content coming soon... </p>
+                    <div ng-if="isSet(4)">
+                        <h2>Slack Data</h2>
+                        <br>
+                        <h3>Message Totals</h3><br>
+                        <label style="color: black">Select Week Beginning:</label>
+                        <select class="select_style"  ng-model="SlackSelectedWeekBeginning" ng-options="x.weekBeginning for x in slackStudentIntervals"
+                                ng-change="slackIntervalChangedBegin(SlackSelectedWeekBeginning.rawWeekBeginning)">
+                        </select>
+                        <br>
+                        <label style="color: black">Select Week Ending:</label>
+                        <select class="select_style"  ng-model="SlackSelectedWeekEnding" ng-options="x.weekEnding for x in slackStudentIntervals"
+                                ng-change="slackIntervalChangedEnd(SlackSelectedWeekEnding.rawWeekEnding)">
+                        </select>
+                        <br><br>
+                        <div ng-controller='StudentController'>
+                            <nvd3 options='optionsForSlackStudentMessages' data='dataForSlackStudentMessages'></nvd3>
+                        </div>
+                        <div afterRender='fireRefreshEventOnWindow()' ng-controller='StudentController'>
+                            <h3>Message Activity</h3><br>
+                            <nvd3 options='optionsForSlackStudentActivity' data='dataForSlackStudentActivity'></nvd3>
+                        </div>
                     </div>
                 </div>
             </div>

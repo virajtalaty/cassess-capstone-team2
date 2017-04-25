@@ -145,3 +145,21 @@
     cursor:pointer;
     padding:7px 10px;
 }
+
+.polarwrapper {
+    padding: 0px;
+    width: 900px;
+    overflow: auto;
+}
+.polarone {
+    margin: 0 0px 0px 0;
+    float: left;
+    height: 400px;
+    width: 300px;
+}
+.polartwo {
+    margin: 0 0px 0px 0;
+    float: right;
+    height: 400px;
+    width: 300px;
+}

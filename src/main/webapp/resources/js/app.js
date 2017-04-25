@@ -1,7 +1,7 @@
 'use strict';
 
 var myapp = angular
-    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword', 'nvd3', 'plotly']);
+    .module('myApp', ['ngResource', 'ngRoute', 'swaggerUi', 'http-auth-interceptor', 'ngAnimate', 'angular-spinkit', 'ngPassword', 'nvd3', 'chart.js']);
 
 myapp.constant('USER_ROLES', {
     all: '*',
@@ -10,6 +10,19 @@ myapp.constant('USER_ROLES', {
     super_user: 'super_user',
     rest: 'rest'
 });
+
+myapp.config(['ChartJsProvider', function (ChartJsProvider) {
+    // Configure all charts
+    ChartJsProvider.setOptions({
+        chartColors: ['#FF5252', '#FF8A80', '#80b6ff', '#c980ff'],
+        responsive: true,
+        scale: {
+            pointLabels: {
+                fontSize: 15
+            }
+        }
+    });
+}]);
 
 myapp.config(function ($routeProvider, USER_ROLES) {
 

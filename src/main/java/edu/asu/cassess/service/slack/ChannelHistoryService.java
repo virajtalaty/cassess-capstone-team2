@@ -1,11 +1,9 @@
 package edu.asu.cassess.service.slack;
 
-import edu.asu.cassess.dao.slack.ISlackMessageQueryDao;
 import edu.asu.cassess.dao.slack.IUserObjectQueryDao;
 import edu.asu.cassess.model.slack.MessageList;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.slack.*;
-import edu.asu.cassess.persist.repo.slack.SlackMessageRepo;
 import edu.asu.cassess.persist.repo.slack.SlackMessageTotalsRepo;
 import edu.asu.cassess.service.rest.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +14,23 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
 public class ChannelHistoryService implements IChannelHistoryService {
 
+    class MutableInt {
+        int value = 1; // note that we start at 1 since we're counting
+        public void increment () { ++value;      }
+        public int  get ()       { return value; }
+    }
+
     private RestTemplate restTemplate;
 
     private String channelHistoryURL;
+
+    private Map<String, MutableInt> countsMap = new HashMap<String, MutableInt>();
 
     @Autowired
     private IChannelService channelService;
@@ -41,12 +45,6 @@ public class ChannelHistoryService implements IChannelHistoryService {
     private IStudentsService studentService;
 
     @Autowired
-    private SlackMessageRepo slackMessageRepo;
-
-    @Autowired
-    private ISlackMessageQueryDao slackMessageQueryDao;
-
-    @Autowired
     private SlackMessageTotalsRepo slackMessageTotalsRepo;
 
     public ChannelHistoryService() {
@@ -59,9 +57,9 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
         long nextUnixCurrent = 0;
 
-        System.out.println("----------------------------**********************************************=========UnixCurrent: " + unixCurrent);
+        //System.out.println("----------------------------**********************************************=========UnixCurrent: " + unixCurrent);
 
-        System.out.println("----------------------------**********************************************=========UnixOldest: " + unixOldest);
+        //System.out.println("----------------------------**********************************************=========UnixOldest: " + unixOldest);
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -82,17 +80,27 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
         int index = 0;
         for(SlackMessage slackMessage:slackMessages){
-            System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
-            System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
-            slackMessageRepo.save(slackMessage);
+            //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
+            //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
+
+            if(slackMessage.getText().length() > 10) {
+                MutableInt count = countsMap.get(slackMessage.getUser());
+                if (count == null) {
+                    countsMap.put(slackMessage.getUser(), new MutableInt());
+                } else {
+                    count.increment();
+                }
+            }
+
+            //slackMessageRepo.save(slackMessage);
             index++;
             if(index == (slackMessages.length -1)){
                 nextUnixCurrent = (long) Math.floor(slackMessage.getTs());
-                System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
+                //System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
             }
         }
 
-        System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
+        //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
             return getMessages(channel, token, unixOldest, nextUnixCurrent);
@@ -105,11 +113,17 @@ public class ChannelHistoryService implements IChannelHistoryService {
     public void getMessageTotals(String channelID, String course, String team) {
         List<Student> students = studentService.listReadByTeam(course, team);
         for (Student student : students) {
+            int messageCount = 0;
             String email = student.getEmail();
             Object object = userObjectQueryDao.getUserByEmail(email);
             if(object.getClass() == UserObject.class){
                 UserObject userObject = (UserObject) object;
-                int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
+                if(countsMap.get(userObject.getId()) != null) {
+                    messageCount = countsMap.get(userObject.getId()).get();
+                }
+                //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
+                //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
+                //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
                 slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
                 }
             }
@@ -145,7 +159,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
                         System.out.println("Channel: " + channel.getId());
                         getMessages(channel.getId(), token, unixOldest, unixCurrent);
                         getMessageTotals(channel.getId(), course, team.getTeam_name());
-                        slackMessageQueryDao.truncateMessageData();
+                        countsMap.clear();
                     }
                 }
             }
