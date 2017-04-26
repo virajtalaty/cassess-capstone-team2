@@ -137,6 +137,60 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
         };
 
+        $scope.disableStudent = function () {
+            if(!$scope.studentCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.studentTeam){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentDisable',
+                        method: "PUT",
+                        headers: {'course': $scope.studentCourse.value.course,
+                            'team': $scope.studentTeam.value.team,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Disabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Disabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
+        $scope.enableStudent = function () {
+            if(!$scope.studentCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.studentTeam){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentEnable',
+                        method: "PUT",
+                        headers: {'course': $scope.studentCourse.value.course,
+                            'team': $scope.studentTeam.value.team,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Enabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Enabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
         $scope.studentCourseRemove = function () {
             $http({
                 url: './studentProfileDelCourse',
@@ -161,6 +215,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $window.alert($scope.message);
             }, function (response) {
                 $scope.message = "User Not Deleted";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.disableUser = function () {
+            $http({
+                url: './userDisable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Disabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Disabled";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.enableUser = function () {
+            $http({
+                url: './userEnable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Enabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Enabled";
                 $window.alert($scope.message);
             });
         };
@@ -196,8 +278,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             url: './current_user',
             method: "GET"
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             $scope.user = response.data;
             userService.setUser($scope.user.login);
             userService.setAuth($scope.user.authorities[0].name);
@@ -210,8 +292,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 if (response.data == false) {
                     $location.path('/home');
                 } else {
@@ -226,7 +308,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.userData = response.data;
             });
@@ -242,6 +324,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $window.alert($scope.message);
             }, function (response) {
                 $scope.message = "User Account Not Deleted";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.disableUser = function () {
+            $http({
+                url: './userDisable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Disabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Disabled";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.enableUser = function () {
+            $http({
+                url: './userEnable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Enabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Enabled";
                 $window.alert($scope.message);
             });
         };
@@ -278,8 +388,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             url: './current_user',
             method: "GET"
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             $scope.user = response.data;
             userService.setUser($scope.user.login);
             userService.setAuth($scope.user.authorities[0].name);
@@ -292,8 +402,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 if (response.data == false) {
                     $location.path('/home');
                 } else {
@@ -308,7 +418,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.userData = response.data;
                 getCoursesData();
@@ -321,8 +431,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.courses = response.data;
             });
         }
@@ -355,6 +465,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $window.alert($scope.message);
             }, function (response) {
                 $scope.message = "User Not Deleted";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.disableUser = function () {
+            $http({
+                url: './userDisable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Disabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Disabled";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.enableUser = function () {
+            $http({
+                url: './userEnable',
+                method: "PUT",
+                headers: {'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "User Successfully Enabled";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "User Not Enabled";
                 $window.alert($scope.message);
             });
         };
@@ -453,8 +591,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         url: './taigaCourses',
                         method: "GET"
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.courses = response.data;
                     });
                 }
@@ -464,8 +602,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'email': user.email}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.courses = response.data;
                     });
                 }
@@ -475,8 +613,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'email': user.email}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.courses = response.data;
                     });
                 }
@@ -487,8 +625,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './current_user',
                 method: "GET"
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.user = response.data;
                 userService.setUser($scope.user.login);
                 userService.setAuth($scope.user.authorities[0].name);
@@ -503,8 +641,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'course': course}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.teams = response.data;
                     });
                 }
@@ -515,8 +653,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'course': course}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.teams = response.data;
                     });
                 }
@@ -527,8 +665,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'course': course, 'email': $scope.user.email}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.teams = response.data;
                     });
                 }
@@ -542,8 +680,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'course': courseService.getCourse(), 'team': teamService.getTeam()}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.students = response.data;
                     });
                 }
@@ -554,15 +692,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         method: "GET",
                         headers: {'course': courseService.getCourse(), 'team': teamService.getTeam()}
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.students = response.data;
                     });
                 }
                 if (userService.getAuth() == 'student') {
                     teamService.setTeam(team);
-                    console.log("EMail1: " + userService.getUser());
-                    console.log("EMail2: " + $scope.user.login);
+                    //console.log("EMail1: " + userService.getUser());
+                    //console.log("EMail2: " + $scope.user.login);
                     $http({
                         url: './student_data',
                         method: "GET",
@@ -572,8 +710,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             'team': teamService.getTeam()
                         }
                     }).then(function (response) {
-                        console.log("Worked!");
-                        console.log(response.data);
+                        //console.log("Worked!");
+                        //console.log(response.data);
                         $scope.students = response.data;
                     });
 
@@ -617,15 +755,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     'password': $scope.password, 'role': $scope.selectedRole.value.name
                 }
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 $scope.responseData = console.log(response.data);
                 $scope.message = "User Successfully Registered";
                 $window.alert($scope.message);
                 $location.path('/users');
             }, function (response) {
                 //fail case
-                console.log("Role: " + $scope.selectedRole.value.name);
-                console.log("Didn't work");
+                //console.log("Role: " + $scope.selectedRole.value.name);
+                //console.log("Didn't work");
                 //console.log(response);
                 $scope.responseData = console.log(response.data);
                 $scope.message = "User Not Registered, Duplicate User or Incorrect Information";
@@ -641,7 +779,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         } else {
             $scope.courseid = "none";
         }
-        console.log("course: " + $scope.courseid);
+        //console.log("course: " + $scope.courseid);
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
         $http({
@@ -649,8 +787,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             method: "GET",
             headers: {'course': $scope.courseid, 'login': userService.getUser(), 'auth': userService.getAuth()}
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             if (response.data == false) {
                 $location.path('/home');
             } else {
@@ -717,8 +855,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.courseActivity = response.data;
                 $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
                 getTaigaIntervals();
@@ -803,11 +941,164 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.courseIntervals = response.data;
+                getGitHubCommitsData();
+            });
+        }
+
+        function getGitHubCommitsData() {
+            $http({
+                url: './github/commits_course',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                //console.log("Worked This is what the GitHub Data is showing: !");
+                //console.log(response.data);
+                $scope.dataForGitHubCourseCommits =  getDataForGitHubCourseCommitsCharts(response.data);
+                getGitHubWeightData();
+            });
+        }
+
+        $scope.optionsForGitHubCourseCommits = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Commit Counts',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubCourseCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].gitHubPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].gitHubPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].gitHubPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        function getGitHubWeightData() {
+            $http({
+                url: './github/weights_course',
+                method: "GET",
+                headers: {'course': $scope.courseid}
+            }).then(function (response) {
+                //console.log("Worked This is what the GitHub Weight is showing: !");
+                //console.log(response.data);
+                $scope.dataForGitHubCourseWeight= getDataForGitHubCourseWeightCharts(response.data);
                 getSlackActivity();
             });
+        }
+
+        $scope.optionsForGitHubCourseWeight = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Task Updates Weight',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 3, 6, 9, 12, 15]
+                },
+
+                yDomain:[0, 15]
+
+            }
+        };
+
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubCourseWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].gitHubPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].gitHubPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
         }
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
@@ -823,8 +1114,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked, these are the averages for the week for weekBegin");
-                    console.log(response.data);
+                    //console.log("Worked, these are the averages for the week for weekBegin");
+                    //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -844,8 +1135,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked, these are the averages for the week for weekEnd!");
-                    console.log(response.data);
+                    //console.log("Worked, these are the averages for the week for weekEnd!");
+                    //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -918,8 +1209,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                console.log("SlackActivity");
-                console.log(response.data);
+                //console.log("SlackActivity");
+                //console.log(response.data);
                 $scope.slackCourseActivity = response.data;
                 $scope.dataForSlackCourseActivity = getDataForCourseSlackActivityCharts(response.data);
                 getSlackIntervals();
@@ -932,8 +1223,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                console.log("Slack Course Intervals");
-                console.log(response.data);
+                //console.log("Slack Course Intervals");
+                //console.log(response.data);
                 $scope.slackCourseIntervals = response.data;
             });
         }
@@ -951,8 +1242,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.slackRawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("SlackCourseMessages");
-                    console.log(response.data);
+                    //console.log("SlackCourseMessages");
+                    //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForSlackCourseMessages = getDataForSlackTeamMessages(response.data);
                 });
@@ -972,8 +1263,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.slackRawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("SlackCourseMessages");
-                    console.log(response.data);
+                    //console.log("SlackCourseMessages");
+                    //console.log(response.data);
                     $scope.courseMessages = response.data;
                     $scope.dataForSlackCourseMessages = getDataForSlackCourseMessages(response.data);
                 });
@@ -1113,13 +1404,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         if (course == null) {
             course = "none";
         }
-        console.log("course: " + course);
+        //console.log("course: " + course);
 
         if ($scope.teamid == null) {
             $scope.teamid = "none";
         }
 
-        console.log("team: " + $scope.teamid);
+        //console.log("team: " + $scope.teamid);
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
 
@@ -1133,8 +1424,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 'auth': userService.getAuth()
             }
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             if (response.data == false) {
                 $location.path('/home');
             } else {
@@ -1328,16 +1619,169 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.teamIntervals = response.data;
+                getGitHubCommitsData();
+            });
+        }
+
+        function getGitHubCommitsData() {
+            $http({
+                url: './github/commits_team',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                //console.log("Worked This is what the GitHub Data is showing: !");
+                //console.log(response.data);
+                $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(response.data);
+                getGitHubWeightData();
+            });
+        }
+
+        $scope.optionsForGitHubTeamCommits = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Commit Counts',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+
+        function getDataForGitHubTeamCommitsCharts(array){
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].gitHubPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].gitHubPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/1000);
+
+                valueset3.push(array[i].gitHubPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+        function getGitHubWeightData() {
+            $http({
+                url: './github/weights_team',
+                method: "GET",
+                headers: {'course': course, 'team': $scope.teamid}
+            }).then(function (response) {
+                //console.log("Worked This is what the GitHub Weight is showing: !");
+                //console.log(response.data);
+                $scope.dataForGitHubTeamWeight= getDataForGitHubTeamWeightCharts(response.data);
                 getSlackActivity();
             });
         }
 
+        $scope.optionsForGitHubTeamWeight = {
+
+            chart: {
+                type: 'lineChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                useInteractiveGuideline: true,
+
+                xAxis: {
+                    axisLabel: 'Week Ending On',
+                    tickFormat: function(d) {
+                        return d3.time.format('%m/%d/%y')(new Date(d))
+                    },
+
+                    showMaxMin: false,
+                    staggerLabels: false
+                },
+
+                yAxis: {
+                    axisLabel: 'GitHub Task Updates Weight',
+                    axisLabelDistance: 0,
+                    tickValues:  [0, 3, 6, 9, 12, 15]
+                },
+
+                yDomain:[0, 15]
+
+            }
+        };
+
+
+        ////* Function to Parse GitHub Weight for Line Chart * ////
+
+        function getDataForGitHubTeamWeightCharts(array){
+
+            var weight = []; var expected = []; var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];
+
+                valueset1.push(Date.parse(array[i].gitHubPK.date));
+                valueset1.push(array[i].weight);
+
+                valueset2.push(Date.parse(array[i].gitHubPK.date));
+                valueset2.push(2);
+
+                weight.push(valueset1);
+                expected.push(valueset2);
+            }
+
+            data.push({color: "#6799ee", key: "Weight", values: weight, strokeWidth: 2});
+            data.push({color: "#000000", key: "Expected", values: expected, strokeWidth: 2});
+
+            return data;
+        }
+
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $scope.rawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            //console.log("WeekBeginning: " + $scope.rawWeekBeginning);
             if ($scope.rawWeekEnding != null) {
                 $http({
                     url: './taiga/team_tasks',
@@ -1359,7 +1803,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            //console.log("WeekEnding: " + $scope.rawWeekEnding);
             if ($scope.rawWeekBeginning != null) {
                 $http({
                     url: './taiga/team_tasks',
@@ -1439,45 +1883,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             return data;
         }
 
-        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
-
-        function getDataForGitHubTeamCommitsCharts(array){
-
-            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
-
-            for (var i = 0; i < array.length; i++){
-
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
-
-                valueset1.push(array[i].GitHubDataPK.date);
-                valueset1.push(array[i].commits);
-
-                valueset2.push(array[i].GitHubDataPK.date);
-                valueset2.push(array[i].linesOfCodeAdded/1000);
-
-                valueset3.push(array[i].GitHubDataPK.date);
-                valueset3.push(array[i].linesOfCodeDeleted/100);
-
-                commits.push(valueset1);
-                linesOfCodeAdded.push(valueset2);
-                linesOfCodeDeleted.push(valueset3);
-            }
-
-            data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted", values: linesOfCodeDeleted});
-
-            return data;
-        }
-
         function getTaigaActivity() {
             $http({
                 url: './taiga/team_activity',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.teamActivity = response.data;
                 $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
@@ -1760,17 +2173,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         if (course == null) {
             course = "none";
-            console.log("course: " + course);
+            //console.log("course: " + course);
         }
 
         if (team == null) {
             team = "none";
-            console.log("team: " + team);
+            //console.log("team: " + team);
         }
 
         if (studentemail == null) {
             studentemail = "none";
-            console.log("studentemail: " + studentemail);
+            //console.log("studentemail: " + studentemail);
         }
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
@@ -1786,8 +2199,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 'fullname': $scope.studentid
             }
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             if (response.data == false) {
                 $location.path('/home');
             } else {
@@ -1889,8 +2302,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Slack");
-                console.log(response.data);
+                //console.log("Slack");
+                //console.log(response.data);
                 $scope.studentArraySK = response.data;
                 plotCurrentWeek();
             });
@@ -1932,8 +2345,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 $scope.studentActivity = response.data;
                 getTaigaIntervals();
                 $scope.dataForTaigaStudentActivity =  getDataForStudentTaigaActivityCharts(response.data);
@@ -2020,8 +2433,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked This shows the intervals!");
-                console.log(response.data);
+                //console.log("Worked This shows the intervals!");
+                //console.log(response.data);
                 $scope.studentIntervals = response.data;
                 getGitHubCommitsData();
             });
@@ -2029,7 +2442,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $scope.rawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            //console.log("WeekBeginning: " + $scope.rawWeekBeginning);
             if ($scope.rawWeekEnding != null) {
                 $http({
                     url: './taiga/student_tasks',
@@ -2053,7 +2466,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            //console.log("WeekEnding: " + $scope.rawWeekEnding);
             if ($scope.rawWeekBeginning != null) {
                 $http({
                     url: './taiga/student_tasks',
@@ -2137,12 +2550,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getGitHubCommitsData() {
             $http({
-                url: './github/commits',
+                url: './github/commits_student',
                 method: "GET",
-                headers: {'email': studentemail}
+                headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked This is what the GitHub Data is showing: !");
-                console.log(response.data);
+                //console.log("Worked This is what the GitHub Data is showing: !");
+                //console.log(response.data);
                 $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
                 getGitHubWeightData();
             });
@@ -2212,12 +2625,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getGitHubWeightData() {
             $http({
-                url: './github/weight',
+                url: './github/weights_student',
                 method: "GET",
-                headers: {'email': studentemail}
+                headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Worked This is what the GitHub Weight is showing: !");
-                console.log(response.data);
+                //console.log("Worked This is what the GitHub Weight is showing: !");
+                //console.log(response.data);
                 $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
                 getSlackActivity();
             });
@@ -2294,8 +2707,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("SlackActivity");
-                console.log(response.data);
+                //console.log("SlackActivity");
+                //console.log(response.data);
                 $scope.slackStudentActivity = response.data;
                 $scope.dataForSlackStudentActivity = getDataForStudentSlackActivityCharts(response.data);
                 getSlackIntervals();
@@ -2308,8 +2721,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
-                console.log("Slack Student Intervals");
-                console.log(response.data);
+                //console.log("Slack Student Intervals");
+                //console.log(response.data);
                 $scope.slackStudentIntervals = response.data;
             });
         }
@@ -2328,8 +2741,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.slackRawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("SlackStudentMessages");
-                    console.log(response.data);
+                    //console.log("SlackStudentMessages");
+                    //console.log(response.data);
                     $scope.studentMessages = response.data;
                     $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
                 });
@@ -2350,8 +2763,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.slackRawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("SlackStudentMessages");
-                    console.log(response.data);
+                    //console.log("SlackStudentMessages");
+                    //console.log(response.data);
                     $scope.studentTasks = response.data;
                     $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
                 });
@@ -2489,10 +2902,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/weight',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 $window.alert("GitHub Commit and Weight Data Successfully Updated");
             }, function (response) {
-                console.log("didn't work");
+                //console.log("didn't work");
                 $window.alert("GitHub Commit and Weight Data Not Successfully Updated");
             });
 
@@ -2505,7 +2918,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $window.alert("Taiga Task Totals Data Successfully Updated");
             }, function (response) {
-                console.log("didn't work");
+                //console.log("didn't work");
                 $window.alert("Taiga Task Totals Data Not Successfully Updated");
             });
 
@@ -2518,7 +2931,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $window.alert("Slack Users Successfully Updated");
             }, function (response) {
-                console.log("didn't work");
+                //console.log("didn't work");
                 $window.alert("Slack Users Not Successfully Updated");
             });
 
@@ -2531,7 +2944,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $window.alert("Slack Message Totals Successfully Updated");
             }, function (response) {
-                console.log("didn't work");
+                //console.log("didn't work");
                 $window.alert("Slack Message Totals Not Successfully Updated");
             });
 

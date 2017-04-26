@@ -41,6 +41,7 @@
                                 style="width:400px; height:400px;">
                         </canvas>
                     </div>
+                        <br>
                         <label style="color: #066">{{teamArrayTG[1].weekBeginning}}  To  {{teamArrayTG[1].weekEnding}}</label>
                         <div ng-controller='TeamController' id="previousWeek">
                             <canvas id="radarPrevious" class="chart chart-radar"
@@ -71,9 +72,17 @@
                             <nvd3 options='optionsForTaigaTeamActivity' data='dataForTaigaTeamActivity'></nvd3>
                         </div>
                     </div>
-                    <div ng-show="isSet(3)">
-                        <h1>GitHub Charts</h1>
-                        <p> Content coming soon... </p>
+                    <div ng-if="isSet(3)">
+                        <h3>GitHub Data</h3>
+                        <br>
+                        <br>
+                        <h3>GitHub Team Average Commit Activity</h3>
+                        <div ng-controller='TeamController'>
+                            <nvd3 options='optionsForGitHubTeamCommits' data='dataForGitHubTeamCommits'></nvd3>
+
+                            <h3>GitHub Team Average Weight Activity</h3><br>
+                            <nvd3 options='optionsForGitHubTeamWeight' data='dataForGitHubTeamWeight'></nvd3>
+                        </div>
                     </div>
                     <div ng-if="isSet(4)">
                         <h2>Slack Data</h2>

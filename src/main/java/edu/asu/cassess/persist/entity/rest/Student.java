@@ -28,6 +28,9 @@ public class Student {
     @Transient
     private String password;
 
+    @Column(name = "enabled", columnDefinition = "BIT", length = 1)
+    private Boolean enabled;
+
     public Student() {
 
     }
@@ -76,6 +79,18 @@ public class Student {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled() {
+        this.enabled = true;
+    }
+
+    public void setDisabled() {
+        this.enabled = false;
     }
 
 

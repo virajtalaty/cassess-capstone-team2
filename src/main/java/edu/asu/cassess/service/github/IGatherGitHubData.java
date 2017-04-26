@@ -4,11 +4,8 @@ import edu.asu.cassess.persist.entity.github.CommitData;
 
 import java.util.List;
 
-/**
- * Created by Thomas on 4/18/2017.
- */
 public interface IGatherGitHubData {
-    void fetchData(String owner, String projectName);
+    void fetchData(String owner, String projectName, String course, String team, String accessToken);
 
     List<CommitData> getCommitList();
 }

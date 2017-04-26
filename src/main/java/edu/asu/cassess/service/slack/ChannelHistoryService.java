@@ -115,18 +115,23 @@ public class ChannelHistoryService implements IChannelHistoryService {
         for (Student student : students) {
             int messageCount = 0;
             String email = student.getEmail();
-            Object object = userObjectQueryDao.getUserByEmail(email);
-            if(object.getClass() == UserObject.class){
-                UserObject userObject = (UserObject) object;
-                if(countsMap.get(userObject.getId()) != null) {
-                    messageCount = countsMap.get(userObject.getId()).get();
-                }
-                //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
-                //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
-                //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
-                slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+            List<UserObject> userObjects = userObjectQueryDao.getUsersByEmail(email);
+            if(userObjects != null) {
+                for (UserObject userObject : userObjects) {
+                    if (countsMap.get(userObject.getId()) != null) {
+                        messageCount = countsMap.get(userObject.getId()).get();
+                    }
+                    //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
+                    //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
+                    //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
+                    if (student.getEnabled() != null) {
+                        if (student.getEnabled() != false) {
+                            slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                        }
+                    }
                 }
             }
+        }
     }
 
 
