@@ -137,6 +137,14 @@ public class User {
         this.enabled = enabled;
     }
 
+    public void setEnabled() {
+        this.enabled = true;
+    }
+
+    public void setDisabled() {
+        this.enabled = false;
+    }
+
     public String getEmail() {
         return email;
     }

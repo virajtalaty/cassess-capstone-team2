@@ -3,10 +3,12 @@ package edu.asu.cassess.service.taiga;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
 import edu.asu.cassess.service.rest.CourseService;
 import edu.asu.cassess.service.rest.ICourseService;
+import edu.asu.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,6 +56,9 @@ public class TaskDataService implements ITaskDataService {
 
     @Autowired
     private IProjectQueryDao projectsDao;
+
+    @Autowired
+    private IStudentsService studentsService;
 
     public TaskDataService() {
         restTemplate = new RestTemplate();
@@ -133,6 +138,11 @@ public class TaskDataService implements ITaskDataService {
     public void getTaskTotals(String slug, String course) {
         List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member : memberNames) {
+            Student student = new Student();
+            Object object = studentsService.find(member.getUser_email(), member.getTeam(), course);
+            if(object.getClass() == Student.class){
+                student = (Student) object;
+            }
             String name = member.getFull_name();
             int closedTasks = 0;
             int newTasks = 0;
@@ -156,8 +166,12 @@ public class TaskDataService implements ITaskDataService {
             //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
             //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
             //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
-            TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), member.getTeam(), course, closedTasks, newTasks, inProgressTasks,
-                    readyForTestTasks, openTasks));
+            if (student.getEnabled() != null) {
+                if (student.getEnabled() != false) {
+                    TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), member.getTeam(), course, closedTasks, newTasks, inProgressTasks,
+                            readyForTestTasks, openTasks));
+                }
+            }
         }
     }
 

@@ -8,8 +8,10 @@ import edu.asu.cassess.model.github.GitHubAnalytics;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
 import edu.asu.cassess.persist.entity.github.GitHubWeight;
+import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.repo.github.CommitDataRepo;
 import edu.asu.cassess.persist.repo.github.GitHubWeightRepo;
+import edu.asu.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +36,10 @@ public class GatherGitHubData implements IGatherGitHubData {
     @Autowired
     private CommitDataRepo commitDataRepo;
 
+    @Autowired
+    private IStudentsService studentsService;
+
     private RestTemplate restTemplate;
-    private String accessToken;
     private String url;
     private String projectName;
     private String owner;
@@ -43,8 +47,6 @@ public class GatherGitHubData implements IGatherGitHubData {
 
     public GatherGitHubData() {
         restTemplate = new RestTemplate();
-        GitHubProperties gitHubProperties = new GitHubProperties();
-        accessToken = gitHubProperties.getAccessToken();
     }
 
     /**
@@ -56,15 +58,16 @@ public class GatherGitHubData implements IGatherGitHubData {
      * @param projectName the project name of the repo
      */
     @Override
-    public void fetchData(String owner, String projectName){
+    public void fetchData(String owner, String projectName, String course, String team, String accessToken){
         this.projectName = projectName;
         this.owner = owner;
         url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
-        getStats();
+
+        getStats(course, team, accessToken);
     }
 
 
-    private void getStats() {
+    private void getStats(String course, String team, String accessToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken);
         String urlPath = builder.build().toUriString();
@@ -81,10 +84,10 @@ public class GatherGitHubData implements IGatherGitHubData {
             e.printStackTrace();
         }
 
-        storeStats(contributors);
+        storeStats(contributors, accessToken, course, team);
     }
 
-    private void storeStats(ArrayList<GitHubContributors> contributors) {
+    private void storeStats(ArrayList<GitHubContributors> contributors, String accessToken, String course, String team) {
         for (GitHubContributors contributor : contributors) {
             ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
 
@@ -104,13 +107,27 @@ public class GatherGitHubData implements IGatherGitHubData {
 
                 if(email == null){
                     email = "hiddenEmail";
+                    commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner, course, team));
+
+                    int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
+                    GitHubWeight gitHubWeight = new GitHubWeight(email, date, weight, userName, course, team);
+                    weightRepo.save(gitHubWeight);
                 }
 
-                commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner));
+                Student student = new Student();
+                Object object = studentsService.find(email, team, course);
+                if(object.getClass() == Student.class){
+                    student = (Student) object;
+                }
+                if (student.getEnabled() != null) {
+                    if (student.getEnabled() != false) {
+                        commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner, course, team));
 
-                int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
-                GitHubWeight gitHubWeight = new GitHubWeight(email,date, weight, userName);
-                weightRepo.save(gitHubWeight);
+                        int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
+                        GitHubWeight gitHubWeight = new GitHubWeight(email, date, weight, userName, course, team);
+                        weightRepo.save(gitHubWeight);
+                    }
+                }
             }
         }
     }

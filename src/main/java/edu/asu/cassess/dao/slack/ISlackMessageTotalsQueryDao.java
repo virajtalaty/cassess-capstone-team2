@@ -4,6 +4,8 @@ import edu.asu.cassess.model.Taiga.WeeklyFreqWeight;
 import edu.asu.cassess.model.Taiga.WeeklyIntervals;
 import edu.asu.cassess.model.slack.DailyMessageTotals;
 import edu.asu.cassess.model.slack.WeeklyMessageTotals;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,9 @@ public interface ISlackMessageTotalsQueryDao {
 
     @PersistenceContext
     void setEntityManager(EntityManager entityManager);
+
+    @Transactional
+    RestResponse deleteMessagesByStudent(Student student) throws DataAccessException;
 
     @Transactional
     List<DailyMessageTotals> getDailyCountsByCourse(String beginDate, String endDate, String course) throws DataAccessException;

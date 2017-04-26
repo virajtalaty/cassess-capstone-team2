@@ -83,7 +83,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
             //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
             //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
 
-            if(slackMessage.getText().length() > 10) {
+            if(slackMessage.getText().length() > 20) {
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
@@ -124,7 +124,11 @@ public class ChannelHistoryService implements IChannelHistoryService {
                 //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
                 //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
                 //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
-                slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                if (student.getEnabled() != null) {
+                    if (student.getEnabled() != false) {
+                            slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                        }
+                    }
                 }
             }
     }

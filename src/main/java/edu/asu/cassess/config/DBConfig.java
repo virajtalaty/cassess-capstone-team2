@@ -33,9 +33,18 @@ public class DBConfig {
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+
+        //Connection Parameters for Local Deployment
         dataSource.setUrl("jdbc:mysql://localhost/cassess");
         dataSource.setUsername("root");
         dataSource.setPassword("root123");
+
+        /* //Connection Parameters for ASU RHEL Server Deployment
+        dataSource.setUrl("jdbc:mysql://cassess.fulton.asu.edu/Cassess");
+        dataSource.setUsername("cassess");
+        dataSource.setPassword("4qHb!9d3");
+        */
+
         return dataSource;
     }
 

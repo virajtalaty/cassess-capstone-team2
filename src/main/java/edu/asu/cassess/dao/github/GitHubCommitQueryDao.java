@@ -1,6 +1,9 @@
 package edu.asu.cassess.dao.github;
 
 import edu.asu.cassess.model.Taiga.WeeklyFreqWeight;
+import edu.asu.cassess.persist.entity.github.CommitData;
+import edu.asu.cassess.persist.entity.rest.RestResponse;
+import edu.asu.cassess.persist.entity.rest.Student;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +14,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @Component
-public class GitHubQueryDao implements IGitHubQueryDao {
+public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
 
     protected EntityManager entityManager;
 
@@ -24,6 +27,17 @@ public class GitHubQueryDao implements IGitHubQueryDao {
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    @Transactional
+    public RestResponse deleteCommitsByStudent(Student student) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.commit_data WHERE course = ?1 AND team = ?2 AND email = ?3");
+        query.setParameter(1, student.getCourse());
+        query.setParameter(2, student.getTeam_name());
+        query.setParameter(3, student.getEmail());
+        query.executeUpdate();
+        return new RestResponse("github commits for student: " + student.getEmail() + " have been removed from the database");
     }
 
     @Override
@@ -152,4 +166,48 @@ public class GitHubQueryDao implements IGitHubQueryDao {
         return resultList;
     }
 
+    @Override
+    @Transactional
+    public List<CommitData> getCommitsByCourse(String course) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, project_name, github_owner, email, course, team, AVG(commits) as commits, AVG(lines_of_code_added) as lines_of_code_added, AVG(lines_of_code_deleted) as lines_of_code_deleted\n" +
+                "FROM \n" +
+                "cassess.commit_data\n" +
+                "WHERE course = ?1\n" +
+                "GROUP BY date", CommitData.class);
+        query.setParameter(1, course);
+        List<CommitData> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<CommitData> getCommitsByTeam(String course, String team) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, project_name, github_owner, email, course, team, AVG(commits) as commits, AVG(lines_of_code_added) as lines_of_code_added, AVG(lines_of_code_deleted) as lines_of_code_deleted\n" +
+                "FROM \n" +
+                "cassess.commit_data\n" +
+                "WHERE course = ?1\n" +
+                "AND team = ?2\n" +
+                "GROUP BY date", CommitData.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        List<CommitData> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<CommitData> getCommitsByStudent(String course, String team, String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, project_name, github_owner, email, course, team, AVG(commits) as commits, AVG(lines_of_code_added) as lines_of_code_added, AVG(lines_of_code_deleted) as lines_of_code_deleted\n" +
+                "FROM \n" +
+                "cassess.commit_data\n" +
+                "WHERE course = ?1\n" +
+                "AND team = ?2\n" +
+                "AND email = ?3\n" +
+                "GROUP BY date", CommitData.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, email);
+        List<CommitData> resultList = query.getResultList();
+        return resultList;
+    }
 }

@@ -50,7 +50,7 @@ public class TaskController {
         List<Team> teams = teamsService.listReadAll();
         for(Team team: teams){
             Course course = (Course) coursesService.read(team.getCourse());
-            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id());
+            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id(), course.getCourse(), team.getTeam_name(), course.getGithub_token());
         }
         System.out.println("github cron ran as scheduled");
     }
@@ -59,7 +59,6 @@ public class TaskController {
     public void SlackMessages() {
     List<CourseList> courseList = coursesService.listGetCourses();
         for (CourseList course : courseList) {
-        //System.out.print("Course: " + course.getCourse());
         channelHistoryService.updateMessageTotals(course.getCourse());
         }
         System.out.println("slack cron ran as scheduled");
