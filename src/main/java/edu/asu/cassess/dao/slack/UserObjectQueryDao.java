@@ -40,4 +40,11 @@ public class UserObjectQueryDao implements IUserObjectQueryDao {
             }
         }
 
+    @Override
+    public <T> List<UserObject> getUsersByEmail(String email) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.slack_user WHERE email = ?1", UserObject.class);
+        query.setParameter(1, email);
+        List<UserObject> resultList = query.getResultList();
+        return resultList;
+    }
 }
