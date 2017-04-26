@@ -124,7 +124,11 @@ public class ChannelHistoryService implements IChannelHistoryService {
                 //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
                 //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
                 //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
-                slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                if (student.getEnabled() != null) {
+                    if (student.getEnabled() != false) {
+                            slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                        }
+                    }
                 }
             }
     }
