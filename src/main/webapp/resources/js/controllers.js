@@ -16,39 +16,86 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller('HomeController', function ($scope, HomeService) {
         $scope.technos = HomeService.getTechno();
     })
-    .controller('UsersController', ['$scope', '$location', '$http', 'UsersService', function ($scope, $location, $http, UsersService) {
-        $scope.users = UsersService.getAll();
+    .controller('UsersController', ['$scope', '$location', '$http', 'UsersService', 'userService', 'adminService', function ($scope, $location, $http, UsersService, userService, adminService) {
 
-        $scope.viewProfile = function (email, auth) {
+        $scope.usersSuper = UsersService.getAll();
+
+            $http({
+                url: './current_user',
+                method: "GET"
+            }).then(function (response) {
+                //console.log("Worked!");
+                //console.log(response.data);
+                $scope.user = response.data;
+                userService.setUser($scope.user.login);
+                userService.setAuth($scope.user.authorities[0].name);
+                getCourses($scope.user);
+            });
+
+        function getCourses(user) {
+                $http({
+                    url: './admin_courses',
+                    method: "GET",
+                    headers: {'email': user.email}
+                }).then(function (response) {
+                    //console.log("Worked!");
+                    //console.log(response.data);
+                    $scope.courses = response.data;
+                });
+            }
+
+            $scope.selectedCourseChanged = function () {
+                $scope.course = $scope.adminCourse.value.course;
+                adminService.setCourse($scope.adminCourse.value.course);
+                $http({
+                    url: './course_students',
+                    method: "GET",
+                    headers: {'course': $scope.course}
+                }).then(function (response) {
+                    //console.log("Worked!");
+                    //console.log(response.data);
+                    $scope.usersAdmin = response.data;
+                });
+            };
+
+
+        $scope.viewProfileSuper = function (email, auth) {
             if (auth == 'student') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/studentProfile/' + email);
             }
             if (auth == 'admin') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/adminProfile/' + email);
             }
             if (auth == 'rest') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/restProfile/' + email);
             }
         }
+
+        $scope.viewProfileAdmin = function (email, auth) {
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
+                $location.path('/studentProfile/' + email);
+        }
     }])
-    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
+    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', 'adminService', function ($scope, $location, $routeParams, $http, userService, $window, adminService) {
         $scope.userid = $routeParams.user_id;
 
         $http({
             url: './current_user',
             method: "GET"
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             $scope.user = response.data;
             userService.setUser($scope.user.login);
             userService.setAuth($scope.user.authorities[0].name);
@@ -61,8 +108,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 if (response.data == false) {
                     $location.path('/home');
                 } else {
@@ -77,7 +124,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.userData = response.data;
                 getCoursesData();
@@ -90,11 +137,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.courses = response.data;
             });
         }
+
+
 
         $scope.selectedCourseChanged = function () {
             $http({
@@ -105,18 +154,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.course = $scope.studentCourse.value.course;
                 //console.log(response.data);
                 $scope.teams = response.data;
-                console.log($scope.teams);
+                //console.log($scope.teams);
             }, function (response) {
                 //fail case
-                console.log("didn't work");
+                //console.log("didn't work");
                 //console.log(response);
             });
         };
 
+
+
         $scope.selectedTeamChanged = function () {
             //console.log(response.data);
             $scope.team = $scope.studentTeam.value.team;
-            console.log($scope.team);
+            //console.log($scope.team);
         };
 
         $scope.studentTeamRemove = function () {
@@ -124,7 +175,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './studentProfileDelTeam',
                 method: "DELETE",
                 headers: {
-                    'course': $scope.studentCourse.value.course,
+                    'course': $scope.course,
                     'team': $scope.studentTeam.value.team,
                     'email': $scope.userid
                 }
@@ -149,7 +200,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $http({
                         url: './studentDisable',
                         method: "PUT",
-                        headers: {'course': $scope.studentCourse.value.course,
+                        headers: {'course': $scope.course,
                             'team': $scope.studentTeam.value.team,
                             'email': $scope.userid}
                     }).then(function (response) {
@@ -176,7 +227,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $http({
                         url: './studentEnable',
                         method: "PUT",
-                        headers: {'course': $scope.studentCourse.value.course,
+                        headers: {'course': $scope.course,
                             'team': $scope.studentTeam.value.team,
                             'email': $scope.userid}
                     }).then(function (response) {
@@ -195,7 +246,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './studentProfileDelCourse',
                 method: "DELETE",
-                headers: {'course': $scope.studentCourse.value.course, 'email': $scope.userid}
+                headers: {'course': $scope.course, 'email': $scope.userid}
             }).then(function (response) {
                 $scope.message = "Student Removed From Course";
                 $window.alert($scope.message);
@@ -266,7 +317,113 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $window.alert($scope.message);
                 });
             }
-        }
+        };
+
+        $scope.adminCourse = adminService.getCourse();
+        $http({
+            url: './student_teams',
+            method: "GET",
+            headers: {'course': $scope.adminCourse, 'email': $scope.userid}
+        }).then(function (response) {
+            $scope.adminTeams = response.data;
+            //console.log($scope.adminTeams);
+        }, function (response) {
+            //fail case
+            //console.log("didn't work");
+            //console.log(response);
+        });
+
+        $scope.selectedTeamChangedAdmin = function () {
+            //console.log(response.data);
+            $scope.teamAdmin = $scope.studentTeamAdmin.value.team;
+            //console.log($scope.teamAdmin);
+        };
+
+        $scope.studentTeamRemoveAdmin = function () {
+            $http({
+                url: './studentProfileDelTeam',
+                method: "DELETE",
+                headers: {
+                    'course': $scope.adminCourse,
+                    'team': $scope.teamAdmin,
+                    'email': $scope.userid
+                }
+            }).then(function (response) {
+                $scope.message = "Student Removed From Team";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "Student Not Removed From Team";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.disableStudentAdmin = function () {
+            if(!$scope.adminCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.teamAdmin){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentDisable',
+                        method: "PUT",
+                        headers: {'course': $scope.adminCourse,
+                            'team': $scope.teamAdmin,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Disabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Disabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
+        $scope.enableStudentAdmin = function () {
+            if(!$scope.adminCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.teamAdmin){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentEnable',
+                        method: "PUT",
+                        headers: {'course': $scope.adminCourse,
+                            'team': $scope.teamAdmin,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Enabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Enabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
+        $scope.studentCourseRemoveAdmin = function () {
+            $http({
+                url: './studentProfileDelCourse',
+                method: "DELETE",
+                headers: {'course': $scope.adminCourse, 'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "Student Removed From Course";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "Student Not Removed From Course";
+                $window.alert($scope.message);
+            });
+        };
 
     }])
     .controller('RestProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
@@ -2946,6 +3103,40 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }, function (response) {
                 //console.log("didn't work");
                 $window.alert("Slack Message Totals Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateTaigaProjects = function () {
+            $http({
+                url: './taiga/Update/Projects',
+                method: "POST"
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.updateTaigaMemberships = function () {
+            $http({
+                url: './taiga/Update/Memberships',
+                method: "POST"
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
             });
 
         };

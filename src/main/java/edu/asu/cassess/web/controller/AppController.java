@@ -10,6 +10,7 @@ import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.slack.DailyMessageTotals;
 import edu.asu.cassess.model.slack.WeeklyMessageTotals;
 import edu.asu.cassess.persist.entity.github.CommitData;
@@ -131,6 +132,14 @@ public class AppController {
     public List<CourseList> getAdminCourses(@RequestHeader(name = "email", required = true) String email,
                                             HttpServletRequest request, HttpServletResponse response) {
         return adminService.listGetCoursesForAdmin(email);
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/course_students", method = RequestMethod.GET)
+    public List<Student> getCourseStudents(@RequestHeader(name = "course", required = true) String course,
+                                            HttpServletRequest request, HttpServletResponse response) {
+        return studentService.listReadByCourse(course);
 
     }
 

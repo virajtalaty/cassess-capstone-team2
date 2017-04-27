@@ -95,7 +95,7 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         controller: 'UsersController',
         access: {
             loginRequired: true,
-            authorizedRoles: [USER_ROLES.super_user]
+            authorizedRoles: [USER_ROLES.super_user, USER_ROLES.admin]
         }
     }).when('/studentProfile/:user_id', {
         templateUrl: 'partials/studentProfile.html',
