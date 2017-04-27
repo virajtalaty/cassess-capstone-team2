@@ -41,6 +41,13 @@
         </select>
         <br>
     </div>
+    <div access="admin">
+        <label style="color: black">Select A Team:</label>
+        <select ng-model="studentTeamAdmin.value" ng-options="x.team for x in adminTeams" ng-change="selectedTeamChangedAdmin()"
+                access="admin">
+        </select>
+        <br>
+    </div>
     <form >
         <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemove()">Remove From Course</button>
     </form>
@@ -57,6 +64,23 @@
     </form>
     <form >
         <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
+    </form>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemoveAdmin()">Remove From Course</button>
+    </form>
+    <br>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Team?"? ng-really-click="studentTeamRemoveAdmin()">Remove From Team</button>
+    </form>
+    <br>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
+    </form>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable User?"? ng-really-click="disableUser()">Disable User</button>
+    </form>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
     </form>
     <br>
     <div access="student">
@@ -86,6 +110,12 @@
     </form>
     <form >
         <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable Student?"? ng-really-click="enableStudent()">Enable Student</button>
+    </form>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable Student?"? ng-really-click="disableStudentAdmin()">Disable Student</button>
+    </form>
+    <form >
+        <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable Student?"? ng-really-click="enableStudentAdmin()">Enable Student</button>
     </form>
     <br>
     <h3>Change Password</h3>

@@ -1,7 +1,7 @@
 package edu.asu.cassess.service.rest;
 
 import edu.asu.cassess.dao.rest.StudentsServiceDao;
-import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
@@ -59,6 +59,11 @@ public class StudentsService implements IStudentsService {
     @Override
     public <T> List<Student> listReadByTeam(String course, String team_name) {
         return studentsDao.listReadByTeam(course, team_name);
+    }
+
+    @Override
+    public <T> List<Student> listReadByCourse(String course) {
+        return studentsDao.listReadByCourse(course);
     }
 
     @Override

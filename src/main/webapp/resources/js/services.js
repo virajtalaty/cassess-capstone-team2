@@ -49,6 +49,21 @@ myapp.service('userService', function () {
         getAuth: getAuth
     };
 })
+    .service('adminService', function () {
+        var course = null;
+
+        var setCourse = function (courseObject) {
+            course = courseObject;
+        };
+
+        var getCourse = function () {
+            return course;
+        };
+        return {
+            setCourse: setCourse,
+            getCourse: getCourse
+        };
+    })
     .service('courseService', function () {
         var course = null;
 

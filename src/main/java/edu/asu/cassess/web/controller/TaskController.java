@@ -1,6 +1,6 @@
 package edu.asu.cassess.web.controller;
 
-import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.service.github.IGatherGitHubData;

@@ -1,5 +1,6 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.persist.entity.rest.Admin;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
@@ -60,6 +61,16 @@ public class SecurityController {
             bool = true;
         } else if (login.equalsIgnoreCase(email)) {
             bool = true;
+        }else if(auth.equalsIgnoreCase("admin") && !login.equalsIgnoreCase(email)){
+                List<CourseList> coursesStudent = studentsService.listGetCoursesForStudent(email);
+                List<CourseList> coursesAdmin = adminsService.listGetCoursesForAdmin(login);
+                for(CourseList courseAdmin:coursesAdmin){
+                    for(CourseList courseStudent:coursesStudent){
+                        if(courseAdmin.getCourse().equalsIgnoreCase(courseStudent.getCourse())){
+                            bool = true;
+                        }
+                    }
+                }
         } else {
             bool = false;
         }
