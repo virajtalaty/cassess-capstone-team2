@@ -77,10 +77,11 @@ public class CourseServiceDao {
     public <T> Object update(Course courseInput) {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
         query.setParameter(1, courseInput.getCourse());
-        Course course = (Course) query.getSingleResult();
         List<Team> teams = courseInput.getTeams();
         List<Admin> admins = courseInput.getAdmins();
-        if (course != null) {
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            Course course = (Course) results.get(0);
             courseRepo.save(courseInput);
             if (course.getTeams() != null) {
                 teamsService.listUpdate(teams);
@@ -126,9 +127,9 @@ public class CourseServiceDao {
             Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.courses WHERE course = ?1");
             query.setParameter(1, course.getCourse());
             query.executeUpdate();
-            return new RestResponse(course + " has been removed from the database");
+            return new RestResponse(course.getCourse() + " has been removed from the database");
         } else {
-            return new RestResponse(course + " does not exist in the database");
+            return new RestResponse(course.getCourse() + " does not exist in the database");
         }
     }
 

@@ -56,10 +56,11 @@ public class StudentsServiceDao {
         query.setParameter(1, studentInput.getCourse());
         query.setParameter(2, studentInput.getTeam_name());
         query.setParameter(3, studentInput.getEmail());
-        Student student = (Student) query.getSingleResult();
-        if (student != null) {
-            return new RestResponse(student.getEmail() + " already exists in database");
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            return new RestResponse(studentInput.getEmail() + " already exists in database");
         } else {
+            studentInput.setEnabled();
             studentRepo.save(studentInput);
             return studentInput;
         }
@@ -77,8 +78,9 @@ public class StudentsServiceDao {
         query.setParameter(1, studentInput.getCourse());
         query.setParameter(2, studentInput.getTeam_name());
         query.setParameter(3, studentInput.getEmail());
-        Student student = (Student) query.getSingleResult();
-        if (student != null) {
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            delete((Student)results.get(0));
             studentRepo.save(studentInput);
             return studentInput;
         } else {
@@ -199,14 +201,15 @@ public class StudentsServiceDao {
             query.setParameter(1, studentInput.getCourse());
             query.setParameter(2, studentInput.getTeam_name());
             query.setParameter(3, studentInput.getEmail());
-            Student student = (Student) query.getSingleResult();
-            if (student != null) {
+            List results = query.getResultList();
+            if (!results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(studentInput.getEmail() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
+                studentInput.setEnabled();
                 studentRepo.save(studentInput);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(studentInput)));
@@ -236,14 +239,15 @@ public class StudentsServiceDao {
             query.setParameter(1, studentInput.getCourse());
             query.setParameter(2, studentInput.getTeam_name());
             query.setParameter(3, studentInput.getEmail());
-            Student student = (Student) query.getSingleResult();
-            if (student == null) {
+            List results = query.getResultList();
+            if (results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(studentInput.getEmail() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
+                delete((Student)results.get(0));
                 studentRepo.save(studentInput);
                 try {
                     successArray.put(new JSONObject(ow.writeValueAsString(studentInput)));
@@ -268,8 +272,8 @@ public class StudentsServiceDao {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 LIMIT 1", Student.class);
         preQuery.setParameter(1, team.getCourse());
         preQuery.setParameter(2, team.getTeam_name());
-        Student student = (Student) preQuery.getSingleResult();
-        if (student != null) {
+        List results = preQuery.getResultList();
+        if (!results.isEmpty()) {
             Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1 AND team_name = ?2");
             query.setParameter(1, team.getCourse());
             query.setParameter(2, team.getTeam_name());

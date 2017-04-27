@@ -1,5 +1,6 @@
 package edu.asu.cassess.web.controller;
 
+import edu.asu.cassess.dao.slack.IConsumeUsers;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
@@ -32,6 +33,9 @@ public class restController {
 
     @EJB
     private ITeamsService teamService;
+
+    @Autowired
+    private IConsumeUsers consumeUsers;
 
     @EJB
     private IStudentsService studentService;
@@ -85,6 +89,7 @@ public class restController {
             Object object = courseService.create(coursePackage);
             projects.updateProjects(coursePackage.getCourse());
             members.updateMembership(coursePackage.getCourse());
+            consumeUsers.updateSlackUsers(coursePackage.getCourse());
             return object;
         }
     }
@@ -103,6 +108,7 @@ public class restController {
             usersService.courseUpdate(coursePackage);
             projects.updateProjects(coursePackage.getCourse());
             members.updateMembership(coursePackage.getCourse());
+            consumeUsers.updateSlackUsers(coursePackage.getCourse());
             return courseService.update(coursePackage);
         }
     }
@@ -146,6 +152,7 @@ public class restController {
                 usersService.updateStudent(student, user);
             }
             members.updateMembership(student.getCourse());
+            consumeUsers.updateSlackUsers(student.getCourse());
             return studentService.update(student);
         }
     }
@@ -178,6 +185,7 @@ public class restController {
                 taskTotalsDao.deleteTaskTotalsByCourse(course);
                 projectDao.deleteTaigaProjectByCourse(course);
                 memberDao.deleteMembersByCourse(course);
+                consumeUsers.deleteSlackUsers(course.getCourse());
                 object = courseService.delete(course);
 
             }
@@ -374,6 +382,7 @@ public class restController {
             usersService.teamUpdate(team);
             members.updateMembership(team.getCourse());
             projects.updateProjects(team.getCourse());
+            consumeUsers.updateSlackUsers(team.getCourse());
             return teamService.update(team);
         }
     }
@@ -393,6 +402,7 @@ public class restController {
                 usersService.teamUpdate(team);
                 projects.updateProjects(team.getCourse());
                 members.updateMembership(team.getCourse());
+                consumeUsers.updateSlackUsers(team.getCourse());
             }
             return teamService.listUpdate(teams);
         }
