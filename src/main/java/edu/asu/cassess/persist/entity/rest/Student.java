@@ -1,8 +1,11 @@
 package edu.asu.cassess.persist.entity.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import java.util.UUID;
 
 import static edu.asu.cassess.persist.entity.rest.Course.COURSE_STRING;
 import static edu.asu.cassess.persist.entity.rest.Team.TEAM_STRING;
@@ -13,6 +16,11 @@ import static edu.asu.cassess.persist.entity.rest.Team.TEAM_STRING;
 public class Student {
 
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
+
     @Column(name = "email")
     private String email;
 
@@ -32,7 +40,7 @@ public class Student {
     private Boolean enabled;
 
     public Student() {
-
+        this.enabled = true;
     }
 
     public String getEmail() {

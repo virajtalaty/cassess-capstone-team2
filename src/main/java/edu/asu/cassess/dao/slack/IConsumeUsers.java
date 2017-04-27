@@ -9,9 +9,11 @@ import edu.asu.cassess.persist.entity.slack.UserObject;
 public interface IConsumeUsers {
     UserList getUserList(String token);
 
-    void saveUserList(UserList userList);
+    void saveUserList(UserList userList, String course);
 
     void updateSlackUsers(String course);
+
+    void deleteSlackUsers(String course);
 
     UserObject getUserInfo(String userID, String token);
 }

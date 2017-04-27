@@ -41,8 +41,8 @@ public class ChannelsServiceDao {
         preQuery.setParameter(1, channelInput.getCourse());
         preQuery.setParameter(2, channelInput.getTeam_name());
         preQuery.setParameter(3, channelInput.getId());
-        Channel channel = (Channel) preQuery.getSingleResult();
-        if (channel != null) {
+        List results = preQuery.getResultList();
+        if (!results.isEmpty()) {
             return new RestResponse(channelInput.getId() + " already exists in database");
         } else {
             channelRepo.save(channelInput);
@@ -55,8 +55,8 @@ public class ChannelsServiceDao {
         preQuery.setParameter(1, channelInput.getCourse());
         preQuery.setParameter(2, channelInput.getTeam_name());
         preQuery.setParameter(3, channelInput.getId());
-        Channel channel = (Channel) preQuery.getSingleResult();
-        if (channel != null) {
+        List results = preQuery.getResultList();
+        if (!results.isEmpty()) {
             channelRepo.save(channelInput);
             return channelInput;
         } else {
@@ -109,8 +109,8 @@ public class ChannelsServiceDao {
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
             preQuery.setParameter(3, channelInput.getId());
-            Channel channel = (Channel) preQuery.getSingleResult();
-            if (channel != null) {
+            List results = preQuery.getResultList();
+            if (!results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channelInput.getId() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
@@ -140,8 +140,8 @@ public class ChannelsServiceDao {
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
             preQuery.setParameter(3, channelInput.getId());
-            Channel channel = (Channel) preQuery.getSingleResult();
-            if (channel == null) {
+            List results = preQuery.getResultList();
+            if (results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(channelInput.getId() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {

@@ -84,7 +84,7 @@ public class MembersService implements IMembersService {
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
         List<ProjectIDSlug> idSlugList = projectDao.listGetTaigaProjectIDSlug(course);
-        if (token != null) {
+        if (token != null && !idSlugList.isEmpty()) {
             for (ProjectIDSlug idSlug : idSlugList) {
                 System.out.println("Id: " + idSlug.getId());
                 getMembers(idSlug.getId(), token, 1, idSlug.getTeam(), course);

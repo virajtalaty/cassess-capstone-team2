@@ -49,7 +49,7 @@ public class User {
     @JoinTable(name = "users_authority", joinColumns = {@JoinColumn(name = "id_user", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "id_authority", table = "authority", referencedColumnName = "id")})
     private Set<Authority> authorities = new HashSet<Authority>();
 
-    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled) {
+    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate) {
         this.firstName = firstName;
         this.familyName = familyName;
         this.email = email;
@@ -59,10 +59,10 @@ public class User {
         this.login = login;
         this.password = password;
         this.birthDate = birthDate;
-        this.enabled = enabled;
+        this.enabled = true;
     }
 
-    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, Boolean enabled, long id) {
+    public User(String firstName, String familyName, String email, String phone, String language, String pictureId, String login, String password, Date birthDate, long id) {
         this.id = id;
         this.firstName = firstName;
         this.familyName = familyName;
@@ -73,8 +73,7 @@ public class User {
         this.login = login;
         this.password = password;
         this.birthDate = birthDate;
-        this.enabled = enabled;
-        System.out.print("!!!!!!!!!!!!!!!!!_-----------------------------Created Full User");
+        this.enabled = true;
     }
 
     public User() {
@@ -131,10 +130,6 @@ public class User {
 
     public Boolean getEnabled() {
         return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     public void setEnabled() {

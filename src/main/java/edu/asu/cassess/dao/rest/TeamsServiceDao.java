@@ -46,15 +46,15 @@ public class TeamsServiceDao {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
         query.setParameter(1, teamInput.getCourse());
         query.setParameter(2, teamInput.getTeam_name());
-        Team team = (Team) query.getSingleResult();
-        if (team != null) {
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
             return new RestResponse(teamInput.getTeam_name() + " already exists in database");
         } else {
-            if (team.getStudents() != null) {
-                studentsService.listCreate(team.getStudents());
+            if (teamInput.getStudents() != null) {
+                studentsService.listCreate(teamInput.getStudents());
             }
-            if (team.getChannels() != null) {
-                channelsService.listCreate(team.getChannels());
+            if (teamInput.getChannels() != null) {
+                channelsService.listCreate(teamInput.getChannels());
             }
             teamRepo.save(teamInput);
             return teamInput;
@@ -66,8 +66,9 @@ public class TeamsServiceDao {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
         query.setParameter(1, teamInput.getCourse());
         query.setParameter(2, teamInput.getTeam_name());
-        Team team = (Team) query.getSingleResult();
-        if (team != null) {
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            Team team = (Team) results.get(0);
             if (team.getStudents() != null) {
                 studentsService.listUpdate(team.getStudents());
             }
@@ -162,10 +163,10 @@ public class TeamsServiceDao {
             Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, teamInput.getCourse());
             query.setParameter(2, teamInput.getTeam_name());
-            Team team = (Team) query.getSingleResult();
             List<Student> students = teamInput.getStudents();
             List<Channel> channels = teamInput.getChannels();
-            if (team != null) {
+            List results = query.getResultList();
+            if (!results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(teamInput.getTeam_name() + " already exists in database"))));
                 } catch (JsonProcessingException e) {
@@ -197,8 +198,8 @@ public class TeamsServiceDao {
             Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, teamInput.getCourse());
             query.setParameter(2, teamInput.getTeam_name());
-            Team team = (Team) query.getSingleResult();
-            if (team == null) {
+            List results = query.getResultList();
+            if (results.isEmpty()) {
                 try {
                     failureArray.put(new JSONObject(ow.writeValueAsString(new RestResponse(teamInput.getTeam_name() + " does not exist in database"))));
                 } catch (JsonProcessingException e) {
@@ -209,7 +210,7 @@ public class TeamsServiceDao {
                 teamRepo.save(teamInput);
                 studentsService.listUpdate(students);
                 try {
-                    successArray.put(new JSONObject(ow.writeValueAsString(team)));
+                    successArray.put(new JSONObject(ow.writeValueAsString(teamInput)));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -225,8 +226,9 @@ public class TeamsServiceDao {
     public <T> Object deleteByCourse(Course course) {
         Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.teams WHERE course = ?1 ", Team.class);
         preQuery.setParameter(1, course.getCourse());
-        List<Team> teams = preQuery.getResultList();
-        if (teams != null) {
+        List results = preQuery.getResultList();
+        if (!results.isEmpty()) {
+            List<Team> teams = results;
             for (Team team : teams) {
                 studentsService.deleteByTeam(team);
                 channelsService.deleteByTeam(team);

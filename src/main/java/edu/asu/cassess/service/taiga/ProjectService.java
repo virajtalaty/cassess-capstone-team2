@@ -69,7 +69,7 @@ public class ProjectService implements IProjectService {
             Course tempCourse = (Course) courseService.read(course);
             String token = tempCourse.getTaiga_token();
             List<Slugs> slugList = teamsService.listGetSlugs(course);
-            if (token != null) {
+            if (token != null && !slugList.isEmpty()) {
                 for (Slugs slug : slugList) {
                     System.out.println("Slug: " + slug);
                     getProjectInfo(token, slug.getSlug());

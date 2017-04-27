@@ -18,6 +18,7 @@ public class UserObject {
     private boolean deleted;
     private String status;
     private String real_name;
+    private String course;
     @Embedded
     private UserProfile profile;
     private boolean is_admin;
@@ -119,6 +120,14 @@ public class UserObject {
      */
     public void setReal_name(String real_name) {
         this.real_name = real_name;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 
     /**

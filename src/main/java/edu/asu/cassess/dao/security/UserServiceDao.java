@@ -55,6 +55,7 @@ public class UserServiceDao {
     public <T> Object createUser(User userInput, long role) {
         User user = userRepo.findByEmail(userInput.getEmail());
         if (user == null) {
+            userInput.setEnabled();
             userRepo.save(userInput);
             UsersAuthority usersAuth = new UsersAuthority(userInput.getId(), role);
             usersAuthorityRepo.save(usersAuth);
@@ -79,7 +80,7 @@ public class UserServiceDao {
         //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
         String array[] = admin.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, true, (long) userID.getMax() + 1);
+        User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, (long) userID.getMax() + 1);
         return user;
     }
 
@@ -97,13 +98,13 @@ public class UserServiceDao {
         //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into StudentUser");
         String array[] = student.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, true, (long) userID.getMax() + 1);
+        User user = new User(array[0], array[1], student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, (long) userID.getMax() + 1);
         return user;
     }
 
     public <T> Object registerUser(String first_name, String family_name, String email, String password, String role) {
         registerUser register_user = new registerUser(first_name, family_name, email, email, password);
-        User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getLogin(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate(), register_user.getEnabled());
+        User user = new User(register_user.getFirstName(), register_user.getFamilyName(), register_user.getLogin(), register_user.getPhone(), register_user.getLanguage(), register_user.getPictureId(), register_user.getLogin(), register_user.getPassword(), register_user.getBirthDate());
         Authority auth = new Authority();
         UserID userID = userQuery.getUserID();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
