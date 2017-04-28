@@ -3432,14 +3432,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/Update/Projects',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("Taiga Projects Successfully Updated");
             }, function (response) {
                 //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("Taiga Projects Not Successfully Updated");
             });
 
         };
@@ -3449,14 +3445,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/Update/Memberships',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("Taiga Memberships Successfully Updated");
             }, function (response) {
                 //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("Taiga Memberships Not Successfully Updated");
             });
 
         };
