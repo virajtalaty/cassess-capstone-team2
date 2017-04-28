@@ -1010,10 +1010,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
             }
 
-            $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
-            $scope.currentWeekOptions = { legend: { display: true }};
-            $scope.currentWeekSeries = ["Course"];
-            $scope.currentWeekData = [
+            $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.previousWeekOptions = { legend: { display: true }};
+            $scope.previousWeekSeries = ["Course"];
+            $scope.previousWeekData = [
                 [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0]
             ];
 
@@ -1023,8 +1023,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function plotPreviousWeek() {
 
             if($scope.courseArrayTG[1] == null){
-                $scope.courseWeightTG1 = 1;
-                $scope.courseFrequencyTG1 = 1;
+                $scope.courseWeightTG1 = 0;
+                $scope.courseFrequencyTG1 = 0;
             }else{
                 $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
                 $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
@@ -1763,8 +1763,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function plotPreviousWeek() {
 
             if($scope.courseArrayTG[1] == null){
-                $scope.courseWeightTG1 = 1;
-                $scope.courseFrequencyTG1 = 1;
+                $scope.courseWeightTG1 = 0;
+                $scope.courseFrequencyTG1 = 0;
             }else{
                 $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
                 $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
@@ -2715,8 +2715,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotPreviousWeek() {
             if($scope.courseArrayTG[1] == null){
-                $scope.courseWeightTG1 = 1;
-                $scope.courseFrequencyTG1 = 1;
+                $scope.courseWeightTG1 = 0;
+                $scope.courseFrequencyTG1 = 0;
             }else{
                 $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
                 $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
