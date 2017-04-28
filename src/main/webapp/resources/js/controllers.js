@@ -16,39 +16,86 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller('HomeController', function ($scope, HomeService) {
         $scope.technos = HomeService.getTechno();
     })
-    .controller('UsersController', ['$scope', '$location', '$http', 'UsersService', function ($scope, $location, $http, UsersService) {
-        $scope.users = UsersService.getAll();
+    .controller('UsersController', ['$scope', '$location', '$http', 'UsersService', 'userService', 'adminService', function ($scope, $location, $http, UsersService, userService, adminService) {
 
-        $scope.viewProfile = function (email, auth) {
+        $scope.usersSuper = UsersService.getAll();
+
+            $http({
+                url: './current_user',
+                method: "GET"
+            }).then(function (response) {
+                //console.log("Worked!");
+                //console.log(response.data);
+                $scope.user = response.data;
+                userService.setUser($scope.user.login);
+                userService.setAuth($scope.user.authorities[0].name);
+                getCourses($scope.user);
+            });
+
+        function getCourses(user) {
+                $http({
+                    url: './admin_courses',
+                    method: "GET",
+                    headers: {'email': user.email}
+                }).then(function (response) {
+                    //console.log("Worked!");
+                    //console.log(response.data);
+                    $scope.courses = response.data;
+                });
+            }
+
+            $scope.selectedCourseChanged = function () {
+                $scope.course = $scope.adminCourse.value.course;
+                adminService.setCourse($scope.adminCourse.value.course);
+                $http({
+                    url: './course_students',
+                    method: "GET",
+                    headers: {'course': $scope.course}
+                }).then(function (response) {
+                    //console.log("Worked!");
+                    //console.log(response.data);
+                    $scope.usersAdmin = response.data;
+                });
+            };
+
+
+        $scope.viewProfileSuper = function (email, auth) {
             if (auth == 'student') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/studentProfile/' + email);
             }
             if (auth == 'admin') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/adminProfile/' + email);
             }
             if (auth == 'rest') {
-                console.log("Email: " + email);
-                console.log("Auth: " + auth);
-                console.log("Path: /studentProfile/" + email);
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
                 $location.path('/restProfile/' + email);
             }
         }
+
+        $scope.viewProfileAdmin = function (email, auth) {
+                //console.log("Email: " + email);
+                //console.log("Auth: " + auth);
+                //console.log("Path: /studentProfile/" + email);
+                $location.path('/studentProfile/' + email);
+        }
     }])
-    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
+    .controller('StudentProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', 'adminService', function ($scope, $location, $routeParams, $http, userService, $window, adminService) {
         $scope.userid = $routeParams.user_id;
 
         $http({
             url: './current_user',
             method: "GET"
         }).then(function (response) {
-            console.log("Worked!");
-            console.log(response.data);
+            //console.log("Worked!");
+            //console.log(response.data);
             $scope.user = response.data;
             userService.setUser($scope.user.login);
             userService.setAuth($scope.user.authorities[0].name);
@@ -61,8 +108,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'login': userService.getUser(), 'auth': userService.getAuth(), 'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
-                console.log(response.data);
+                //console.log("Worked!");
+                //console.log(response.data);
                 if (response.data == false) {
                     $location.path('/home');
                 } else {
@@ -77,7 +124,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.userData = response.data;
                 getCoursesData();
@@ -90,11 +137,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {'email': $scope.userid}
             }).then(function (response) {
-                console.log("Worked!");
+                //console.log("Worked!");
                 //console.log(response.data);
                 $scope.courses = response.data;
             });
         }
+
+
 
         $scope.selectedCourseChanged = function () {
             $http({
@@ -105,18 +154,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.course = $scope.studentCourse.value.course;
                 //console.log(response.data);
                 $scope.teams = response.data;
-                console.log($scope.teams);
+                //console.log($scope.teams);
             }, function (response) {
                 //fail case
-                console.log("didn't work");
+                //console.log("didn't work");
                 //console.log(response);
             });
         };
 
+
+
         $scope.selectedTeamChanged = function () {
             //console.log(response.data);
             $scope.team = $scope.studentTeam.value.team;
-            console.log($scope.team);
+            //console.log($scope.team);
         };
 
         $scope.studentTeamRemove = function () {
@@ -124,7 +175,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './studentProfileDelTeam',
                 method: "DELETE",
                 headers: {
-                    'course': $scope.studentCourse.value.course,
+                    'course': $scope.course,
                     'team': $scope.studentTeam.value.team,
                     'email': $scope.userid
                 }
@@ -149,7 +200,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $http({
                         url: './studentDisable',
                         method: "PUT",
-                        headers: {'course': $scope.studentCourse.value.course,
+                        headers: {'course': $scope.course,
                             'team': $scope.studentTeam.value.team,
                             'email': $scope.userid}
                     }).then(function (response) {
@@ -176,7 +227,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $http({
                         url: './studentEnable',
                         method: "PUT",
-                        headers: {'course': $scope.studentCourse.value.course,
+                        headers: {'course': $scope.course,
                             'team': $scope.studentTeam.value.team,
                             'email': $scope.userid}
                     }).then(function (response) {
@@ -195,7 +246,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './studentProfileDelCourse',
                 method: "DELETE",
-                headers: {'course': $scope.studentCourse.value.course, 'email': $scope.userid}
+                headers: {'course': $scope.course, 'email': $scope.userid}
             }).then(function (response) {
                 $scope.message = "Student Removed From Course";
                 $window.alert($scope.message);
@@ -266,7 +317,113 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $window.alert($scope.message);
                 });
             }
-        }
+        };
+
+        $scope.adminCourse = adminService.getCourse();
+        $http({
+            url: './student_teams',
+            method: "GET",
+            headers: {'course': $scope.adminCourse, 'email': $scope.userid}
+        }).then(function (response) {
+            $scope.adminTeams = response.data;
+            //console.log($scope.adminTeams);
+        }, function (response) {
+            //fail case
+            //console.log("didn't work");
+            //console.log(response);
+        });
+
+        $scope.selectedTeamChangedAdmin = function () {
+            //console.log(response.data);
+            $scope.teamAdmin = $scope.studentTeamAdmin.value.team;
+            //console.log($scope.teamAdmin);
+        };
+
+        $scope.studentTeamRemoveAdmin = function () {
+            $http({
+                url: './studentProfileDelTeam',
+                method: "DELETE",
+                headers: {
+                    'course': $scope.adminCourse,
+                    'team': $scope.teamAdmin,
+                    'email': $scope.userid
+                }
+            }).then(function (response) {
+                $scope.message = "Student Removed From Team";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "Student Not Removed From Team";
+                $window.alert($scope.message);
+            });
+        };
+
+        $scope.disableStudentAdmin = function () {
+            if(!$scope.adminCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.teamAdmin){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentDisable',
+                        method: "PUT",
+                        headers: {'course': $scope.adminCourse,
+                            'team': $scope.teamAdmin,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Disabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Disabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
+        $scope.enableStudentAdmin = function () {
+            if(!$scope.adminCourse){
+                $scope.message = "Please select a course";
+                $window.alert($scope.message);
+            }else{
+                if(!$scope.teamAdmin){
+                    $scope.message = "Please select a team";
+                    $window.alert($scope.message);
+                }else{
+                    $http({
+                        url: './studentEnable',
+                        method: "PUT",
+                        headers: {'course': $scope.adminCourse,
+                            'team': $scope.teamAdmin,
+                            'email': $scope.userid}
+                    }).then(function (response) {
+                        $scope.message = "Student Successfully Enabled";
+                        $window.alert($scope.message);
+                    }, function (response) {
+                        $scope.message = "Student Not Enabled";
+                        $window.alert($scope.message);
+                    });
+                }
+            }
+
+        };
+
+        $scope.studentCourseRemoveAdmin = function () {
+            $http({
+                url: './studentProfileDelCourse',
+                method: "DELETE",
+                headers: {'course': $scope.adminCourse, 'email': $scope.userid}
+            }).then(function (response) {
+                $scope.message = "Student Removed From Course";
+                $window.alert($scope.message);
+            }, function (response) {
+                $scope.message = "Student Not Removed From Course";
+                $window.alert($scope.message);
+            });
+        };
 
     }])
     .controller('RestProfileController', ['$scope', '$location', '$routeParams', '$http', 'userService', '$window', function ($scope, $location, $routeParams, $http, userService, $window) {
@@ -831,20 +988,68 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotCurrentWeek() {
 
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course"];
-            $scope.currentWeekData = [[$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94]];
+            $scope.currentWeekData = [
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88]
+            ];
 
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
 
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course"];
-            $scope.previousWeekData = [[$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88]];
+            $scope.previousWeekData = [
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88]
+            ];
 
             getTaigaActivity();
         }
@@ -1501,12 +1706,55 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotCurrentWeek() {
 
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+            if($scope.teamArrayTG[0] == null){
+                $scope.teamWeightTG0 = 0;
+                $scope.teamFrequencyTG0 = 0;
+            }else{
+                $scope.teamWeightTG0 = $scope.teamArrayTG[0].weight;
+                $scope.teamFrequencyTG0 = $scope.teamArrayTG[0].frequency;
+            }
+            if($scope.teamArrayGH[0] == null){
+                $scope.teamWeightGH0 = 0;
+                $scope.teamFrequencyGH0 = 0;
+            }else{
+                $scope.teamWeightGH0 = $scope.teamArrayGH[0].weight;
+                $scope.teamFrequencyGH0 = $scope.teamArrayGH[0].frequency;
+            }
+            if($scope.teamArraySK[0] == null){
+                $scope.teamWeightSK0 = 0;
+                $scope.teamFrequencySK0 = 0;
+            }else{
+                $scope.teamWeightSK0 = $scope.teamArraySK[0].weight;
+                $scope.teamFrequencySK0 = $scope.teamArraySK[0].frequency;
+            }
+
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team"];
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
-                [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency]
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0]
             ];
 
             plotPreviousWeek();
@@ -1514,13 +1762,56 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotPreviousWeek() {
 
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+            if($scope.teamArrayTG[1] == null){
+                $scope.teamWeightTG1 = 0;
+                $scope.teamFrequencyTG1 = 0;
+            }else{
+                $scope.teamWeightTG1 = $scope.teamArrayTG[1].weight;
+                $scope.teamFrequencyTG1 = $scope.teamArrayTG[1].frequency;
+            }
+            if($scope.teamArrayGH[1] == null){
+                $scope.teamWeightGH1 = 0;
+                $scope.teamFrequencyGH1 = 0;
+            }else{
+                $scope.teamWeightGH1 = $scope.teamArrayGH[1].weight;
+                $scope.teamFrequencyGH1 = $scope.teamArrayGH[1].frequency;
+            }
+            if($scope.teamArraySK[1] == null){
+                $scope.teamWeightSK1 = 0;
+                $scope.teamFrequencySK1 = 0;
+            }else{
+                $scope.teamWeightSK1 = $scope.teamArraySK[1].weight;
+                $scope.teamFrequencySK1 = $scope.teamArraySK[1].frequency;
+            }
+
 
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
-                [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency]
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1]
             ];
 
             getTaigaActivity();
@@ -2216,6 +2507,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
                 getGitHubCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getGitHubCourseWeightFreq();
             });
         }
 
@@ -2226,6 +2521,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getSlackCourseWeightFreq();
             });
         }
@@ -2238,6 +2537,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
                 getTaigaTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getTaigaTeamWeightFreq();
             });
         }
 
@@ -2248,6 +2551,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
                 $scope.teamArrayTG = response.data;
+                getGitHubTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getGitHubTeamWeightFreq();
             });
         }
@@ -2260,6 +2567,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
                 getSlackTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getSlackTeamWeightFreq();
             });
         }
 
@@ -2270,6 +2581,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
                 $scope.teamArraySK = response.data;
+                getTaigaStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getTaigaStudentWeightFreq();
             });
         }
@@ -2282,6 +2597,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.studentArrayTG = response.data;
                 getGitHubStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getGitHubStudentWeightFreq();
             });
         }
 
@@ -2292,6 +2611,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
                 $scope.studentArrayGH = response.data;
+                getSlackStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getSlackStudentWeightFreq();
             });
         }
@@ -2306,6 +2629,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.studentArraySK = response.data;
                 plotCurrentWeek();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                plotCurrentWeek();
             });
         }
 
@@ -2314,24 +2641,150 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team", "Student"];
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+            if($scope.teamArrayTG[0] == null){
+                $scope.teamWeightTG0 = 0;
+                $scope.teamFrequencyTG0 = 0;
+            }else{
+                $scope.teamWeightTG0 = $scope.teamArrayTG[0].weight;
+                $scope.teamFrequencyTG0 = $scope.teamArrayTG[0].frequency;
+            }
+            if($scope.teamArrayGH[0] == null){
+                $scope.teamWeightGH0 = 0;
+                $scope.teamFrequencyGH0 = 0;
+            }else{
+                $scope.teamWeightGH0 = $scope.teamArrayGH[0].weight;
+                $scope.teamFrequencyGH0 = $scope.teamArrayGH[0].frequency;
+            }
+            if($scope.teamArraySK[0] == null){
+                $scope.teamWeightSK0 = 0;
+                $scope.teamFrequencySK0 = 0;
+            }else{
+                $scope.teamWeightSK0 = $scope.teamArraySK[0].weight;
+                $scope.teamFrequencySK0 = $scope.teamArraySK[0].frequency;
+            }
+            if($scope.studentArrayTG[0] == null){
+                $scope.studentWeightTG0 = 0;
+                $scope.studentFrequencyTG0 = 0;
+            }else{
+                $scope.studentWeightTG0 = $scope.studentArrayTG[0].weight;
+                $scope.studentFrequencyTG0 = $scope.studentArrayTG[0].frequency;
+            }
+            if($scope.studentArrayGH[0] == null){
+                $scope.studentWeightGH0 = 0;
+                $scope.studentFrequencyGH0 = 0;
+            }else{
+                $scope.studentWeightGH0 = $scope.studentArrayGH[0].weight;
+                $scope.studentFrequencyGH0 = $scope.studentArrayGH[0].frequency;
+            }
+            if($scope.studentArraySK[0] == null){
+                $scope.studentWeightSK0 = 0;
+                $scope.studentFrequencySK0 = 0;
+            }else{
+                $scope.studentWeightSK0 = $scope.studentArraySK[0].weight;
+                $scope.studentFrequencySK0 = $scope.studentArraySK[0].frequency;
+            }
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
-                    [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency],
-                [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency, $scope.studentArraySK[0].weight, $scope.studentArraySK[0].frequency]
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0],
+                [$scope.studentWeightTG0, $scope.studentFrequencyTG0, $scope.studentWeightGH0, $scope.studentFrequencyGH0, $scope.studentWeightSK0, $scope.studentFrequencySK0]
             ];
 
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+            if($scope.teamArrayTG[1] == null){
+                $scope.teamWeightTG1 = 0;
+                $scope.teamFrequencyTG1 = 0;
+            }else{
+                $scope.teamWeightTG1 = $scope.teamArrayTG[1].weight;
+                $scope.teamFrequencyTG1 = $scope.teamArrayTG[1].frequency;
+            }
+            if($scope.teamArrayGH[1] == null){
+                $scope.teamWeightGH1 = 0;
+                $scope.teamFrequencyGH1 = 0;
+            }else{
+                $scope.teamWeightGH1 = $scope.teamArrayGH[1].weight;
+                $scope.teamFrequencyGH1 = $scope.teamArrayGH[1].frequency;
+            }
+            if($scope.teamArraySK[1] == null){
+                $scope.teamWeightSK1 = 0;
+                $scope.teamFrequencySK1 = 0;
+            }else{
+                $scope.teamWeightSK1 = $scope.teamArraySK[1].weight;
+                $scope.teamFrequencySK1 = $scope.teamArraySK[1].frequency;
+            }
+            if($scope.studentArrayTG[1] == null){
+                $scope.studentWeightTG1 = 0;
+                $scope.studentFrequencyTG1 = 0;
+            }else{
+                $scope.studentWeightTG1 = $scope.studentArrayTG[1].weight;
+                $scope.studentFrequencyTG1 = $scope.studentArrayTG[1].frequency;
+            }
+            if($scope.studentArrayGH[1] == null){
+                $scope.studentWeightGH1 = 0;
+                $scope.studentFrequencyGH1 = 0;
+            }else{
+                $scope.studentWeightGH1 = $scope.studentArrayGH[1].weight;
+                $scope.studentFrequencyGH1 = $scope.studentArrayGH[1].frequency;
+            }
+            if($scope.studentArraySK[1] == null){
+                $scope.studentWeightSK1 = 0;
+                $scope.studentFrequencySK1 = 0;
+            }else{
+                $scope.studentWeightSK1 = $scope.studentArraySK[1].weight;
+                $scope.studentFrequencySK1 = $scope.studentArraySK[1].frequency;
+            }
 
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team", "Student"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
-                    [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency],
-                [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency, $scope.studentArraySK[1].weight, $scope.studentArraySK[1].frequency]
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1],
+                [$scope.studentWeightTG1, $scope.studentFrequencyTG1, $scope.studentWeightGH1, $scope.studentFrequencyGH1, $scope.studentWeightSK1, $scope.studentFrequencySK1]
             ];
 
             getTaigaActivity();
@@ -2350,6 +2803,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.studentActivity = response.data;
                 getTaigaIntervals();
                 $scope.dataForTaigaStudentActivity =  getDataForStudentTaigaActivityCharts(response.data);
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getTaigaIntervals();
             });
         }
 
@@ -2436,6 +2893,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This shows the intervals!");
                 //console.log(response.data);
                 $scope.studentIntervals = response.data;
+                getGitHubCommitsData();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getGitHubCommitsData();
             });
         }
@@ -2558,6 +3019,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
                 getGitHubWeightData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubWeightData();
             });
         }
 
@@ -2632,6 +3097,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Weight is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+                getSlackActivity();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackActivity();
             });
         }
@@ -2712,6 +3181,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.slackStudentActivity = response.data;
                 $scope.dataForSlackStudentActivity = getDataForStudentSlackActivityCharts(response.data);
                 getSlackIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getSlackIntervals();
             });
         }
 
@@ -2723,6 +3196,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 //console.log("Slack Student Intervals");
                 //console.log(response.data);
+                $scope.slackStudentIntervals = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 $scope.slackStudentIntervals = response.data;
             });
         }
@@ -2946,6 +3423,40 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }, function (response) {
                 //console.log("didn't work");
                 $window.alert("Slack Message Totals Not Successfully Updated");
+            });
+
+        };
+
+        $scope.updateTaigaProjects = function () {
+            $http({
+                url: './taiga/Update/Projects',
+                method: "POST"
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
+            });
+
+        };
+
+        $scope.updateTaigaMemberships = function () {
+            $http({
+                url: './taiga/Update/Memberships',
+                method: "POST"
+            }).then(function (response) {
+                console.log("Worked!");
+                //console.log(response.data);
+                $scope.tasks = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                //console.log(response);
+                $scope.message = response;
             });
 
         };

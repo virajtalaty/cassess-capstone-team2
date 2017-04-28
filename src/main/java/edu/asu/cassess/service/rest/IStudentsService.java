@@ -1,6 +1,6 @@
 package edu.asu.cassess.service.rest;
 
-import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
@@ -24,6 +24,8 @@ public interface IStudentsService {
     <T> List<Student> listReadAll();
 
     <T> List<Student> listReadByTeam(String course, String team_name);
+
+    <T> List<Student> listReadByCourse(String course);
 
     List<Student> listReadStudent(String course, String email) throws DataAccessException;
 

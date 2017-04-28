@@ -3,7 +3,7 @@ package edu.asu.cassess.dao.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.asu.cassess.model.Taiga.CourseList;
+import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
@@ -163,6 +163,13 @@ public class StudentsServiceDao {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team_name);
+        List<Student> resultList = query.getResultList();
+        return resultList;
+    }
+
+    public List<Student> listReadByCourse(String course) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1", Student.class);
+        query.setParameter(1, course);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
