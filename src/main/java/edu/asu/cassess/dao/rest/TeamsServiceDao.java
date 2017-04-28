@@ -103,6 +103,7 @@ public class TeamsServiceDao {
             query.setParameter(2, team.getTeam_name());
             studentsService.deleteByTeam(team);
             channelsService.deleteByTeam(team);
+            query.executeUpdate();
             return new RestResponse(team.getTeam_name() + " has been removed from the database");
         } else {
             return new RestResponse(team.getTeam_name() + " does not exist in the database");
