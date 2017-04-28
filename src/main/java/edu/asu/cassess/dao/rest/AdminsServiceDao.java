@@ -82,6 +82,7 @@ public class AdminsServiceDao {
         Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, admin.getCourse());
         query.setParameter(2, admin.getEmail());
+        query.executeUpdate();
         return new RestResponse(admin.getEmail() + " has been removed from the database");
     }
 

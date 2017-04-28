@@ -30,6 +30,8 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
     private String channelHistoryURL;
 
+    private String groupHistoryURL;
+
     private Map<String, MutableInt> countsMap = new HashMap<String, MutableInt>();
 
     @Autowired
@@ -49,11 +51,16 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
     public ChannelHistoryService() {
         restTemplate = new RestTemplate();
+
+        //non-private slack channel history URL
         channelHistoryURL = "https://slack.com/api/channels.history";
+
+        //private slack channel history URL
+        groupHistoryURL = "https://slack.com/api/groups.history";
     }
 
     @Override
-    public MessageList getMessages(String channel, String token, long unixOldest, long unixCurrent) {
+    public MessageList getPublicMessages(String channel, String token, long unixOldest, long unixCurrent) {
 
         long nextUnixCurrent = 0;
 
@@ -103,7 +110,64 @@ public class ChannelHistoryService implements IChannelHistoryService {
         //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
-            return getMessages(channel, token, unixOldest, nextUnixCurrent);
+            return getPublicMessages(channel, token, unixOldest, nextUnixCurrent);
+        } else {
+            return messageList.getBody();
+        }
+    }
+
+    @Override
+    public MessageList getPrivateMessages(String channel, String token, long unixOldest, long unixCurrent) {
+
+        long nextUnixCurrent = 0;
+
+        //System.out.println("----------------------------**********************************************=========UnixCurrent: " + unixCurrent);
+
+        //System.out.println("----------------------------**********************************************=========UnixOldest: " + unixOldest);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        //System.out.println("Page: " + page);
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<MessageList> messageList = restTemplate.getForEntity(groupHistoryURL + "?token=" + token + "&channel=" + channel +
+                "&oldest=" + unixOldest + "&latest=" + unixCurrent, MessageList.class, request);
+
+        System.out.println(messageList.getBody());
+
+        SlackMessage[] slackMessages = messageList.getBody().getMessages();
+
+        System.out.println(messageList.getBody());
+
+        int index = 0;
+        for(SlackMessage slackMessage:slackMessages){
+            //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
+            //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
+
+            if(slackMessage.getText().length() > 20) {
+                MutableInt count = countsMap.get(slackMessage.getUser());
+                if (count == null) {
+                    countsMap.put(slackMessage.getUser(), new MutableInt());
+                } else {
+                    count.increment();
+                }
+            }
+
+            //slackMessageRepo.save(slackMessage);
+            index++;
+            if(index == (slackMessages.length -1)){
+                nextUnixCurrent = (long) Math.floor(slackMessage.getTs());
+                //System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
+            }
+        }
+
+        //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
+
+        if (messageList.getBody().isHas_more()) {
+            return getPrivateMessages(channel, token, unixOldest, nextUnixCurrent);
         } else {
             return messageList.getBody();
         }
@@ -162,9 +226,17 @@ public class ChannelHistoryService implements IChannelHistoryService {
                     List<Channel> channels = channelService.listReadByTeam(team.getTeam_name(), course);
                     for (Channel channel : channels) {
                         System.out.println("Channel: " + channel.getId());
-                        getMessages(channel.getId(), token, unixOldest, unixCurrent);
-                        getMessageTotals(channel.getId(), course, team.getTeam_name());
-                        countsMap.clear();
+                        if(channel.getId().startsWith("C")){
+                            getPublicMessages(channel.getId(), token, unixOldest, unixCurrent);
+                            getMessageTotals(channel.getId(), course, team.getTeam_name());
+                            countsMap.clear();
+                        }
+                        if(channel.getId().startsWith("G")){
+                            getPrivateMessages(channel.getId(), token, unixOldest, unixCurrent);
+                            getMessageTotals(channel.getId(), course, team.getTeam_name());
+                            countsMap.clear();
+                        }
+
                     }
                 }
             }

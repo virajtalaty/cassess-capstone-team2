@@ -82,6 +82,7 @@ public class ChannelsServiceDao {
         preQuery.setParameter(1, channel.getCourse());
         preQuery.setParameter(2, channel.getTeam_name());
         preQuery.setParameter(3, channel.getId());
+        preQuery.executeUpdate();
         return new RestResponse(channel.getId() + " has been removed from the database");
     }
 

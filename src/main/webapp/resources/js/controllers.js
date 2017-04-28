@@ -988,20 +988,68 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotCurrentWeek() {
 
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course"];
-            $scope.currentWeekData = [[$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94]];
+            $scope.currentWeekData = [
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88]
+            ];
 
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
 
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course"];
-            $scope.previousWeekData = [[$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88]];
+            $scope.previousWeekData = [
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88]
+            ];
 
             getTaigaActivity();
         }
@@ -1658,12 +1706,55 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotCurrentWeek() {
 
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+            if($scope.teamArrayTG[0] == null){
+                $scope.teamWeightTG0 = 0;
+                $scope.teamFrequencyTG0 = 0;
+            }else{
+                $scope.teamWeightTG0 = $scope.teamArrayTG[0].weight;
+                $scope.teamFrequencyTG0 = $scope.teamArrayTG[0].frequency;
+            }
+            if($scope.teamArrayGH[0] == null){
+                $scope.teamWeightGH0 = 0;
+                $scope.teamFrequencyGH0 = 0;
+            }else{
+                $scope.teamWeightGH0 = $scope.teamArrayGH[0].weight;
+                $scope.teamFrequencyGH0 = $scope.teamArrayGH[0].frequency;
+            }
+            if($scope.teamArraySK[0] == null){
+                $scope.teamWeightSK0 = 0;
+                $scope.teamFrequencySK0 = 0;
+            }else{
+                $scope.teamWeightSK0 = $scope.teamArraySK[0].weight;
+                $scope.teamFrequencySK0 = $scope.teamArraySK[0].frequency;
+            }
+
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team"];
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
-                [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency]
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0]
             ];
 
             plotPreviousWeek();
@@ -1671,13 +1762,56 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function plotPreviousWeek() {
 
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+            if($scope.teamArrayTG[1] == null){
+                $scope.teamWeightTG1 = 0;
+                $scope.teamFrequencyTG1 = 0;
+            }else{
+                $scope.teamWeightTG1 = $scope.teamArrayTG[1].weight;
+                $scope.teamFrequencyTG1 = $scope.teamArrayTG[1].frequency;
+            }
+            if($scope.teamArrayGH[1] == null){
+                $scope.teamWeightGH1 = 0;
+                $scope.teamFrequencyGH1 = 0;
+            }else{
+                $scope.teamWeightGH1 = $scope.teamArrayGH[1].weight;
+                $scope.teamFrequencyGH1 = $scope.teamArrayGH[1].frequency;
+            }
+            if($scope.teamArraySK[1] == null){
+                $scope.teamWeightSK1 = 0;
+                $scope.teamFrequencySK1 = 0;
+            }else{
+                $scope.teamWeightSK1 = $scope.teamArraySK[1].weight;
+                $scope.teamFrequencySK1 = $scope.teamArraySK[1].frequency;
+            }
+
 
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
-                [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency]
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1]
             ];
 
             getTaigaActivity();
@@ -2373,6 +2507,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
                 getGitHubCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getGitHubCourseWeightFreq();
             });
         }
 
@@ -2383,6 +2521,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getSlackCourseWeightFreq();
             });
         }
@@ -2395,6 +2537,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
                 getTaigaTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getTaigaTeamWeightFreq();
             });
         }
 
@@ -2405,6 +2551,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
                 $scope.teamArrayTG = response.data;
+                getGitHubTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getGitHubTeamWeightFreq();
             });
         }
@@ -2417,6 +2567,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
                 getSlackTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getSlackTeamWeightFreq();
             });
         }
 
@@ -2427,6 +2581,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team}
             }).then(function (response) {
                 $scope.teamArraySK = response.data;
+                getTaigaStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getTaigaStudentWeightFreq();
             });
         }
@@ -2439,6 +2597,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.studentArrayTG = response.data;
                 getGitHubStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getGitHubStudentWeightFreq();
             });
         }
 
@@ -2449,6 +2611,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': team, 'email': studentemail}
             }).then(function (response) {
                 $scope.studentArrayGH = response.data;
+                getSlackStudentWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getSlackStudentWeightFreq();
             });
         }
@@ -2463,6 +2629,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.studentArraySK = response.data;
                 plotCurrentWeek();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                plotCurrentWeek();
             });
         }
 
@@ -2471,24 +2641,150 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team", "Student"];
+            if($scope.courseArrayTG[0] == null){
+                $scope.courseWeightTG0 = 0;
+                $scope.courseFrequencyTG0 = 0;
+            }else{
+                $scope.courseWeightTG0 = $scope.courseArrayTG[0].weight;
+                $scope.courseFrequencyTG0 = $scope.courseArrayTG[0].frequency;
+            }
+            if($scope.courseArrayGH[0] == null){
+                $scope.courseWeightGH0 = 0;
+                $scope.courseFrequencyGH0 = 0;
+            }else{
+                $scope.courseWeightGH0 = $scope.courseArrayGH[0].weight;
+                $scope.courseFrequencyGH0 = $scope.courseArrayGH[0].frequency;
+            }
+            if($scope.courseArraySK[0] == null){
+                $scope.courseWeightSK0 = 0;
+                $scope.courseFrequencySK0 = 0;
+            }else{
+                $scope.courseWeightSK0 = $scope.courseArraySK[0].weight;
+                $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
+            }
+            if($scope.teamArrayTG[0] == null){
+                $scope.teamWeightTG0 = 0;
+                $scope.teamFrequencyTG0 = 0;
+            }else{
+                $scope.teamWeightTG0 = $scope.teamArrayTG[0].weight;
+                $scope.teamFrequencyTG0 = $scope.teamArrayTG[0].frequency;
+            }
+            if($scope.teamArrayGH[0] == null){
+                $scope.teamWeightGH0 = 0;
+                $scope.teamFrequencyGH0 = 0;
+            }else{
+                $scope.teamWeightGH0 = $scope.teamArrayGH[0].weight;
+                $scope.teamFrequencyGH0 = $scope.teamArrayGH[0].frequency;
+            }
+            if($scope.teamArraySK[0] == null){
+                $scope.teamWeightSK0 = 0;
+                $scope.teamFrequencySK0 = 0;
+            }else{
+                $scope.teamWeightSK0 = $scope.teamArraySK[0].weight;
+                $scope.teamFrequencySK0 = $scope.teamArraySK[0].frequency;
+            }
+            if($scope.studentArrayTG[0] == null){
+                $scope.studentWeightTG0 = 0;
+                $scope.studentFrequencyTG0 = 0;
+            }else{
+                $scope.studentWeightTG0 = $scope.studentArrayTG[0].weight;
+                $scope.studentFrequencyTG0 = $scope.studentArrayTG[0].frequency;
+            }
+            if($scope.studentArrayGH[0] == null){
+                $scope.studentWeightGH0 = 0;
+                $scope.studentFrequencyGH0 = 0;
+            }else{
+                $scope.studentWeightGH0 = $scope.studentArrayGH[0].weight;
+                $scope.studentFrequencyGH0 = $scope.studentArrayGH[0].frequency;
+            }
+            if($scope.studentArraySK[0] == null){
+                $scope.studentWeightSK0 = 0;
+                $scope.studentFrequencySK0 = 0;
+            }else{
+                $scope.studentWeightSK0 = $scope.studentArraySK[0].weight;
+                $scope.studentFrequencySK0 = $scope.studentArraySK[0].frequency;
+            }
             $scope.currentWeekData = [
-                [$scope.courseArrayTG[0].weight*.9, $scope.courseArrayTG[0].frequency*.8, $scope.courseArrayGH[0].weight*.86, $scope.courseArrayGH[0].frequency*.92, $scope.courseArraySK[0].weight*.77, $scope.courseArraySK[0].frequency*.94],
-                    [$scope.teamArrayTG[0].weight, $scope.teamArrayTG[0].frequency, $scope.teamArrayGH[0].weight, $scope.teamArrayGH[0].frequency, $scope.teamArraySK[0].weight, $scope.teamArraySK[0].frequency],
-                [$scope.studentArrayTG[0].weight, $scope.studentArrayTG[0].frequency, $scope.studentArrayGH[0].weight, $scope.studentArrayGH[0].frequency, $scope.studentArraySK[0].weight, $scope.studentArraySK[0].frequency]
+                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0],
+                [$scope.studentWeightTG0, $scope.studentFrequencyTG0, $scope.studentWeightGH0, $scope.studentFrequencyGH0, $scope.studentWeightSK0, $scope.studentFrequencySK0]
             ];
 
             plotPreviousWeek();
         }
 
         function plotPreviousWeek() {
+            if($scope.courseArrayTG[1] == null){
+                $scope.courseWeightTG1 = 1;
+                $scope.courseFrequencyTG1 = 1;
+            }else{
+                $scope.courseWeightTG1 = $scope.courseArrayTG[1].weight;
+                $scope.courseFrequencyTG1 = $scope.courseArrayTG[1].frequency;
+            }
+            if($scope.courseArrayGH[1] == null){
+                $scope.courseWeightGH1 = 0;
+                $scope.courseFrequencyGH1 = 0;
+            }else{
+                $scope.courseWeightGH1 = $scope.courseArrayGH[1].weight;
+                $scope.courseFrequencyGH1 = $scope.courseArrayGH[1].frequency;
+            }
+            if($scope.courseArraySK[1] == null){
+                $scope.courseWeightSK1 = 0;
+                $scope.courseFrequencySK1 = 0;
+            }else{
+                $scope.courseWeightSK1 = $scope.courseArraySK[1].weight;
+                $scope.courseFrequencySK1 = $scope.courseArraySK[1].frequency;
+            }
+            if($scope.teamArrayTG[1] == null){
+                $scope.teamWeightTG1 = 0;
+                $scope.teamFrequencyTG1 = 0;
+            }else{
+                $scope.teamWeightTG1 = $scope.teamArrayTG[1].weight;
+                $scope.teamFrequencyTG1 = $scope.teamArrayTG[1].frequency;
+            }
+            if($scope.teamArrayGH[1] == null){
+                $scope.teamWeightGH1 = 0;
+                $scope.teamFrequencyGH1 = 0;
+            }else{
+                $scope.teamWeightGH1 = $scope.teamArrayGH[1].weight;
+                $scope.teamFrequencyGH1 = $scope.teamArrayGH[1].frequency;
+            }
+            if($scope.teamArraySK[1] == null){
+                $scope.teamWeightSK1 = 0;
+                $scope.teamFrequencySK1 = 0;
+            }else{
+                $scope.teamWeightSK1 = $scope.teamArraySK[1].weight;
+                $scope.teamFrequencySK1 = $scope.teamArraySK[1].frequency;
+            }
+            if($scope.studentArrayTG[1] == null){
+                $scope.studentWeightTG1 = 0;
+                $scope.studentFrequencyTG1 = 0;
+            }else{
+                $scope.studentWeightTG1 = $scope.studentArrayTG[1].weight;
+                $scope.studentFrequencyTG1 = $scope.studentArrayTG[1].frequency;
+            }
+            if($scope.studentArrayGH[1] == null){
+                $scope.studentWeightGH1 = 0;
+                $scope.studentFrequencyGH1 = 0;
+            }else{
+                $scope.studentWeightGH1 = $scope.studentArrayGH[1].weight;
+                $scope.studentFrequencyGH1 = $scope.studentArrayGH[1].frequency;
+            }
+            if($scope.studentArraySK[1] == null){
+                $scope.studentWeightSK1 = 0;
+                $scope.studentFrequencySK1 = 0;
+            }else{
+                $scope.studentWeightSK1 = $scope.studentArraySK[1].weight;
+                $scope.studentFrequencySK1 = $scope.studentArraySK[1].frequency;
+            }
 
             $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team", "Student"];
             $scope.previousWeekData = [
-                [$scope.courseArrayTG[1].weight*.79, $scope.courseArrayTG[1].frequency*.90, $scope.courseArrayGH[1].weight*.83, $scope.courseArrayGH[1].frequency*.90, $scope.courseArraySK[1].weight*.75, $scope.courseArraySK[1].frequency*.88],
-                    [$scope.teamArrayTG[1].weight, $scope.teamArrayTG[1].frequency, $scope.teamArrayGH[1].weight, $scope.teamArrayGH[1].frequency, $scope.teamArraySK[1].weight, $scope.teamArraySK[1].frequency],
-                [$scope.studentArrayTG[1].weight, $scope.studentArrayTG[1].frequency, $scope.studentArrayGH[1].weight, $scope.studentArrayGH[1].frequency, $scope.studentArraySK[1].weight, $scope.studentArraySK[1].frequency]
+                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1],
+                [$scope.studentWeightTG1, $scope.studentFrequencyTG1, $scope.studentWeightGH1, $scope.studentFrequencyGH1, $scope.studentWeightSK1, $scope.studentFrequencySK1]
             ];
 
             getTaigaActivity();
@@ -2507,6 +2803,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.studentActivity = response.data;
                 getTaigaIntervals();
                 $scope.dataForTaigaStudentActivity =  getDataForStudentTaigaActivityCharts(response.data);
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
+                getTaigaIntervals();
             });
         }
 
@@ -2593,6 +2893,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This shows the intervals!");
                 //console.log(response.data);
                 $scope.studentIntervals = response.data;
+                getGitHubCommitsData();
+            }, function (response) {
+                //fail case
+                console.log("Didn't Work");
                 getGitHubCommitsData();
             });
         }
@@ -2715,6 +3019,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
                 getGitHubWeightData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubWeightData();
             });
         }
 
@@ -2789,6 +3097,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Weight is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubStudentWeight= getDataForGitHubStudentWeightCharts(response.data);
+                getSlackActivity();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackActivity();
             });
         }
@@ -2869,6 +3181,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.slackStudentActivity = response.data;
                 $scope.dataForSlackStudentActivity = getDataForStudentSlackActivityCharts(response.data);
                 getSlackIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getSlackIntervals();
             });
         }
 
@@ -2880,6 +3196,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 //console.log("Slack Student Intervals");
                 //console.log(response.data);
+                $scope.slackStudentIntervals = response.data;
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 $scope.slackStudentIntervals = response.data;
             });
         }
@@ -3112,14 +3432,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/Update/Projects',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("Taiga Projects Successfully Updated");
             }, function (response) {
                 //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("Taiga Projects Not Successfully Updated");
             });
 
         };
@@ -3129,14 +3445,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/Update/Memberships',
                 method: "POST"
             }).then(function (response) {
-                console.log("Worked!");
-                //console.log(response.data);
-                $scope.tasks = response.data;
+                $window.alert("Taiga Memberships Successfully Updated");
             }, function (response) {
                 //fail case
-                console.log("didn't work");
-                //console.log(response);
-                $scope.message = response;
+                $window.alert("Taiga Memberships Not Successfully Updated");
             });
 
         };
