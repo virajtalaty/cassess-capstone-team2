@@ -69,7 +69,7 @@ public class GatherGitHubData implements IGatherGitHubData {
 
     private void getStats(String course, String team, String accessToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
-                .queryParam("access_token", accessToken);
+                .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
 
         String json = restTemplate.getForObject(urlPath, String.class);
@@ -99,7 +99,7 @@ public class GatherGitHubData implements IGatherGitHubData {
                 String userName = contributor.getAuthor().getLogin();
 
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://api.github.com/users/" + userName)
-                        .queryParam("access_token", accessToken);
+                        .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
                 String urlPath = builder.build().toUriString();
 
                 GitHubUser user = restTemplate.getForObject(urlPath, GitHubUser.class);
