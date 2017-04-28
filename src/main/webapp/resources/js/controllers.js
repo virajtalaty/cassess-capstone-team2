@@ -1014,7 +1014,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course"];
             $scope.currentWeekData = [
-                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88]
+                [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0]
             ];
 
             plotPreviousWeek();
@@ -1048,7 +1048,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course"];
             $scope.previousWeekData = [
-                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88]
+                [$scope.courseWeightTG1, $scope.courseFrequencyTG1, $scope.courseWeightGH1, $scope.courseFrequencyGH1, $scope.courseWeightSK1, $scope.courseFrequencySK1]
             ];
 
             getTaigaActivity();
@@ -1753,7 +1753,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.currentWeekOptions = { legend: { display: true }};
             $scope.currentWeekSeries = ["Course", "Team"];
             $scope.currentWeekData = [
-                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0],
                 [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0]
             ];
 
@@ -1810,7 +1810,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team"];
             $scope.previousWeekData = [
-                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.courseWeightTG1, $scope.courseFrequencyTG1, $scope.courseWeightGH1, $scope.courseFrequencyGH1, $scope.courseWeightSK1, $scope.courseFrequencySK1],
                 [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1]
             ];
 
@@ -2705,7 +2705,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.studentFrequencySK0 = $scope.studentArraySK[0].frequency;
             }
             $scope.currentWeekData = [
-                [$scope.courseWeightTG0*.79, $scope.courseFrequencyTG0*.90, $scope.courseWeightGH0*.83, $scope.courseFrequencyGH0*.90, $scope.courseWeightSK0*.75, $scope.courseFrequencySK0*.88],
+                [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0],
                 [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0],
                 [$scope.studentWeightTG0, $scope.studentFrequencyTG0, $scope.studentWeightGH0, $scope.studentFrequencyGH0, $scope.studentWeightSK0, $scope.studentFrequencySK0]
             ];
@@ -2782,7 +2782,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.previousWeekOptions = { legend: { display: true }};
             $scope.previousWeekSeries = ["Course", "Team", "Student"];
             $scope.previousWeekData = [
-                [$scope.courseWeightTG1*.79, $scope.courseFrequencyTG1*.90, $scope.courseWeightGH1*.83, $scope.courseFrequencyGH1*.90, $scope.courseWeightSK1*.75, $scope.courseFrequencySK1*.88],
+                [$scope.courseWeightTG1, $scope.courseFrequencyTG1, $scope.courseWeightGH1, $scope.courseFrequencyGH1, $scope.courseWeightSK1, $scope.courseFrequencySK1],
                 [$scope.teamWeightTG1, $scope.teamFrequencyTG1, $scope.teamWeightGH1, $scope.teamFrequencyGH1, $scope.teamWeightSK1, $scope.teamFrequencySK1],
                 [$scope.studentWeightTG1, $scope.studentFrequencyTG1, $scope.studentWeightGH1, $scope.studentFrequencyGH1, $scope.studentWeightSK1, $scope.studentFrequencySK1]
             ];
