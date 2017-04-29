@@ -961,6 +961,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
                 getGitHubWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubWeightFreq();
             });
         }
 
@@ -972,6 +976,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
                 getSlackWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getSlackWeightFreq();
             });
         }
 
@@ -982,6 +990,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
+                plotCurrentWeek();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 plotCurrentWeek();
             });
         }
@@ -1010,10 +1022,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.courseFrequencySK0 = $scope.courseArraySK[0].frequency;
             }
 
-            $scope.previousWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
-            $scope.previousWeekOptions = { legend: { display: true }};
-            $scope.previousWeekSeries = ["Course"];
-            $scope.previousWeekData = [
+            $scope.currentWeekLabels = ['Taiga Impact', 'Taiga Freq', 'GH Impact', 'GH Freq', 'Slack Impact', 'Slack Freq'];
+            $scope.currentWeekOptions = { legend: { display: true }};
+            $scope.currentWeekSeries = ["Course"];
+            $scope.currentWeekData = [
                 [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0]
             ];
 
@@ -1064,6 +1076,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.courseActivity = response.data;
                 $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
+                getTaigaIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getTaigaIntervals();
             });
         }
@@ -1150,6 +1166,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.courseIntervals = response.data;
                 getGitHubCommitsData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubCommitsData();
             });
         }
 
@@ -1162,6 +1182,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubCourseCommits =  getDataForGitHubCourseCommitsCharts(response.data);
+                getGitHubWeightData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getGitHubWeightData();
             });
         }
@@ -1237,6 +1261,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Weight is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubCourseWeight= getDataForGitHubCourseWeightCharts(response.data);
+                getSlackActivity();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackActivity();
             });
         }
@@ -1418,6 +1446,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.slackCourseActivity = response.data;
                 $scope.dataForSlackCourseActivity = getDataForCourseSlackActivityCharts(response.data);
+                getSlackIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackIntervals();
             });
         }
@@ -1646,6 +1678,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
                 getGitHubCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubCourseWeightFreq();
             });
         }
 
@@ -1656,6 +1692,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course}
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
+                getSlackCourseWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackCourseWeightFreq();
             });
         }
@@ -1668,6 +1708,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
                 getTaigaTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getTaigaTeamWeightFreq();
             });
         }
 
@@ -1678,6 +1722,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
                 $scope.teamArrayTG = response.data;
+                getGitHubTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getGitHubTeamWeightFreq();
             });
         }
@@ -1690,6 +1738,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
                 getSlackTeamWeightFreq();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getSlackTeamWeightFreq();
             });
         }
 
@@ -1700,6 +1752,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
                 $scope.teamArraySK = response.data;
+                plotCurrentWeek();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 plotCurrentWeek();
             });
         }
@@ -1829,6 +1885,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.teamActivity = response.data;
                 $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getTaigaIntervals();
             });
         }
 
@@ -1914,6 +1974,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.teamIntervals = response.data;
                 getGitHubCommitsData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getGitHubCommitsData();
             });
         }
 
@@ -1926,6 +1990,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(response.data);
+                getGitHubWeightData();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getGitHubWeightData();
             });
         }
@@ -2001,6 +2069,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Weight is showing: !");
                 //console.log(response.data);
                 $scope.dataForGitHubTeamWeight= getDataForGitHubTeamWeightCharts(response.data);
+                getSlackActivity();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
                 getSlackActivity();
             });
         }
@@ -2185,6 +2257,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.teamActivity = response.data;
                 $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                getTaigaIntervals();
             });
         }
 
@@ -2271,6 +2347,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.slackTeamActivity = response.data;
                 $scope.dataForSlackTeamActivity = getDataForTeamSlackActivityCharts(response.data);
                 getSlackIntervals();
+            }, function (response) {
+                //fail case
+                console.log("didn't work");
+                    getSlackIntervals();
             });
         }
 
