@@ -8,33 +8,24 @@ Capstone Project for ASU
 ##### Pedram Sharif #####
 ##### Thomas Johnson #####
 
-### Baseline Requirements ###
-After cloning the repository, you will need to ensure you have a few items downloaded.  In parenthesis will be versions I utilized.  Lower or higher versions may work just as well, but have not been tested.
+### Description ###
+CAssess is a Persistent Data backed, Core API driven, and Web Deployed system which provides the ability to manage software teams (with students typically, or members) and monitor their progress according to Github, Taiga, and Slack activity.  The interface provides ability for member/student viewing, as well as management and viewing by the owner (professor, instructor, etc in a university use).
 
- - Java 8
- - Apache Maven (4.0.0)
- - Git (2.11.0.windows.3)
+CAssess utilizes the following major 
+languages/frameworks/architectures/tools:
+- MySQL
+- Java
+- Spring
+- AngularJS
+- Node.js
+- REST API
+- MVC
+- Maven
+- Bower
 
-### Baseline Installation Procedure ###
-After cloning the project start a new Maven project and select the pom.xml file to begin the Project.
+Additional and more in-depth details regarding CAssess are found in the CAssess User Manual.pdf document.
 
-Before running the software the first time you need to run the command
+### Requirements and Installation ###
+Please refer to the CAssess User Manual.pdf document for specific requirements and installation procedures, 
+both for deployment and development use.
 
-    mvn package 
-
-You can either run the CassessApplication.java file to run the server or you can use the terminal command "mvn spring-boot:run"
-
-After completing this step navigate to:
-
-    http://localhost:8080
-
-To log into the system just user the credentials:
-
-    username: user / password: password
-
-To run WAR file from Tomcat locally, do the following:
-1. Delete the content of your Tomcat webapps folder
-2. Place the "cassess-0.0.1-SNAPSHOT.war" file into the webapps folder
-3. Rename "cassess-0.0.1-SNAPSHOT.war" to "ROOT.war" 
-4. Start your Tomcat from the bin directory (startup.bat)
-5. Navigate to http://localhost:8080/
