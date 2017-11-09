@@ -69,11 +69,24 @@ gulp.task('lib-js-files', function () {
         .pipe(gulp.dest('src/main/webapp/resources/vendor/js'));
 });
 
-
 gulp.task('lib-css-files', function () {
     vendorCss = gulp.src(mainBowerFiles('**/*.css'), {base: 'bower_components'})
+        .pipe(debug({title: 'lib-css-files :'}))
+        .pipe(concatVendor('lib.min.css'))
+        .pipe(minify())
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
 
-        .pipe(uncss(options))
+    vendorCss.pipe(clone())
+        .pipe(gzip())
+        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
+});
+
+
+
+//gulp.task('lib-css-files', function () {
+    //vendorCss = gulp.src(mainBowerFiles('**/*.css'), {base: 'bower_components'})
+
+        /*.pipe(uncss(options))
         .pipe(debug({title: 'lib-css-files :'}))
         .pipe(minify())
         .pipe(concat('lib.min.css'))
@@ -83,7 +96,7 @@ gulp.task('lib-css-files', function () {
         .pipe(clone())
         .pipe(gzip())
         .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
-});
+});*/
 
 
 gulp.task('index', function () {

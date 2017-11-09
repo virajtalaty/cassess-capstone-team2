@@ -80,7 +80,19 @@ public class UserServiceDao {
         //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into AdminUser");
         String array[] = admin.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, (long) userID.getMax() + 1);
+        String firstName = "";
+        String lastName= "";
+        if(array.length == 0)
+        {
+        		firstName = admin.getFull_name();
+        }
+        else if(array.length == 2)
+        {
+        		firstName = array[0];
+        		lastName = array[1];
+        }
+        
+        User user = new User(firstName, lastName, admin.getEmail(), null, "en", null, admin.getEmail(), passwordEncoder.encode(admin.getPassword()), null, (long) userID.getMax() + 1);
         return user;
     }
 
@@ -98,7 +110,19 @@ public class UserServiceDao {
         //System.out.println("--------------------!!!!!!!!!!!!!!!!!!!!!!------------Got into StudentUser");
         String array[] = student.getFull_name().split("\\s+");
         UserID userID = userQuery.getUserID();
-        User user = new User(array[0], array[1], student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, (long) userID.getMax() + 1);
+        String firstName = "";
+        String lastName= "";
+        if(array.length == 0)
+        {
+        		firstName = student.getFull_name();
+        }
+        else if(array.length == 2)
+        {
+        		firstName = array[0];
+        		lastName = array[1];
+        }
+
+        User user = new User(firstName, lastName, student.getEmail(), null, "en", null, student.getEmail(), passwordEncoder.encode(student.getPassword()), null, (long) userID.getMax() + 1);
         return user;
     }
 

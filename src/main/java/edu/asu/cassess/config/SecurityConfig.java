@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/partials/**", "/template/**", "/", "/error/**", "/user", "/register", "/check_courseaccess", "/check_teamaccess", "/check_studentaccess");
     }
 
-    //the .formLogin() method defines the location Spring processes authentication when 
+    //the .formLogin() method defines the location Spring processes authentication when
     //a POST is received at that path
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/failure").permitAll()
                 .antMatchers("/users").permitAll()
-                .antMatchers("/rest/**").hasAnyAuthority("rest", "super_user")
+                .antMatchers("/rest/**").hasAnyAuthority("rest", "super_user","admin")
                 .antMatchers("/v2/api-docs").hasAnyAuthority("super_user")
                 .antMatchers("/users/**").hasAnyAuthority("super_user")
                 .anyRequest().authenticated()
