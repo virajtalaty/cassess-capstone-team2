@@ -1578,7 +1578,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.optionsForSlackCourseMessages = {
 
             chart: {
-                type: 'discreteBarChart',
+                type: 'multiBarChart',
                 height: 450,
                 margin : {
                     top: 50,
@@ -2479,7 +2479,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.optionsForSlackTeamMessages = {
 
             chart: {
-                type: 'discreteBarChart',
+                type: 'multiBarChart',
                 height: 450,
                 margin : {
                     top: 50,
@@ -3393,7 +3393,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.optionsForSlackStudentMessages = {
 
             chart: {
-                type: 'discreteBarChart',
+                type: 'multiBarChart',
                 height: 450,
                 margin : {
                     top: 50,
