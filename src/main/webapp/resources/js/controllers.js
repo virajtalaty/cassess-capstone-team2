@@ -3532,5 +3532,60 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
 
         };
+    }])
+    .controller("newCourseStudents", ['$scope', '$http', '$window', '$timeout', function ($scope, $http, $window, $timeout) {
+
+        $scope.student = {};
+
+        $scope.students = [
+                {"name": "", "email": "", "password": ""}
+            ];
+
+        $scope.addStudent = function() {
+            $scope.student.email = $scope.enteredEmail;
+            $scope.student.name = $scope.enteredName;
+            $scope.student.password = $scope.enteredPassword;
+            var exists = false;
+            for (var i in $scope.students) {
+                if($scope.students[i].email ===  $scope.student.email){
+                    //console.log("Student exists");
+                    $scope.students[i] = $scope.student;
+                    exists = true;
+                }
+            }
+            if(!exists) {
+                //console.log("Student doesn't exist");
+                if($scope.students[0].email === ""){
+                    $scope.students[0] = $scope.student;
+                } else {
+                    $scope.students.push($scope.student);
+                }
+            }
+            $scope.enteredName = '';
+            $scope.enteredEmail = '';
+            $scope.enteredPassword = '';
+            $scope.student = {};
+        };
+
+        $scope.removeStudent = function() {
+            for (var i in $scope.students) {
+                var email = $scope.selectedStudent.email;
+                if ($scope.students[i].email === email) {
+                    $scope.students.splice(i, 1);
+                }
+            }
+        };
+
+        $scope.editStudent = function() {
+            var email = $scope.selectedStudent.email;
+            for (var i in $scope.students) {
+                if ($scope.students[i].email === email) {
+                    $scope.student = angular.copy($scope.students[i]);
+                }
+            }
+            $scope.enteredName = $scope.student.name;
+            $scope.enteredEmail = $scope.student.email;
+            $scope.enteredPassword = $scope.student.password;
+        };
 
     }]);

@@ -1,0 +1,34 @@
+<div ng-controller="newCourseStudents">
+    <div class="form-group">
+        <label> New student list:</label>
+        <div>
+            <select ng-model="selectedStudent" class="form-control" ng-options="student.email for student in students">
+                <option disabled value = "">-- Select Student Email --</option>
+            </select>
+        </div>
+        <div>
+            <button ng-click="removeStudent()" class="btn btn-default">Remove</button>
+        </div>
+        <div>
+            <button ng-click="editStudent()" class="btn btn-default">Edit</button>
+        </div>
+        <label> Selected Student: {{selectedStudent.name}}</label>
+    </div>
+    <div class="container" style="max-width:600px;margin:60px auto;">
+        <form role="form">
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" class="form-control" ng-model="enteredName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" class="form-control" ng-model="enteredEmail" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password">
+            </div>
+            <button ng-click="addStudent()" class="btn btn-default">Add</button>
+        </form>
+    </div>
+</div>
