@@ -119,6 +119,55 @@ myapp.service('userService', function () {
             setStudentName: setStudentName,
             getStudentName: getStudentName
         };
+    })
+    .service('provisionService', function () {
+        var coursePackage = {
+                "admins": [{}],
+                "course": "",
+                "end_date": "",
+                "github_owner": "",
+                "github_token": "",
+                "slack_token": "",
+                "taiga_token": "",
+                "teams": [{
+                    "taiga_project_slug": "",
+                    "team_name": "",
+                    "channels": [{}],
+                    "github_repo_id": "",
+                    "slack_team_id": "",
+                    "students": [{}]
+                }]
+            };
+    })
+    .service('courseCreateService', function () {
+        var course = null;
+
+        var setCourse = function (courseObject) {
+            course = courseObject;
+        };
+
+        var getCourse = function () {
+            return course;
+        };
+        return {
+            setCourse: setCourse,
+            getCourse: getCourse
+        };
+    })
+    .service('teamCreateService', function () {
+        var team = null;
+
+        var setTeam = function (teamName) {
+            team = teamName;
+        };
+
+        var getTeam = function () {
+            return team;
+        };
+        return {
+            setTeam: setTeam,
+            getTeam: getTeam
+        };
     });
 
 

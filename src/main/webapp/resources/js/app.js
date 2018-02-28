@@ -138,9 +138,16 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
-    }).when("/create_course", {
-        templateUrl: "partials/create_course.html",
+    }).when("/create_students", {
+        templateUrl: "partials/create_students.html",
         controller: "newCourseStudents",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
+    }).when("/create_admins", {
+        templateUrl: "partials/create_admins.html",
+        controller: "newCourseAdmins",
         access: {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]

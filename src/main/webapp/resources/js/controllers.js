@@ -3533,13 +3533,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         };
     }])
-    .controller("newCourseStudents", ['$scope', '$http', '$window', '$timeout', function ($scope, $http, $window, $timeout) {
+    .controller("newCourseStudents", ['$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService', 'teamCreateService',
+        function ($scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
+
+        var course = courseCreateService.getCourse();
+        var team = teamCreateService.getTeam();
+        var courseIndex = 0;
+        var teamIndex = 0;
 
         $scope.student = {};
 
-        $scope.students = [
-                {"name": "", "email": "", "password": ""}
-            ];
+        $scope.students = [];
+
+        for (var i in coursePackage) {
+            if (coursePackage[i].course === course) {
+                courseIndex = i;
+                for (var j in coursePackage[i].teams) {
+                    if (coursePackage[i].teams[j] === team) {
+                        $scope.students = coursePackage[i].teams[j].students;
+                        teamIndex = j;
+                    } else {
+                        alert("Please create a team and then select the new team to add students")
+                    }
+                }
+            } else {
+                alert("Please create a course and then select the new course to add teams")
+            }
+        }
+
 
         $scope.addStudent = function() {
             $scope.student.email = $scope.enteredEmail;
@@ -3555,8 +3576,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
             if(!exists) {
                 //console.log("Student doesn't exist");
-                if($scope.students[0].email === ""){
-                    $scope.students[0] = $scope.student;
+                if($scope.students.length == 0){
+                    $scope.students = [$scope.student];
                 } else {
                     $scope.students.push($scope.student);
                 }
@@ -3588,4 +3609,79 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.enteredPassword = $scope.student.password;
         };
 
-    }]);
+        $scope.applyChanges = function() {
+            coursePackage[courseIndex].teams[teamIndex].students = $scope.students;
+        };
+
+    }])
+    .controller("newCourseAdmins", ['$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService',
+        function ($scope, $http, $window, $timeout, provisionService, courseCreateService) {
+
+            var course = courseCreateService.getCourse();
+            var courseIndex = 0;
+
+            $scope.admin = {};
+
+            for (var i in coursePackage) {
+                if (coursePackage[i].course === course) {
+                    $scope.admins = coursePackage[i].admins;
+                    courseIndex = i;
+                } else {
+                    alert("Please create a course and then select the new course to add admins")
+                }
+            }
+
+            $scope.addAdmin = function() {
+                $scope.admin.email = $scope.enteredEmail;
+                $scope.admin.name = $scope.enteredName;
+                $scope.admin.password = $scope.enteredPassword;
+                var exists = false;
+                for (var i in $scope.admins) {
+                    if($scope.admins[i].email ===  $scope.admin.email){
+                        //console.log("Admin exists");
+                        $scope.admins[i] = $scope.admin;
+                        exists = true;
+                    }
+                }
+                if(!exists) {
+                    //console.log("Admin doesn't exist");
+                    if($scope.admins.length == 0){
+                        $scope.admins = [$scope.admin];
+                    } else {
+                        $scope.admins.push($scope.admin);
+                    }
+                }
+                $scope.enteredName = '';
+                $scope.enteredEmail = '';
+                $scope.enteredPassword = '';
+                $scope.admin = {};
+            };
+
+            $scope.removeAdmin = function() {
+                for (var i in $scope.admins) {
+                    var email = $scope.selectedAdmin.email;
+                    if ($scope.admins[i].email === email) {
+                        $scope.admins.splice(i, 1);
+                    }
+                }
+            };
+
+            $scope.editAdmin = function() {
+                var email = $scope.selectedAdmin.email;
+                for (var i in $scope.admins) {
+                    if ($scope.admins[i].email === email) {
+                        $scope.admin = angular.copy($scope.admins[i]);
+                    }
+                }
+                $scope.enteredName = $scope.admin.name;
+                $scope.enteredEmail = $scope.admin.email;
+                $scope.enteredPassword = $scope.admin.password;
+            };
+
+            $scope.applyChanges = function() {
+
+                coursePackage[courseIndex].admins = $scope.admins;
+
+            };
+
+        }]);

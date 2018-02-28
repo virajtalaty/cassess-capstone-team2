@@ -1,6 +1,6 @@
 <div ng-controller="newCourseStudents">
     <div class="form-group">
-        <label> New student list:</label>
+        <label> New Student list:</label>
         <div>
             <select ng-model="selectedStudent" class="form-control" ng-options="student.email for student in students">
                 <option disabled value = "">-- Select Student Email --</option>
@@ -30,5 +30,8 @@
             </div>
             <button ng-click="addStudent()" class="btn btn-default">Add</button>
         </form>
+    </div>
+    <div>
+        <button ng-click="applyChanges()" class="btn btn-default">Apply Changes</button>
     </div>
 </div>
