@@ -143,14 +143,28 @@ myapp.config(function ($routeProvider, USER_ROLES) {
         controller: "newCourseStudents",
         access: {
             loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.super_user]
         }
     }).when("/create_admins", {
         templateUrl: "partials/create_admins.html",
         controller: "newCourseAdmins",
         access: {
             loginRequired: false,
-            authorizedRoles: [USER_ROLES.all]
+            authorizedRoles: [USER_ROLES.super_user]
+        }
+    }).when("/create_course", {
+        templateUrl: "partials/create_course.html",
+        controller: "newCourse",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
+    }).when("/create_teams", {
+        templateUrl: "partials/create_teams.html",
+        controller: "newCourseTeams",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.super_user]
         }
     }).when("/rest", {
         access: {

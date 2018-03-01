@@ -1,0 +1,32 @@
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <div class="navbar-collapse collapse navbar-responsive-collapse" ng-controller="sideNavController">
+            <ul class="nav navbar-nav navbar-left">
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="well page">
+    <h1 class="page-header">CAssess Provisioning</h1>
+
+    <div class="container" ng-controller="TabController">
+        <div class="row">
+            <div class="col-md-2">
+                <ul class="nav nav-pills navbar-nav navbar-left nav-stacked">
+                    <li ng-class="{ active: isSet(1) }">
+                        <a href="#/create_course" access="super_user" ng-click="setTab(1)">Course</a>
+                    </li>
+                    <li ng-class="{ active: isSet(2) }">
+                        <a href="#/create_admins" access="super_user" ng-click="setTab(2)">Admins</a>
+                    </li>
+                    <li ng-class="{ active: isSet(3) }">
+                        <a href="#/create_teams" access="super_user" ng-click="setTab(3)">Teams</a>
+                    </li>
+                    <li ng-class="{ active: isSet(4) }">
+                        <a href="#/create_students" access="super_user" ng-click="setTab(4)">Students</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

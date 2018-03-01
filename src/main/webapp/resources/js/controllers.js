@@ -3533,32 +3533,39 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         };
     }])
-    .controller("newCourseStudents", ['$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService', 'teamCreateService',
-        function ($scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
+    .controller("newCourseStudents", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService', 'teamCreateService',
+        function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
+
+        $rootScope.provisionMode = true;
+        courseCreateService.setCourse($rootScope.coursePackage.course);
+        console.log("SetCourse: " + $rootScope.coursePackage.course);
+        teamCreateService.setTeam($rootScope.coursePackage.teams[0].team_name);
+        console.log("SetTeam: " + $rootScope.coursePackage.teams[0].team_name);
 
         var course = courseCreateService.getCourse();
+        //console.log("GetCourse: " + course);
         var team = teamCreateService.getTeam();
-        var courseIndex = 0;
-        var teamIndex = 0;
+        //console.log("GetTeam: " + team);
+        var teamIndex = -1;
 
         $scope.student = {};
 
         $scope.students = [];
 
-        for (var i in coursePackage) {
-            if (coursePackage[i].course === course) {
-                courseIndex = i;
-                for (var j in coursePackage[i].teams) {
-                    if (coursePackage[i].teams[j] === team) {
-                        $scope.students = coursePackage[i].teams[j].students;
-                        teamIndex = j;
-                    } else {
-                        alert("Please create a team and then select the new team to add students")
-                    }
+        if ($rootScope.coursePackage.course === course) {
+            for (var i in $rootScope.coursePackage.teams) {
+                if ($rootScope.coursePackage.teams[i].team_name === team) {
+                    $scope.students = $rootScope.coursePackage.teams[i].students;
+                    teamIndex = i;
                 }
-            } else {
-                alert("Please create a course and then select the new course to add teams")
             }
+        } else {
+            alert("Please create a course and then select the new course to add teams");
+            window.location.href = 'http://localhost:8080/cassess/#/create_course';
+        }
+        if (teamIndex === -1){
+            alert("Please create a team and then select the new team to add students");
+            window.location.href = 'http://localhost:8080/cassess/#/create_teams';
         }
 
 
@@ -3610,26 +3617,27 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
         $scope.applyChanges = function() {
-            coursePackage[courseIndex].teams[teamIndex].students = $scope.students;
+            $rootScope.coursePackage.teams[teamIndex].students = $scope.students;
         };
 
     }])
-    .controller("newCourseAdmins", ['$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService',
-        function ($scope, $http, $window, $timeout, provisionService, courseCreateService) {
+    .controller("newCourseAdmins", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService',
+        function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService) {
+
+            $rootScope.provisionMode = true;
+            courseCreateService.setCourse($rootScope.coursePackage.course);
 
             var course = courseCreateService.getCourse();
-            var courseIndex = 0;
 
             $scope.admin = {};
 
-            for (var i in coursePackage) {
-                if (coursePackage[i].course === course) {
-                    $scope.admins = coursePackage[i].admins;
-                    courseIndex = i;
-                } else {
-                    alert("Please create a course and then select the new course to add admins")
-                }
+            if ($rootScope.coursePackage.course === course) {
+                $scope.admins = $rootScope.coursePackage.admins;
+            } else {
+                alert("Please create a course and then select the new course to add teams");
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
             }
+
 
             $scope.addAdmin = function() {
                 $scope.admin.email = $scope.enteredEmail;
@@ -3680,8 +3688,22 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.applyChanges = function() {
 
-                coursePackage[courseIndex].admins = $scope.admins;
+                $rootScope.coursePackage.admins = $scope.admins;
 
             };
 
-        }]);
+        }])
+    .controller("newCourseTeams", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService', 'teamCreateService',
+        function ($rootScope, $scope, $http, $window, provisionService, courseCreateService, teamCreateService) {
+            $rootScope.provisionMode = true;
+
+        }])
+    .controller("newCourse", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
+        function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
+            $rootScope.provisionMode = true;
+
+        }])
+    .controller("sideNavController", ['$scope', '$http', '$window', 'provisionService', 'courseCreateService',
+        function ($scope, $http, $window, provisionService, courseCreateService) {
+
+    }]);

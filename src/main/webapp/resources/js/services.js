@@ -120,10 +120,10 @@ myapp.service('userService', function () {
             getStudentName: getStudentName
         };
     })
-    .service('provisionService', function () {
-        var coursePackage = {
+    .service('provisionService', function ($rootScope) {
+        $rootScope.coursePackage = {
                 "admins": [{}],
-                "course": "",
+                "course": "SER316",
                 "end_date": "",
                 "github_owner": "",
                 "github_token": "",
@@ -131,7 +131,7 @@ myapp.service('userService', function () {
                 "taiga_token": "",
                 "teams": [{
                     "taiga_project_slug": "",
-                    "team_name": "",
+                    "team_name": "Team1",
                     "channels": [{}],
                     "github_repo_id": "",
                     "slack_team_id": "",
@@ -226,7 +226,8 @@ myapp.service('AuthSharedService', function ($rootScope, $http, $resource, authS
     };
 });
 
-myapp.service('HomeService', function ($log, $resource) {
+myapp.service('HomeService', function ($rootScope, $log, $resource) {
+    $rootScope.provisionMode = false;
     return {
         getTechno: function () {
             var userResource = $resource('resources/json/techno.json', {}, {
