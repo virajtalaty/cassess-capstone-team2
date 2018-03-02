@@ -1,9 +1,8 @@
 <div ng-controller="newCourseAdmins">
     <div class="form-group">
-        <label> New Admin list:</label>
+        <h3> Select Admin or add new Admin</h3>
         <div>
-            <select ng-model="selectedAdmin" class="form-control" ng-options="admin.email for admin in admins">
-                <option disabled value = "">-- Select Admin Email --</option>
+            <select ng-model="selectedAdmin" class="form-control" ng-options="admin.email for admin in admins" placeholder="Select Admin">
             </select>
         </div>
         <div>
@@ -18,17 +17,17 @@
         <form role="form">
             <div class="form-group">
                 <label>Admin Name</label>
-                <input type="text" class="form-control" ng-model="enteredName" placeholder="Enter name">
+                <input type="text" class="form-control" ng-model="enteredName" placeholder="Enter name" ng-required="true">
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" class="form-control" ng-model="enteredEmail" placeholder="Enter email">
+                <input type="email" class="form-control" ng-model="enteredEmail" placeholder="Enter email" ng-required="true">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password">
+                <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password" ng-required="true">
             </div>
-            <button ng-click="addAdmin()" class="btn btn-default">Add</button>
+            <button ng-click="saveAdmin()" class="btn btn-default">Save Admin</button>
         </form>
     </div>
     <div>

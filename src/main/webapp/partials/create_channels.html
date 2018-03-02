@@ -1,0 +1,33 @@
+<div ng-controller="newCourseChannels">
+    <div class="form-group">
+        <h2>Select Team to Manage Channels</h2>
+        <div>
+            <select ng-model="selectedTeam" class="form-control" ng-options="team.team_name for team in teams" ng-change="setTeam()" placeholder="Select Team">
+            </select>
+        </div>
+        <h2> New Channel list:</h2>
+        <div>
+            <select ng-model="selectedChannel" class="form-control" ng-options="channel.id for channel in channels" placeholder="Select Channel">
+            </select>
+        </div>
+        <div>
+            <button ng-click="removeChannel()" class="btn btn-default">Remove</button>
+        </div>
+        <div>
+            <button ng-click="editChannel()" class="btn btn-default">Edit</button>
+        </div>
+        <h2> Selected Channels: {{selectedChannels.id}}</h2>
+    </div>
+    <div class="container" style="max-width:600px;margin:60px auto;">
+        <form role="form">
+            <div class="form-group">
+                <label>Channels Id</label>
+                <input type="text" class="form-control" ng-model="enteredId" placeholder="Enter Id" ng-required="true">
+            </div>
+            <button ng-click="saveChannel()" class="btn btn-default">Save Channel</button>
+        </form>
+    </div>
+    <div>
+        <button ng-click="applyChanges()" class="btn btn-default">Apply Changes</button>
+    </div>
+</div>

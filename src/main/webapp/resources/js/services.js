@@ -123,18 +123,18 @@ myapp.service('userService', function () {
     .service('provisionService', function ($rootScope) {
         $rootScope.coursePackage = {
                 "admins": [{}],
-                "course": "SER316",
-                "end_date": "",
-                "github_owner": "",
-                "github_token": "",
-                "slack_token": "",
-                "taiga_token": "",
+                "course": '',
+                "end_date": '',
+                "github_owner": '',
+                "github_token": '',
+                "slack_token": '',
+                "taiga_token": '',
                 "teams": [{
-                    "taiga_project_slug": "",
-                    "team_name": "Team1",
+                    "taiga_project_slug": '',
+                    "team_name": '',
                     "channels": [{}],
-                    "github_repo_id": "",
-                    "slack_team_id": "",
+                    "github_repo_id": '',
+                    "slack_team_id": '',
                     "students": [{}]
                 }]
             };

@@ -2,6 +2,8 @@
     <div class="navbar-header">
         <div class="navbar-collapse collapse navbar-responsive-collapse" ng-controller="sideNavController">
             <ul class="nav navbar-nav navbar-left">
+                <h2>Current Course: {{selectedCourse}}</h2>
+                <h2>Current Team: {{selectedTeam}}</h2>
             </ul>
         </div>
     </div>
@@ -24,6 +26,9 @@
                     </li>
                     <li ng-class="{ active: isSet(4) }">
                         <a href="#/create_students" access="super_user" ng-click="setTab(4)">Students</a>
+                    </li>
+                    <li ng-class="{ active: isSet(5) }">
+                        <a href="#/create_channels" access="super_user" ng-click="setTab(5)">Slack Channels</a>
                     </li>
                 </ul>
             </div>

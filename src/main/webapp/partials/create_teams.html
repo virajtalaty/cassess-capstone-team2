@@ -1,3 +1,40 @@
-<div>
-    <label>Create Teams</label>
+<div ng-controller="newCourseTeams">
+    <div class="form-group">
+        <h3>Select Team to manage or add new Team</h3>
+        <div>
+            <select ng-model="selectedTeam" class="form-control" ng-options="team.team_name for team in teams" placeholder="Select Team">
+            </select>
+        </div>
+        <div>
+            <button ng-really-message="Remove Team?"? ng-really-click="removeTeam()" class="btn btn-default">Remove Team</button>
+        </div>
+        <div>
+            <button ng-click="editTeam()" class="btn btn-default">Edit Team</button>
+        </div>
+        <div>
+            <button ng-click="clearTeamForm()" class="btn btn-default">Clear Form</button>
+        </div>
+
+    </div>
+    <div class="container" style="max-width:600px;margin:60px auto;">
+        <form role="form">
+            <div class="form-group">
+                <label>Team Name</label>
+                <input type="text" class="form-control" ng-model="enteredTeamName" placeholder="Enter team name" required>
+            </div>
+            <div class="form-group">
+                <label>Taiga Project Slug</label>
+                <input type="date" class="form-control" ng-model="enteredTaigaSlug" placeholder="Enter Taiga Slug" ng-required="true">
+            </div>
+            <div class="form-group">
+                <label>GitHub Repo Id</label>
+                <input type="text" class="form-control"ng-model="enteredGithubRepo" placeholder="Enter Github Repo Id" ng-required="true">
+            </div>
+            <div class="form-group">
+                <label>Slack Team Id</label>
+                <input type="text" class="form-control"ng-model="enteredSlackTeam" placeholder="Enter Slack Team" ng-required="false">
+            </div>
+            <button ng-click="saveTeam()" class="btn btn-default">Save Team</button>
+        </form>
+    </div>
 </div>

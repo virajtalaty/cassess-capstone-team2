@@ -1,9 +1,13 @@
 <div ng-controller="newCourseStudents">
     <div class="form-group">
-        <label> New Student list:</label>
+        <h3>Select Team to Manage Students</h3>
         <div>
-            <select ng-model="selectedStudent" class="form-control" ng-options="student.email for student in students">
-                <option disabled value = "">-- Select Student Email --</option>
+            <select ng-model="selectedTeam" class="form-control" ng-options="team.team_name for team in teams" ng-change="setTeam()" placeholder="Select Team">
+            </select>
+        </div>
+        <h3> Select Student to manage or add new Student</h3>
+        <div>
+            <select ng-model="selectedStudent" class="form-control" ng-options="student.email for student in students" placeholder="Select Student">
             </select>
         </div>
         <div>
@@ -12,23 +16,23 @@
         <div>
             <button ng-click="editStudent()" class="btn btn-default">Edit</button>
         </div>
-        <label> Selected Student: {{selectedStudent.name}}</label>
+        <h2> Selected Student: {{selectedStudent.name}}</h2>
     </div>
     <div class="container" style="max-width:600px;margin:60px auto;">
         <form role="form">
             <div class="form-group">
                 <label>Student Name</label>
-                <input type="text" class="form-control" ng-model="enteredName" placeholder="Enter name">
+                <input type="text" class="form-control" ng-model="enteredName" placeholder="Enter name" ng-required="true">
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" class="form-control" ng-model="enteredEmail" placeholder="Enter email">
+                <input type="email" class="form-control" ng-model="enteredEmail" placeholder="Enter email" ng-required="true">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password">
+                <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password" ng-required="true">
             </div>
-            <button ng-click="addStudent()" class="btn btn-default">Add</button>
+            <button ng-click="saveStudent()" class="btn btn-default">Save Student</button>
         </form>
     </div>
     <div>

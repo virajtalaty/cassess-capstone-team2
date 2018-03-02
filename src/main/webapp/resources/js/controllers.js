@@ -664,7 +664,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     method: "PUT",
                     headers: {'login': $scope.userid, 'pass': $scope.password.new}
                 }).then(function (response) {
-                    $scope.message = "Password Succesfully Changed";
+                    $scope.message = "Password Successfully Changed";
                     $window.alert($scope.message);
                     $scope.password.new = "";
                     $scope.password.confirm = "";
@@ -3537,15 +3537,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
 
         $rootScope.provisionMode = true;
-        courseCreateService.setCourse($rootScope.coursePackage.course);
-        console.log("SetCourse: " + $rootScope.coursePackage.course);
-        teamCreateService.setTeam($rootScope.coursePackage.teams[0].team_name);
-        console.log("SetTeam: " + $rootScope.coursePackage.teams[0].team_name);
 
         var course = courseCreateService.getCourse();
         //console.log("GetCourse: " + course);
-        var team = teamCreateService.getTeam();
-        //console.log("GetTeam: " + team);
+
         var teamIndex = -1;
 
         $scope.student = {};
@@ -3553,11 +3548,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.students = [];
 
         if ($rootScope.coursePackage.course === course) {
-            for (var i in $rootScope.coursePackage.teams) {
-                if ($rootScope.coursePackage.teams[i].team_name === team) {
-                    $scope.students = $rootScope.coursePackage.teams[i].students;
-                    teamIndex = i;
-                }
+            if($rootScope.coursePackage.teams.length != 0) {
+                teamIndex = 0;
             }
         } else {
             alert("Please create a course and then select the new course to add teams");
@@ -3568,8 +3560,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             window.location.href = 'http://localhost:8080/cassess/#/create_teams';
         }
 
+        $scope.setTeam = function() {
+            var team = $scope.selectedTeam;
+            if ($rootScope.coursePackage.teams[i].team_name === team) {
+                $scope.students = $rootScope.coursePackage.teams[i].students;
+                teamIndex = i;
+                teamCreateService.setTeam($rootScope.coursePackage.teams[i].team_name);
+            }
+        };
 
-        $scope.addStudent = function() {
+        $scope.saveStudent = function() {
             $scope.student.email = $scope.enteredEmail;
             $scope.student.name = $scope.enteredName;
             $scope.student.password = $scope.enteredPassword;
@@ -3625,7 +3625,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService) {
 
             $rootScope.provisionMode = true;
-            courseCreateService.setCourse($rootScope.coursePackage.course);
 
             var course = courseCreateService.getCourse();
 
@@ -3639,7 +3638,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
 
 
-            $scope.addAdmin = function() {
+            $scope.saveAdmin = function() {
                 $scope.admin.email = $scope.enteredEmail;
                 $scope.admin.name = $scope.enteredName;
                 $scope.admin.password = $scope.enteredPassword;
@@ -3694,16 +3693,223 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         }])
     .controller("newCourseTeams", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService', 'teamCreateService',
-        function ($rootScope, $scope, $http, $window, provisionService, courseCreateService, teamCreateService) {
+        function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
             $rootScope.provisionMode = true;
 
+            var course = courseCreateService.getCourse();
+
+            $scope.team = {};
+
+            if ($rootScope.coursePackage.course === course) {
+                $scope.teams = $rootScope.coursePackage.teams;
+            } else {
+                alert("Please create a course and then select the new course to add teams");
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
+            }
+
+            $scope.saveTeam = function() {
+                $scope.team.team_name = $scope.enteredTeamName;
+                $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
+                $scope.team.github_repo_id = $scope.enteredGithubRepo;
+                $scope.team.slack_team_id = $scope.enteredSlackTeam;
+                var exists = false;
+                for (var i in $scope.teams) {
+                    if($scope.teams[i].team_name ===  $scope.team.team_name){
+                        //console.log("Team exists");
+                        $scope.teams[i] = $scope.team;
+                        exists = true;
+                    }
+                }
+                if(!exists) {
+                    //console.log("Team doesn't exist");
+                    if($scope.teams.length == 0){
+                        $scope.teams = [$scope.team];
+                    } else {
+                        $scope.teams.push($scope.team);
+                    }
+                }
+                $scope.enteredTeamName = '';
+                $scope.enteredTaigaSlug = '';
+                $scope.enteredGithubRepo = '';
+                $scope.enteredSlackTeam = '';
+                $scope.team = {};
+            };
+
+            $scope.removeTeam = function() {
+                for (var i in $scope.teams) {
+                    var team_name = $scope.selectedTeam.team_name;
+                    if ($scope.teams[i].team_name === team_name) {
+                        $scope.teams.splice(i, 1);
+                    }
+                }
+            };
+
+            $scope.editTeam = function() {
+                var team_name = $scope.selectedTeam.team_name;
+                for (var i in $scope.teams) {
+                    if ($scope.teams[i].team_name === team_name) {
+                        $scope.team = angular.copy($scope.teams[i]);
+                    }
+                }
+                $scope.enteredTeamName = $scope.team.team_name;
+                $scope.enteredTaigaSlug = $scope.team.taiga_project_slug;
+                $scope.enteredGithubRepo = $scope.team.github_repo_id;
+                $scope.enteredSlackTeam =  $scope.team.slack_team_id;
+            };
+
+            $scope.applyChanges = function() {
+                $rootScope.coursePackage.teams = $scope.teams;
+            };
         }])
     .controller("newCourse", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
         function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
             $rootScope.provisionMode = true;
+            if($rootScope.coursePackage.course != '')   {
+                $scope.enteredCourseName = $rootScope.coursePackage.course;
+                courseCreateService.setCourse($rootScope.coursePackage.course);
+            }
+            if($rootScope.coursePackage.end_date != '')   {
+                $scope.enteredEndDate = $rootScope.coursePackage.end_date;
+            }
+            if($rootScope.coursePackage.github_owner != '')   {
+                $scope.enteredGitHubOwner = $rootScope.coursePackage.github_owner;
+            }
+            if($rootScope.coursePackage.github_token != '') {
+                $scope.enteredGitHubToken = $rootScope.coursePackage.github_token;
+            }
+            if($rootScope.coursePackage.taiga_token != '')   {
+                $scope.enteredTaigaToken = $rootScope.coursePackage.taiga_token;
+            }
+            if($rootScope.coursePackage.slack_token != '')   {
+                $scope.enteredSlackToken = $rootScope.coursePackage.slack_token;
+            }
+
+            $scope.saveCourse = function() {
+                $rootScope.coursePackage.course = $scope.enteredCourseName;
+                $rootScope.coursePackage.end_date = $scope.enteredEndDate;
+                $rootScope.coursePackage.github_owner = $scope.enteredGitHubOwner;
+                $rootScope.coursePackage.github_token = $scope.enteredGitHubToken;
+                $rootScope.coursePackage.taiga_token = $scope.enteredTaigaToken;
+                $rootScope.coursePackage.slack_token = $scope.enteredSlackToken;
+                courseCreateService.setCourse($rootScope.coursePackage.course);
+            };
+
+            $scope.clearCourseForm = function() {
+                $scope.enteredCourseName = '';
+                $scope.enteredEndDate = '';
+                $scope.enteredGitHubOwner = '';
+                $scope.enteredGitHubToken = '';
+                $scope.enteredTaigaToken = '';
+                $scope.enteredSlackToken = '';
+            };
+
+            $scope.removeCourse = function() {
+                $rootScope.coursePackage = {
+                    "admins": [{}],
+                    "course": '',
+                    "end_date": '',
+                    "github_owner": '',
+                    "github_token": '',
+                    "slack_token": '',
+                    "taiga_token": '',
+                    "teams": [{
+                        "taiga_project_slug": '',
+                        "team_name": '',
+                        "channels": [{}],
+                        "github_repo_id": '',
+                        "slack_team_id": '',
+                        "students": [{}]
+                    }]
+                };
+                $scope.clearCourseForm();
+            };
 
         }])
-    .controller("sideNavController", ['$scope', '$http', '$window', 'provisionService', 'courseCreateService',
-        function ($scope, $http, $window, provisionService, courseCreateService) {
+    .controller("newCourseChannels", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService', 'teamCreateService',
+        function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
 
+            $rootScope.provisionMode = true;
+
+            var course = courseCreateService.getCourse();
+            //console.log("GetCourse: " + course);
+
+            var teamIndex = -1;
+
+            $scope.channel = {};
+
+            $scope.channels = [];
+
+
+            if ($rootScope.coursePackage.course === course) {
+                if($rootScope.coursePackage.teams.length != 0) {
+                    teamIndex = 0;
+                }
+            } else {
+                alert("Please create a course and then select the new course to add teams");
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
+            }
+            if (teamIndex === -1){
+                alert("Please create a team and then select the new team to add channels");
+                window.location.href = 'http://localhost:8080/cassess/#/create_teams';
+            }
+
+            $scope.setTeam = function() {
+                var team = $scope.selectedTeam;
+                if ($rootScope.coursePackage.teams[i].team_name === team) {
+                    $scope.channels = $rootScope.coursePackage.teams[i].channels;
+                    teamIndex = i;
+                    teamCreateService.setTeam($rootScope.coursePackage.teams[i].team_name);
+                }
+            };
+
+            $scope.saveChannel = function() {
+                $scope.channel.id = $scope.enteredId;
+                var exists = false;
+                for (var i in $scope.channels) {
+                    if($scope.channels[i].id ===  $scope.channel.id){
+                        //console.log("Channel exists");
+                        $scope.channels[i] = $scope.channel;
+                        exists = true;
+                    }
+                }
+                if(!exists) {
+                    //console.log("Channel doesn't exist");
+                    if($scope.channels.length == 0){
+                        $scope.channels = [$scope.channel];
+                    } else {
+                        $scope.channels.push($scope.channel);
+                    }
+                }
+                $scope.enteredId = '';
+                $scope.channel = {};
+            };
+
+            $scope.removeChannel = function() {
+                for (var i in $scope.students) {
+                    var id = $scope.selectedChannel.id;
+                    if ($scope.channels[i].id === id) {
+                        $scope.channels.splice(i, 1);
+                    }
+                }
+            };
+
+            $scope.editChannel = function() {
+                var id = $scope.selectedChannel.id;
+                for (var i in $scope.channels) {
+                    if ($scope.channels[i].id === id) {
+                        $scope.channel = angular.copy($scope.channels[i]);
+                    }
+                }
+                $scope.enteredId = $scope.channel.id;
+            };
+
+            $scope.applyChanges = function() {
+                $rootScope.coursePackage.teams[teamIndex].channels = $scope.channels;
+            };
+
+        }])
+    .controller("sideNavController", ['$scope', '$http', '$window', 'provisionService', 'courseCreateService', 'teamCreateService',
+        function ($scope, $http, $window, provisionService, courseCreateService, teamCreateService) {
+            $scope.selectedCourse = courseCreateService.getCourse();
+            $scope.selectedTeam = teamCreateService.getTeam();
     }]);
