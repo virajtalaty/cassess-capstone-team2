@@ -122,21 +122,23 @@ myapp.service('userService', function () {
     })
     .service('provisionService', function ($rootScope) {
         $rootScope.coursePackage = {
-                "admins": [{}],
-                "course": '',
+                "admins": null,
+                "course": null,
                 "end_date": '',
                 "github_owner": '',
                 "github_token": '',
                 "slack_token": '',
                 "taiga_token": '',
-                "teams": [{
-                    "taiga_project_slug": '',
-                    "team_name": '',
-                    "channels": [{}],
-                    "github_repo_id": '',
-                    "slack_team_id": '',
-                    "students": [{}]
-                }]
+                "teams": null
+                //"teams": [{
+                    //"taiga_project_slug": '',
+                    //"team_name": '',
+                    //"channels": null,
+                    //"github_repo_id": '',
+                    //"slack_team_id": '',
+                    //"students": null
+                //}]
+
             };
     })
     .service('courseCreateService', function () {

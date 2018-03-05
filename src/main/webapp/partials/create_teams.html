@@ -1,40 +1,90 @@
 <div ng-controller="newCourseTeams">
-    <div class="form-group">
-        <h3>Select Team to manage or add new Team</h3>
-        <div>
-            <select ng-model="selectedTeam" class="form-control" ng-options="team.team_name for team in teams" placeholder="Select Team">
-            </select>
+    <div class="navbar navbar-default">
+        <div class="navbar-header">
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <h2>Current Course: {{currentCourse}}</h2>
+                    <h2>Current Team: {{currentTeam}}</h2>
+                </ul>
+                <a class="navbar-brand pull-right" href="#/home">Continuous Assessment</a>
+            </div>
         </div>
-        <div>
-            <button ng-really-message="Remove Team?"? ng-really-click="removeTeam()" class="btn btn-default">Remove Team</button>
-        </div>
-        <div>
-            <button ng-click="editTeam()" class="btn btn-default">Edit Team</button>
-        </div>
-        <div>
-            <button ng-click="clearTeamForm()" class="btn btn-default">Clear Form</button>
-        </div>
-
     </div>
-    <div class="container" style="max-width:600px;margin:60px auto;">
-        <form role="form">
-            <div class="form-group">
-                <label>Team Name</label>
-                <input type="text" class="form-control" ng-model="enteredTeamName" placeholder="Enter team name" required>
+    <div class="well page">
+        <h1 class="page-header">CAssess Provisioning</h1>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-1">
+                        <ul class="nav nav-pills navbar-nav navbar-left nav-stacked">
+                            <li >
+                                <a href="#/create_course" access="super_user" ng-click="setTab(1)">Course</a>
+                            </li>
+                            <li >
+                                <a href="#/create_admins" access="super_user" ng-click="setTab(2)">Admins</a>
+                            </li>
+                            <li ng-class="{ active: isSet(3) }">
+                                <a href="#/create_teams" access="super_user" ng-click="setTab(3)">Teams</a>
+                            </li>
+                            <li >
+                                <a href="#/create_students" access="super_user" ng-click="setTab(4)">Students</a>
+                            </li>
+                            <li >
+                                <a href="#/create_channels" access="super_user" ng-click="setTab(5)">Slack Channels</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="jumbotron">
+                            <div class="form-group">
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <th colspan="3">
+                                                <div class="pull-left">Select Team to manage or add new Team</div>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Team Name</th>
+                                            <th>Taiga Slug</th>
+                                            <th>GitHib Repo</th>
+                                        </tr>
+                                        <tr ng-repeat="team in teams" ng-click="setClickedTeam($index)" ng-class="{'selected':$index == selectedRow}">
+                                            <td>{{team.team_name}}</td>
+                                            <td>{{team.taiga_project_slug}}</td>
+                                            <td>{{team.github_repo_id}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            <div>
+                                <button ng-really-message="Remove Team?"? ng-really-click="removeTeam()" class="btn btn-default">Remove Team</button>
+                                <button ng-click="editTeam()" class="btn btn-default">Edit Team</button>
+                                <button ng-click="clearTeamForm()" class="btn btn-default">Clear Form</button>
+                            </div>
+                            <div class="container" style="max-width:600px;margin:60px auto;">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <label>Team Name</label>
+                                        <input type="text" class="form-control" ng-model="enteredTeamName" placeholder="Enter team name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Taiga Project Slug</label>
+                                        <input type="text" class="form-control" ng-model="enteredTaigaSlug" placeholder="Enter Taiga Slug" ng-required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>GitHub Repo Id</label>
+                                        <input type="text" class="form-control"ng-model="enteredGithubRepo" placeholder="Enter Github Repo Id" ng-required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Slack Team Id</label>
+                                        <input type="text" class="form-control"ng-model="enteredSlackTeam" placeholder="Enter Slack Team" ng-required="false">
+                                    </div>
+                                    <button ng-click="saveTeam()" class="btn btn-default">Save Team</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Taiga Project Slug</label>
-                <input type="date" class="form-control" ng-model="enteredTaigaSlug" placeholder="Enter Taiga Slug" ng-required="true">
-            </div>
-            <div class="form-group">
-                <label>GitHub Repo Id</label>
-                <input type="text" class="form-control"ng-model="enteredGithubRepo" placeholder="Enter Github Repo Id" ng-required="true">
-            </div>
-            <div class="form-group">
-                <label>Slack Team Id</label>
-                <input type="text" class="form-control"ng-model="enteredSlackTeam" placeholder="Enter Slack Team" ng-required="false">
-            </div>
-            <button ng-click="saveTeam()" class="btn btn-default">Save Team</button>
-        </form>
+        </div>
     </div>
 </div>

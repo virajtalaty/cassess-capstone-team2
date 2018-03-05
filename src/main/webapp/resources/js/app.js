@@ -166,6 +166,20 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.super_user]
         }
+    }).when("/create_channels", {
+        templateUrl: "partials/create_channels.html",
+        controller: "newCourseChannels",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
+    }).when("/provision_course", {
+        templateUrl: "partials/provision_course.html",
+        controller: "provisionCourse",
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.super_user]
+        }
     }).when("/rest", {
         access: {
             loginRequired: true,
