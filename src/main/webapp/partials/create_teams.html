@@ -3,10 +3,8 @@
         <div class="navbar-header">
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <h2>Current Course: {{currentCourse}}</h2>
-                    <h2>Current Team: {{currentTeam}}</h2>
+                    <a class="navbar-brand pull-left" href="#/home">Continuous Assessment</a>
                 </ul>
-                <a class="navbar-brand pull-right" href="#/home">Continuous Assessment</a>
             </div>
         </div>
     </div>
@@ -30,6 +28,9 @@
                             </li>
                             <li >
                                 <a href="#/create_channels" access="super_user" ng-click="setTab(5)">Slack Channels</a>
+                            </li>
+                            <li >
+                                <a href="#/provision_course" access="super_user" ng-click="setTab(6)">Provision Course</a>
                             </li>
                         </ul>
                     </div>
@@ -60,6 +61,9 @@
                                 <button ng-click="editTeam()" class="btn btn-default">Edit Team</button>
                                 <button ng-click="clearTeamForm()" class="btn btn-default">Clear Form</button>
                             </div>
+                                <div>
+                                    <p>Message: {{message}}</p>
+                                </div>
                             <div class="container" style="max-width:600px;margin:60px auto;">
                                 <form role="form">
                                     <div class="form-group">
@@ -78,10 +82,14 @@
                                         <label>Slack Team Id</label>
                                         <input type="text" class="form-control"ng-model="enteredSlackTeam" placeholder="Enter Slack Team" ng-required="false">
                                     </div>
-                                    <button ng-click="saveTeam()" class="btn btn-default">Save Team</button>
+                                    <button id="saveTeam" ng-click="saveTeam()" class="btn btn-default">Save Team</button>
                                 </form>
                             </div>
                         </div>
+                            <div>
+                                <label>Teams CSV File Upload:</label>
+                                <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".csv">
+                            </div>
                     </div>
                 </div>
             </div>

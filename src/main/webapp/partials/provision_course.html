@@ -3,10 +3,8 @@
         <div class="navbar-header">
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <h3>Current Course: {{currentCourse}}</h3>
-                    <h3>Current Team: {{currentTeam}}</h3>
+                    <a class="navbar-brand pull-left" href="#/home">Continuous Assessment</a>
                 </ul>
-                <a class="navbar-brand pull-right" href="#/home">Continuous Assessment</a>
             </div>
         </div>
     </div>
@@ -39,10 +37,12 @@
                 <div class="col-md-8">
                     <div class="jumbotron">
                         <div id="jsonDisplay">
-
                         </div>
                         <div>
                             <button ng-click="sendCoursePackage()" class="btn btn-default">Send Course JSON Package</button>
+                        </div>
+                        <div>
+                            <p>Message: {{message}}</p>
                         </div>
                     </div>
                 </div>

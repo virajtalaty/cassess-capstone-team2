@@ -3,10 +3,8 @@
         <div class="navbar-header">
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <h2>Current Course: {{currentCourse}}</h2>
-                    <h2>Current Team: {{currentTeam}}</h2>
+                    <a class="navbar-brand pull-left" href="#/home">Continuous Assessment</a>
                 </ul>
-                <a class="navbar-brand pull-right" href="#/home">Continuous Assessment</a>
             </div>
         </div>
     </div>
@@ -31,6 +29,9 @@
                         <li >
                             <a href="#/create_channels" access="super_user" ng-click="setTab(5)">Slack Channels</a>
                         </li>
+                        <li >
+                            <a href="#/provision_course" access="super_user" ng-click="setTab(6)">Provision Course</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-md-8">
@@ -54,7 +55,7 @@
                                         <th>Password</th>
                                     </tr>
                                     <tr ng-repeat="student in students" ng-click="setClickedStudent($index)" ng-class="{'selected':$index === selectedRow}">
-                                        <td>{{student.name}}</td>
+                                        <td>{{student.full_name}}</td>
                                         <td>{{student.email}}</td>
                                         <td>{{student.password}}</td>
                                     </tr>
@@ -64,6 +65,9 @@
                                 <button ng-click="removeStudent()" class="btn btn-default">Remove</button>
                                 <button ng-click="editStudent()" class="btn btn-default">Edit</button>
                             </div>
+                        </div>
+                        <div>
+                            <p>Message: {{message}}</p>
                         </div>
                         <div class="container" style="max-width:600px;margin:60px auto;">
                             <form role="form">
@@ -82,6 +86,10 @@
                                 <button ng-click="saveStudent()" class="btn btn-default">Save Student</button>
                             </form>
                         </div>
+                    </div>
+                    <div>
+                        <label>Students CSV File Upload:</label>
+                        <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".csv">
                     </div>
                 </div>
             </div>

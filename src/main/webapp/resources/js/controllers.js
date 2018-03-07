@@ -679,7 +679,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
     }])
     .controller('ApiDocController', function ($scope) {
-        $rootScope.provisionMode = false;
         // init form
         $scope.isLoading = false;
         $scope.url = $scope.swaggerUrl = 'v2/api-docs';
@@ -3562,6 +3561,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.teams = [];
 
+        $scope.message = "";
+
         if ($rootScope.coursePackage.course === course) {
             if($rootScope.coursePackage.teams.length != 0) {
                 teamIndex = 0;
@@ -3599,28 +3600,42 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
         $scope.saveStudent = function() {
-            $scope.student.email = $scope.enteredEmail;
-            $scope.student.name = $scope.enteredName;
-            $scope.student.password = $scope.enteredPassword;
-            var exists = false;
-            for (var i in $scope.students) {
-                if($scope.students[i].email ===  $scope.student.email){
-                    //console.log("Student exists");
-                    $scope.students[i] = $scope.student;
-                    exists = true;
+            if($scope.enteredEmail != null && $scope.enteredEmail != ''){
+                if($scope.enteredName != null && $scope.enteredName != ''){
+                    if($scope.enteredPassword != null && $scope.enteredPassword != ''){
+                        $scope.student.email = $scope.enteredEmail;
+                        $scope.student.full_name = $scope.enteredName;
+                        $scope.student.password = $scope.enteredPassword;
+                        var exists = false;
+                        for (var i in $scope.students) {
+                            if($scope.students[i].email ===  $scope.student.email){
+                                $scope.students[i] = $scope.student;
+                                exists = true;
+                            }
+                        }
+                        if(!exists) {
+                            if(!$scope.students || $scope.students.length === 0){
+                                $scope.students = [$scope.student];
+                            } else {
+                                $scope.students.push($scope.student);
+                            }
+                        }
+                        $scope.clearStudentForm();
+                        $scope.student = {};
+                        $scope.applyChanges();
+                    }
                 }
             }
-            if(!exists) {
-                //console.log("Student doesn't exist");
-                if(!$scope.students || $scope.students.length === 0){
-                    $scope.students = [$scope.student];
-                } else {
-                    $scope.students.push($scope.student);
-                }
+        };
+
+        $scope.saveStudentsJSON = function(studentsArray) {
+            for (var i in studentsArray) {
+                $scope.enteredEmail = studentsArray[i].email;
+                $scope.enteredName = studentsArray[i].full_name;
+                $scope.enteredPassword = studentsArray[i].password;
+                $scope.saveStudent();
             }
-            $scope.clearStudentForm();
-            $scope.student = {};
-            $scope.applyChanges();
+            $scope.$apply();
         };
 
         $scope.removeStudent = function() {
@@ -3645,24 +3660,96 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.student = angular.copy($scope.students[i]);
                 }
             }
-            $scope.enteredName = $scope.student.name;
+            $scope.enteredName = $scope.student.full_name;
             $scope.enteredEmail = $scope.student.email;
             $scope.enteredPassword = $scope.student.password;
         };
 
         $scope.applyChanges = function() {
-            for (var i in $rootScope.coursePackage.teams[teamIndex].students)   {
-                console.log("Current Student: " + $rootScope.coursePackage.teams[teamIndex].students[i].email);
+            if ($scope.selectedTeam.team_name) {
+                if($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != ''){
+                    $rootScope.coursePackage.teams[teamIndex].students = $scope.students;
+                    $scope.message = "Successfully saved to Team: " + $rootScope.coursePackage.teams[teamIndex].team_name;
+                } else {
+                    $scope.message = "Please first select a Team to save Student to"
+                }
+            } else {
+                $scope.message = "Please first select a Team to save Student to"
             }
-            for (var i in $scope.students)   {
-                console.log("To Save Student: " + $scope.students[i].email);
-            }
-            console.log("Team Index: " + teamIndex);
-            $rootScope.coursePackage.teams[teamIndex].students = $scope.students;
-            for (var i in $rootScope.coursePackage.teams[teamIndex].students)   {
-                console.log("New Student: " + $rootScope.coursePackage.teams[teamIndex].students[i].email);
+
+        };
+
+        // CSV Reading Functions---------------------------------
+        $scope.handleFiles = function(files) {
+            if (window.FileReader) {
+                $scope.getAsText(files[0]);
+            } else {
+                alert('FileReader are not supported in this browser.');
             }
         };
+
+        $scope.getAsText = function(fileToRead) {
+            var reader = new FileReader();
+            reader.onload = $scope.loadHandler;
+            reader.onerror = $scope.errorHandler;
+            reader.readAsText(fileToRead);
+        };
+
+        $scope.loadHandler = function(event) {
+            var csv = event.target.result;
+            $scope.processData(csv);
+        };
+
+        $scope.processData = function(csv) {
+            var csvArray = $scope.CSV2JSON(csv);
+            console.log(csvArray);
+            console.log(JSON.parse(csvArray));
+            $scope.saveStudentsJSON(JSON.parse(csvArray));
+        };
+
+        $scope.errorHandler = function(evt) {
+            if(evt.target.error.name == "NotReadableError") {
+                alert("Cannot read file !");
+            }
+        };
+
+        function CSVToArray(strData, strDelimiter) {
+            strDelimiter = (strDelimiter || ",");
+            var objPattern = new RegExp((
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+            var arrData = [[]];
+            var arrMatches = null;
+            while (arrMatches = objPattern.exec(strData)) {
+                var strMatchedDelimiter = arrMatches[1];
+                if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
+                    arrData.push([]);
+                }
+                if (arrMatches[2]) {
+                    var strMatchedValue = arrMatches[2].replace(
+                        new RegExp("\"\"", "g"), "\"");
+                } else {
+                    var strMatchedValue = arrMatches[3];
+                }
+                arrData[arrData.length - 1].push(strMatchedValue);
+            }
+            return (arrData);
+        }
+        $scope.CSV2JSON = function(csv) {
+            var array = CSVToArray(csv);
+            var objArray = [];
+            for (var i = 1; i < array.length; i++) {
+                objArray[i - 1] = {};
+                for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                    var key = array[0][k];
+                    objArray[i - 1][key] = array[i][k]
+                }
+            }
+            var json = JSON.stringify(objArray);
+            var str = json.replace(/},/g, "},\r\n");
+            return str;
+        }
 
     }])
     .controller("newCourseAdmins", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService',
@@ -3688,6 +3775,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.admins = [];
 
+            $scope.message = "";
+
             if ($rootScope.coursePackage.course === course) {
                 $scope.admins = $rootScope.coursePackage.admins;
             } else {
@@ -3699,28 +3788,44 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.selectedAdmin = $scope.admins[index];
             };
 
-
             $scope.saveAdmin = function() {
-                $scope.admin.email = $scope.enteredEmail;
-                $scope.admin.name = $scope.enteredName;
-                $scope.admin.password = $scope.enteredPassword;
-                var exists = false;
-                for (var i in $scope.admins) {
-                    if($scope.admins[i].email ===  $scope.admin.email){
-                        $scope.admins[i] = $scope.admin;
-                        exists = true;
+                if ($scope.enteredEmail != null && $scope.enteredEmail != '') {
+                    if ($scope.enteredName != null && $scope.enteredName != '') {
+                        if ($scope.enteredPassword != null && $scope.enteredPassword != '') {
+                            $scope.admin.email = $scope.enteredEmail;
+                            $scope.admin.full_name = $scope.enteredName;
+                            $scope.admin.password = $scope.enteredPassword;
+                            var exists = false;
+                            for (var i in $scope.admins) {
+                                if($scope.admins[i].email ===  $scope.admin.email){
+                                    $scope.admins[i] = $scope.admin;
+                                    exists = true;
+                                }
+                            }
+                            if(!exists) {
+                                if(!$scope.admins || $scope.admins.length === 0){
+                                    $scope.admins = [$scope.admin];
+                                } else {
+                                    $scope.admins.push($scope.admin);
+                                }
+                            }
+                            $scope.clearAdminForm();
+                            $scope.admin = {};
+                            $scope.applyChanges();
+                        }
                     }
                 }
-                if(!exists) {
-                    if(!$scope.admins || $scope.admins.length === 0){
-                        $scope.admins = [$scope.admin];
-                    } else {
-                        $scope.admins.push($scope.admin);
-                    }
+            };
+
+            $scope.saveAdminsJSON = function(adminsArray) {
+
+                for (var i in adminsArray) {
+                    $scope.enteredEmail = adminsArray[i].email;
+                    $scope.enteredName = adminsArray[i].full_name;
+                    $scope.enteredPassword = adminsArray[i].password;
+                    $scope.saveAdmin();
                 }
-                $scope.clearAdminForm();
-                $scope.admin = {};
-                $scope.applyChanges();
+                $scope.$apply();
             };
 
             $scope.clearAdminForm = function() {
@@ -3745,7 +3850,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         $scope.admin = angular.copy($scope.admins[i]);
                     }
                 }
-                $scope.enteredName = $scope.admin.name;
+                $scope.enteredName = $scope.admin.full_name;
                 $scope.enteredEmail = $scope.admin.email;
                 $scope.enteredPassword = $scope.admin.password;
             };
@@ -3754,8 +3859,78 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $rootScope.coursePackage.admins = $scope.admins;
             };
 
+            // CSV Reading Functions---------------------------------
+            $scope.handleFiles = function(files) {
+                if (window.FileReader) {
+                    $scope.getAsText(files[0]);
+                } else {
+                    alert('FileReader are not supported in this browser.');
+                }
+            };
+
+            $scope.getAsText = function(fileToRead) {
+                var reader = new FileReader();
+                reader.onload = $scope.loadHandler;
+                reader.onerror = $scope.errorHandler;
+                reader.readAsText(fileToRead);
+            };
+
+            $scope.loadHandler = function(event) {
+                var csv = event.target.result;
+                $scope.processData(csv);
+            };
+
+            $scope.processData = function(csv) {
+                var csvArray = $scope.CSV2JSON(csv);
+                $scope.saveAdminsJSON(JSON.parse(csvArray));
+            };
+
+            $scope.errorHandler = function(evt) {
+                if(evt.target.error.name == "NotReadableError") {
+                    alert("Cannot read file !");
+                }
+            };
+
+            function CSVToArray(strData, strDelimiter) {
+                strDelimiter = (strDelimiter || ",");
+                var objPattern = new RegExp((
+                "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+                "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+                "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+                var arrData = [[]];
+                var arrMatches = null;
+                while (arrMatches = objPattern.exec(strData)) {
+                    var strMatchedDelimiter = arrMatches[1];
+                    if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
+                        arrData.push([]);
+                    }
+                    if (arrMatches[2]) {
+                        var strMatchedValue = arrMatches[2].replace(
+                            new RegExp("\"\"", "g"), "\"");
+                    } else {
+                        var strMatchedValue = arrMatches[3];
+                    }
+                    arrData[arrData.length - 1].push(strMatchedValue);
+                }
+                return (arrData);
+            }
+            $scope.CSV2JSON = function(csv) {
+                var array = CSVToArray(csv);
+                var objArray = [];
+                for (var i = 1; i < array.length; i++) {
+                    objArray[i - 1] = {};
+                    for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                        var key = array[0][k];
+                        objArray[i - 1][key] = array[i][k]
+                    }
+                }
+                var json = JSON.stringify(objArray);
+                var str = json.replace(/},/g, "},\r\n");
+                return str;
+            }
+
         }])
-    .controller("newCourseTeams", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService', 'teamCreateService',
+    .controller("newCourseTeams", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
         function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
 
             $scope.tab = 3;
@@ -3778,6 +3953,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.teams = [];
 
+            $scope.message = "";
+
             if ($rootScope.coursePackage.course === course) {
                 $scope.teams = $rootScope.coursePackage.teams;
             } else {
@@ -3790,33 +3967,49 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.saveTeam = function() {
-                $scope.team.team_name = $scope.enteredTeamName;
-                $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
-                $scope.team.github_repo_id = $scope.enteredGithubRepo;
-                $scope.team.slack_team_id = $scope.enteredSlackTeam;
-                var exists = false;
-                if ($scope.teams != null) {
-                    for (var i in $scope.teams) {
-                        if($scope.teams[i].team_name ===  $scope.team.team_name){
-                            //console.log("Team exists");
-                            $scope.teams[i] = $scope.team;
-                            exists = true;
+                if($scope.enteredTeamName != null && $scope.enteredTeamName != ''){
+                    if($scope.enteredTaigaSlug != null && $scope.enteredTaigaSlug != ''){
+                        if($scope.enteredGithubRepo != null && $scope.enteredGithubRepo != ''){
+                            $scope.team.team_name = $scope.enteredTeamName;
+                            $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
+                            $scope.team.github_repo_id = $scope.enteredGithubRepo;
+                            $scope.team.slack_team_id = $scope.enteredSlackTeam;
+                            var exists = false;
+                            if ($scope.teams != null) {
+                                for (var i in $scope.teams) {
+                                    if($scope.teams[i].team_name ===  $scope.team.team_name){
+                                        $scope.teams[i] = $scope.team;
+                                        exists = true;
+                                    }
+                                }
+                                if(!exists) {
+                                    if($scope.teams.length == 0){
+                                        $scope.teams = [$scope.team];
+                                    } else {
+                                        $scope.teams.push($scope.team);
+                                    }
+                                }
+                            } else {
+                                $scope.teams = [$scope.team]
+                            }
+                            $scope.clearTeamForm();
+                            $scope.team = {};
+                            $scope.applyChanges();
                         }
                     }
-                    if(!exists) {
-                        //console.log("Team doesn't exist");
-                        if($scope.teams.length == 0){
-                            $scope.teams = [$scope.team];
-                        } else {
-                            $scope.teams.push($scope.team);
-                        }
-                    }
-                } else {
-                    $scope.teams = [$scope.team]
                 }
-                $scope.clearTeamForm();
-                $scope.team = {};
-                $scope.applyChanges();
+            };
+
+            $scope.saveTeamsJSON = function(teamsArray) {
+                for (var i in teamsArray) {
+                    console.log(teamsArray[i].team_name);
+                    $scope.enteredTeamName = teamsArray[i].team_name;
+                    $scope.enteredTaigaSlug = teamsArray[i].taiga_project_slug;
+                    $scope.enteredGithubRepo = teamsArray[i].github_repo_id;
+                    $scope.enteredSlackTeam = teamsArray[i].slack_team_id;
+                    $scope.saveTeam();
+                }
+                $scope.$apply();
             };
 
             $scope.removeTeam = function() {
@@ -3851,6 +4044,79 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.applyChanges = function() {
                 $rootScope.coursePackage.teams = $scope.teams;
             };
+
+
+            // CSV Reading Functions---------------------------------
+            $scope.handleFiles = function(files) {
+                if (window.FileReader) {
+                    $scope.getAsText(files[0]);
+                } else {
+                    alert('FileReader are not supported in this browser.');
+                }
+            };
+
+            $scope.getAsText = function(fileToRead) {
+                var reader = new FileReader();
+                reader.onload = $scope.loadHandler;
+                reader.onerror = $scope.errorHandler;
+                reader.readAsText(fileToRead);
+            };
+
+            $scope.loadHandler = function(event) {
+                var csv = event.target.result;
+                $scope.processData(csv);
+            };
+
+            $scope.processData = function(csv) {
+                var csvArray = $scope.CSV2JSON(csv);
+                $scope.saveTeamsJSON(JSON.parse(csvArray));
+            };
+
+
+            $scope.errorHandler = function(evt) {
+                if(evt.target.error.name == "NotReadableError") {
+                    alert("Cannot read file !");
+                }
+            };
+
+            function CSVToArray(strData, strDelimiter) {
+                strDelimiter = (strDelimiter || ",");
+                var objPattern = new RegExp((
+                "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+                "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+                "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+                var arrData = [[]];
+                var arrMatches = null;
+                while (arrMatches = objPattern.exec(strData)) {
+                    var strMatchedDelimiter = arrMatches[1];
+                    if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
+                        arrData.push([]);
+                    }
+                    if (arrMatches[2]) {
+                        var strMatchedValue = arrMatches[2].replace(
+                            new RegExp("\"\"", "g"), "\"");
+                    } else {
+                        var strMatchedValue = arrMatches[3];
+                    }
+                    arrData[arrData.length - 1].push(strMatchedValue);
+                }
+                return (arrData);
+            }
+            $scope.CSV2JSON = function(csv) {
+                var array = CSVToArray(csv);
+                var objArray = [];
+                for (var i = 1; i < array.length; i++) {
+                    objArray[i - 1] = {};
+                    for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                        var key = array[0][k];
+                        objArray[i - 1][key] = array[i][k]
+                    }
+                }
+                var json = JSON.stringify(objArray);
+                var str = json.replace(/},/g, "},\r\n");
+                return str;
+            }
+
         }])
     .controller("newCourse", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
         function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
@@ -3882,7 +4148,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.saveCourse = function() {
                 $rootScope.coursePackage.course = $scope.enteredCourseName;
                 var dateEntered = new Date($scope.enteredEndDate);
-                var dateConverted = dateEntered.getFullYear() + "-" + (dateEntered.getMonth() + 1) + "-" + dateEntered.getDate();
+                var dateConverted = (dateEntered.getFullYear() + '-' + ('0' + (dateEntered.getMonth()+1)).slice(-2) + '-' + ('0' + dateEntered.getDate()).slice(-2))
                 $rootScope.coursePackage.end_date = dateConverted;
                 $rootScope.coursePackage.github_owner = $scope.enteredGitHubOwner;
                 $rootScope.coursePackage.github_token = $scope.enteredGitHubToken;
@@ -3931,6 +4197,34 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.clearCourseForm();
             };
 
+            $scope.storeJson = function () {
+                delete $rootScope.coursePackage.$$hashKey;
+                for (var i in $rootScope.coursePackage.admins) {
+                    delete $rootScope.coursePackage.admins[i].$$hashKey;
+                }
+                for (var i in $rootScope.coursePackage.teams) {
+                    delete $rootScope.coursePackage.teams[i].$$hashKey;
+                    for (var j in $rootScope.coursePackage.teams[i].students) {
+                        delete $rootScope.coursePackage.teams[i].students[j].$$hashKey;
+                    }
+                }
+                for (var i in $rootScope.coursePackage.teams) {
+                    delete $rootScope.coursePackage.teams[i].$$hashKey;
+                    for (var j in $rootScope.coursePackage.teams[i].channels) {
+                        delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
+                    }
+                }
+                $window.localStorage.setItem('storedCoursePackage', JSON.stringify($rootScope.coursePackage));
+            };
+
+            $scope.getJson = function () {
+                var json = JSON.parse($window.localStorage.getItem('storedCoursePackage'));
+                $rootScope.coursePackage = json;
+                if($rootScope.coursePackage.course){
+                    courseCreateService.setCourse($rootScope.coursePackage.course);
+                }
+            };
+
         }])
     .controller("newCourseChannels", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService', 'courseCreateService', 'teamCreateService',
         function ($rootScope, $scope, $http, $window, $timeout, provisionService, courseCreateService, teamCreateService) {
@@ -3949,6 +4243,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.channels = [];
 
             $scope.teams = [];
+
+            $scope.message = "";
 
 
             if ($rootScope.coursePackage.course === course) {
@@ -3979,7 +4275,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         $scope.channels = $rootScope.coursePackage.teams[i].channels;
                         for (var j in $rootScope.coursePackage.teams[i].channels)   {
                             if(!$rootScope.coursePackage.teams[i].channels){
-                                $rootScope.coursePackage.teams[i].channels = {};
+                                $rootScope.coursePackage.teams[i].channels = [];
+                            } else {
+                                console.log("Current Channel: " + $rootScope.coursePackage.teams[i].channels[j].id);
                             }
                         }
                         teamIndex = i;
@@ -3990,30 +4288,37 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
             };
 
-            $scope.setClickedChannel = function(index){
-                $scope.selectedRow = index;
-                $scope.selectedChannel = $scope.channels[index];
+            $scope.saveChannel = function() {
+                if($scope.enteredId != null && $scope.enteredId != ''){
+                    $scope.channel.id = $scope.enteredId;
+                    var exists = false;
+                    for (var i in $scope.channels) {
+                        if($scope.channels[i].id === $scope.channel.id){
+                            $scope.channels[i] = $scope.channel;
+                            exists = true;
+                        }
+                    }
+                    if(!exists) {
+                        if(!$scope.channels || $scope.channels.length === 0){
+                            $scope.channels = [$scope.channel];
+                        } else {
+                            $scope.channels.push($scope.channel);
+                        }
+                    }
+                    $scope.clearChannelForm();
+                    $scope.channel = {};
+                    $scope.applyChanges();
+                }
             };
 
-            $scope.saveChannel = function() {
-                $scope.channel.id = $scope.enteredId;
-                var exists = false;
-                for (var i in $scope.channels) {
-                    if($scope.channels[i].id ===  $scope.channel.id){
-                        $scope.channels[i] = $scope.channel;
-                        exists = true;
+            $scope.saveChannelsJSON = function(channelsArray) {
+                if(channelsArray[0].id) {
+                    for (var i in channelsArray) {
+                        $scope.enteredId = channelsArray[i].id;
+                        $scope.saveChannel();
                     }
+                    $scope.$apply();
                 }
-                if(!exists) {
-                    if(!$scope.channels || $scope.channels.length === 0){
-                        $scope.channels = [$scope.channel];
-                    } else {
-                        $scope.channels.push($scope.channel);
-                    }
-                }
-                $scope.clearChannelForm();
-                $scope.channel = {};
-                $scope.applyChanges();
             };
 
             $scope.clearChannelForm = function() {
@@ -4040,8 +4345,91 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.applyChanges = function() {
-                $rootScope.coursePackage.teams[teamIndex].channels = $scope.channels;
+                if($scope.selectedTeam.team_name){
+                    if ($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != "") {
+                        $rootScope.coursePackage.teams[teamIndex].channels = $scope.channels;
+                        $scope.message = "Successfully saved to Team: " + $rootScope.coursePackage.teams[teamIndex].team_name;
+                    } else {
+                        $scope.message = "Please first select a Team to save Channel to";
+                    }
+                } else {
+                    $scope.message = "Please first select a Team to save Channel to";
+                }
+
             };
+
+            // CSV Reading Functions---------------------------------
+            $scope.handleFiles = function(files) {
+                if (window.FileReader) {
+                    $scope.getAsText(files[0]);
+                } else {
+                    alert('FileReader are not supported in this browser.');
+                }
+            };
+
+            $scope.getAsText = function(fileToRead) {
+                var reader = new FileReader();
+                reader.onload = $scope.loadHandler;
+                reader.onerror = $scope.errorHandler;
+                reader.readAsText(fileToRead);
+            };
+
+            $scope.loadHandler = function(event) {
+                var csv = event.target.result;
+                $scope.processData(csv);
+            };
+
+            $scope.processData = function(csv) {
+                var csvArray = $scope.CSV2JSON(csv);
+                console.log(csvArray);
+                console.log(JSON.parse(csvArray));
+                $scope.saveChannelsJSON(JSON.parse(csvArray));
+            };
+
+
+            $scope.errorHandler = function(evt) {
+                if(evt.target.error.name == "NotReadableError") {
+                    alert("Cannot read file !");
+                }
+            };
+
+            function CSVToArray(strData, strDelimiter) {
+                strDelimiter = (strDelimiter || ",");
+                var objPattern = new RegExp((
+                "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+                "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+                "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+                var arrData = [[]];
+                var arrMatches = null;
+                while (arrMatches = objPattern.exec(strData)) {
+                    var strMatchedDelimiter = arrMatches[1];
+                    if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
+                        arrData.push([]);
+                    }
+                    if (arrMatches[2]) {
+                        var strMatchedValue = arrMatches[2].replace(
+                            new RegExp("\"\"", "g"), "\"");
+                    } else {
+                        var strMatchedValue = arrMatches[3];
+                    }
+                    arrData[arrData.length - 1].push(strMatchedValue);
+                }
+                return (arrData);
+            }
+            $scope.CSV2JSON = function(csv) {
+                var array = CSVToArray(csv);
+                var objArray = [];
+                for (var i = 1; i < array.length; i++) {
+                    objArray[i - 1] = {};
+                    for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                        var key = array[0][k];
+                        objArray[i - 1][key] = array[i][k]
+                    }
+                }
+                var json = JSON.stringify(objArray);
+                var str = json.replace(/},/g, "},\r\n");
+                return str;
+            }
 
         }])
     .controller("provisionCourse", ['$rootScope', '$scope', '$http', '$window', '$timeout', 'provisionService',
@@ -4056,6 +4444,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.isSet = function (tabNum) {
                 return $scope.tab === tabNum;
             };
+
+            $scope.message = "";
 
             delete $rootScope.coursePackage.$$hashKey;
 
@@ -4072,16 +4462,39 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             for (var i in $rootScope.coursePackage.teams) {
                 delete $rootScope.coursePackage.teams[i].$$hashKey;
+                if($rootScope.coursePackage.teams[i].slack_team_id == '' || $rootScope.coursePackage.teams[i].slack_team_id == null){
+                    delete $rootScope.coursePackage.teams[i].slack_team_id;
+                }
                 for (var j in $rootScope.coursePackage.teams[i].channels) {
                     delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
                 }
+            }
+
+            if($rootScope.coursePackage.slack_token == '' || $rootScope.coursePackage.slack_token == null){
+                delete $rootScope.coursePackage.slack_token;
             }
 
             $scope.jsonCoursePackage = JSON.stringify($rootScope.coursePackage);
 
             document.getElementById("jsonDisplay").innerHTML = $scope.jsonCoursePackage;
 
-            //TODO: HTTP REST POST to /rest/coursePackage with $rootScope.coursePackage and reponse to indicate success to user
+            $http.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8";
+
+            $scope.sendCoursePackage = function () {
+                $http({
+                    url: './rest/coursePackage',
+                    method: "POST",
+                    data: $rootScope.coursePackage
+                }).then(function (response) {
+                    //console.log("Worked!");
+                    $scope.message = "Success: " + response.data;
+                }, function (response) {
+                    //console.log("didn't work");
+                    $scope.message = "Failure: " + response.data;
+                });
+
+            };
 
         }]);
+
 

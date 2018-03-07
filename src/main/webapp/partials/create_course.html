@@ -3,10 +3,8 @@
         <div class="navbar-header">
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <h3>Current Course: {{currentCourse}}</h3>
-                    <h3>Current Team: {{currentTeam}}</h3>
+                    <a class="navbar-brand pull-left" href="#/home">Continuous Assessment</a>
                 </ul>
-                <a class="navbar-brand pull-right" href="#/home">Continuous Assessment</a>
             </div>
         </div>
     </div>
@@ -50,17 +48,11 @@
                                         <th>Course Name</th>
                                         <th>End Date</th>
                                         <th>GitHub Owner</th>
-                                        <th>GitHub Token</th>
-                                        <th>Taiga Token</th>
-                                        <th>Slack Token</th>
                                     </tr>
                                     <tr>
                                         <td>{{coursePackage.course}}</td>
                                         <td>{{coursePackage.end_date}}</td>
                                         <td>{{coursePackage.github_owner}}</td>
-                                        <td>{{coursePackage.github_token}}</td>
-                                        <td>{{coursePackage.taiga_token}}</td>
-                                        <td>{{coursePackage.slack_token}}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -97,6 +89,10 @@
                                 </div>
                                 <div>
                                     <button ng-click="saveCourse()" class="btn btn-default">Save Course</button>
+                                </div>
+                                <div>
+                                    <button ng-click="storeJson()" class="btn btn-default">Store Course Data</button>
+                                    <button ng-click="getJson()" class="btn btn-default">Get Course Data</button>
                                 </div>
                             </form>
                         </div>
