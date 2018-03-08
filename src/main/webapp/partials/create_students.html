@@ -65,7 +65,6 @@
                                 <button ng-click="removeStudent()" class="btn btn-default">Remove</button>
                                 <button ng-click="editStudent()" class="btn btn-default">Edit</button>
                             </div>
-                        </div>
                         <div>
                             <p>Message: {{message}}</p>
                         </div>
@@ -87,9 +86,10 @@
                             </form>
                         </div>
                     </div>
-                    <div>
-                        <label>Students CSV File Upload:</label>
-                        <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".csv">
+                        <div>
+                            <label>Students CSV File Upload:</label>
+                            <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".csv">
+                        </div>
                     </div>
                 </div>
             </div>

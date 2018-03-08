@@ -60,7 +60,6 @@
                             <div>
                                 <button ng-click="removeChannel()" class="btn btn-default">Remove</button>
                             </div>
-                        </div>
                         <div>
                             <p>Message: {{message}}</p>
                         </div>
@@ -77,6 +76,7 @@
                     <div>
                         <label>Channels CSV File Upload:</label>
                         <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".csv">
+                    </div>
                     </div>
                 </div>
             </div>

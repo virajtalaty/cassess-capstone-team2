@@ -3563,6 +3563,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.message = "";
 
+        $scope.currentTeam = "";
+
         if ($rootScope.coursePackage.course === course) {
             if($rootScope.coursePackage.teams.length != 0) {
                 teamIndex = 0;
@@ -3587,7 +3589,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         }
                     }
                     teamIndex = i;
-                    console.log("Team Index: " + i);
+                    //console.log("Team Index: " + i);
                     teamCreateService.setTeam($rootScope.coursePackage.teams[i].team_name);
                     $scope.currentTeam = $scope.selectedTeam.team_name;
                 }
@@ -3600,32 +3602,42 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
         $scope.saveStudent = function() {
-            if($scope.enteredEmail != null && $scope.enteredEmail != ''){
-                if($scope.enteredName != null && $scope.enteredName != ''){
-                    if($scope.enteredPassword != null && $scope.enteredPassword != ''){
-                        $scope.student.email = $scope.enteredEmail;
-                        $scope.student.full_name = $scope.enteredName;
-                        $scope.student.password = $scope.enteredPassword;
-                        var exists = false;
-                        for (var i in $scope.students) {
-                            if($scope.students[i].email ===  $scope.student.email){
-                                $scope.students[i] = $scope.student;
-                                exists = true;
-                            }
-                        }
-                        if(!exists) {
-                            if(!$scope.students || $scope.students.length === 0){
-                                $scope.students = [$scope.student];
+            if($scope.currentTeam != ""){
+                    if($scope.enteredEmail != null && $scope.enteredEmail != ''){
+                        if($scope.enteredName != null && $scope.enteredName != ''){
+                            if($scope.enteredPassword != null && $scope.enteredPassword != ''){
+                                $scope.student.email = $scope.enteredEmail;
+                                $scope.student.full_name = $scope.enteredName;
+                                $scope.student.password = $scope.enteredPassword;
+                                var exists = false;
+                                for (var i in $scope.students) {
+                                    if($scope.students[i].email ===  $scope.student.email){
+                                        $scope.students[i] = $scope.student;
+                                        exists = true;
+                                    }
+                                }
+                                if(!exists) {
+                                    if(!$scope.students || $scope.students.length === 0){
+                                        $scope.students = [$scope.student];
+                                    } else {
+                                        $scope.students.push($scope.student);
+                                    }
+                                }
+                                $scope.clearStudentForm();
+                                $scope.student = {};
+                                $scope.applyChanges();
                             } else {
-                                $scope.students.push($scope.student);
+                                $scope.message = 'Please Enter Password prior to saving a student';
                             }
+                        } else {
+                            $scope.message = 'Please Enter Name prior to saving a student';
                         }
-                        $scope.clearStudentForm();
-                        $scope.student = {};
-                        $scope.applyChanges();
+                    } else {
+                        $scope.message = 'Please Enter Email prior to saving a student';
                     }
+                } else {
+                    $scope.message = 'Please Select a team prior to saving a student';
                 }
-            }
         };
 
         $scope.saveStudentsJSON = function(studentsArray) {
@@ -3643,6 +3655,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var email = $scope.selectedStudent.email;
                 if ($scope.students[i].email === email) {
                     $scope.students.splice(i, 1);
+                    $scope.selectedRow = -1;
                 }
             }
         };
@@ -3669,7 +3682,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($scope.selectedTeam.team_name) {
                 if($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != ''){
                     $rootScope.coursePackage.teams[teamIndex].students = $scope.students;
-                    $scope.message = "Successfully saved to Team: " + $rootScope.coursePackage.teams[teamIndex].team_name;
+                    $scope.message = "Successfully saved to " + $rootScope.coursePackage.teams[teamIndex].team_name;
                 } else {
                     $scope.message = "Please first select a Team to save Student to"
                 }
@@ -3684,7 +3697,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if (window.FileReader) {
                 $scope.getAsText(files[0]);
             } else {
-                alert('FileReader are not supported in this browser.');
+                alert('FileReader is not supported in this browser.');
             }
         };
 
@@ -3702,8 +3715,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.processData = function(csv) {
             var csvArray = $scope.CSV2JSON(csv);
-            console.log(csvArray);
-            console.log(JSON.parse(csvArray));
+            //console.log(csvArray);
+            //console.log(JSON.parse(csvArray));
             $scope.saveStudentsJSON(JSON.parse(csvArray));
         };
 
@@ -3812,8 +3825,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             $scope.clearAdminForm();
                             $scope.admin = {};
                             $scope.applyChanges();
+                        } else {
+                            $scope.message = 'Please Enter Password prior to saving an Admin';
                         }
+                    } else {
+                        $scope.message = 'Please Enter Name prior to saving an Admin';
                     }
+                } else {
+                    $scope.message = 'Please Enter Email prior to saving an Amdin';
                 }
             };
 
@@ -3839,6 +3858,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     var email = $scope.selectedAdmin.email;
                     if ($scope.admins[i].email === email) {
                         $scope.admins.splice(i, 1);
+                        $scope.selectedRow = -1;
                     }
                 }
             };
@@ -3856,6 +3876,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.applyChanges = function() {
+                $scope.message = 'Successfully saved to course ' + $rootScope.coursePackage.course;
                 $rootScope.coursePackage.admins = $scope.admins;
             };
 
@@ -3864,7 +3885,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if (window.FileReader) {
                     $scope.getAsText(files[0]);
                 } else {
-                    alert('FileReader are not supported in this browser.');
+                    alert('FileReader is not supported in this browser.');
                 }
             };
 
@@ -3995,8 +4016,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             $scope.clearTeamForm();
                             $scope.team = {};
                             $scope.applyChanges();
+                        } else {
+                            $scope.message = 'Please Enter GitHub Repo prior to saving a Team';
                         }
+                    } else {
+                        $scope.message = 'Please Enter Taiga Slug prior to saving a Team';
                     }
+                } else {
+                    $scope.message = 'Please Enter Team Name prior to saving a Team';
                 }
             };
 
@@ -4017,6 +4044,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     var team_name = $scope.selectedTeam.team_name;
                     if ($scope.teams[i].team_name === team_name) {
                         $scope.teams.splice(i, 1);
+                        $scope.selectedRow = -1;
                     }
                 }
             };
@@ -4042,6 +4070,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.applyChanges = function() {
+                $scope.message = 'Successfully saved to course ' + $rootScope.coursePackage.course;
                 $rootScope.coursePackage.teams = $scope.teams;
             };
 
@@ -4051,7 +4080,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if (window.FileReader) {
                     $scope.getAsText(files[0]);
                 } else {
-                    alert('FileReader are not supported in this browser.');
+                    alert('FileReader is not supported in this browser.');
                 }
             };
 
@@ -4131,6 +4160,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 return $scope.tab === tabNum;
             };
 
+            $scope.message = "";
+
             var n =  new Date();
             var y = n.getFullYear();
             var m = n.getMonth() + 1;
@@ -4142,20 +4173,41 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $rootScope.provisionMode = true;
             if($rootScope.coursePackage.course != null && $rootScope.coursePackage.course != '')   {
                 courseCreateService.setCourse($rootScope.coursePackage.course);
-                console.log("setCourse: " + $rootScope.coursePackage.course);
+                //console.log("setCourse: " + $rootScope.coursePackage.course);
             }
 
             $scope.saveCourse = function() {
-                $rootScope.coursePackage.course = $scope.enteredCourseName;
-                var dateEntered = new Date($scope.enteredEndDate);
-                var dateConverted = (dateEntered.getFullYear() + '-' + ('0' + (dateEntered.getMonth()+1)).slice(-2) + '-' + ('0' + dateEntered.getDate()).slice(-2))
-                $rootScope.coursePackage.end_date = dateConverted;
-                $rootScope.coursePackage.github_owner = $scope.enteredGitHubOwner;
-                $rootScope.coursePackage.github_token = $scope.enteredGitHubToken;
-                $rootScope.coursePackage.taiga_token = $scope.enteredTaigaToken;
-                $rootScope.coursePackage.slack_token = $scope.enteredSlackToken;
-                courseCreateService.setCourse($rootScope.coursePackage.course);
-                console.log("saveCourse: " + $rootScope.coursePackage.course);
+                if($scope.enteredCourseName != null && $scope.enteredCourseName != '') {
+                    if ($scope.enteredEndDate != null && $scope.enteredEndDate != '') {
+                        if ($scope.enteredGitHubOwner != null && $scope.enteredGitHubOwner != '') {
+                            if ($scope.enteredGitHubToken != null && $scope.enteredGitHubToken != '') {
+                                if ($scope.enteredTaigaToken != null && $scope.enteredTaigaToken != '') {
+                                    $rootScope.coursePackage.course = $scope.enteredCourseName;
+                                    var dateEntered = new Date($scope.enteredEndDate);
+                                    dateEntered.setDate(dateEntered.getDate() + 1);
+                                    var dateConverted = (dateEntered.getFullYear() + '-' + ('0' + (dateEntered.getMonth()+1)).slice(-2) + '-' + ('0' + dateEntered.getDate()).slice(-2))
+                                    $rootScope.coursePackage.end_date = dateConverted;
+                                    $rootScope.coursePackage.github_owner = $scope.enteredGitHubOwner;
+                                    $rootScope.coursePackage.github_token = $scope.enteredGitHubToken;
+                                    $rootScope.coursePackage.taiga_token = $scope.enteredTaigaToken;
+                                    $rootScope.coursePackage.slack_token = $scope.enteredSlackToken;
+                                    courseCreateService.setCourse($rootScope.coursePackage.course);
+                                    //console.log("saveCourse: " + $rootScope.coursePackage.course);
+                                } else {
+                                    $scope.message = 'Please Enter Taiga token prior to saving a Course';
+                                }
+                            } else {
+                                $scope.message = 'Please Enter Github token prior to saving a Course';
+                            }
+                        } else {
+                            $scope.message = 'Please Enter GitHub owner prior to saving a Course';
+                        }
+                    } else {
+                        $scope.message = 'Please Enter End date prior to saving a Course';
+                    }
+                } else {
+                    $scope.message = 'Please Enter Course name prior to saving a Course';
+                }
             };
 
             $scope.editCourse = function() {
@@ -4178,50 +4230,176 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.removeCourse = function() {
                 $rootScope.coursePackage = {
-                    "admins": [{}],
-                    "course": '',
+                    "admins": null,
+                    "course": null,
                     "end_date": '',
                     "github_owner": '',
                     "github_token": '',
                     "slack_token": '',
                     "taiga_token": '',
-                    "teams": [{
-                        "taiga_project_slug": '',
-                        "team_name": '',
-                        "channels": [{}],
-                        "github_repo_id": '',
-                        "slack_team_id": '',
-                        "students": [{}]
-                    }]
+                    "teams": null
+                    //"teams": [{
+                    //"taiga_project_slug": '',
+                    //"team_name": '',
+                    //"channels": null,
+                    //"github_repo_id": '',
+                    //"slack_team_id": '',
+                    //"students": null
+                    //}]
                 };
                 $scope.clearCourseForm();
             };
 
-            $scope.storeJson = function () {
+            $scope.localStore = function () {
+                var teamsCount = 0;
+
+                var studentsCount = 0;
+
+                var adminsCount = 0;
+
                 delete $rootScope.coursePackage.$$hashKey;
-                for (var i in $rootScope.coursePackage.admins) {
-                    delete $rootScope.coursePackage.admins[i].$$hashKey;
-                }
-                for (var i in $rootScope.coursePackage.teams) {
-                    delete $rootScope.coursePackage.teams[i].$$hashKey;
-                    for (var j in $rootScope.coursePackage.teams[i].students) {
-                        delete $rootScope.coursePackage.teams[i].students[j].$$hashKey;
+
+                if($rootScope.coursePackage.admins){
+                    for (var i in $rootScope.coursePackage.admins) {
+                        adminsCount += 1;
+                        delete $rootScope.coursePackage.admins[i].$$hashKey;
                     }
                 }
-                for (var i in $rootScope.coursePackage.teams) {
-                    delete $rootScope.coursePackage.teams[i].$$hashKey;
-                    for (var j in $rootScope.coursePackage.teams[i].channels) {
-                        delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
+
+                if ($rootScope.coursePackage.teams) {
+                    for (var i in $rootScope.coursePackage.teams) {
+                        teamsCount += 1;
+                        delete $rootScope.coursePackage.teams[i].$$hashKey;
+                        if($rootScope.coursePackage.teams[i].students){
+                            for (var j in $rootScope.coursePackage.teams[i].students) {
+                                studentsCount += 1;
+                                delete $rootScope.coursePackage.teams[i].students[j].$$hashKey;
+                            }
+                        }
                     }
                 }
-                $window.localStorage.setItem('storedCoursePackage', JSON.stringify($rootScope.coursePackage));
+
+                if ($rootScope.coursePackage.teams) {
+                    for (var i in $rootScope.coursePackage.teams) {
+                        delete $rootScope.coursePackage.teams[i].$$hashKey;
+                        if($rootScope.coursePackage.teams[i].slack_team_id) {
+                            if ($rootScope.coursePackage.teams[i].slack_team_id == '' || $rootScope.coursePackage.teams[i].slack_team_id == null) {
+                                delete $rootScope.coursePackage.teams[i].slack_team_id;
+                            }
+                        }
+                        if ($rootScope.coursePackage.teams[i].channels) {
+                            for (var j in $rootScope.coursePackage.teams[i].channels) {
+                                delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
+                            }
+                        }
+                    }
+                }
+
+                if ($rootScope.coursePackage.slack_token) {
+                    if($rootScope.coursePackage.slack_token == '' || $rootScope.coursePackage.slack_token == null){
+                        delete $rootScope.coursePackage.slack_token;
+                    }
+                }
+
+                if(adminsCount > 0) {
+                    if (teamsCount > 0) {
+                        if (studentsCount > 0) {
+                            $window.localStorage.setItem('storedCoursePackage', JSON.stringify($rootScope.coursePackage));
+                        } else {
+                            $scope.message = 'Please create at least one student prior to attempting save';
+                        }
+                    } else {
+                        $scope.message = 'Please create at least one team prior to attempting save';
+                    }
+                } else {
+                    $scope.message = 'Please create at least one admin prior to attempting save';
+                }
+
             };
 
-            $scope.getJson = function () {
-                var json = JSON.parse($window.localStorage.getItem('storedCoursePackage'));
-                $rootScope.coursePackage = json;
-                if($rootScope.coursePackage.course){
-                    courseCreateService.setCourse($rootScope.coursePackage.course);
+            $scope.localGet = function () {
+                if($window.localStorage.getItem('storedCoursePackage')) {
+                    var json = JSON.parse($window.localStorage.getItem('storedCoursePackage'));
+                    $rootScope.coursePackage = json;
+                    if($rootScope.coursePackage.course){
+                        courseCreateService.setCourse($rootScope.coursePackage.course);
+                    }
+                }
+            };
+
+            // JSON Reading Functions---------------------------------
+            $scope.handleFiles = function(files) {
+                if (window.FileReader) {
+                    $scope.getAsText(files[0]);
+                } else {
+                    alert('FileReader are not supported in this browser.');
+                }
+            };
+
+            $scope.getAsText = function(fileToRead) {
+                var reader = new FileReader();
+                reader.onload = $scope.loadHandler;
+                reader.onerror = $scope.errorHandler;
+                reader.readAsText(fileToRead);
+            };
+
+            $scope.loadHandler = function(event) {
+                var json = event.target.result;
+                $scope.processData(json);
+            };
+
+            $scope.processData = function(json) {
+                //console.log(JSON.parse(json));
+                //console.log(json);
+                try {
+                    $rootScope.coursePackage = JSON.parse(json);
+                    if ($rootScope.coursePackage.course) {
+                        courseCreateService.setCourse($rootScope.coursePackage.course);
+                    }
+                } catch (err){
+                    $scope.message = "Exception while applying json to course: " + err.message;
+                }
+                $scope.$apply();
+            };
+
+            $scope.errorHandler = function(evt) {
+                if(evt.target.error.name == "NotReadableError") {
+                    alert("Cannot read file !");
+                }
+            };
+
+            $scope.saveJSON = function () {
+
+                var data = $rootScope.coursePackage;
+
+                var filename = 'coursePackage.json';
+
+                if (!data) {
+                    console.error('No data');
+                    return;
+                }
+
+                if (typeof data === 'object') {
+                    data = JSON.stringify(data, undefined, 2);
+                }
+
+                var blob = new Blob([data], {type: 'text/json'});
+
+                // FOR IE:
+
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, filename);
+                }
+                else{
+                    var e = document.createEvent('MouseEvents'),
+                        a = document.createElement('a');
+
+                    a.download = filename;
+                    a.href = window.URL.createObjectURL(blob);
+                    a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+                    e.initEvent('click', true, false, window,
+                        0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    a.dispatchEvent(e);
                 }
             };
 
@@ -4232,7 +4410,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $rootScope.provisionMode = true;
 
             var course = courseCreateService.getCourse();
-            console.log("GetCourse: " + course);
+            //console.log("GetCourse: " + course);
 
             $scope.currentCourse = course;
 
@@ -4245,6 +4423,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.teams = [];
 
             $scope.message = "";
+
+            $scope.currentTeam = "";
 
 
             if ($rootScope.coursePackage.course === course) {
@@ -4281,7 +4461,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             }
                         }
                         teamIndex = i;
-                        console.log("Team Index: " + i);
+                        //console.log("Team Index: " + i);
                         teamCreateService.setTeam($rootScope.coursePackage.teams[i].team_name);
                         $scope.currentTeam = $scope.selectedTeam.team_name;
                     }
@@ -4289,26 +4469,32 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.saveChannel = function() {
-                if($scope.enteredId != null && $scope.enteredId != ''){
-                    $scope.channel.id = $scope.enteredId;
-                    var exists = false;
-                    for (var i in $scope.channels) {
-                        if($scope.channels[i].id === $scope.channel.id){
-                            $scope.channels[i] = $scope.channel;
-                            exists = true;
-                        }
-                    }
-                    if(!exists) {
-                        if(!$scope.channels || $scope.channels.length === 0){
-                            $scope.channels = [$scope.channel];
+                if($scope.currentTeam != "") {
+                        if($scope.enteredId != null && $scope.enteredId != ''){
+                            $scope.channel.id = $scope.enteredId;
+                            var exists = false;
+                            for (var i in $scope.channels) {
+                                if($scope.channels[i].id === $scope.channel.id){
+                                    $scope.channels[i] = $scope.channel;
+                                    exists = true;
+                                }
+                            }
+                            if(!exists) {
+                                if(!$scope.channels || $scope.channels.length === 0){
+                                    $scope.channels = [$scope.channel];
+                                } else {
+                                    $scope.channels.push($scope.channel);
+                                }
+                            }
+                            $scope.clearChannelForm();
+                            $scope.channel = {};
+                            $scope.applyChanges();
                         } else {
-                            $scope.channels.push($scope.channel);
+                            $scope.message = 'Please Enter Id prior to saving a channel';
                         }
+                    } else {
+                        $scope.message = 'Please Select a team prior to saving a channel';
                     }
-                    $scope.clearChannelForm();
-                    $scope.channel = {};
-                    $scope.applyChanges();
-                }
             };
 
             $scope.saveChannelsJSON = function(channelsArray) {
@@ -4340,6 +4526,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     var id = $scope.selectedChannel.id;
                     if ($scope.channels[i].id === id) {
                         $scope.channels.splice(i, 1);
+                        $scope.selectedRow = -1;
                     }
                 }
             };
@@ -4348,7 +4535,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if($scope.selectedTeam.team_name){
                     if ($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != "") {
                         $rootScope.coursePackage.teams[teamIndex].channels = $scope.channels;
-                        $scope.message = "Successfully saved to Team: " + $rootScope.coursePackage.teams[teamIndex].team_name;
+                        $scope.message = "Successfully saved to " + $rootScope.coursePackage.teams[teamIndex].team_name;
                     } else {
                         $scope.message = "Please first select a Team to save Channel to";
                     }
@@ -4363,7 +4550,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if (window.FileReader) {
                     $scope.getAsText(files[0]);
                 } else {
-                    alert('FileReader are not supported in this browser.');
+                    alert('FileReader is not supported in this browser.');
                 }
             };
 
@@ -4381,8 +4568,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.processData = function(csv) {
                 var csvArray = $scope.CSV2JSON(csv);
-                console.log(csvArray);
-                console.log(JSON.parse(csvArray));
+                //console.log(csvArray);
+                //console.log(JSON.parse(csvArray));
                 $scope.saveChannelsJSON(JSON.parse(csvArray));
             };
 
@@ -4447,52 +4634,124 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.message = "";
 
+            var teamsCount = 0;
+
+            var studentsCount = 0;
+
+            var adminsCount = 0;
+
             delete $rootScope.coursePackage.$$hashKey;
 
-            for (var i in $rootScope.coursePackage.admins) {
-                delete $rootScope.coursePackage.admins[i].$$hashKey;
-            }
-
-            for (var i in $rootScope.coursePackage.teams) {
-                delete $rootScope.coursePackage.teams[i].$$hashKey;
-                for (var j in $rootScope.coursePackage.teams[i].students) {
-                    delete $rootScope.coursePackage.teams[i].students[j].$$hashKey;
+            if($rootScope.coursePackage.admins){
+                for (var i in $rootScope.coursePackage.admins) {
+                    adminsCount += 1;
+                    delete $rootScope.coursePackage.admins[i].$$hashKey;
                 }
             }
 
-            for (var i in $rootScope.coursePackage.teams) {
-                delete $rootScope.coursePackage.teams[i].$$hashKey;
-                if($rootScope.coursePackage.teams[i].slack_team_id == '' || $rootScope.coursePackage.teams[i].slack_team_id == null){
-                    delete $rootScope.coursePackage.teams[i].slack_team_id;
-                }
-                for (var j in $rootScope.coursePackage.teams[i].channels) {
-                    delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
+            if ($rootScope.coursePackage.teams) {
+                for (var i in $rootScope.coursePackage.teams) {
+                    teamsCount += 1;
+                    delete $rootScope.coursePackage.teams[i].$$hashKey;
+                    if($rootScope.coursePackage.teams[i].students){
+                        for (var j in $rootScope.coursePackage.teams[i].students) {
+                            studentsCount += 1;
+                            delete $rootScope.coursePackage.teams[i].students[j].$$hashKey;
+                        }
+                    }
                 }
             }
 
-            if($rootScope.coursePackage.slack_token == '' || $rootScope.coursePackage.slack_token == null){
-                delete $rootScope.coursePackage.slack_token;
+            if ($rootScope.coursePackage.teams) {
+                for (var i in $rootScope.coursePackage.teams) {
+                    delete $rootScope.coursePackage.teams[i].$$hashKey;
+                    if($rootScope.coursePackage.teams[i].slack_team_id) {
+                        if ($rootScope.coursePackage.teams[i].slack_team_id == '' || $rootScope.coursePackage.teams[i].slack_team_id == null) {
+                            delete $rootScope.coursePackage.teams[i].slack_team_id;
+                        }
+                    }
+                    if ($rootScope.coursePackage.teams[i].channels) {
+                        for (var j in $rootScope.coursePackage.teams[i].channels) {
+                            delete $rootScope.coursePackage.teams[i].channels[j].$$hashKey;
+                        }
+                    }
+                }
             }
 
-            $scope.jsonCoursePackage = JSON.stringify($rootScope.coursePackage);
+            if ($rootScope.coursePackage.slack_token) {
+                if($rootScope.coursePackage.slack_token == '' || $rootScope.coursePackage.slack_token == null){
+                    delete $rootScope.coursePackage.slack_token;
+                }
+            }
 
-            document.getElementById("jsonDisplay").innerHTML = $scope.jsonCoursePackage;
+            $scope.jsonCoursePackage = $rootScope.coursePackage;
+
+            $scope.jsonDisplay = $scope.jsonCoursePackage;
 
             $http.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8";
 
             $scope.sendCoursePackage = function () {
-                $http({
-                    url: './rest/coursePackage',
-                    method: "POST",
-                    data: $rootScope.coursePackage
-                }).then(function (response) {
-                    //console.log("Worked!");
-                    $scope.message = "Success: " + response.data;
-                }, function (response) {
-                    //console.log("didn't work");
-                    $scope.message = "Failure: " + response.data;
-                });
 
+                if ($scope.coursePackage.course){
+                    if(adminsCount > 0) {
+                        if (teamsCount > 0) {
+                            if (studentsCount > 0) {
+                                $http({
+                                    url: './rest/coursePackage',
+                                    method: "POST",
+                                    data: $rootScope.coursePackage
+                                }).then(function (response) {
+                                    //console.log("Worked!");
+                                    $scope.statusMessage = "Success: " + response.status;
+                                    $scope.dataMessageJSON = response.data;
+                                    $scope.otherMessage = false;
+                                    $scope.jsonMessage = true;
+                                }, function (response) {
+                                    //console.log("didn't work");
+                                    $scope.statusMessage = "Failure: " + response.status;
+                                    $scope.dataMessageOther = response.data;
+                                    $scope.jsonMessage = false;
+                                    $scope.otherMessage = true;
+                                });
+                            } else {
+                                $scope.message = 'Please create at least one student prior to attempting save';
+                            }
+                        } else {
+                            $scope.message = 'Please create at least one team prior to attempting save';
+                        }
+                    } else {
+                        $scope.message = 'Please create at least one admin prior to attempting save';
+                    }
+                } else {
+                    $scope.message = 'Please create a course prior to attempting save';
+                }
+
+            };
+
+            $scope.removeCourse = function () {
+
+                if ($scope.coursePackage.course){
+                    $http({
+                        url: './rest/course',
+                        method: "DELETE",
+                        data: $scope.coursePackage,
+                        headers: {'Content-Type': 'application/json; charset=utf-8'}
+                    }).then(function (response) {
+                        //console.log("Worked!");
+                        $scope.statusMessage = "Success: " + response.status;
+                        $scope.dataMessageJSON = response.data;
+                        $scope.otherMessage = false;
+                        $scope.jsonMessage = true;
+                    }, function (response) {
+                        //console.log("didn't work");
+                        $scope.statusMessage = "Failure: " + response.status;
+                        $scope.dataMessageOther = response.data;
+                        $scope.jsonMessage = false;
+                        $scope.otherMessage = true;
+                    });
+                } else {
+                    $scope.message = 'Please enter/upload course data prior to attempting save';
+                }
             };
 
         }]);

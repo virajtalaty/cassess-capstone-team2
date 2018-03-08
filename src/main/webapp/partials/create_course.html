@@ -58,9 +58,9 @@
                             </div>
                             <div>
                                 <button ng-really-message="Remove Course?"? ng-really-click="removeCourse()" class="btn btn-default">Remove Course</button>
+                                <button ng-click="editCourse()" class="btn btn-default">Edit Course</button>
                                 <button ng-click="clearCourseForm()" class="btn btn-default">Clear Form</button>
                             </div>
-                        </div>
                         <div class="container" style="max-width:600px;margin:60px auto;">
                             <form role="form">
                                 <div class="form-group">
@@ -90,11 +90,19 @@
                                 <div>
                                     <button ng-click="saveCourse()" class="btn btn-default">Save Course</button>
                                 </div>
-                                <div>
-                                    <button ng-click="storeJson()" class="btn btn-default">Store Course Data</button>
-                                    <button ng-click="getJson()" class="btn btn-default">Get Course Data</button>
-                                </div>
                             </form>
+                        </div>
+                            <div>
+                                <button ng-click="localStore()" class="btn btn-default">Store Course Data</button>
+                                <button ng-click="localGet()" class="btn btn-default">Get Course Data</button>
+                            </div>
+                    </div>
+                        <div>
+                            <button ng-click="saveJSON()" class="btn btn-default">Save Course to JSON File</button>
+                        </div>
+                        <div>
+                            <label>Course JSON File Upload:</label>
+                            <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".json">
                         </div>
                     </div>
                 </div>

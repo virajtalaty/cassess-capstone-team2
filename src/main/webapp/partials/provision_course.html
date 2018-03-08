@@ -36,13 +36,22 @@
                 </div>
                 <div class="col-md-8">
                     <div class="jumbotron">
-                        <div id="jsonDisplay">
+                        <div>
+                            <label>Current JSON:</label>
+                            <pre>
+                                {{jsonDisplay | json}}
+                            </pre>
                         </div>
                         <div>
-                            <button ng-click="sendCoursePackage()" class="btn btn-default">Send Course JSON Package</button>
+                            <button ng-really-message="Remove Course from CAssess?"? ng-really-click="removeCourse()" class="btn btn-default">Remove Course in CAssess</button>
                         </div>
                         <div>
-                            <p>Message: {{message}}</p>
+                            <button ng-really-message="Send Course Package?"? ng-really-click="sendCoursePackage()" class="btn btn-default">Send Course Data to CAssess</button>
+                        </div>
+                        <div>
+                            <p>Response Status: {{statusMessage}}</p>
+                            <p ng-show="jsonMessage" class="ng-hide">Response Data: {{dataMessageJSON | json}}</p>
+                            <p ng-show="otherMessage" class="ng-hide">Response Data: {{dataMessageOther}}</p>
                         </div>
                     </div>
                 </div>
