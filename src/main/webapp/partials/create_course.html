@@ -1,13 +1,4 @@
 <div ng-controller="newCourse">
-    <div class="navbar navbar-default">
-        <div class="navbar-header">
-            <div class="navbar-collapse collapse navbar-responsive-collapse">
-                <ul class="nav navbar-nav navbar-left">
-                    <a class="navbar-brand pull-left" href="#/home">Continuous Assessment</a>
-                </ul>
-            </div>
-        </div>
-    </div>
     <div class="well page">
         <h1 class="page-header">CAssess Provisioning</h1>
         <div class="container">
@@ -60,6 +51,9 @@
                                 <button ng-really-message="Remove Course?"? ng-really-click="removeCourse()" class="btn btn-default">Remove Course</button>
                                 <button ng-click="editCourse()" class="btn btn-default">Edit Course</button>
                                 <button ng-click="clearCourseForm()" class="btn btn-default">Clear Form</button>
+                            </div>
+                            <div>
+                                <p>Message: {{message}}</p>
                             </div>
                         <div class="container" style="max-width:600px;margin:60px auto;">
                             <form role="form">
