@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<div ng-if="authenticated" ng-include="'partials/navbar.html'"></div>
+<div ng-if="authenticated && !provisionMode" ng-include="'partials/navbar.html'"></div>
 
 <div class="container">
     <div style="position: relative">

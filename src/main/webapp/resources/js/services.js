@@ -119,6 +119,57 @@ myapp.service('userService', function () {
             setStudentName: setStudentName,
             getStudentName: getStudentName
         };
+    })
+    .service('provisionService', function ($rootScope) {
+        $rootScope.coursePackage = {
+                "admins": null,
+                "course": null,
+                "end_date": '',
+                "github_owner": '',
+                "github_token": '',
+                "slack_token": '',
+                "taiga_token": '',
+                "teams": null
+                //"teams": [{
+                    //"taiga_project_slug": '',
+                    //"team_name": '',
+                    //"channels": null,
+                    //"github_repo_id": '',
+                    //"slack_team_id": '',
+                    //"students": null
+                //}]
+
+            };
+    })
+    .service('courseCreateService', function () {
+        var course = null;
+
+        var setCourse = function (courseObject) {
+            course = courseObject;
+        };
+
+        var getCourse = function () {
+            return course;
+        };
+        return {
+            setCourse: setCourse,
+            getCourse: getCourse
+        };
+    })
+    .service('teamCreateService', function () {
+        var team = null;
+
+        var setTeam = function (teamName) {
+            team = teamName;
+        };
+
+        var getTeam = function () {
+            return team;
+        };
+        return {
+            setTeam: setTeam,
+            getTeam: getTeam
+        };
     });
 
 
@@ -177,7 +228,8 @@ myapp.service('AuthSharedService', function ($rootScope, $http, $resource, authS
     };
 });
 
-myapp.service('HomeService', function ($log, $resource) {
+myapp.service('HomeService', function ($rootScope, $log, $resource) {
+    $rootScope.provisionMode = false;
     return {
         getTechno: function () {
             var userResource = $resource('resources/json/techno.json', {}, {
