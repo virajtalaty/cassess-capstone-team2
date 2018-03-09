@@ -62,7 +62,7 @@ public class GatherGitHubData implements IGatherGitHubData {
         this.projectName = projectName;
         this.owner = owner;
         url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
-
+        System.out.println("Getting Stats for course: " + course + " & Team: " + team);
         getStats(course, team, accessToken);
     }
 
@@ -71,6 +71,8 @@ public class GatherGitHubData implements IGatherGitHubData {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
+
+        System.out.println("GitHub URL: " + urlPath);
 
         String json = restTemplate.getForObject(urlPath, String.class);
 
@@ -88,6 +90,7 @@ public class GatherGitHubData implements IGatherGitHubData {
     }
 
     private void storeStats(ArrayList<GitHubContributors> contributors, String accessToken, String course, String team) {
+        System.out.println("Storing Stats for course: " + course + " & Team: " + team);
         for (GitHubContributors contributor : contributors) {
             ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
 
@@ -115,16 +118,20 @@ public class GatherGitHubData implements IGatherGitHubData {
                 }
 
                 Student student = new Student();
+                System.out.println("Finding Student for Course: " + course + " & Team: " + team + " & Email: " + email);
                 Object object = studentsService.find(email, team, course);
                 if(object.getClass() == Student.class){
                     student = (Student) object;
+                    System.out.println("Found Student for Course: " + student.getCourse() + " & Team: " + student.getTeam_name() + " & Email: " + student.getEmail());
                 }
                 if (student.getEnabled() != null) {
                     if (student.getEnabled() != false) {
-                        commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner, course, team));
+                        System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & Email: " + email);
+                        commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner, team, course));
 
                         int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
-                        GitHubWeight gitHubWeight = new GitHubWeight(email, date, weight, userName, course, team);
+                        System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & Email: " + email);
+                        GitHubWeight gitHubWeight = new GitHubWeight(email, date, weight, userName, team, course);
                         weightRepo.save(gitHubWeight);
                     }
                 }

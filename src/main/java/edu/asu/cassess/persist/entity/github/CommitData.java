@@ -34,25 +34,17 @@ public class CommitData {
     @Column(name="email")
     private String email;
 
-    @Column(name="course")
-    private String course;
-
-    @Column(name="team")
-    private String team;
-
     public CommitData() {
     }
 
-    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner, String course, String team) {
-        this.gitHubPK = new GitHubPK(date, username);
+    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner, String team, String course) {
+        this.gitHubPK = new GitHubPK(date, username, team, course);
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;
         this.commits = commits;
         this.projectName = projectName;
         this.gitHubOwner = gitHubOwner;
-        this.course = course;
-        this.team = team;
     }
 
     public GitHubPK getGitHubPK() {
@@ -109,22 +101,6 @@ public class CommitData {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getCourse() {
-        return course;
-    }
-
-    public void setCourse(String course) {
-        this.course = course;
-    }
-
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(String team) {
-        this.team = team;
     }
 
     @Override
