@@ -3,7 +3,9 @@ package edu.asu.cassess.service.taiga;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.taiga.MemberData;
+import edu.asu.cassess.persist.entity.taiga.MemberDataID;
 import edu.asu.cassess.persist.entity.taiga.ProjectIDSlug;
+import edu.asu.cassess.persist.entity.taiga.TaigaMember;
 import edu.asu.cassess.persist.repo.taiga.MemberRepo;
 import edu.asu.cassess.service.rest.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class MembersService implements IMembersService {
     }
 
     @Override
-    public List<MemberData> getMembers(Long projectId, String token, int page, String team, String course) {
+    public List<TaigaMember> getMembers(Long projectId, String token, int page, String team, String course) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -50,20 +52,22 @@ public class MembersService implements IMembersService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        ResponseEntity<List<MemberData>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
+        ResponseEntity<List<TaigaMember>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
                 HttpMethod.GET,
                 request,
-                new ParameterizedTypeReference<List<MemberData>>() {
+                new ParameterizedTypeReference<List<TaigaMember>>() {
                 });
 
         //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
 
-        List<MemberData> members = memberList.getBody();
+        List<TaigaMember> members = memberList.getBody();
 
         for (int i = 0; i < members.size(); i++) {
             members.get(i).setTeam(team);
             members.get(i).setCourse(course);
-            MemberDao.save(members.get(i));
+            System.out.println(members.get(i).getId());
+            MemberDao.save(new MemberData(new MemberDataID(members.get(i).getId(), members.get(i).getUser_email(), members.get(i).getTeam(), course), members.get(i).getFull_name(),
+                    members.get(i).getProject_name(), members.get(i).getProject_slug(), members.get(i).getRole_name()));
         }
 
         if (memberList.getHeaders().containsKey("x-pagination-next")) {

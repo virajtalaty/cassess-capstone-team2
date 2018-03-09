@@ -139,7 +139,7 @@ public class TaskDataService implements ITaskDataService {
         List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
         for (MemberData member : memberNames) {
             Student student = new Student();
-            Object object = studentsService.find(member.getUser_email(), member.getTeam(), course);
+            Object object = studentsService.find(member.getCompositeId().getEmail(), member.getCompositeId().getTeam(), course);
             if(object.getClass() == Student.class){
                 student = (Student) object;
             }
@@ -168,7 +168,7 @@ public class TaskDataService implements ITaskDataService {
             //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
             if (student.getEnabled() != null) {
                 if (student.getEnabled() != false) {
-                    TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getUser_email()), name, member.getProject_name(), member.getTeam(), course, closedTasks, newTasks, inProgressTasks,
+                    TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getCompositeId().getEmail(), member.getCompositeId().getTeam(), course), name, member.getProject_name(), closedTasks, newTasks, inProgressTasks,
                             readyForTestTasks, openTasks));
                 }
             }

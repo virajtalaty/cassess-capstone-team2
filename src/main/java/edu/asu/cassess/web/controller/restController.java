@@ -187,7 +187,6 @@ public class restController {
                 memberDao.deleteMembersByCourse(course);
                 consumeUsers.deleteSlackUsers(course.getCourse());
                 object = courseService.delete(course);
-
             }
         }
         response.setStatus(HttpServletResponse.SC_OK);
