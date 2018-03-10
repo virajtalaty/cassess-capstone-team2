@@ -30,4 +30,7 @@ public interface IGitHubWeightQueryDao {
 
     @Transactional
     List<GitHubWeight> getWeightsByStudent(String course, String team, String email) throws DataAccessException;
+
+    @Transactional
+    GitHubWeight getlastDate(String course, String team, String username) throws DataAccessException;
 }
