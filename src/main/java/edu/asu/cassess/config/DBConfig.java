@@ -41,7 +41,6 @@ public class DBConfig {
         dataSource.setPassword("root123");
         */
 
-
         //Connection Parameters for ASU RHEL Server Deployment
         dataSource.setUrl("jdbc:mysql://cassess.fulton.asu.edu/Cassess");
         dataSource.setUsername("cassess");

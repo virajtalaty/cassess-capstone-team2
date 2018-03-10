@@ -23,7 +23,7 @@ public class GitHubWeight {
     }
 
     public GitHubWeight(String email, Date date, int weight, String username, String team, String course) {
-        gitHubPK = new GitHubPK(date, username, team, course);
+        gitHubPK = new GitHubPK(course, team, username, date);
         this.email = email;
         this.weight = weight;
     }

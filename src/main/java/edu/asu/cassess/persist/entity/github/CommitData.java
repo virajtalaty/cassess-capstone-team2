@@ -38,7 +38,7 @@ public class CommitData {
     }
 
     public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner, String team, String course) {
-        this.gitHubPK = new GitHubPK(date, username, team, course);
+        this.gitHubPK = new GitHubPK(course, team, username, date);
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;

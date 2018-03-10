@@ -8,50 +8,27 @@ import java.sql.Date;
 @Embeddable
 public class GitHubPK implements Serializable {
 
-    @Column(name="date")
-    protected Date date;
-
-    @Column(name="username")
-    protected String username;
+    @Column(name="course")
+    private String course;
 
     @Column(name="team")
     private String team;
 
-    @Column(name="course")
-    private String course;
+    @Column(name="username")
+    protected String username;
+
+    @Column(name="date")
+    protected Date date;
 
     public GitHubPK() {
+
     }
 
-    public GitHubPK(Date date, String username, String team, String course) {
+    public GitHubPK(String course, String team, String username, Date date) {
         this.date = date;
         this.username = username;
         this.team = team;
         this.course = course;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(String team) {
-        this.team = team;
     }
 
     public String getCourse() {
@@ -62,11 +39,37 @@ public class GitHubPK implements Serializable {
         this.course = course;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "GitHubPK{" +
                 "date=" + date +
                 ", username='" + username + '\'' +
+                ", team='" + team + '\'' +
+                ", course='" + course + '\'' +
                 '}';
     }
 }

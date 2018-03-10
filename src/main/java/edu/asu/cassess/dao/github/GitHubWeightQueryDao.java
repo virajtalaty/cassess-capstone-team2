@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.sql.Date;
 import java.util.List;
 
 @Component
@@ -83,5 +84,27 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
         query.setParameter(3, email);
         List<GitHubWeight> resultList = query.getResultList();
         return resultList;
+    }
+
+    @Override
+    @Transactional
+    public GitHubWeight getlastDate(String course, String team, String username) throws DataAccessException {
+        Query query = getEntityManager().createNativeQuery("SELECT course, " +
+                "DATE_SUB(max(date), INTERVAL 7 DAY) as date, team, username, email, weight " +
+                "FROM github_weight\n" +
+                "WHERE course = ?1\n" +
+                "AND team = ?2\n" +
+                "AND username = ?3\n", GitHubWeight.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, username);
+        List results = query.getResultList();
+        GitHubWeight ghWeightLastDate = null;
+        if(!results.isEmpty()){
+            ghWeightLastDate = (GitHubWeight) results.get(0);
+            return ghWeightLastDate;
+        } else {
+            return null;
+        }
     }
 }
