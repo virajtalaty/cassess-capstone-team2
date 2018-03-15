@@ -225,8 +225,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
@@ -244,8 +244,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByTeam(formattedDateBegin, formattedDateEnd, course, team);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
@@ -263,8 +263,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByCourse(formattedDateBegin, formattedDateEnd, course);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
@@ -557,8 +557,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByCourse(formattedDateBegin, formattedDateEnd, course);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
     }
@@ -577,8 +577,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByTeam(formattedDateBegin, formattedDateEnd, course, team);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
     }
@@ -598,8 +598,8 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
     }
@@ -739,7 +739,7 @@ public class AppController {
         List<Team> teams = teamService.listReadAll();
         for (Team team : teams) {
             Course course = (Course) courseService.read(team.getCourse());
-            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id(), course.getCourse(), team.getTeam_name(), course.getGithub_token());
+            gatherData.fetchData(team.getGithub_owner(), team.getGithub_repo_id(), course.getCourse(), team.getTeam_name(), team.getGithub_token());
         }
     }
 

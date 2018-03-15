@@ -38,12 +38,16 @@
                                         <tr>
                                             <th>Team Name</th>
                                             <th>Taiga Slug</th>
-                                            <th>GitHib Repo</th>
+                                            <th>GitHub Owner</th>
+                                            <th>GitHub Repo</th>
+                                            <th>GitHub Token</th>
                                         </tr>
                                         <tr ng-repeat="team in teams" ng-click="setClickedTeam($index)" ng-class="{'selected':$index == selectedRow}">
                                             <td>{{team.team_name}}</td>
                                             <td>{{team.taiga_project_slug}}</td>
+                                            <td>{{team.github_owner}}</td>
                                             <td>{{team.github_repo_id}}</td>
+                                            <td>{{team.github_token}}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -64,6 +68,14 @@
                                     <div class="form-group">
                                         <label>Taiga Project Slug</label>
                                         <input type="text" class="form-control" ng-model="enteredTaigaSlug" placeholder="Enter Taiga Slug" ng-required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>GitHub Owner</label>
+                                        <input type="text" class="form-control"ng-model="enteredGitHubOwner" placeholder="Enter Github owner" ng-required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>GitHub Token</label>
+                                        <input type="text" class="form-control"ng-model="enteredGitHubToken" placeholder="Enter Github token" ng-required="true">
                                     </div>
                                     <div class="form-group">
                                         <label>GitHub Repo Id</label>
