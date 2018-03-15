@@ -18,14 +18,9 @@ public class Course {
     @Id
     @Column(name = "course")
     public String course;
-    @Column(name = "github_owner")
-    protected String github_owner;
 
     @Column(name = "slack_token")
     protected String slack_token;
-
-    @Column(name = "github_token")
-    protected String github_token;
 
     @Column(name = "taiga_token")
     protected String taiga_token;
@@ -53,14 +48,6 @@ public class Course {
         this.course = COURSE_STRING;
     }
 
-    public String getGithub_owner() {
-        return github_owner;
-    }
-
-    public void setGithub_owner(String github_owner) {
-        this.github_owner = github_owner;
-    }
-
     public Date getEnd_date() {
         return end_date;
     }
@@ -75,14 +62,6 @@ public class Course {
 
     public void setSlack_token(String slack_token) {
         this.slack_token = slack_token;
-    }
-
-    public String getGithub_token() {
-        return github_token;
-    }
-
-    public void setGithub_token(String github_token) {
-        this.github_token = github_token;
     }
 
     public String getTaiga_token() {
@@ -115,6 +94,5 @@ public class Course {
         }
         this.admins = admins;
     }
-
 
 }

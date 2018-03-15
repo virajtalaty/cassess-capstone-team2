@@ -4024,34 +4024,44 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.saveTeam = function() {
                 if($scope.enteredTeamName != null && $scope.enteredTeamName != ''){
                     if($scope.enteredTaigaSlug != null && $scope.enteredTaigaSlug != ''){
-                        if($scope.enteredGithubRepo != null && $scope.enteredGithubRepo != ''){
-                            $scope.team.team_name = $scope.enteredTeamName;
-                            $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
-                            $scope.team.github_repo_id = $scope.enteredGithubRepo;
-                            $scope.team.slack_team_id = $scope.enteredSlackTeam;
-                            var exists = false;
-                            if ($scope.teams != null) {
-                                for (var i in $scope.teams) {
-                                    if($scope.teams[i].team_name ===  $scope.team.team_name){
-                                        $scope.teams[i] = $scope.team;
-                                        exists = true;
-                                    }
-                                }
-                                if(!exists) {
-                                    if($scope.teams.length == 0){
-                                        $scope.teams = [$scope.team];
+                        if ($scope.enteredGitHubOwner != null && $scope.enteredGitHubOwner != '') {
+                            if ($scope.enteredGitHubToken != null && $scope.enteredGitHubToken != '') {
+                                if($scope.enteredGithubRepo != null && $scope.enteredGithubRepo != ''){
+                                    $scope.team.team_name = $scope.enteredTeamName;
+                                    $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
+                                    $scope.team.github_owner = $scope.enteredGitHubOwner;
+                                    $scope.team.github_token = $scope.enteredGitHubToken;
+                                    $scope.team.github_repo_id = $scope.enteredGithubRepo;
+                                    $scope.team.slack_team_id = $scope.enteredSlackTeam;
+                                    var exists = false;
+                                    if ($scope.teams != null) {
+                                        for (var i in $scope.teams) {
+                                            if($scope.teams[i].team_name ===  $scope.team.team_name){
+                                                $scope.teams[i] = $scope.team;
+                                                exists = true;
+                                            }
+                                        }
+                                        if(!exists) {
+                                            if($scope.teams.length == 0){
+                                                $scope.teams = [$scope.team];
+                                            } else {
+                                                $scope.teams.push($scope.team);
+                                            }
+                                        }
                                     } else {
-                                        $scope.teams.push($scope.team);
+                                        $scope.teams = [$scope.team]
                                     }
+                                    $scope.clearTeamForm();
+                                    $scope.team = {};
+                                    $scope.applyChanges();
+                                } else {
+                                    $scope.message = 'Please Enter GitHub Repo prior to saving a Team';
                                 }
                             } else {
-                                $scope.teams = [$scope.team]
+                                $scope.message = 'Please Enter Github token prior to saving a Team';
                             }
-                            $scope.clearTeamForm();
-                            $scope.team = {};
-                            $scope.applyChanges();
                         } else {
-                            $scope.message = 'Please Enter GitHub Repo prior to saving a Team';
+                            $scope.message = 'Please Enter GitHub owner prior to saving a Team';
                         }
                     } else {
                         $scope.message = 'Please Enter Taiga Slug prior to saving a Team';
@@ -4069,6 +4079,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                                 console.log(teamsArray[i].team_name);
                                 $scope.enteredTeamName = teamsArray[i].team_name;
                                 $scope.enteredTaigaSlug = teamsArray[i].taiga_project_slug;
+                                $scope.enteredGitHubOwner = teamsArray[i].enteredGitHubOwner;
+                                $scope.enteredGitHubToken = teamsArray[i].enteredGitHubToken;
                                 $scope.enteredGithubRepo = teamsArray[i].github_repo_id;
                                 $scope.enteredSlackTeam = teamsArray[i].slack_team_id;
                                 $scope.saveTeam();
@@ -4099,6 +4111,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.clearTeamForm = function() {
                 $scope.enteredTeamName = '';
                 $scope.enteredTaigaSlug = '';
+                $scope.enteredGitHubOwner = '';
+                $scope.enteredGitHubToken = '';
                 $scope.enteredGithubRepo = '';
                 $scope.enteredSlackTeam = '';
             };
@@ -4112,6 +4126,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
                 $scope.enteredTeamName = $scope.team.team_name;
                 $scope.enteredTaigaSlug = $scope.team.taiga_project_slug;
+                $scope.enteredGitHubOwner = $scope.team.github_owner;
+                $scope.enteredGitHubToken = $scope.team.github_token;
                 $scope.enteredGithubRepo = $scope.team.github_repo_id;
                 $scope.enteredSlackTeam =  $scope.team.slack_team_id;
             };
@@ -4228,16 +4244,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.saveCourse = function() {
                 if($scope.enteredCourseName != null && $scope.enteredCourseName != '') {
                     if ($scope.enteredEndDate != null && $scope.enteredEndDate != '') {
-                        if ($scope.enteredGitHubOwner != null && $scope.enteredGitHubOwner != '') {
-                            if ($scope.enteredGitHubToken != null && $scope.enteredGitHubToken != '') {
                                 if ($scope.enteredTaigaToken != null && $scope.enteredTaigaToken != '') {
                                     $rootScope.coursePackage.course = $scope.enteredCourseName;
                                     var dateEntered = new Date($scope.enteredEndDate);
                                     dateEntered.setDate(dateEntered.getDate() + 1);
                                     var dateConverted = (dateEntered.getFullYear() + '-' + ('0' + (dateEntered.getMonth()+1)).slice(-2) + '-' + ('0' + dateEntered.getDate()).slice(-2))
                                     $rootScope.coursePackage.end_date = dateConverted;
-                                    $rootScope.coursePackage.github_owner = $scope.enteredGitHubOwner;
-                                    $rootScope.coursePackage.github_token = $scope.enteredGitHubToken;
                                     $rootScope.coursePackage.taiga_token = $scope.enteredTaigaToken;
                                     $rootScope.coursePackage.slack_token = $scope.enteredSlackToken;
                                     courseCreateService.setCourse($rootScope.coursePackage.course);
@@ -4246,12 +4258,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                                 } else {
                                     $scope.message = 'Please Enter Taiga token prior to saving a Course';
                                 }
-                            } else {
-                                $scope.message = 'Please Enter Github token prior to saving a Course';
-                            }
-                        } else {
-                            $scope.message = 'Please Enter GitHub owner prior to saving a Course';
-                        }
                     } else {
                         $scope.message = 'Please Enter End date prior to saving a Course';
                     }
@@ -4263,8 +4269,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.editCourse = function() {
                 $scope.enteredCourseName = $scope.coursePackage.course;
                 $scope.enteredEndDate = $scope.coursePackage.end_date;
-                $scope.enteredGitHubOwner = $scope.coursePackage.github_owner;
-                $scope.enteredGitHubToken = $scope.coursePackage.github_token;
                 $scope.enteredTaigaToken = $scope.coursePackage.taiga_token;
                 $scope.enteredSlackToken = $scope.coursePackage.slack_token;
             };
@@ -4272,8 +4276,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.clearCourseForm = function() {
                 $scope.enteredCourseName = '';
                 $scope.enteredEndDate = '';
-                $scope.enteredGitHubOwner = '';
-                $scope.enteredGitHubToken = '';
                 $scope.enteredTaigaToken = '';
                 $scope.enteredSlackToken = '';
             };
@@ -4283,8 +4285,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     "admins": null,
                     "course": null,
                     "end_date": '',
-                    "github_owner": '',
-                    "github_token": '',
                     "slack_token": '',
                     "taiga_token": '',
                     "teams": null

@@ -125,8 +125,6 @@ myapp.service('userService', function () {
                 "admins": null,
                 "course": null,
                 "end_date": '',
-                "github_owner": '',
-                "github_token": '',
                 "slack_token": '',
                 "taiga_token": '',
                 "teams": null

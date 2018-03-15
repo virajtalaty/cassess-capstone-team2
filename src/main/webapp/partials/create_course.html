@@ -38,12 +38,12 @@
                                     <tr>
                                         <th>Course Name</th>
                                         <th>End Date</th>
-                                        <th>GitHub Owner</th>
+                                        <th>Taiga Token</th>
                                     </tr>
                                     <tr>
                                         <td>{{coursePackage.course}}</td>
                                         <td>{{coursePackage.end_date}}</td>
-                                        <td>{{coursePackage.github_owner}}</td>
+                                        <td>{{coursePackage.taiga_token}}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -64,14 +64,6 @@
                                 <div class="form-group">
                                     <label>Course End Date</label>
                                     <input min="{{minDate | date:'yyyy-MM-dd'}}" type="date" class="form-control" ng-model="enteredEndDate" ng-required="true" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
-                                </div>
-                                <div class="form-group">
-                                    <label>GitHub Owner</label>
-                                    <input type="text" class="form-control"ng-model="enteredGitHubOwner" placeholder="Enter Github owner" ng-required="true">
-                                </div>
-                                <div class="form-group">
-                                    <label>GitHub Token</label>
-                                    <input type="text" class="form-control"ng-model="enteredGitHubToken" placeholder="Enter Github token" ng-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label>Taiga Token</label>

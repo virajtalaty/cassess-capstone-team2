@@ -50,7 +50,7 @@ public class TaskController {
         List<Team> teams = teamsService.listReadAll();
         for(Team team: teams){
             Course course = (Course) coursesService.read(team.getCourse());
-            gatherData.fetchData(course.getGithub_owner(), team.getGithub_repo_id(), course.getCourse(), team.getTeam_name(), course.getGithub_token());
+            gatherData.fetchData(team.getGithub_owner(), team.getGithub_repo_id(), course.getCourse(), team.getTeam_name(), team.getGithub_token());
         }
         System.out.println("github cron ran as scheduled");
     }

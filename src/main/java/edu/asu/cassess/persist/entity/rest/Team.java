@@ -33,6 +33,10 @@ public class Team {
     protected String github_repo_id;
     @Column(name = "taiga_project_slug")
     protected String taiga_project_slug;
+    @Column(name = "github_token")
+    protected String github_token;
+    @Column(name = "github_owner")
+    protected String github_owner;
 
     public Team() {
 
@@ -86,6 +90,22 @@ public class Team {
         return students;
     }
 
+    public String getGithub_token() {
+        return github_token;
+    }
+
+    public void setGithub_token(String github_token) {
+        this.github_token = github_token;
+    }
+
+    public String getGithub_owner() {
+        return github_owner;
+    }
+
+    public void setGithub_owner(String github_owner) {
+        this.github_owner = github_owner;
+    }
+
     public void setStudents(List<Student> students) {
         for (Student student : students) {
             student.setCourse(COURSE_STRING);
@@ -105,6 +125,5 @@ public class Team {
         }
         this.channels = channels;
     }
-
 
 }
