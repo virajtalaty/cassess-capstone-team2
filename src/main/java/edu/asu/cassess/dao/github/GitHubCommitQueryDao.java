@@ -145,7 +145,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
                 "total_code as TOTC, commits as COMT, LOCA, LOCD\n" +
                 "FROM\n" +
                 "(SELECT students.email as email, students.course as course, students.team_name as team,\n" +
-                "commit_data.lines_of_code_added + (commit_data.lines_of_code_deleted/2) as total_code, commit_data.lines_of_code_deleted as LOCD,\n" +
+                "commit_data.lines_of_code_added + (commit_data.lines_of_code_deleted/4) as total_code, commit_data.lines_of_code_deleted as LOCD,\n" +
                 "commit_data.lines_of_code_added as LOCA,\n" +
                 "commit_data.commits as commits, commit_data.date as date\n" +
                 "FROM \n" +

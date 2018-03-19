@@ -40,13 +40,13 @@
 
                                         var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
                                         if (tdElems) {
-                                            tdElems.style.width = columnWidth + 'px';
+                                            //tdElems.style.width = columnWidth + 'px';
                                         }
                                         if (thElem) {
-                                            thElem.style.width = columnWidth + 'px';
+                                            //thElem.style.width = columnWidth + 'px';
                                         }
                                         if (tfElems) {
-                                            tfElems.style.width = columnWidth + 'px';
+                                            //tfElems.style.width = columnWidth + 'px';
                                         }
                                     });
 

@@ -1,9 +1,9 @@
 <div ng-controller="newCourse">
     <div class="well page">
         <h1 class="page-header">CAssess Provisioning</h1>
-        <div class="container">
+        <div class="container" style="width: inherit;">
             <div class="row">
-                <div class="col-md-1">
+                <div class="col-md-1" style="margin-right: 20px;">
                     <ul class="nav nav-pills navbar-nav navbar-left nav-stacked">
                         <li ng-class="{ active: isSet(1) }">
                             <a href="#/create_course" access="super_user" ng-click="setTab(1)">Course</a>
@@ -29,7 +29,10 @@
                     <div class="jumbotron">
                         <div class="form-group">
                             <div>
-                                <table class="table table-bordered table-striped">
+                                <p>Message: {{message}}</p>
+                            </div>
+                            <div>
+                                <table class="table table-bordered table-striped" style="border-collapse: collapse; width:100%;">
                                     <tr>
                                         <th colspan="3">
                                             <div class="pull-left">Course Details</div>
@@ -41,19 +44,11 @@
                                         <th>Taiga Token</th>
                                     </tr>
                                     <tr>
-                                        <td>{{coursePackage.course}}</td>
-                                        <td>{{coursePackage.end_date}}</td>
-                                        <td>{{coursePackage.taiga_token}}</td>
+                                        <td width="20%">{{coursePackage.course}}</td>
+                                        <td width="20%">{{coursePackage.end_date}}</td>
+                                        <td width="60%" style="word-break: break-all;">{{coursePackage.taiga_token}}</td>
                                     </tr>
                                 </table>
-                            </div>
-                            <div>
-                                <button ng-really-message="Remove Course?"? ng-really-click="removeCourse()" class="btn btn-default">Remove Course</button>
-                                <button ng-click="editCourse()" class="btn btn-default">Edit Course</button>
-                                <button ng-click="clearCourseForm()" class="btn btn-default">Clear Form</button>
-                            </div>
-                            <div>
-                                <p>Message: {{message}}</p>
                             </div>
                         <div class="container" style="max-width:600px;margin:60px auto;">
                             <form role="form">
@@ -67,30 +62,51 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Taiga Token</label>
-                                    <input type="text" class="form-control"ng-model="enteredTaigaToken" placeholder="Enter Taiga token" ng-required="true">
+                                    <input type="text" class="form-control" ng-model="enteredTaigaToken" placeholder="Enter Taiga token" ng-required="true">
                                 </div>
                                 <div class="form-group">
                                     <label>Slack Token</label>
-                                    <input type="text" class="form-control"ng-model="enteredSlackToken" placeholder="Enter Slack token">
-                                </div>
-                                <div>
-                                    <button ng-click="saveCourse()" class="btn btn-default">Save Course</button>
+                                    <input type="text" class="form-control" ng-model="enteredSlackToken" placeholder="Enter Slack token">
                                 </div>
                             </form>
                         </div>
-                            <div>
-                                <button ng-click="localStore()" class="btn btn-default">Store Course Data</button>
-                                <button ng-click="localGet()" class="btn btn-default">Get Course Data</button>
-                            </div>
                     </div>
+                    </div>
+                </div>
+                <div class="col-md-1 pull-right">
+                    <ul class="nav navbar-nav navbar-right nav-stacked">
+
                         <div>
-                            <button ng-click="saveJSON()" class="btn btn-default">Save Course to JSON File</button>
+                            <button ng-really-message="Remove Course?"? ng-really-click="removeCourse()" class="btn btn-primary">Remove Course</button>
                         </div>
                         <div>
-                            <label>Course JSON File Upload:</label>
-                            <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".json">
+                            <button ng-click="editCourse()" class="btn btn-primary">Edit Course</button>
                         </div>
-                    </div>
+                        <div>
+                            <button ng-click="clearCourseForm()" class="btn btn-primary">Clear Form</button>
+                        </div>
+                        <div>
+                            <button ng-click="saveCourse()" class="btn btn-primary">Save Course</button>
+                        </div>
+                        <br>
+                        <label>Local Storage</label>
+                        <div>
+                            <button ng-click="localStore()" class="btn btn-primary">Store Course</button>
+                        </div>
+                        <div>
+                            <button ng-click="localGet()" class="btn btn-primary">Get Stored Course</button>
+                        </div>
+                        <br>
+                        <label>JSON Storage</label>
+                        <div>
+                            <button ng-click="saveJSON()" class="btn btn-primary">Save Course File</button>
+                        </div>
+                        <div>
+                            <label class="btn btn-primary">Upload Course File
+                                <input type="file" name="file" onchange="angular.element(this).scope().handleFiles(this.files)" accept=".json" style="display:none">
+                            </label>
+                        </div>
+                    </ul>
                 </div>
             </div>
         </div>

@@ -99,7 +99,7 @@ public class GatherGitHubData implements IGatherGitHubData {
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
 
-        //System.out.println("GitHub URL: " + urlPath);
+        System.out.println("GitHub URL: " + urlPath);
 
         String json = restTemplate.getForObject(urlPath, String.class);
 

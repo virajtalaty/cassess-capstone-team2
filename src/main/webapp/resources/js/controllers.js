@@ -3563,6 +3563,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         var teamIndex = -1;
 
+        var fromCSV = false;
+
+        var nextIndex = -1;
+
         $scope.student = {};
 
         $scope.students = [];
@@ -3573,28 +3577,40 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.currentTeam = "";
 
+        $scope.teamsArray = [];
+
         if ($rootScope.coursePackage.course === course) {
-            if($rootScope.coursePackage.teams.length != 0) {
-                teamIndex = 0;
-                $scope.teams = $rootScope.coursePackage.teams;
+            if($rootScope.coursePackage.teams){
+                if($rootScope.coursePackage.teams.length != 0) {
+                    teamIndex = 0;
+                    $scope.teams = $rootScope.coursePackage.teams;
+                    for (var i in $scope.teams) {
+                        $scope.teamsArray.push($scope.teams[i].team_name);
+                        //console.log($scope.teams[i].team_name);
+                    }
+
+                } else {
+                    window.location.href = 'http://localhost:8080/cassess/#/create_teams';
+                }
+            } else {
+                window.location.href = 'http://localhost:8080/cassess/#/create_teams';
             }
         } else {
             window.location.href = 'http://localhost:8080/cassess/#/create_course';
         }
-        if (teamIndex === -1){
+        if (teamIndex == -1){
             window.location.href = 'http://localhost:8080/cassess/#/create_teams';
+        }
+        if(course === null){
+            window.location.href = 'http://localhost:8080/cassess/#/create_course';
         }
 
         $scope.setTeam = function() {
             for (var i in $rootScope.coursePackage.teams) {
                 if ($rootScope.coursePackage.teams[i].team_name === $scope.selectedTeam.team_name) {
                     $scope.students = $rootScope.coursePackage.teams[i].students;
-                    for (var j in $rootScope.coursePackage.teams[i].students)   {
-                        if(!$rootScope.coursePackage.teams[i].students){
-                            $rootScope.coursePackage.teams[i].students = [];
-                        } else {
-                            console.log("Current Student: " + $rootScope.coursePackage.teams[i].students[j].email);
-                        }
+                    if(!$rootScope.coursePackage.teams[i].students){
+                        $rootScope.coursePackage.teams[i].students = [];
                     }
                     teamIndex = i;
                     //console.log("Team Index: " + i);
@@ -3621,19 +3637,27 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                                 for (var i in $scope.students) {
                                     if($scope.students[i].email ===  $scope.student.email){
                                         $scope.students[i] = $scope.student;
+                                        //console.log("Students exists: " + $scope.student.email + "; replacing");
                                         exists = true;
                                     }
                                 }
                                 if(!exists) {
                                     if(!$scope.students || $scope.students.length === 0){
+                                        //console.log("Students 1st entry: " + $scope.student.email);
                                         $scope.students = [$scope.student];
                                     } else {
                                         $scope.students.push($scope.student);
+                                        //console.log("Pushing student: " + $scope.student.email);
                                     }
                                 }
                                 $scope.clearStudentForm();
                                 $scope.student = {};
-                                $scope.applyChanges();
+                                //console.log("Next Index: " + nextIndex);
+                                //console.log("Current Index: " + teamIndex);
+                                //console.log("From CSV: " + fromCSV);
+                                if(!fromCSV || nextIndex != teamIndex){
+                                    $scope.applyChanges();
+                                }
                             } else {
                                 $scope.message = 'Please Enter Password prior to saving a student';
                             }
@@ -3649,16 +3673,45 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
 
         $scope.saveStudentsJSON = function(studentsArray) {
+            fromCSV = true;
             if(studentsArray[0]) {
                 if (studentsArray[0].email) {
                     if (studentsArray[0].email != null && studentsArray[0].email != '') {
+                        var lastIndex = -1;
+                        var j = 0;
                         for (var i in studentsArray) {
-                            $scope.enteredEmail = studentsArray[i].email;
-                            $scope.enteredName = studentsArray[i].full_name;
-                            $scope.enteredPassword = studentsArray[i].password;
-                            $scope.saveStudent();
+                            var arrayIndex = $scope.teamsArray.indexOf(studentsArray[i].team_name);
+                            ++j;
+                            //console.log("i value: " + i);
+                            //console.log("next i value: " + j);
+                            if(studentsArray[j]){
+                                    if(studentsArray[j].team_name){
+                                    nextIndex = $scope.teamsArray.indexOf(studentsArray[j].team_name);
+                                    //console.log("NextTeam: " + studentsArray[j].team_name + " at index: " + nextIndex);
+                                } else {
+                                    nextIndex = -1;
+                                }
+                            } else {
+                                nextIndex = -1;
+                            }
+                            if(arrayIndex >= 0){
+                                teamIndex = arrayIndex;
+                                if(arrayIndex != lastIndex){
+                                    $scope.students = $rootScope.coursePackage.teams[teamIndex].students;
+                                }
+                                //console.log("Index " + arrayIndex + "; Team " + $scope.teams[teamIndex].team_name + " for Student: " + studentsArray[i].email);
+                                $scope.selectedTeam = $scope.teams[teamIndex];
+                                $scope.enteredEmail = studentsArray[i].email;
+                                $scope.enteredName = studentsArray[i].full_name;
+                                $scope.enteredPassword = studentsArray[i].password;
+                                $scope.currentTeam = $scope.selectedTeam.team_name;
+                                $scope.saveStudent();
+                                $scope.$apply();
+                                lastIndex = arrayIndex;
+                            } else {
+                                alert(studentsArray[i].team_name + ' does not exist');
+                            }
                         }
-                        $scope.$apply();
                     } else {
                         $scope.message = 'No Student data in uploaded csv';
                     }
@@ -3668,7 +3721,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             } else {
                 $scope.message = 'No Student data in uploaded csv';
             }
-
+            fromCSV = false;
         };
 
         $scope.removeStudent = function() {
@@ -3702,6 +3755,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.applyChanges = function() {
             if ($scope.selectedTeam.team_name) {
                 if($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != ''){
+                    //console.log("Applying Changes for team " + $scope.selectedTeam.team_name + " at index " + teamIndex);
                     $rootScope.coursePackage.teams[teamIndex].students = $scope.students;
                     $scope.message = "Successfully saved to " + $rootScope.coursePackage.teams[teamIndex].team_name;
                 } else {
@@ -3816,6 +3870,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($rootScope.coursePackage.course === course) {
                 $scope.admins = $rootScope.coursePackage.admins;
             } else {
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
+            }
+
+            if(course === null){
                 window.location.href = 'http://localhost:8080/cassess/#/create_course';
             }
 
@@ -3988,6 +4046,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     .controller("newCourseTeams", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
         function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
 
+            $scope.gitHubVerified = false;
+
+            var fromCSV = false;
+
+            var isEdit = false;
+
             $rootScope.provisionMode = true;
 
             $scope.tab = 3;
@@ -4010,9 +4074,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.message = "";
 
+            var gitHubInfoChanged = false;
+
+            var taigaInfoChanged = false;
+
             if ($rootScope.coursePackage.course === course) {
                 $scope.teams = $rootScope.coursePackage.teams;
+                for (var i in $rootScope.coursePackage.teams){
+                    console.log("Team: " + $rootScope.coursePackage.teams[i].team_name);
+                    console.log("TaigaHideOk: " + $rootScope.coursePackage.teams[i].hideTaigaOk);
+                    console.log("GitHubHideOk: " + $rootScope.coursePackage.teams[i].hideGitHubOk);
+                    console.log("TaigaHideRemove: " + $rootScope.coursePackage.teams[i].hideTaigaRemove);
+                    console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
+                }
             } else {
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
+            }
+
+            if(course === null){
                 window.location.href = 'http://localhost:8080/cassess/#/create_course';
             }
 
@@ -4026,17 +4105,31 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     if($scope.enteredTaigaSlug != null && $scope.enteredTaigaSlug != ''){
                         if ($scope.enteredGitHubOwner != null && $scope.enteredGitHubOwner != '') {
                             if ($scope.enteredGitHubToken != null && $scope.enteredGitHubToken != '') {
-                                if($scope.enteredGithubRepo != null && $scope.enteredGithubRepo != ''){
+                                if($scope.enteredGitHubRepo != null && $scope.enteredGitHubRepo != ''){
+                                    if($scope.taigaVerified === true){
+                                        $scope.team.hideTaigaOk = false;
+                                        $scope.team.hideTaigaRemove = true;
+                                    } else {
+                                        $scope.team.hideTaigaOk = true;
+                                        $scope.team.hideTaigaRemove = false;
+                                    }
+                                    if($scope.gitHubVerified === true){
+                                        $scope.team.hideGitHubOk = false;
+                                        $scope.team.hideGitHubRemove = true;
+                                    } else {
+                                        $scope.team.hideGitHubOk = true;
+                                        $scope.team.hideGitHubRemove = false;
+                                    }
                                     $scope.team.team_name = $scope.enteredTeamName;
                                     $scope.team.taiga_project_slug = $scope.enteredTaigaSlug;
                                     $scope.team.github_owner = $scope.enteredGitHubOwner;
                                     $scope.team.github_token = $scope.enteredGitHubToken;
-                                    $scope.team.github_repo_id = $scope.enteredGithubRepo;
+                                    $scope.team.github_repo_id = $scope.enteredGitHubRepo;
                                     $scope.team.slack_team_id = $scope.enteredSlackTeam;
                                     var exists = false;
                                     if ($scope.teams != null) {
                                         for (var i in $scope.teams) {
-                                            if($scope.teams[i].team_name ===  $scope.team.team_name){
+                                            if($scope.teams[i].team_name === $scope.team.team_name){
                                                 $scope.teams[i] = $scope.team;
                                                 exists = true;
                                             }
@@ -4076,12 +4169,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     if(teamsArray[0].team_name){
                         if(teamsArray[0].team_name != null && teamsArray[0].team_name != ''){
                             for (var i in teamsArray) {
+                                fromCSV = true;
                                 console.log(teamsArray[i].team_name);
                                 $scope.enteredTeamName = teamsArray[i].team_name;
                                 $scope.enteredTaigaSlug = teamsArray[i].taiga_project_slug;
-                                $scope.enteredGitHubOwner = teamsArray[i].enteredGitHubOwner;
-                                $scope.enteredGitHubToken = teamsArray[i].enteredGitHubToken;
-                                $scope.enteredGithubRepo = teamsArray[i].github_repo_id;
+                                $scope.enteredGitHubOwner = teamsArray[i].github_owner;
+                                $scope.enteredGitHubToken = teamsArray[i].github_token;
+                                $scope.enteredGitHubRepo = teamsArray[i].github_repo_id;
                                 $scope.enteredSlackTeam = teamsArray[i].slack_team_id;
                                 $scope.saveTeam();
                             }
@@ -4109,15 +4203,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.clearTeamForm = function() {
+                fromCSV = false;
                 $scope.enteredTeamName = '';
                 $scope.enteredTaigaSlug = '';
                 $scope.enteredGitHubOwner = '';
                 $scope.enteredGitHubToken = '';
                 $scope.enteredGithubRepo = '';
                 $scope.enteredSlackTeam = '';
+                $scope.taigaVerified = false;
+                $scope.taigaNotVerified = false;
+                $scope.gitHubVerified = false;
+                $scope.gitHubNotVerified = false;
+                gitHubInfoChanged = false;
+                taigaInfoChanged = false;
             };
 
             $scope.editTeam = function() {
+                isEdit = true;
+                fromCSV = false;
                 var team_name = $scope.selectedTeam.team_name;
                 for (var i in $scope.teams) {
                     if ($scope.teams[i].team_name === team_name) {
@@ -4128,8 +4231,24 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.enteredTaigaSlug = $scope.team.taiga_project_slug;
                 $scope.enteredGitHubOwner = $scope.team.github_owner;
                 $scope.enteredGitHubToken = $scope.team.github_token;
-                $scope.enteredGithubRepo = $scope.team.github_repo_id;
+                $scope.enteredGitHubRepo = $scope.team.github_repo_id;
                 $scope.enteredSlackTeam =  $scope.team.slack_team_id;
+                if($scope.team.hideGitHubOk === false && $scope.team.hideGitHubRemove === true){
+                    $scope.gitHubVerified = true;
+                    $scope.gitHubNotVerified = false;
+                } else if($scope.team.hideGitHubOk === true && $scope.team.hideGitHubRemove === false){
+                    $scope.gitHubVerified = false;
+                    $scope.gitHubNotVerified = true;
+                }
+                if($scope.team.hideTaigaOk === false && $scope.team.hideTaigaRemove === true){
+                    $scope.taigaVerified = true;
+                    $scope.taigaNotVerified = false;
+                } else if($scope.team.hideTaigaOk === true && $scope.team.hideTaigaRemove === false){
+                    $scope.taigaVerified = false;
+                    $scope.taigaNotVerified = true;
+                }
+                gitHubInfoChanged = false;
+                taigaInfoChanged = false;
             };
 
             $scope.applyChanges = function() {
@@ -4209,6 +4328,89 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 return str;
             }
 
+            $scope.verifyGitHub = function () {
+
+                if ($scope.enteredGitHubOwner != '' || $scope.enteredGitHubOwner != null){
+                    if($scope.enteredGitHubRepo != '' || $scope.enteredGitHubRepo != null) {
+                        if ($scope.enteredGitHubToken  != '' || $scope.enteredGitHubToken != null) {
+                            var gitHubUrl = "https://api.github.com/repos/" + $scope.enteredGitHubOwner + "/"
+                                + $scope.enteredGitHubRepo + "/stats/contributors?access_token=" + $scope.enteredGitHubToken
+                                + "&scope=&token_type=bearer";
+                            $http({
+                                url: gitHubUrl,
+                                method: "GET",
+                                headers: {'Content-Type': 'application/json; charset=utf-8'}
+                            }).then(function (response) {
+                                //console.log("Worked!");
+                                $scope.message = "GitHub Success: " + response.status;
+                                $scope.gitHubNotVerified = false;
+                                $scope.gitHubVerified = true;
+                                gitHubInfoChanged = false;
+                            }, function (response) {
+                                //console.log("didn't work");
+                                $scope.message = "GitHub Failure: " + response.status;
+                                $scope.gitHubVerified = false;
+                                $scope.gitHubNotVerified = true;
+                            });
+                        } else {
+                            $scope.message = 'Please enter GitHub Token prior to attempting verify';
+                        }
+                    } else {
+                        $scope.message = 'Please enter GitHub Repo prior to attempting verify';
+                    }
+                } else {
+                    $scope.message = 'Please enter GitHub Owner prior to attempting verify';
+                }
+
+            };
+
+            $scope.verifyTaiga = function () {
+
+                if ($rootScope.coursePackage.taiga_token != '' || $rootScope.coursePackage.taiga_token != null){
+                        if ($scope.enteredTaigaSlug  != '' || $scope.enteredTaigaSlug != null) {
+                            var taigaUrl = "https://api.taiga.io/api/v1/projects/by_slug?slug=" + $scope.enteredTaigaSlug;
+                            $http({
+                                url: taigaUrl,
+                                method: "GET",
+                                headers: {'Authorization': 'Bearer ' + $rootScope.coursePackage.taiga_token,
+                                    'Content-Type': 'application/json; charset=utf-8'}
+                            }).then(function (response) {
+                                //console.log("Worked!");
+                                $scope.message = "Taiga Success: " + response.status;
+                                $scope.taigaNotVerified = false;
+                                $scope.taigaVerified = true;
+                                taigaInfoChanged = false;
+                            }, function (response) {
+                                //console.log("didn't work");
+                                $scope.message = "Taiga Failure: " + response.status;
+                                $scope.taigaVerified = false;
+                                $scope.taigaNotVerified = true;
+                            });
+                        } else {
+                            $scope.message = 'Please enter Taiga Slug prior to attempting verify';
+                        }
+                } else {
+                    $scope.message = 'Please enter Course Taiga Token prior to attempting verify';
+                }
+
+            };
+
+            $scope.setGitHubUnverified = function(){
+                if(!gitHubInfoChanged) {
+                    $scope.gitHubVerified = false;
+                    $scope.gitHubNotVerified = true;
+                    gitHubInfoChanged = true;
+                }
+            };
+
+            $scope.setTaigaUnverified = function() {
+                if (!taigaInfoChanged) {
+                    $scope.taigaVerified = false;
+                    $scope.taigaNotVerified = true;
+                    taigaInfoChanged = true;
+                }
+            };
+
         }])
     .controller("newCourse", ['$rootScope', '$scope', '$http', '$window', 'provisionService', 'courseCreateService',
         function ($rootScope, $scope, $http, $window, provisionService, courseCreateService) {
@@ -4226,6 +4428,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.message = "";
+
+            $scope.course = [];
+
+            var taigaTokenChanged = false;
 
             var n =  new Date();
             var y = n.getFullYear();
@@ -4247,14 +4453,21 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                                 if ($scope.enteredTaigaToken != null && $scope.enteredTaigaToken != '') {
                                     $rootScope.coursePackage.course = $scope.enteredCourseName;
                                     var dateEntered = new Date($scope.enteredEndDate);
-                                    dateEntered.setDate(dateEntered.getDate() + 1);
+                                    dateEntered.setDate(dateEntered.getDate());
                                     var dateConverted = (dateEntered.getFullYear() + '-' + ('0' + (dateEntered.getMonth()+1)).slice(-2) + '-' + ('0' + dateEntered.getDate()).slice(-2))
                                     $rootScope.coursePackage.end_date = dateConverted;
+                                    if ($scope.enteredTaigaToken != $scope.coursePackage.taiga_token) {
+                                        for (var i in $rootScope.coursePackage.teams) {
+                                            $rootScope.coursePackage.teams[i].hideTaigaOk = true;
+                                            $rootScope.coursePackage.teams[i].hideTaigaRemove = false;
+                                        }
+                                    }
                                     $rootScope.coursePackage.taiga_token = $scope.enteredTaigaToken;
                                     $rootScope.coursePackage.slack_token = $scope.enteredSlackToken;
                                     courseCreateService.setCourse($rootScope.coursePackage.course);
                                     //console.log("saveCourse: " + $rootScope.coursePackage.course);
                                     $scope.message = 'Course ' + $scope.enteredCourseName + ' successfuly saved';
+                                    $scope.clearCourseForm();
                                 } else {
                                     $scope.message = 'Please Enter Taiga token prior to saving a Course';
                                 }
@@ -4268,7 +4481,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.editCourse = function() {
                 $scope.enteredCourseName = $scope.coursePackage.course;
-                $scope.enteredEndDate = $scope.coursePackage.end_date;
+                var returnedDate = new Date($scope.coursePackage.end_date);
+                returnedDate.setDate(returnedDate.getDate() + 1);
+                $scope.enteredEndDate = returnedDate;
                 $scope.enteredTaigaToken = $scope.coursePackage.taiga_token;
                 $scope.enteredSlackToken = $scope.coursePackage.slack_token;
             };
@@ -4278,6 +4493,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.enteredEndDate = '';
                 $scope.enteredTaigaToken = '';
                 $scope.enteredSlackToken = '';
+                taigaTokenChanged = false;
             };
 
             $scope.removeCourse = function() {
@@ -4491,6 +4707,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var teamIndex = -1;
 
+            var fromCSV = false;
+
+            var nextIndex = -1;
+
             $scope.channel = {};
 
             $scope.channels = [];
@@ -4501,17 +4721,32 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.currentTeam = "";
 
+            $scope.teamsArray = [];
 
             if ($rootScope.coursePackage.course === course) {
-                if($rootScope.coursePackage.teams.length != 0) {
-                    teamIndex = 0;
-                    $scope.teams = $rootScope.coursePackage.teams;
+                if($rootScope.coursePackage.teams){
+                    if($rootScope.coursePackage.teams.length != 0) {
+                        teamIndex = 0;
+                        $scope.teams = $rootScope.coursePackage.teams;
+                        for (var i in $scope.teams) {
+                            $scope.teamsArray.push($scope.teams[i].team_name);
+                            //console.log($scope.teams[i].team_name);
+                        }
+
+                    } else {
+                        window.location.href = 'http://localhost:8080/cassess/#/create_teams';
+                    }
+                } else {
+                    window.location.href = 'http://localhost:8080/cassess/#/create_teams';
                 }
             } else {
                 window.location.href = 'http://localhost:8080/cassess/#/create_course';
             }
-            if (teamIndex === -1){
+            if (teamIndex == -1){
                 window.location.href = 'http://localhost:8080/cassess/#/create_teams';
+            }
+            if(course === null){
+                window.location.href = 'http://localhost:8080/cassess/#/create_course';
             }
 
             $scope.tab = 5;
@@ -4544,54 +4779,83 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.saveChannel = function() {
-                if($scope.currentTeam != "") {
-                        if($scope.enteredId != null && $scope.enteredId != ''){
-                            $scope.channel.id = $scope.enteredId;
-                            var exists = false;
-                            for (var i in $scope.channels) {
-                                if($scope.channels[i].id === $scope.channel.id){
-                                    $scope.channels[i] = $scope.channel;
-                                    exists = true;
-                                }
+                if($scope.currentTeam != ""){
+                    if($scope.enteredId != null && $scope.enteredId != ''){
+                        $scope.channel.id = $scope.enteredId;
+                        var exists = false;
+                        for (var i in $scope.channels) {
+                            if($scope.channels[i].id === $scope.channel.id){
+                                $scope.channels[i] = $scope.channel;
+                                exists = true;
                             }
-                            if(!exists) {
-                                if(!$scope.channels || $scope.channels.length === 0){
-                                    $scope.channels = [$scope.channel];
-                                } else {
-                                    $scope.channels.push($scope.channel);
-                                }
+                        }
+                        if(!exists) {
+                            if(!$scope.channels || $scope.channels.length === 0){
+                                $scope.channels = [$scope.channel];
+                            } else {
+                                $scope.channels.push($scope.channel);
                             }
-                            $scope.clearChannelForm();
-                            $scope.channel = {};
+                        }
+                        $scope.clearChannelForm();
+                        $scope.channel = {};
+                        if(!fromCSV || nextIndex != teamIndex){
                             $scope.applyChanges();
-                        } else {
-                            $scope.message = 'Please Enter Id prior to saving a channel';
                         }
                     } else {
-                        $scope.message = 'Please Select a team prior to saving a channel';
+                        $scope.message = 'Please Enter Id prior to saving a channel';
                     }
+                } else {
+                    $scope.message = 'Please Select a team prior to saving a channel';
+                }
             };
 
             $scope.saveChannelsJSON = function(channelsArray) {
+                fromCSV = true;
                 if(channelsArray[0]) {
-                    if (channelsArray[0].email) {
-                        if (channelsArray[0].email != null && channelsArray[0].email != '') {
-                            if (channelsArray[0].id) {
-                                for (var i in channelsArray) {
-                                    $scope.enteredId = channelsArray[i].id;
-                                    $scope.saveChannel();
+                    if (channelsArray[0].id) {
+                        if (channelsArray[0].id != null && channelsArray[0].id != '') {
+                            var lastIndex = -1;
+                            var j = 0;
+                            for (var i in channelsArray) {
+                                var arrayIndex = $scope.teamsArray.indexOf(channelsArray[i].team_name);
+                                ++j;
+                                //console.log("i value: " + i);
+                                //console.log("next i value: " + j);
+                                if(channelsArray[j]){
+                                    if(channelsArray[j].team_name){
+                                        nextIndex = $scope.teamsArray.indexOf(channelsArray[j].team_name);
+                                        //console.log("NextTeam: " + channelsArray[j].team_name + " at index: " + nextIndex);
+                                    } else {
+                                        nextIndex = -1;
+                                    }
+                                } else {
+                                    nextIndex = -1;
                                 }
-                                $scope.$apply();
-                            } else {
-                                $scope.message = 'No Channels data in uploaded csv';
+                                if(arrayIndex >= 0){
+                                    teamIndex = arrayIndex;
+                                    if(arrayIndex != lastIndex){
+                                        $scope.channels = $rootScope.coursePackage.teams[teamIndex].channels;
+                                    }
+                                    $scope.selectedTeam = $scope.teams[teamIndex];
+                                    $scope.enteredId = channelsArray[i].id;
+                                    $scope.currentTeam = $scope.selectedTeam.team_name;
+                                    $scope.saveChannel();
+                                    $scope.$apply();
+                                    lastIndex = arrayIndex;
+                                } else {
+                                    alert(channelsArray[i].team_name + ' does not exist');
+                                }
                             }
                         } else {
-                            $scope.message = 'No Channels data in uploaded csv';
+                            $scope.message = 'No Channel data in uploaded csv';
                         }
                     } else {
-                        $scope.message = 'No Channels data in uploaded csv';
+                        $scope.message = 'No Channel data in uploaded csv';
                     }
+                } else {
+                    $scope.message = 'No Channel data in uploaded csv';
                 }
+                fromCSV = false;
             };
 
             $scope.clearChannelForm = function() {
@@ -4619,15 +4883,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
 
             $scope.applyChanges = function() {
-                if($scope.selectedTeam.team_name){
-                    if ($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != "") {
+                if ($scope.selectedTeam.team_name) {
+                    if($scope.selectedTeam.team_name != null || $scope.selectedTeam.team_name != ''){
+                        //console.log("Applying Changes for team " + $scope.selectedTeam.team_name + " at index " + teamIndex);
                         $rootScope.coursePackage.teams[teamIndex].channels = $scope.channels;
                         $scope.message = "Successfully saved to " + $rootScope.coursePackage.teams[teamIndex].team_name;
                     } else {
-                        $scope.message = "Please first select a Team to save Channel to";
+                        $scope.message = "Please first select a Team to save Channel to"
                     }
                 } else {
-                    $scope.message = "Please first select a Team to save Channel to";
+                    $scope.message = "Please first select a Team to save Channel to"
                 }
 
             };
@@ -4773,22 +5038,31 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
             }
 
-            $scope.jsonCoursePackage = $rootScope.coursePackage;
+            const jsonCoursePackage = angular.copy($rootScope.coursePackage);
 
-            $scope.jsonDisplay = $scope.jsonCoursePackage;
+            if (jsonCoursePackage.teams) {
+                for (var i in jsonCoursePackage.teams) {
+                    delete jsonCoursePackage.teams[i].hideTaigaOk;
+                    delete jsonCoursePackage.teams[i].hideTaigaRemove;
+                    delete jsonCoursePackage.teams[i].hideGitHubOk;
+                    delete jsonCoursePackage.teams[i].hideGitHubRemove;
+                }
+            }
+
+            $scope.jsonDisplay = jsonCoursePackage;
 
             $http.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8";
 
             $scope.sendCoursePackage = function () {
 
-                if ($scope.coursePackage.course){
+                if (jsonCoursePackage.course){
                     if(adminsCount > 0) {
                         if (teamsCount > 0) {
                             if (studentsCount > 0) {
                                 $http({
                                     url: './rest/coursePackage',
                                     method: "POST",
-                                    data: $rootScope.coursePackage
+                                    data: jsonCoursePackage
                                 }).then(function (response) {
                                     //console.log("Worked!");
                                     $scope.statusMessage = "Success: " + response.status;
@@ -4819,11 +5093,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.removeCourse = function () {
 
-                if ($scope.coursePackage.course){
+                if (jsonCoursePackage.course){
                     $http({
                         url: './rest/course',
                         method: "DELETE",
-                        data: $scope.coursePackage,
+                        data: jsonCoursePackage,
                         headers: {'Content-Type': 'application/json; charset=utf-8'}
                     }).then(function (response) {
                         //console.log("Worked!");
@@ -4842,7 +5116,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.message = 'Please enter/upload course data prior to attempting save';
                 }
             };
-
         }]);
 
 
