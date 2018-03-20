@@ -2,34 +2,23 @@ package edu.asu.cassess.persist.entity.taiga;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaigaMember {
 
-    @Column(name = "id")
     public int id;
 
-    @Column(name = "fullName")
     private String full_name;
 
-    @Column(name = "project")
     private String project_name;
 
-    @Column(name = "project_slug")
     private String project_slug;
 
-    @Column(name = "roleName")
     private String role_name;
 
-    @Column(name = "team")
     private String team;
 
-    @Column(name = "course")
     private String course;
 
-    @Column(name = "email")
     private String user_email;
 
     public TaigaMember() {
