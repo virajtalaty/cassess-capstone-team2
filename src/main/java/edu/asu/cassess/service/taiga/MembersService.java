@@ -63,11 +63,13 @@ public class MembersService implements IMembersService {
         List<TaigaMember> members = memberList.getBody();
 
         for (int i = 0; i < members.size(); i++) {
-            members.get(i).setTeam(team);
-            members.get(i).setCourse(course);
-            System.out.println(members.get(i).getId());
-            MemberDao.save(new MemberData(new MemberDataID(members.get(i).getId(), members.get(i).getUser_email(), members.get(i).getTeam(), course), members.get(i).getFull_name(),
-                    members.get(i).getProject_name(), members.get(i).getProject_slug(), members.get(i).getRole_name()));
+            if(members.get(i).getUser_email() != null) {
+                members.get(i).setTeam(team);
+                members.get(i).setCourse(course);
+                System.out.println(members.get(i).getId());
+                MemberDao.save(new MemberData(new MemberDataID(members.get(i).getId(), members.get(i).getUser_email(), members.get(i).getTeam(), course), members.get(i).getFull_name(),
+                        members.get(i).getProject_name(), members.get(i).getProject_slug(), members.get(i).getRole_name()));
+            }
         }
 
         if (memberList.getHeaders().containsKey("x-pagination-next")) {
