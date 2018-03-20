@@ -76,7 +76,7 @@ public class TaskDataService implements ITaskDataService {
 
         headers.add("x-disable-pagination", "True");
 
-        //System.out.println("Page: " + page);
+        System.out.println("Page: " + page);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
@@ -87,43 +87,53 @@ public class TaskDataService implements ITaskDataService {
         for (TaskData task:tasks) {
             if (task.getAssignmentData() != null) {
                 //System.out.println("-----------------------------****************************************Full Name Display: " + task.getAssignmentData().getFull_name_display());
+                //System.out.println("-----------------------------****************************************ClosedMap " + closedMap.get(task.getAssignmentData().getFull_name_display()));
                 MutableInt closedCount = closedMap.get(task.getAssignmentData().getFull_name_display());
+                //System.out.println("-----------------------------****************************************NewMap " + newMap.get(task.getAssignmentData().getFull_name_display()));
                 MutableInt newCount = newMap.get(task.getAssignmentData().getFull_name_display());
+                //System.out.println("-----------------------------****************************************InProgressMap " + inProgressMap.get(task.getAssignmentData().getFull_name_display()));
                 MutableInt inProgressCount = inProgressMap.get(task.getAssignmentData().getFull_name_display());
+                //System.out.println("-----------------------------****************************************ReadyForTestMap " + readyForTestMap.get(task.getAssignmentData().getFull_name_display()));
                 MutableInt readyForTestCount = readyForTestMap.get(task.getAssignmentData().getFull_name_display());
 
-                if (task.getStatusData().getName().equalsIgnoreCase("Closed")) {
-                    if (closedCount == null) {
-                        closedMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
-                    } else {
-                        closedCount.increment();
-                    }
-                }
-                if (task.getStatusData().getName().equalsIgnoreCase("New")) {
-                    if (newCount == null) {
-                        newMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
-                    } else {
-                        newCount.increment();
-                    }
-                }
-                if (task.getStatusData().getName().equalsIgnoreCase("In Progress")) {
-                    if (inProgressCount == null) {
-                        inProgressMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
-                    } else {
-                        inProgressCount.increment();
-                    }
-                }
-                if (task.getStatusData().getName().equalsIgnoreCase("Ready For Test")) {
-                    if (readyForTestCount == null) {
-                        readyForTestMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
-                    } else {
-                        readyForTestCount.increment();
-                    }
-                }
+                if (task.getStatusData() != null) {
+                    if (task.getStatusData().getName() != null) {
+                        if (task.getStatusData().getName().equalsIgnoreCase("Closed")) {
+                            if (closedCount == null) {
+                                closedMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                            } else {
+                                closedCount.increment();
+                            }
+                        }
 
+                        if (task.getStatusData().getName().equalsIgnoreCase("New")) {
+                            if (newCount == null) {
+                                newMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                            } else {
+                                newCount.increment();
+                            }
+                        }
+                        //System.out.println("-----------------------------****************************************InProgressStatus " + task.getStatusData().getName().equalsIgnoreCase("In Progress"));
+                        if (task.getStatusData().getName().equalsIgnoreCase("In Progress")) {
+                            if (inProgressCount == null) {
+                                inProgressMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                            } else {
+                                inProgressCount.increment();
+                            }
+                        }
+                        //System.out.println("-----------------------------****************************************ReadyForTestStatus " + task.getStatusData().getName().equalsIgnoreCase("Ready For Test"));
+                        if (task.getStatusData().getName().equalsIgnoreCase("Ready For Test")) {
+                            if (readyForTestCount == null) {
+                                readyForTestMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                            } else {
+                                readyForTestCount.increment();
+                            }
+                        }
+                    }
+                }
             }
         }
-        //System.out.println("Headers Response" + taskList.getHeaders());
+        System.out.println("Headers Response" + taskList.getHeaders());
 
         if (taskList.getHeaders().containsKey("x-pagination-next")) {
             page++;
@@ -195,7 +205,7 @@ public class TaskDataService implements ITaskDataService {
             String token = tempCourse.getTaiga_token();
             List<ProjectIDSlug> idSlugList = projectsDao.listGetTaigaProjectIDSlug(course);
             for (ProjectIDSlug idSlug : idSlugList) {
-                //System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
+                System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
                 getTasks(idSlug.getId(), token, 1);
                 getTaskTotals(idSlug.getSlug(), course);
                 closedMap.clear();

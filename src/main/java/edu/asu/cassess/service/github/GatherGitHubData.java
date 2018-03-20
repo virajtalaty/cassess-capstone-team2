@@ -99,7 +99,7 @@ public class GatherGitHubData implements IGatherGitHubData {
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
 
-        System.out.println("GitHub URL: " + urlPath);
+        //System.out.println("GitHub URL: " + urlPath);
 
         String json = restTemplate.getForObject(urlPath, String.class);
 
@@ -189,6 +189,8 @@ public class GatherGitHubData implements IGatherGitHubData {
                     //System.out.println("**********************************************Not a Student in this Course-Team");
                     ghMatch = false;
                 }
+            } else {
+                //System.out.println("*****************************************************Email is null");
             }
             if(studentEnabled && ghMatch){
                 for (GitHubContributors.Weeks week : weeks) {
@@ -211,6 +213,8 @@ public class GatherGitHubData implements IGatherGitHubData {
                         //System.out.println("*****************************************************Not Inserting to DB");
                     }
                 }
+            } else {
+                //System.out.println("*****************************************************Not a match or not enabled");
             }
 
         }
