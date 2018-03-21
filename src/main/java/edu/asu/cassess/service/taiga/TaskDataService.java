@@ -57,7 +57,7 @@ public class TaskDataService implements ITaskDataService {
     private ICourseService courseService;
 
     @Autowired
-    private IProjectQueryDao projectsDao;
+    private IProjectQueryDao projectService;
 
     @Autowired
     private IStudentsService studentsService;
@@ -207,16 +207,25 @@ public class TaskDataService implements ITaskDataService {
         }
         if (current.before(tempCourse.getEnd_date())) {
             String token = tempCourse.getTaiga_token();
-            List<ProjectIDSlug> idSlugList = projectsDao.listGetTaigaProjectIDSlug(course);
-            for (ProjectIDSlug idSlug : idSlugList) {
-                System.out.println("Id: " + idSlug.getId() + "/Slug: " + idSlug.getSlug());
-                getTasks(idSlug.getId(), token, 1);
-                getTaskTotals(idSlug.getSlug(), course);
-                closedMap.clear();
-                newMap.clear();
-                inProgressMap.clear();
-                readyForTestMap.clear();
+            List<Team> teams = teamsService.listReadByCourse(course);
+            for(Team team : teams) {
+                String slug = team.getTaiga_project_slug();
+                Object object = projectService.getTaigaProject(slug);
+                if (object.getClass() == Project.class) {
+                    Project project = (Project) object;
+                    Long slugId = project.getId();
+                    if (token != null && slugId != null) {
+                        System.out.println("Id: " + slugId + "/Slug: " + slug);
+                        getTasks(slugId, token, 1);
+                        getTaskTotals(slug, course);
+                        closedMap.clear();
+                        newMap.clear();
+                        inProgressMap.clear();
+                        readyForTestMap.clear();
+                    }
+                }
             }
+
         }
     }
 }

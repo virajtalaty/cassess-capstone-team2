@@ -1036,11 +1036,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0]
             ];
 
-            if($scope.courseArrayTG[1].weekEnding != null){
-                plotPreviousWeek();
+            if($scope.courseArrayTG[1]){
+                if($scope.courseArrayTG[1].weekEnding != null){
+                    plotPreviousWeek();
+                } else {
+                    getTaigaActivity();
+                }
             } else {
                 getTaigaActivity();
             }
+
         }
 
         function plotPreviousWeek() {
@@ -1086,8 +1091,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.courseActivity = response.data;
-                $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
                 getTaigaIntervals();
+                $scope.dataForTaigaCourseActivity =  getDataForCourseTaigaActivityCharts(response.data);
             }, function (response) {
                 //fail case
                 console.log("didn't work");
@@ -1824,7 +1829,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 [$scope.teamWeightTG0, $scope.teamFrequencyTG0, $scope.teamWeightGH0, $scope.teamFrequencyGH0, $scope.teamWeightSK0, $scope.teamFrequencySK0]
             ];
 
-            plotPreviousWeek();
+            if($scope.teamArrayTG[1]){
+                if($scope.teamArrayTG[1].weekEnding != null){
+                    plotPreviousWeek();
+                } else {
+                    getTaigaActivity();
+                }
+            } else {
+                getTaigaActivity();
+            }
         }
 
         function plotPreviousWeek() {
@@ -1894,8 +1907,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.teamActivity = response.data;
-                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
+                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
             }, function (response) {
                 //fail case
                 console.log("didn't work");
@@ -2266,11 +2279,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.teamActivity = response.data;
-                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
                 getTaigaIntervals();
+                $scope.dataForTaigaTeamActivity = getDataForTeamTaigaActivityCharts(response.data);
             }, function (response) {
                 //fail case
-                console.log("didn't work");
+                console.log("didn't work: " + response.data);
                 getTaigaIntervals();
             });
         }
@@ -2801,7 +2814,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 [$scope.studentWeightTG0, $scope.studentFrequencyTG0, $scope.studentWeightGH0, $scope.studentFrequencyGH0, $scope.studentWeightSK0, $scope.studentFrequencySK0]
             ];
 
-            plotPreviousWeek();
+            if($scope.studentArrayTG[1]){
+                if($scope.studentArrayTG[1].weekEnding != null){
+                    plotPreviousWeek();
+                } else {
+                    getTaigaActivity();
+                }
+            } else {
+                getTaigaActivity();
+            }
         }
 
         function plotPreviousWeek() {
@@ -3771,9 +3792,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.enteredName = $scope.student.full_name;
             $scope.enteredEmail = $scope.student.email;
             $scope.enteredPassword = $scope.student.password;
-            $scope.enteredGitHubUsername = $scope.github_username;
-            $scope.enteredTaigaUsername = $scope.taiga_username;
-            $scope.enteredSlackUsername = $scope.slack_username;
+            $scope.enteredGitHubUsername = $scope.student.github_username;
+            $scope.enteredTaigaUsername = $scope.student.taiga_username;
+            $scope.enteredSlackUsername = $scope.student.slack_username;
         };
 
         $scope.applyChanges = function() {

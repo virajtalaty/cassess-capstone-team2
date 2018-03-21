@@ -71,18 +71,4 @@ public class ProjectQueryDao implements IProjectQueryDao {
             return new RestResponse("taiga project for slug: " + slug + " does not exist in the database");
         }
     }
-
-    @Override
-    public List<ProjectIDSlug> listGetTaigaProjectIDSlug(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT id, slug, team_name AS 'team'\n" +
-                "FROM\n" +
-                "(SELECT DISTINCT * FROM cassess.project \n" +
-                "INNER JOIN cassess.teams \n" +
-                "ON cassess.project.slug=cassess.teams.taiga_project_slug \n" +
-                "AND course=?1) q1", ProjectIDSlug.class);
-        query.setParameter(1, course);
-        List<ProjectIDSlug> resultList = query.getResultList();
-        return resultList;
-    }
-
 }
