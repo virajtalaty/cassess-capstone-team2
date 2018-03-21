@@ -29,14 +29,18 @@
                     <div class="jumbotron">
                         <div>
                             <label>Current JSON:</label>
-                            <pre>
+                            <pre style="overflow-y: scroll; max-height:800px;">
                                 {{jsonDisplay | json}}
                             </pre>
                         </div>
                         <div>
                             <p>Response Status: {{statusMessage}}</p>
-                            <p ng-show="jsonMessage" class="ng-hide">Response Data: {{dataMessageJSON | json}}</p>
-                            <p ng-show="otherMessage" class="ng-hide">Response Data: {{dataMessageOther}}</p>
+                            <pre style="overflow-y: scroll; max-height:500px;" ng-show="jsonMessage" class="ng-hide">
+                                Response Data: {{dataMessageJSON | json}}
+                            </pre>
+                            <pre style="overflow-y: scroll; max-height:500px;" ng-show="otherMessage" class="ng-hide">
+                                Response Data: {{dataMessageOther}}
+                            </pre>
                         </div>
                     </div>
                 </div>
