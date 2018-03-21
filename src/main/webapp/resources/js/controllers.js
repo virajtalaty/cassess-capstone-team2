@@ -1036,7 +1036,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 [$scope.courseWeightTG0, $scope.courseFrequencyTG0, $scope.courseWeightGH0, $scope.courseFrequencyGH0, $scope.courseWeightSK0, $scope.courseFrequencySK0]
             ];
 
-            plotPreviousWeek();
+            if($scope.courseArrayTG[1].weekEnding != null){
+                plotPreviousWeek();
+            } else {
+                getTaigaActivity();
+            }
         }
 
         function plotPreviousWeek() {

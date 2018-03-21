@@ -1,5 +1,7 @@
 package edu.asu.cassess.service.github;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,7 +28,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,7 +58,6 @@ public class GatherGitHubData implements IGatherGitHubData {
     private String projectName;
     private String owner;
 
-
     public GatherGitHubData() {
         restTemplate = new RestTemplate();
     }
@@ -71,7 +71,7 @@ public class GatherGitHubData implements IGatherGitHubData {
      * @param projectName the project name of the repo
      */
     @Override
-    public void fetchData(String owner, String projectName, String course, String team, String accessToken){
+    public void fetchData(String owner, String projectName, String course, String team, String accessToken) {
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
@@ -93,7 +93,6 @@ public class GatherGitHubData implements IGatherGitHubData {
         }
     }
 
-
     private void getStats(String course, String team, String accessToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
@@ -103,26 +102,32 @@ public class GatherGitHubData implements IGatherGitHubData {
 
         String json = restTemplate.getForObject(urlPath, String.class);
 
-        ArrayList<GitHubContributors> contributors = null;
+        List<GitHubContributors> contributors = null;
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         try {
-            contributors = mapper.readValue(json, new TypeReference<ArrayList<GitHubContributors>>() {
+            contributors = mapper.readValue(json, new TypeReference<List<GitHubContributors>>() {
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         storeStats(contributors, accessToken, course, team);
     }
 
-    private void storeStats(ArrayList<GitHubContributors> contributors, String accessToken, String course, String team) {
+    private void storeStats(List<GitHubContributors> contributors, String accessToken, String course, String team) {
         //System.out.println("Storing Stats for course: " + course + " & Team: " + team);
         Collections.reverse(contributors);
+
         for (GitHubContributors contributor : contributors) {
-            ArrayList<GitHubContributors.Weeks> weeks = contributor.getWeeks();
+            //System.out.println("*******************************************************Iterating Contributors");
+            Weeks[] weeks = contributor.getWeeks();
+            //System.out.println("*******************************************************Weeks: " + weeks);
 
             String userName = contributor.getAuthor().getLogin();
+
+            //System.out.println("*******************************************************Username: " + userName);
 
             Date lastDate = null;
 
@@ -133,7 +138,9 @@ public class GatherGitHubData implements IGatherGitHubData {
             //System.out.println("*******************************************************UserName: " + userName);
 
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://api.github.com/users/" + userName)
-                    .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
+                    .queryParam("access_token", accessToken)
+                    .queryParam("scope", "")
+                    .queryParam("token_type", "bearer");
             String urlPath = builder.build().toUriString();
 
             GitHubUser user = restTemplate.getForObject(urlPath, GitHubUser.class);
@@ -193,7 +200,7 @@ public class GatherGitHubData implements IGatherGitHubData {
                 //System.out.println("*****************************************************Email is null");
             }
             if(studentEnabled && ghMatch){
-                for (GitHubContributors.Weeks week : weeks) {
+                for (Weeks week : weeks) {
                     Date date = new Date(week.getW() * 1000L);
                     //System.out.print("*********************************************************ContribDate: " + date);
                     if(lastDate == null || !date.before(lastDate)){

@@ -36,7 +36,6 @@ public interface ITaskTotalsQueryDao {
 
     List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException;
 
-    @Transactional
     List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException;
 
     List<WeeklyActivity> getWeeklyUpdatesByTeam(String course, String team) throws DataAccessException;
