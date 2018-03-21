@@ -21,112 +21,123 @@
             </div>
     </div>
 
-    <div class="panel panel-primary" access="super_user admin">
-        <div class="panel-heading" >Manage Students</div>
-        <form role="form">
+    <div class="panel panel-primary">
+        <form role="form" access="super_user">
+            <div class="panel-heading" >Manage Students</div>
             <div class="form-group">
                 <div access="super_user">
-                    <h3> >Select Course:</h3>
-                    <select class="selectpicker" multiple title="Choose one of the following..."
-                            ng-model="studentCourse.value" ng-options="x.course for x in courses"
+                    <label style="color: black">Select A Course:</label>
+                    <select class="select_style" ng-model="studentCourse.value" ng-options="x.course for x in courses"
                             ng-change="selectedCourseChanged()" access="super_user">
                     </select>
                 </div>
                 <br>
                 <div access="super_user">
-                    <h3>Select A Team:</h3>
-                    <select ng-model="studentTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()"
+                    <label style="color: black">Select A Team:</label>
+                    <select class="select_style" ng-model="studentTeam.value" ng-options="x.team for x in teams" ng-change="selectedTeamChanged()"
                             access="super_user">
                     </select>
                     <br>
                 </div>
+            </div>
+        </form>
+
+        <form role="form" access="admin">
+            <div class="panel-heading" >Manage Students</div>
+            <div class="form-group">
                 <div access="admin">
-                    <h3>Select A Team:</h3>
-                    <select ng-model="studentTeamAdmin.value" ng-options="x.team for x in adminTeams" ng-change="selectedTeamChangedAdmin()"
+                    <label style="color: black">Select A Team:</label>
+                    <select class="select_style" ng-model="studentTeamAdmin.value" ng-options="x.team for x in adminTeams" ng-change="selectedTeamChangedAdmin()"
                             access="admin">
                     </select>
                     <br>
                 </div>
             </div>
-            <div class="form-group" access="super_user admin">
-                <h3>Student Removal</h3>
-                <br>
-                    <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemove()">Remove From Course</button>
-                <br>
-                    <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove Student From Team?"? ng-really-click="studentTeamRemove()">Remove From Team</button>
-                <br>
-                    <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemoveAdmin()">Remove From Course</button>
-                <br>
-                    <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Team?"? ng-really-click="studentTeamRemoveAdmin()">Remove From Team</button>
-
-            </div>
-
-            <div class="form-group" access="super_user admin">
-
-                <h3>Student Enable/Disable</h3>
-                <br>
-                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Disable Student?"? ng-really-click="disableStudent()">Disable Student</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable Student?"? ng-really-click="enableStudent()">Enable Student</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable Student?"? ng-really-click="disableStudentAdmin()">Disable Student</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable Student?"? ng-really-click="enableStudentAdmin()">Enable Student</button>
-
-            </div>
-
-            <div class="form-group" access="super_user admin">
-
-                <h3>User Removal/Disable</h3>
-                <br>
-                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Disable User?"? ng-really-click="disableUser()">Disable User</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
-
-                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable User?"? ng-really-click="disableUser()">Disable User</button>
-                <br>
-                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
-
-            </div>
-
         </form>
+        <div class="form-group" access="super_user">
+            <h3>Student Removal</h3>
+            <br>
+                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemove()">Remove From Course</button>
+            <br>
+                <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove Student From Team?"? ng-really-click="studentTeamRemove()">Remove From Team</button>
+        </div>
+        <div class="form-group" access="super_user admin">
+            <h3>Student Removal</h3>
+            <br>
+                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Course?"? ng-really-click="studentCourseRemoveAdmin()">Remove From Course</button>
+            <br>
+                <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove Student From Team?"? ng-really-click="studentTeamRemoveAdmin()">Remove From Team</button>
+
+        </div>
+
+        <div class="form-group" access="super_user">
+
+            <h3>Student Enable/Disable</h3>
+            <br>
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Disable Student?"? ng-really-click="disableStudent()">Disable Student</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable Student?"? ng-really-click="enableStudent()">Enable Student</button>
+        </div>
+
+        <div class="form-group" access="super_user">
+
+            <h3>Student Enable/Disable</h3>
+            <br>
+            <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable Student?"? ng-really-click="disableStudentAdmin()">Disable Student</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable Student?"? ng-really-click="enableStudentAdmin()">Enable Student</button>
+
+        </div>
+
+        <div class="form-group" access="super_user">
+
+            <h3>User Removal/Disable</h3>
+            <br>
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Disable User?"? ng-really-click="disableUser()">Disable User</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="super_user" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
+        </div>
+        <div class="form-group" access="admin">
+
+            <h3>User Removal/Disable</h3>
+            <br>
+
+            <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Remove User?"? ng-really-click="removeUser()">Remove User</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Disable User?"? ng-really-click="disableUser()">Disable User</button>
+            <br>
+            <button type="submit" class="btn btn-primary" access="admin" ng-really-message="Enable User?"? ng-really-click="enableUser()">Enable User</button>
+
+        </div>
     </div>
 
     <div class="panel panel-primary">
         <div class="panel-heading">Profile Management</div>
         <form role="form">
             <div class="form-group">
-
-                <div>
-                    <h3>Courses</h3>
-                    <br>
+                <div access="student">
+                    <label style="color: black">Select My Courses:</label>
                     <select class="select_style" ng-model="studentCourse.value" ng-options="x.course for x in courses"
-                            ng-change="selectedCourseChanged()">
+                            ng-change="selectedCourseChanged()" access="student">
                     </select>
                 </div>
-            </div>
-            <div class="form-group">
+
                 <br>
-                <div id="teamList">
-                    <h3>Teams</h3>
-                    <br>
+                <div id="teamList" access="student"><h4>My Teams</h4>
                     <div class="list-group">
                         <div class="list-group-item">
                             <div ng-repeat="x in teams | filter:query" class="list-group-item" style="margin-top:16px">
-                                <div class="row-picture glyphicon-group" alt="icon">
+                                <div class="row-picture glyphicon-group" alt="icon" access="student">
                                 </div>
                                 <div class="row-content">
-                                    <p class="list-group-item-heading">{{x.team}}</p>
+                                    <p class="list-group-item-heading" access="student">{{x.team}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <br>
             </div>
             <div class="form-group">
                 <br>

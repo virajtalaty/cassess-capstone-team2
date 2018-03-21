@@ -22,12 +22,15 @@
 </div>
 
     <div class="panel panel-primary" access="super_user">
-        <div class="panel-heading" >Manage Students</div>
+        <div class="panel-heading" >Manage Admins</div>
         <form role="form">
             <div class="form-group">
-                <select class="select_style" ng-model="adminCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()"
-                        access="super_user">
-                </select>
+                <div access="super_user">
+                    <label style="color: black">Select A Course:</label>
+                    <select class="select_style" ng-model="adminCourse.value" ng-options="x.course for x in courses" ng-change="selectedCourseChanged()"
+                            access="super_user">
+                    </select>
+                </div>
             </div>
             <div class="form-group">
 
@@ -57,20 +60,17 @@
         </form>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" >
         <div class="panel-heading">Profile Management</div>
         <form role="form">
-            <div class="form-group">
-                <div id="courseList">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <h3>Courses</h3>
-                            <div ng-repeat="x in courses | filter:query" class="list-group-item" style="margin-top:16px">
-                                <div class="row-picture glyphicon-globe" alt="icon">
-                                </div>
-                                <div class="row-content">
-                                    <p class="list-group-item-heading" access="admin">{{x.course}}</p>
-                                </div>
+            <div id="courseList" access="admin"><h4>My Courses</h4>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div ng-repeat="x in courses | filter:query" class="list-group-item" style="margin-top:16px">
+                            <div class="row-picture glyphicon-globe" alt="icon" access="admin">
+                            </div>
+                            <div class="row-content">
+                                <p class="list-group-item-heading" access="admin">{{x.course}}</p>
                             </div>
                         </div>
                     </div>
