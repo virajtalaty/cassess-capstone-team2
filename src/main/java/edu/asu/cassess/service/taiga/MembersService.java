@@ -2,12 +2,11 @@ package edu.asu.cassess.service.taiga;
 
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
-import edu.asu.cassess.persist.entity.taiga.MemberData;
-import edu.asu.cassess.persist.entity.taiga.MemberDataID;
-import edu.asu.cassess.persist.entity.taiga.ProjectIDSlug;
-import edu.asu.cassess.persist.entity.taiga.TaigaMember;
+import edu.asu.cassess.persist.entity.rest.Team;
+import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.persist.repo.taiga.MemberRepo;
 import edu.asu.cassess.service.rest.ICourseService;
+import edu.asu.cassess.service.rest.ITeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -32,7 +31,10 @@ public class MembersService implements IMembersService {
     private ICourseService courseService;
 
     @Autowired
-    private IProjectQueryDao projectDao;
+    private ITeamsService teamsService;
+
+    @Autowired
+    private IProjectQueryDao projectService;
 
     public MembersService() {
         restTemplate = new RestTemplate();
@@ -89,12 +91,19 @@ public class MembersService implements IMembersService {
         System.out.println("Updating Members");
         Course tempCourse = (Course) courseService.read(course);
         String token = tempCourse.getTaiga_token();
-        List<ProjectIDSlug> idSlugList = projectDao.listGetTaigaProjectIDSlug(course);
-        if (token != null && !idSlugList.isEmpty()) {
-            for (ProjectIDSlug idSlug : idSlugList) {
-                System.out.println("Id: " + idSlug.getId());
-                getMembers(idSlug.getId(), token, 1, idSlug.getTeam(), course);
+        List<Team> teams = teamsService.listReadByCourse(course);
+        for(Team team : teams) {
+            String slug = team.getTaiga_project_slug();
+            Object object = projectService.getTaigaProject(slug);
+            if (object.getClass() == Project.class) {
+                Project project = (Project) object;
+                Long slugId = project.getId();
+                if (token != null && slugId != null) {
+                    //System.out.println("SlugId: " + slugId);
+                    getMembers(slugId, token, 1, team.getTeam_name(), course);
+                }
             }
         }
+
     }
 }

@@ -15,7 +15,11 @@ public interface IUserObjectQueryDao {
 
     <T> Object getUserByEmail(String course, String email) throws DataAccessException;
 
+    <T> Object getUserByDisplayName(String course, String display_name) throws DataAccessException;
+
     <T> Object deleteUserByEmail(String course, String email) throws DataAccessException;
 
     <T> List<UserObject> getUsersByEmail(String email) throws DataAccessException;
+
+    <T> List<UserObject> getUsersByDisplayName(String display_name) throws DataAccessException;
 }

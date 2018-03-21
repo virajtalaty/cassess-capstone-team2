@@ -33,15 +33,6 @@ public interface IProjectQueryDao {
      */
     <T> Object getTaigaProject(String slug) throws DataAccessException;
 
-    /**
-     * Get Project ID Slug(s) from database given this course.
-     *
-     * @param course the name of the course to filter by
-     * @return List of ProjectIDSlug object(s)
-     * @throws DataAccessException
-     */
-    List<ProjectIDSlug> listGetTaigaProjectIDSlug(String course) throws DataAccessException;
-
     RestResponse deleteTaigaProjectByCourse(Course course);
 
     RestResponse deleteTaigaProjectByTeam(Team team);

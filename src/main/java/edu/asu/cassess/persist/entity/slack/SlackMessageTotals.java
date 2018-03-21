@@ -18,6 +18,9 @@ public class SlackMessageTotals {
     @Column(name = "fullName")
     private String full_name;
 
+    @Column(name = "display_name")
+    private String display_name;
+
     @Column(name = "team")
     private String team;
 
@@ -31,12 +34,13 @@ public class SlackMessageTotals {
 
     }
 
-    public SlackMessageTotals(MessageTotalsID compositeId, String full_name, String team, String course, int message_count) {
+    public SlackMessageTotals(MessageTotalsID compositeId, String full_name, String team, String course, int message_count, String display_name) {
         this.compositeId = compositeId;
         this.full_name = full_name;
         this.team = team;
         this.course = course;
         this.message_count = message_count;
+        this.display_name = display_name;
     }
 
 
@@ -55,6 +59,14 @@ public class SlackMessageTotals {
 
     public void setFull_name(String full_name) {
         this.full_name = full_name;
+    }
+
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
     }
 
     public String getTeam() {

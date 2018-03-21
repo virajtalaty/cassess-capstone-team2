@@ -33,6 +33,15 @@ public class Student {
     @Column(name = "course")
     private String course;
 
+    @Column(name = "github_username")
+    private String github_username;
+
+    @Column(name = "taiga_username")
+    private String taiga_username;
+
+    @Column(name = "slack_username")
+    private String slack_username;
+
     @Transient
     private String password;
 
@@ -80,6 +89,31 @@ public class Student {
         }
         this.course = course;
     }
+
+    public String getGithub_username() {
+        return github_username;
+    }
+
+    public void setGithub_username(String github_username) {
+        this.github_username = github_username;
+    }
+
+    public String getTaiga_username() {
+        return taiga_username;
+    }
+
+    public void setTaiga_username(String taiga_username) {
+        this.taiga_username = taiga_username;
+    }
+
+    public String getSlack_username() {
+        return slack_username;
+    }
+
+    public void setSlack_username(String slack_username) {
+        this.slack_username = slack_username;
+    }
+
 
     public String getPassword() {
         return password;

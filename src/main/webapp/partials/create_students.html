@@ -38,7 +38,7 @@
                                 </select>
                             </div>
                             <div>
-                                <table class="table table-bordered table-striped" style="border-collapse: collapse;">
+                                <table class="table table-bordered table-striped" style="width:100%; border-collapse: collapse;">
                                     <thead>
                                         <tr>
                                             <th colspan="3">
@@ -49,13 +49,19 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Password</th>
+                                            <th>GitHub User</th>
+                                            <th>Taiga User</th>
+                                            <th>Slack User</th>
                                         </tr>
                                     </thead>
                                     <tbody style="overflow-y: scroll; max-height:200px;">
                                         <tr ng-repeat="student in students" ng-click="setClickedStudent($index)" ng-class="{'selected':$index === selectedRow}">
-                                            <td>{{student.full_name}}</td>
-                                            <td>{{student.email}}</td>
-                                            <td>{{student.password}}</td>
+                                            <td style="width:21%; word-break: break-all;">{{student.full_name}}</td>
+                                            <td style="width:20%; word-break: break-all;">{{student.email}}</td>
+                                            <td style="width:20%; word-break: break-all;">{{student.password}}</td>
+                                            <td style="width:13%; word-break: break-all;">{{student.github_username}}</td>
+                                            <td style="width:13%; word-break: break-all;">{{student.taiga_username}}</td>
+                                            <td style="width:13%; word-break: break-all;">{{student.slack_username}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -73,6 +79,18 @@
                                 <div class="form-group">
                                     <label>Password</label>
                                     <input type="password" class="form-control"ng-model="enteredPassword" placeholder="Enter password" ng-required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label>GitHub Username</label>
+                                    <input type="text" class="form-control"ng-model="enteredGitHubUsername" placeholder="Enter GitHub Username" ng-required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label>Taiga Username</label>
+                                    <input type="text" class="form-control"ng-model="enteredTaigaUsername" placeholder="Enter Taiga Username" ng-required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label>Slack Username</label>
+                                    <input type="text" class="form-control"ng-model="enteredSlackUsername" placeholder="Enter Slack Username" ng-required="false">
                                 </div>
                             </form>
                         </div>

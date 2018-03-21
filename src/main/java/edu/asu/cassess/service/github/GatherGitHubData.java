@@ -1,7 +1,6 @@
 package edu.asu.cassess.service.github;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -131,99 +129,65 @@ public class GatherGitHubData implements IGatherGitHubData {
 
             Date lastDate = null;
 
-            if (ghWeightQuery.getlastDate(course, team, userName) != null){
+            if (ghWeightQuery.getlastDate(course, team, userName) != null) {
                 lastDate = ghWeightQuery.getlastDate(course, team, userName).getGitHubPK().getDate();
             }
             //System.out.println("*******************************************************LastDate: " + lastDate);
             //System.out.println("*******************************************************UserName: " + userName);
 
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://api.github.com/users/" + userName)
-                    .queryParam("access_token", accessToken)
-                    .queryParam("scope", "")
-                    .queryParam("token_type", "bearer");
-            String urlPath = builder.build().toUriString();
-
-            GitHubUser user = restTemplate.getForObject(urlPath, GitHubUser.class);
-            String email = user.getEmail();
-
             boolean ghMatch = false;
             boolean studentEnabled = false;
 
-            if(email != null) {
-                Student student = new Student();
-                //System.out.println("Finding Student for Course: " + course + " & Team: " + team + " & Email: " + email);
-                Object object = studentsService.find(email, team, course);
-                if (object.getClass() == Student.class) {
-                    student = (Student) object;
-                    if (student.getEnabled() != null) {
-                        if (student.getEnabled()) {
-                            //System.out.println("**********************************************Enabled");
-                            studentEnabled = true;
-                        } else {
-                            //System.out.println("**********************************************Not Enabled");
-                            studentEnabled = false;
-                        }
+
+            Student student = new Student();
+            //System.out.println("Finding Student for Course: " + course + " & Team: " + team + " & Email: " + email);
+            Object object = studentsService.findGitHubUser(userName, team, course);
+            if (object.getClass() == Student.class) {
+                student = (Student) object;
+                ghMatch = true;
+                if (student.getEnabled() != null) {
+                    if (student.getEnabled()) {
+                        //System.out.println("**********************************************Enabled");
+                        studentEnabled = true;
                     } else {
                         //System.out.println("**********************************************Not Enabled");
                         studentEnabled = false;
                     }
-                    //System.out.println("Found Student for Course: " + student.getCourse() + " & Team: " + student.getTeam_name() + " & Email: " + student.getEmail());
-
-
-                    /*
-                    * This Check is potentially redundant, as Hibernate JPA should not return a Student object
-                    * technically if there is not a match for the Course-Team-Student combo, but this eliminates
-                    * entirely the possibility if there is a DB mis-match.  Also this does not reduce efficiency noticeably
-                     */
-                    if(student.getEmail().equalsIgnoreCase(email)) {
-                        if (student.getTeam_name().equalsIgnoreCase(team)) {
-                            if (student.getCourse().equalsIgnoreCase(course)) {
-                                ghMatch = true;
-                                //System.out.println("**********************************************GHMatch");
-                            } else {
-                                //System.out.println("**********************************************No GHMatch");
-                                ghMatch = false;
-                            }
-                        } else {
-                            //System.out.println("**********************************************No GHMatch");
-                            ghMatch = false;
-                        }
-                    } else {
-                        //System.out.println("**********************************************No GHMatch");
-                        ghMatch = false;
-                    }
                 } else {
-                    //System.out.println("**********************************************Not a Student in this Course-Team");
-                    ghMatch = false;
+                    //System.out.println("**********************************************Not Enabled");
+                    studentEnabled = false;
                 }
             } else {
-                //System.out.println("*****************************************************Email is null");
+                //System.out.println("**********************************************Not a Student);
+                ghMatch = false;
             }
-            if(studentEnabled && ghMatch){
+            //System.out.println("Found Student for Course: " + student.getCourse() + " & Team: " + student.getTeam_name() + " & Email: " + student.getEmail());
+
+
+            if (studentEnabled && ghMatch) {
                 for (Weeks week : weeks) {
                     Date date = new Date(week.getW() * 1000L);
                     //System.out.print("*********************************************************ContribDate: " + date);
-                    if(lastDate == null || !date.before(lastDate)){
+                    if (lastDate == null || !date.before(lastDate)) {
                         //System.out.println("*****************************************************Inserting to DB");
                         int linesAdded = week.getA();
                         int linesDeleted = week.getD();
                         int commits = week.getC();
 
                         //System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & Email: " + email);
-                        commitDataRepo.save(new CommitData(date, userName, email, linesAdded, linesDeleted, commits, projectName, owner, team, course));
+                        commitDataRepo.save(new CommitData(date, userName, student.getEmail(), linesAdded, linesDeleted, commits, projectName, owner, team, course));
 
                         int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
                         //System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & Email: " + email);
-                        GitHubWeight gitHubWeight = new GitHubWeight(email, date, weight, userName, team, course);
+                        GitHubWeight gitHubWeight = new GitHubWeight(student.getEmail(), date, weight, userName, team, course);
                         weightRepo.save(gitHubWeight);
-                    }  else {
+                    } else {
                         //System.out.println("*****************************************************Not Inserting to DB");
                     }
                 }
             } else {
                 //System.out.println("*****************************************************Not a match or not enabled");
             }
-
         }
     }
 

@@ -149,7 +149,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                FROM\n" +
                 "                (select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "\t\t\t      TSK.fullName,\n" +
                 "\t\t\t      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -166,7 +165,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                               @lasttasksReadyForTest \\:= 0) SQLVars\n" +
                 "                WHERE course = ?1\n" +
                 "                AND team = ?2\n" +
-                "    AND project = ?2\n" +
                 "                   order by\n" +
                 "                      TSK.fullName,\n" +
                 "                      TSK.retrievalDate) query1\n" +
@@ -190,7 +188,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                                FROM\n" +
                 "                                (select\n" +
                 "                                      TSK.retrievalDate,\n" +
-                "                                      TSK.project,\n" +
                 "\t\t\t\t\t\t\t\t\t\tTSK.fullName,\n" +
                 "\t\t\t\t\t\t\t\t\t  if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -233,7 +230,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "                FROM\n" +
                 "                (select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "\t\t\t      TSK.fullName,\n" +
                 "\t\t\t      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -277,7 +273,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -328,7 +323,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -377,7 +371,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -423,7 +416,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -474,7 +466,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -523,7 +514,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "FROM\n" +
                 "(select\n" +
                 "                      TSK.retrievalDate,\n" +
-                "                      TSK.project,\n" +
                 "                      TSK.fullName,\n" +
                 "                      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "                      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -562,7 +552,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -599,7 +588,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -638,7 +626,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -679,7 +666,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -717,7 +703,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +
@@ -757,7 +742,6 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
                 "COALESCE(AVG(NULLIF(tasksInProgressDIFF ,0)), 0) as 'InProgressAverage', COALESCE(AVG(NULLIF(tasksReadyForTestDIFF ,0)), 0) as 'ToTestAverage'\n" +
                 "FROM(select\n" +
                 "      TSK.retrievalDate,\n" +
-                "      TSK.project,\n" +
                 "      TSK.fullName,\n" +
                 "      if( @lastfullName = TSK.fullName, ABS(TSK.tasksClosed - @lasttasksClosed), TSK.tasksClosed) as tasksClosedDIFF,\n" +
                 "      @lasttasksClosed \\:= TSK.tasksClosed,\n" +

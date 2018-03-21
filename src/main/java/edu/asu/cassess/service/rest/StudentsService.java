@@ -37,6 +37,25 @@ public class StudentsService implements IStudentsService {
     }
 
     @Override
+    public <T> Object findGitHubUser(String github_username, String team, String course) {
+
+        return studentsDao.findGitHubUser(github_username, team, course);
+    }
+
+    @Override
+    public <T> Object findTaigaUser(String taiga_username, String team, String course) {
+
+        return studentsDao.findTaigaUser(taiga_username, team, course);
+    }
+
+    @Override
+    public <T> Object findSlackUser(String slack_username, String team, String course) {
+
+        return studentsDao.findSlackUser(slack_username, team, course);
+    }
+
+
+    @Override
     public <T> Object find(String email, String course) {
 
         return studentsDao.find(email, course);
