@@ -110,6 +110,51 @@ public class StudentsServiceDao {
     }
 
     @Transactional
+    public <T> Object findGitHubUser(String github_username, String team, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND github_username = ?3", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, github_username);
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            Student student = (Student) results.get(0);
+            return student;
+        } else {
+            return new RestResponse(github_username + " does not exist in database");
+        }
+    }
+
+    @Transactional
+    public <T> Object findTaigaUser(String taiga_username, String team, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND taiga_username = ?3", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, taiga_username);
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            Student student = (Student) results.get(0);
+            return student;
+        } else {
+            return new RestResponse(taiga_username + " does not exist in database");
+        }
+    }
+
+    @Transactional
+    public <T> Object findSlackUser(String slack_username, String team, String course) {
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND slack_username = ?3", Student.class);
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, slack_username);
+        List results = query.getResultList();
+        if (!results.isEmpty()) {
+            Student student = (Student) results.get(0);
+            return student;
+        } else {
+            return new RestResponse(slack_username + " does not exist in database");
+        }
+    }
+
+    @Transactional
     public <T> Object find(String email, String course) {
         Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND email = ?2", Student.class);
         query.setParameter(1, course);

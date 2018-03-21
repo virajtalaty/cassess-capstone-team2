@@ -17,6 +17,12 @@ public interface IStudentsService {
 
     <T> Object find(String email, String team, String course);
 
+    <T> Object findGitHubUser(String github_username, String team, String course);
+
+    <T> Object findTaigaUser(String taiga_username, String team, String course);
+
+    <T> Object findSlackUser(String slack_username, String team, String course);
+
     <T> Object find(String email, String course);
 
     <T> Object delete(Student student);

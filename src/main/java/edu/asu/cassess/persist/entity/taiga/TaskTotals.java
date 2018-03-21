@@ -20,8 +20,11 @@ public class TaskTotals {
     @Column(name = "fullName")
     private String full_name;
 
-    @Column(name = "project")
-    private String project_name;
+    @Column(name = "taiga_username")
+    private String taiga_username;
+
+    @Column(name = "slug")
+    private String slug;
 
     @Column(name = "tasksClosed")
     private int tasks_closed;
@@ -42,10 +45,11 @@ public class TaskTotals {
 
     }
 
-    public TaskTotals(TaskTotalsID compositeId, String full_name, String project_name, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open) {
+    public TaskTotals(TaskTotalsID compositeId, String full_name, String taiga_username, String slug, int tasks_closed, int tasks_new, int tasks_in_progress, int tasks_ready_for_test, int tasks_open) {
         this.compositeId = compositeId;
         this.full_name = full_name;
-        this.project_name = project_name;
+        this.taiga_username = taiga_username;
+        this.slug = slug;
         this.tasks_closed = tasks_closed;
         this.tasks_new = tasks_new;
         this.tasks_in_progress = tasks_in_progress;
@@ -69,12 +73,20 @@ public class TaskTotals {
         this.full_name = full_name;
     }
 
-    public String getProject_name() {
-        return project_name;
+    public String getTaiga_username() {
+        return taiga_username;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
+    public void setTaiga_username(String taiga_username) {
+        this.taiga_username = taiga_username;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public int getTasks_closed() {

@@ -178,8 +178,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
         List<Student> students = studentService.listReadByTeam(course, team);
         for (Student student : students) {
             int messageCount = 0;
-            String email = student.getEmail();
-            List<UserObject> userObjects = userObjectQueryDao.getUsersByEmail(email);
+            List<UserObject> userObjects = userObjectQueryDao.getUsersByDisplayName(student.getSlack_username());
             if(userObjects != null) {
                 for (UserObject userObject : userObjects) {
                     if (countsMap.get(userObject.getId()) != null) {
@@ -190,7 +189,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
                     //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
                     if (student.getEnabled() != null) {
                         if (student.getEnabled() != false) {
-                            slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount));
+                            slackMessageTotalsRepo.save(new SlackMessageTotals(new MessageTotalsID(userObject.getProfile().getEmail(), channelID), userObject.getProfile().getReal_name(), student.getTeam_name(), course, messageCount, student.getSlack_username()));
                         }
                     }
                 }

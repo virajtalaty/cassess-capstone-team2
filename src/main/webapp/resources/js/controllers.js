@@ -3634,34 +3634,45 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     if($scope.enteredEmail != null && $scope.enteredEmail != ''){
                         if($scope.enteredName != null && $scope.enteredName != ''){
                             if($scope.enteredPassword != null && $scope.enteredPassword != ''){
-                                $scope.student.email = $scope.enteredEmail;
-                                $scope.student.full_name = $scope.enteredName;
-                                $scope.student.password = $scope.enteredPassword;
-                                var exists = false;
-                                for (var i in $scope.students) {
-                                    if($scope.students[i].email ===  $scope.student.email){
-                                        $scope.students[i] = $scope.student;
-                                        //console.log("Students exists: " + $scope.student.email + "; replacing");
-                                        exists = true;
-                                    }
-                                }
-                                if(!exists) {
-                                    if(!$scope.students || $scope.students.length === 0){
-                                        //console.log("Students 1st entry: " + $scope.student.email);
-                                        $scope.students = [$scope.student];
+                                if($scope.enteredGitHubUsername != null && $scope.enteredGitHubUsername != ''){
+                                    if($scope.enteredTaigaUsername != null && $scope.enteredTaigaUsername != '') {
+                                        $scope.student.email = $scope.enteredEmail;
+                                        $scope.student.full_name = $scope.enteredName;
+                                        $scope.student.password = $scope.enteredPassword;
+                                        $scope.student.github_username = $scope.enteredGitHubUsername;
+                                        $scope.student.taiga_username = $scope.enteredTaigaUsername;
+                                        $scope.student.slack_username = $scope.enteredSlackUsername;
+                                        var exists = false;
+                                        for (var i in $scope.students) {
+                                            if ($scope.students[i].email === $scope.student.email) {
+                                                $scope.students[i] = $scope.student;
+                                                //console.log("Students exists: " + $scope.student.email + "; replacing");
+                                                exists = true;
+                                            }
+                                        }
+                                        if (!exists) {
+                                            if (!$scope.students || $scope.students.length === 0) {
+                                                //console.log("Students 1st entry: " + $scope.student.email);
+                                                $scope.students = [$scope.student];
+                                            } else {
+                                                $scope.students.push($scope.student);
+                                                //console.log("Pushing student: " + $scope.student.email);
+                                            }
+                                        }
+                                        $scope.clearStudentForm();
+                                        $scope.student = {};
+                                        //console.log("Next Index: " + nextIndex);
+                                        //console.log("Current Index: " + teamIndex);
+                                        //console.log("From CSV: " + fromCSV);
+                                        if (!fromCSV || nextIndex != teamIndex) {
+                                            $scope.applyChanges();
+                                        }
                                     } else {
-                                        $scope.students.push($scope.student);
-                                        //console.log("Pushing student: " + $scope.student.email);
+                                            $scope.message = 'Please Enter Taiga username prior to saving a student';
+                                        }
+                                    } else {
+                                        $scope.message = 'Please Enter GitHub username prior to saving a student';
                                     }
-                                }
-                                $scope.clearStudentForm();
-                                $scope.student = {};
-                                //console.log("Next Index: " + nextIndex);
-                                //console.log("Current Index: " + teamIndex);
-                                //console.log("From CSV: " + fromCSV);
-                                if(!fromCSV || nextIndex != teamIndex){
-                                    $scope.applyChanges();
-                                }
                             } else {
                                 $scope.message = 'Please Enter Password prior to saving a student';
                             }
@@ -3708,6 +3719,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                                 $scope.enteredEmail = studentsArray[i].email;
                                 $scope.enteredName = studentsArray[i].full_name;
                                 $scope.enteredPassword = studentsArray[i].password;
+                                $scope.enteredGitHubUsername = studentsArray[i].github_username;
+                                $scope.enteredTaigaUsername = studentsArray[i].taiga_username;
+                                $scope.enteredSlackUsername = studentsArray[i].slack_username;
                                 $scope.currentTeam = $scope.selectedTeam.team_name;
                                 $scope.saveStudent();
                                 $scope.$apply();
@@ -3742,6 +3756,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.enteredName = '';
                 $scope.enteredEmail = '';
                 $scope.enteredPassword = '';
+                $scope.enteredGitHubUsername = '';
+                $scope.enteredTaigaUsername = '';
+                $scope.enteredSlackUsername = '';
         };
 
         $scope.editStudent = function() {
@@ -3754,6 +3771,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.enteredName = $scope.student.full_name;
             $scope.enteredEmail = $scope.student.email;
             $scope.enteredPassword = $scope.student.password;
+            $scope.enteredGitHubUsername = $scope.github_username;
+            $scope.enteredTaigaUsername = $scope.taiga_username;
+            $scope.enteredSlackUsername = $scope.slack_username;
         };
 
         $scope.applyChanges = function() {

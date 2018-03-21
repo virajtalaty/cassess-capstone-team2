@@ -4,11 +4,13 @@ import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.taiga.*;
 import edu.asu.cassess.persist.repo.taiga.TaskTotalsRepo;
 import edu.asu.cassess.service.rest.CourseService;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
+import edu.asu.cassess.service.rest.ITeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -60,6 +62,9 @@ public class TaskDataService implements ITaskDataService {
     @Autowired
     private IStudentsService studentsService;
 
+    @Autowired
+    private ITeamsService teamsService;
+
     public TaskDataService() {
         restTemplate = new RestTemplate();
         tasksListURL = "https://api.taiga.io/api/v1/tasks?project=";
@@ -86,21 +91,21 @@ public class TaskDataService implements ITaskDataService {
 
         for (TaskData task:tasks) {
             if (task.getAssignmentData() != null) {
-                //System.out.println("-----------------------------****************************************Full Name Display: " + task.getAssignmentData().getFull_name_display());
-                //System.out.println("-----------------------------****************************************ClosedMap " + closedMap.get(task.getAssignmentData().getFull_name_display()));
-                MutableInt closedCount = closedMap.get(task.getAssignmentData().getFull_name_display());
-                //System.out.println("-----------------------------****************************************NewMap " + newMap.get(task.getAssignmentData().getFull_name_display()));
-                MutableInt newCount = newMap.get(task.getAssignmentData().getFull_name_display());
-                //System.out.println("-----------------------------****************************************InProgressMap " + inProgressMap.get(task.getAssignmentData().getFull_name_display()));
-                MutableInt inProgressCount = inProgressMap.get(task.getAssignmentData().getFull_name_display());
-                //System.out.println("-----------------------------****************************************ReadyForTestMap " + readyForTestMap.get(task.getAssignmentData().getFull_name_display()));
-                MutableInt readyForTestCount = readyForTestMap.get(task.getAssignmentData().getFull_name_display());
+                //System.out.println("-----------------------------****************************************User Name Display: " + task.getAssignmentData().getUsername());
+                //System.out.println("-----------------------------****************************************ClosedMap " + closedMap.get(task.getAssignmentData().getUsername()));
+                MutableInt closedCount = closedMap.get(task.getAssignmentData().getUsername());
+                //System.out.println("-----------------------------****************************************NewMap " + newMap.get(task.getAssignmentData().getUsername()));
+                MutableInt newCount = newMap.get(task.getAssignmentData().getUsername());
+                //System.out.println("-----------------------------****************************************InProgressMap " + inProgressMap.get(task.getAssignmentData().getUsername()));
+                MutableInt inProgressCount = inProgressMap.get(task.getAssignmentData().getUsername());
+                //System.out.println("-----------------------------****************************************ReadyForTestMap " + readyForTestMap.get(task.getAssignmentData().getUsername()));
+                MutableInt readyForTestCount = readyForTestMap.get(task.getAssignmentData().getUsername());
 
                 if (task.getStatusData() != null) {
                     if (task.getStatusData().getName() != null) {
                         if (task.getStatusData().getName().equalsIgnoreCase("Closed")) {
                             if (closedCount == null) {
-                                closedMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                                closedMap.put(task.getAssignmentData().getUsername(), new MutableInt());
                             } else {
                                 closedCount.increment();
                             }
@@ -108,7 +113,7 @@ public class TaskDataService implements ITaskDataService {
 
                         if (task.getStatusData().getName().equalsIgnoreCase("New")) {
                             if (newCount == null) {
-                                newMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                                newMap.put(task.getAssignmentData().getUsername(), new MutableInt());
                             } else {
                                 newCount.increment();
                             }
@@ -116,7 +121,7 @@ public class TaskDataService implements ITaskDataService {
                         //System.out.println("-----------------------------****************************************InProgressStatus " + task.getStatusData().getName().equalsIgnoreCase("In Progress"));
                         if (task.getStatusData().getName().equalsIgnoreCase("In Progress")) {
                             if (inProgressCount == null) {
-                                inProgressMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                                inProgressMap.put(task.getAssignmentData().getUsername(), new MutableInt());
                             } else {
                                 inProgressCount.increment();
                             }
@@ -124,7 +129,7 @@ public class TaskDataService implements ITaskDataService {
                         //System.out.println("-----------------------------****************************************ReadyForTestStatus " + task.getStatusData().getName().equalsIgnoreCase("Ready For Test"));
                         if (task.getStatusData().getName().equalsIgnoreCase("Ready For Test")) {
                             if (readyForTestCount == null) {
-                                readyForTestMap.put(task.getAssignmentData().getFull_name_display(), new MutableInt());
+                                readyForTestMap.put(task.getAssignmentData().getUsername(), new MutableInt());
                             } else {
                                 readyForTestCount.increment();
                             }
@@ -146,40 +151,39 @@ public class TaskDataService implements ITaskDataService {
 
     @Override
     public void getTaskTotals(String slug, String course) {
-        List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
-        for (MemberData member : memberNames) {
-            Student student = new Student();
-            Object object = studentsService.find(member.getCompositeId().getEmail(), member.getCompositeId().getTeam(), course);
-            if(object.getClass() == Student.class){
-                student = (Student) object;
-            }
-            String name = member.getFull_name();
-            int closedTasks = 0;
-            int newTasks = 0;
-            int inProgressTasks = 0;
-            int readyForTestTasks = 0;
-            if(closedMap.get(name) != null) {
-                closedTasks = closedMap.get(name).get();
-            }
-            if(newMap.get(name) != null) {
-                newTasks = newMap.get(name).get();
-            }
-            if(inProgressMap.get(name) != null) {
-                inProgressTasks = inProgressMap.get(name).get();
-            }
-            if(readyForTestMap.get(name) != null) {
-                readyForTestTasks = readyForTestMap.get(name).get();
-            }
-            int openTasks = newTasks + inProgressTasks + readyForTestTasks;
-            //System.out.println("----------------------------**********************************************=========User: " + name);
-            //System.out.println("----------------------------**********************************************=========ClosedCount: " + closedTasks);
-            //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
-            //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
-            //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
-            if (student.getEnabled() != null) {
-                if (student.getEnabled() != false) {
-                    TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(member.getCompositeId().getEmail(), member.getCompositeId().getTeam(), course), name, member.getProject_name(), closedTasks, newTasks, inProgressTasks,
-                            readyForTestTasks, openTasks));
+        //List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
+        List<Team> teams = teamsService.listReadByCourse(course);
+        for(Team team : teams){
+            List<Student> students = studentsService.listReadByTeam(course, team.getTeam_name());
+            for (Student student : students) {
+                String taiga_username = student.getTaiga_username();
+                int closedTasks = 0;
+                int newTasks = 0;
+                int inProgressTasks = 0;
+                int readyForTestTasks = 0;
+                if (closedMap.get(taiga_username) != null) {
+                    closedTasks = closedMap.get(taiga_username).get();
+                }
+                if (newMap.get(taiga_username) != null) {
+                    newTasks = newMap.get(taiga_username).get();
+                }
+                if (inProgressMap.get(taiga_username) != null) {
+                    inProgressTasks = inProgressMap.get(taiga_username).get();
+                }
+                if (readyForTestMap.get(taiga_username) != null) {
+                    readyForTestTasks = readyForTestMap.get(taiga_username).get();
+                }
+                int openTasks = newTasks + inProgressTasks + readyForTestTasks;
+                //System.out.println("----------------------------**********************************************=========User: " + taiga_username);
+                //System.out.println("----------------------------**********************************************=========ClosedCount: " + closedTasks);
+                //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
+                //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
+                //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
+                if (student.getEnabled() != null) {
+                    if (student.getEnabled() != false) {
+                        TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(student.getEmail(), student.getTeam_name(), course), student.getFull_name(), taiga_username, slug, closedTasks, newTasks, inProgressTasks,
+                                readyForTestTasks, openTasks));
+                    }
                 }
             }
         }

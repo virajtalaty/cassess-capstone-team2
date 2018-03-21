@@ -15,6 +15,8 @@ public class UserProfile {
     private String real_name;
     private String email;
 
+    private String display_name;
+
     public UserProfile() {
 
     }
@@ -74,6 +76,14 @@ public class UserProfile {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
     }
 
 }
