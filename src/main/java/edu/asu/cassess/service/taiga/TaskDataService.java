@@ -81,7 +81,7 @@ public class TaskDataService implements ITaskDataService {
 
         headers.add("x-disable-pagination", "True");
 
-        System.out.println("Page: " + page);
+        //System.out.println("Page: " + page);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
@@ -138,7 +138,7 @@ public class TaskDataService implements ITaskDataService {
                 }
             }
         }
-        System.out.println("Headers Response" + taskList.getHeaders());
+        //System.out.println("Headers Response" + taskList.getHeaders());
 
         if (taskList.getHeaders().containsKey("x-pagination-next")) {
             page++;
@@ -150,40 +150,36 @@ public class TaskDataService implements ITaskDataService {
     }
 
     @Override
-    public void getTaskTotals(String slug, String course) {
-        //List<MemberData> memberNames = MemberQueryDao.getMembers("Product Owner", slug);
-        List<Team> teams = teamsService.listReadByCourse(course);
-        for(Team team : teams){
-            List<Student> students = studentsService.listReadByTeam(course, team.getTeam_name());
-            for (Student student : students) {
-                String taiga_username = student.getTaiga_username();
-                int closedTasks = 0;
-                int newTasks = 0;
-                int inProgressTasks = 0;
-                int readyForTestTasks = 0;
-                if (closedMap.get(taiga_username) != null) {
-                    closedTasks = closedMap.get(taiga_username).get();
-                }
-                if (newMap.get(taiga_username) != null) {
-                    newTasks = newMap.get(taiga_username).get();
-                }
-                if (inProgressMap.get(taiga_username) != null) {
-                    inProgressTasks = inProgressMap.get(taiga_username).get();
-                }
-                if (readyForTestMap.get(taiga_username) != null) {
-                    readyForTestTasks = readyForTestMap.get(taiga_username).get();
-                }
-                int openTasks = newTasks + inProgressTasks + readyForTestTasks;
-                //System.out.println("----------------------------**********************************************=========User: " + taiga_username);
-                //System.out.println("----------------------------**********************************************=========ClosedCount: " + closedTasks);
-                //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
-                //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
-                //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
-                if (student.getEnabled() != null) {
-                    if (student.getEnabled() != false) {
-                        TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(student.getEmail(), student.getTeam_name(), course), student.getFull_name(), taiga_username, slug, closedTasks, newTasks, inProgressTasks,
-                                readyForTestTasks, openTasks));
-                    }
+    public void getTaskTotals(String slug, Course course, Team team) {
+        List<Student> students = studentsService.listReadByTeam(course.getCourse(), team.getTeam_name());
+        for (Student student : students) {
+            String taiga_username = student.getTaiga_username();
+            int closedTasks = 0;
+            int newTasks = 0;
+            int inProgressTasks = 0;
+            int readyForTestTasks = 0;
+            if (closedMap.get(taiga_username) != null) {
+                closedTasks = closedMap.get(taiga_username).get();
+            }
+            if (newMap.get(taiga_username) != null) {
+                newTasks = newMap.get(taiga_username).get();
+            }
+            if (inProgressMap.get(taiga_username) != null) {
+                inProgressTasks = inProgressMap.get(taiga_username).get();
+            }
+            if (readyForTestMap.get(taiga_username) != null) {
+                readyForTestTasks = readyForTestMap.get(taiga_username).get();
+            }
+            int openTasks = newTasks + inProgressTasks + readyForTestTasks;
+            //System.out.println("----------------------------**********************************************=========User: " + taiga_username);
+            //System.out.println("----------------------------**********************************************=========ClosedCount: " + closedTasks);
+            //System.out.println("----------------------------**********************************************=========NewCount: " + newTasks);
+            //System.out.println("----------------------------**********************************************=========inProgressCount: " + inProgressTasks);
+            //System.out.println("----------------------------**********************************************=========readyForTestCount: " + readyForTestTasks);
+            if (student.getEnabled() != null) {
+                if (student.getEnabled() != false) {
+                    TaskTotalsRepo.save(new TaskTotals(new TaskTotalsID(student.getEmail(), student.getTeam_name(), course.getCourse()), student.getFull_name(), taiga_username, slug, closedTasks, newTasks, inProgressTasks,
+                            readyForTestTasks, openTasks));
                 }
             }
         }
@@ -194,7 +190,7 @@ public class TaskDataService implements ITaskDataService {
      */
     @Override
     public void updateTaskTotals(String course) {
-        System.out.println("Updating Tasks");
+        //System.out.println("Updating Tasks");
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
@@ -215,9 +211,9 @@ public class TaskDataService implements ITaskDataService {
                     Project project = (Project) object;
                     Long slugId = project.getId();
                     if (token != null && slugId != null) {
-                        System.out.println("Id: " + slugId + "/Slug: " + slug);
+                        //System.out.println("Id: " + slugId + "/Slug: " + slug);
                         getTasks(slugId, token, 1);
-                        getTaskTotals(slug, course);
+                        getTaskTotals(slug, tempCourse, team);
                         closedMap.clear();
                         newMap.clear();
                         inProgressMap.clear();

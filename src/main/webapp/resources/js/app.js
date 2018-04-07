@@ -90,6 +90,12 @@ myapp.config(function ($routeProvider, USER_ROLES) {
             loginRequired: false,
             authorizedRoles: [USER_ROLES.all]
         }
+    }).when('/metricsGuide', {
+        templateUrl: 'partials/metricsGuide.html',
+        access: {
+            loginRequired: false,
+            authorizedRoles: [USER_ROLES.all]
+        }
     }).when('/users', {
         templateUrl: 'partials/users.html',
         controller: 'UsersController',

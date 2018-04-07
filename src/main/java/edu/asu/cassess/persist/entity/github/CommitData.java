@@ -14,7 +14,7 @@ import java.sql.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommitData {
     @EmbeddedId
-    private GitHubPK gitHubPK;
+    GitHubPK gitHubPK;
 
     @Column(name = "lines_of_code_added")
     private int linesOfCodeAdded;
@@ -37,8 +37,8 @@ public class CommitData {
     public CommitData() {
     }
 
-    public CommitData(Date date, String username, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner, String team, String course) {
-        this.gitHubPK = new GitHubPK(course, team, username, date);
+    public CommitData(GitHubPK gitHubPK, String email, int linesOfCodeAdded, int linesOfCodeDeleted, int commits, String projectName, String gitHubOwner) {
+        this.gitHubPK = gitHubPK;
         this.email = email;
         this.linesOfCodeAdded = linesOfCodeAdded;
         this.linesOfCodeDeleted = linesOfCodeDeleted;

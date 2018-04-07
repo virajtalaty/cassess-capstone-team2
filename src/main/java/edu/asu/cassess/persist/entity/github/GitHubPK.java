@@ -3,7 +3,8 @@ package edu.asu.cassess.persist.entity.github;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Embeddable
 public class GitHubPK implements Serializable {
@@ -18,14 +19,14 @@ public class GitHubPK implements Serializable {
     protected String username;
 
     @Column(name="date")
-    protected Date date;
+    protected String date;
 
     public GitHubPK() {
 
     }
 
     public GitHubPK(String course, String team, String username, Date date) {
-        this.date = date;
+        this.date = new SimpleDateFormat("yyyy-MM-dd").format(date);
         this.username = username;
         this.team = team;
         this.course = course;
@@ -55,11 +56,11 @@ public class GitHubPK implements Serializable {
         this.username = username;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

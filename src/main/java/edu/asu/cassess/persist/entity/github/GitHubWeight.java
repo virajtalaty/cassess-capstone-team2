@@ -10,7 +10,7 @@ import java.sql.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubWeight {
     @EmbeddedId
-    private GitHubPK gitHubPK;
+    GitHubPK gitHubPK;
 
     @Column(name="weight")
     private int weight;
@@ -22,8 +22,8 @@ public class GitHubWeight {
 
     }
 
-    public GitHubWeight(String email, Date date, int weight, String username, String team, String course) {
-        gitHubPK = new GitHubPK(course, team, username, date);
+    public GitHubWeight(GitHubPK gitHubPK, String email, int weight) {
+        this.gitHubPK = gitHubPK;
         this.email = email;
         this.weight = weight;
     }
