@@ -29,50 +29,59 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <div ng-show="isSet(1)">
-                        <h3>Taiga-Github-Slack Frequency</h3><br>
+                        <p class="text-warning text-left">
+                            Note: Graph data is overlaid in a Course->Team->Student
+                            hierarchy to show comparison, depending on which level is being viewed.
+                            Clicking on a legend item (course, team, student), temporarily removes
+                            that item from the graph for viewing underlying items easier.
+                        </p>
+                        <br>
+                        <h3>Overall Frequency</h3><br>
                         <div>
                             <h4 class="lead bg-primary">Taiga</h4>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the amount of days in the week that task
-                                state changes were made, aggregated to a proportional number.
+                                state changes were made, aggregated to a proportional 0 to 3 scale.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
                             <h5 class="lead bg-primary">GitHub</h5>
-                            <p class="lead text-info">
-                                Refers to the amount of days in the week that commit
-                                activity was done, aggregated to a proportional number.
+                            <p class="lead text-info text-left">
+                                Refers to the amount of weekly commit activity that
+                                was done, aggregated to a proportional 0 to 3 scale.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
                             <h5 class="lead bg-primary">Slack</h5>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the amount of days in the week that messages
-                                were made in the group, aggregated to a proportional number.
+                                were made in the group, aggregated to a proportional 0 to 3 scale.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
                         </div>
                         <div>
-                            <h3>Taiga-Github-Slack Impact(Weight)</h3><br>
+                            <h3>Overall Impact(Weight)</h3><br>
                             <h5 class="lead bg-primary">Taiga</h5>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the amount of task state changes that were made
-                                for a week, aggregated to a proportional number.
+                                for a week, aggregated to a proportional 0 to 3 scale.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
                             <h5 class="lead bg-primary">GitHub</h5>
-                            <p class="lead text-info">
-                                Refers to the amount of commits that were made
-                                for a week, aggregated to a proportional number.
+                            <p class="lead text-info text-left">
+                                Refers to the total lines of code changes that were
+                                made for a week, aggregated to a proportional 0 to 3 scale.
+                                Lines of code deleted are given 25% of the value that lines
+                                of code added are, for weight purposes.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
                             <h5 class="lead bg-primary">Slack</h5>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the amount of messages that were sent in a group
-                                for a week, aggregated to a proportional number.
+                                for a week, aggregated to a proportional 0 to 3 scale.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
                             <br>
@@ -83,9 +92,9 @@
                         <br>
                         <h3>Task Totals</h3><br>
                         <div>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the individual task state amounts per day collected:
-                                'In Progress', 'Ready For Test', and 'Closed'
+                                'In Progress', 'Ready For Test', and 'Closed'.
                                 These are selectable by week/multi-week ranges.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
@@ -93,9 +102,9 @@
                         <br>
                         <h3>Task Status Update Activity</h3><br>
                         <div>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the daily difference/change in task states:
-                                'In Progress', 'Ready For Test', and 'Closed'
+                                'In Progress', 'Ready For Test', and 'Closed'.
                                 This is listed by week, from aggregated totals.
                                 Averages for total Course and Team, individual totals for Student
                             </p>
@@ -104,7 +113,7 @@
                     <div ng-if="isSet(3)">
                         <h3>GitHub Data</h3>
                         <br>
-                        <p class="lead text-warning">
+                        <p class="text-warning">
                             Note: GitHub API supplies commit and LOC data by week beginning only,
                             this is why it is listed as such in the graphs
                         </p>
@@ -112,7 +121,7 @@
                         <h3>GitHub Commit Activity</h3><br>
                         <div>
                             <h5 class="lead bg-primary">Commits</h5>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the number of commits per week, that are made to the master
                                 branch.  Other branch commits are factored in upon pull request merge,
                                 is selectable by week/multi-week ranges.
@@ -120,7 +129,7 @@
                             </p>
                             <br>
                             <h5 class="lead bg-primary">Lines of Code</h5>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the Lines of Code Added and also Deleted per week,
                                 that are made to the master branch, Other branch lines of code
                                 are factored in upon pull request merge, is selectable by
@@ -132,7 +141,7 @@
                         <br>
                         <h3>GitHub Weight Activity</h3><br>
                         <div>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to an aggregated proportional value calculated
                                 from the total code alteration, ie Lines of Code Added
                                 and also Deleted per week, that are made to the master
@@ -147,7 +156,7 @@
                         <br>
                         <h3>Message Totals</h3><br>
                         <div>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the daily slack message totals for messages
                                 sent in a group, is selectable by week/multi-week ranges.
                                 Averages for total Course and Team, individual totals for Student
@@ -156,7 +165,7 @@
                         <br>
                         <h3>Message Activity</h3><br>
                         <div>
-                            <p class="lead text-info">
+                            <p class="lead text-info text-left">
                                 Refers to the weekly slack message totals for messages
                                 sent in a group.
                                 Averages for total Course and Team, individual totals for Student
