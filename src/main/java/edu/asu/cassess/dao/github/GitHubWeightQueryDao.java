@@ -91,7 +91,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     public GitHubWeight getlastDate(String course, String team, String username) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT course, " +
                 "DATE_SUB(max(date), INTERVAL 7 DAY) as date, team, username, email, weight " +
-                "FROM github_weight\n" +
+                "FROM cassess.github_weight\n" +
                 "WHERE course = ?1\n" +
                 "AND team = ?2\n" +
                 "AND username = ?3\n", GitHubWeight.class);

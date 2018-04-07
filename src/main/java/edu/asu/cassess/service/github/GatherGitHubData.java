@@ -9,6 +9,7 @@ import edu.asu.cassess.dao.github.IGitHubWeightQueryDao;
 import edu.asu.cassess.model.github.GitHubAnalytics;
 import edu.asu.cassess.persist.entity.github.CommitData;
 
+import edu.asu.cassess.persist.entity.github.GitHubPK;
 import edu.asu.cassess.persist.entity.github.GitHubWeight;
 import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
@@ -18,14 +19,19 @@ import edu.asu.cassess.service.rest.CourseService;
 import edu.asu.cassess.service.rest.ICourseService;
 import edu.asu.cassess.service.rest.IStudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.sql.Date;
+import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,6 +98,15 @@ public class GatherGitHubData implements IGatherGitHubData {
     }
 
     private void getStats(String course, String team, String accessToken) {
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+        messageConverters.add(new FormHttpMessageConverter());
+        messageConverters.add(new StringHttpMessageConverter());
+        messageConverters.add(new MappingJackson2HttpMessageConverter());
+        restTemplate.setMessageConverters(messageConverters);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + "stats/contributors")
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
@@ -100,18 +115,27 @@ public class GatherGitHubData implements IGatherGitHubData {
 
         String json = restTemplate.getForObject(urlPath, String.class);
 
+        //System.out.println("Read as String");
+
         List<GitHubContributors> contributors = null;
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        try {
-            contributors = mapper.readValue(json, new TypeReference<List<GitHubContributors>>() {
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+        //System.out.println("contributors initialized");
+
+        if(!json.startsWith("{}")) {
+
+            try {
+                contributors = mapper.readValue(json, new TypeReference<List<GitHubContributors>>() {
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(contributors != null) {
+                contributors.removeAll(Collections.singleton(null));
+                storeStats(contributors, accessToken, course, team);
+            }
+        } else {
+            //System.out.println("Response Empty");
         }
-
-        storeStats(contributors, accessToken, course, team);
     }
 
     private void storeStats(List<GitHubContributors> contributors, String accessToken, String course, String team) {
@@ -130,14 +154,18 @@ public class GatherGitHubData implements IGatherGitHubData {
             Date lastDate = null;
 
             if (ghWeightQuery.getlastDate(course, team, userName) != null) {
-                lastDate = ghWeightQuery.getlastDate(course, team, userName).getGitHubPK().getDate();
+                try {
+                    lastDate = new SimpleDateFormat("yyyy-MM-dd").parse(ghWeightQuery.getlastDate(course, team, userName).getGitHubPK().getDate());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    lastDate = null;
+                }
             }
             //System.out.println("*******************************************************LastDate: " + lastDate);
             //System.out.println("*******************************************************UserName: " + userName);
 
             boolean ghMatch = false;
             boolean studentEnabled = false;
-
 
             Student student = new Student();
             //System.out.println("Finding Student for Course: " + course + " & Team: " + team + " & Email: " + email);
@@ -174,12 +202,12 @@ public class GatherGitHubData implements IGatherGitHubData {
                         int linesDeleted = week.getD();
                         int commits = week.getC();
 
-                        //System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & Email: " + email);
-                        commitDataRepo.save(new CommitData(date, userName, student.getEmail(), linesAdded, linesDeleted, commits, projectName, owner, team, course));
+                        //System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
+                        commitDataRepo.save(new CommitData(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), linesAdded, linesDeleted, commits, projectName, owner));
 
                         int weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
-                        //System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & Email: " + email);
-                        GitHubWeight gitHubWeight = new GitHubWeight(student.getEmail(), date, weight, userName, team, course);
+                        //System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
+                        GitHubWeight gitHubWeight = new GitHubWeight(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), weight);
                         weightRepo.save(gitHubWeight);
                     } else {
                         //System.out.println("*****************************************************Not Inserting to DB");

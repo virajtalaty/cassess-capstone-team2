@@ -682,16 +682,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     }])
     .controller('ApiDocController', function ($rootScope, $scope) {
 
-        $rootScope.provisionMode = false;
-        // init form
-        $scope.isLoading = false;
-        $scope.url = $scope.swaggerUrl = 'v2/api-docs';
-        // error management
-        $scope.myErrorHandler = function (data, status) {
-            console.log('failed to load swagger: ' + status + '   ' + data);
-        };
+    $rootScope.provisionMode = false;
+    // init form
+    $scope.isLoading = false;
+    $scope.url = $scope.swaggerUrl = 'v2/api-docs';
+    // error management
+    $scope.myErrorHandler = function (data, status) {
+        console.log('failed to load swagger: ' + status + '   ' + data);
+    };
 
-        $scope.infos = false;
+    $scope.infos = false;
+})
+    .controller('MetricsGuideController', function ($rootScope, $scope) {
+
+        $rootScope.provisionMode = false;
     })
     .controller('TokensController', function ($rootScope, $scope, UsersService, TokensService, $q) {
 
@@ -1226,7 +1230,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Week Beginning On',
                     showMaxMin: false
                 },
 
@@ -1251,7 +1255,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].commits);
 
                 valueset2.push(array[i].gitHubPK.date);
-                valueset2.push(array[i].linesOfCodeAdded/1000);
+                valueset2.push(array[i].linesOfCodeAdded/100);
 
                 valueset3.push(array[i].gitHubPK.date);
                 valueset3.push(array[i].linesOfCodeDeleted/100);
@@ -1262,7 +1266,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
 
             data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
             return data;
@@ -1303,7 +1307,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Ending On',
+                    axisLabel: 'Week Beginning On',
                     tickFormat: function(d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },
@@ -2042,7 +2046,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Week Beginning On',
                     showMaxMin: false
                 },
 
@@ -2067,7 +2071,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].commits);
 
                 valueset2.push(array[i].gitHubPK.date);
-                valueset2.push(array[i].linesOfCodeAdded/1000);
+                valueset2.push(array[i].linesOfCodeAdded/100);
 
                 valueset3.push(array[i].gitHubPK.date);
                 valueset3.push(array[i].linesOfCodeDeleted/100);
@@ -2078,7 +2082,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
 
             data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
             return data;
@@ -2119,7 +2123,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Ending On',
+                    axisLabel: 'Week Beginning On',
                     tickFormat: function(d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },
@@ -3158,7 +3162,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Week Beginning On',
                     showMaxMin: false
                 },
 
@@ -3183,7 +3187,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].commits);
 
                 valueset2.push(array[i].gitHubPK.date);
-                valueset2.push(array[i].linesOfCodeAdded/1000);
+                valueset2.push(array[i].linesOfCodeAdded/100);
 
                 valueset3.push(array[i].gitHubPK.date);
                 valueset3.push(array[i].linesOfCodeDeleted/100);
@@ -3194,7 +3198,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
 
             data.push({color: "#6799ee", key: "Commits", values: commits});
-            data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
+            data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
             return data;
@@ -3235,7 +3239,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Ending On',
+                    axisLabel: 'Week Beginning On',
                     tickFormat: function(d) {
                         return d3.time.format('%m/%d/%y')(new Date(d))
                     },

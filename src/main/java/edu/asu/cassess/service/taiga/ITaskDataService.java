@@ -1,5 +1,7 @@
 package edu.asu.cassess.service.taiga;
 
+import edu.asu.cassess.persist.entity.rest.Course;
+import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.taiga.TaskData;
 
 /**
@@ -8,10 +10,10 @@ import edu.asu.cassess.persist.entity.taiga.TaskData;
 public interface ITaskDataService {
     TaskData[] getTasks(Long id, String token, int page);
 
-    void getTaskTotals(String slug, String course);
+    void getTaskTotals(String slug, Course course, Team team);
 
     /* Method to obtain all task totals for members of a particular course,
-            occurring on a schedule
-         */
+                occurring on a schedule
+             */
     void updateTaskTotals(String course);
 }
