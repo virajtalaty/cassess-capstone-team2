@@ -20,17 +20,27 @@ public class GitHubAnalytics {
         calendar.setTime(now);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        int totalCodeAlteration = linesOfCodeAdded + (linesOfCodeDeleted / 4);
+        int totalCodeAlteration;
 
         double weight;
-        if(linesOfCodeAdded < linesOfCodeDeleted){
-            weight = 1;
-        }else{
-            weight = totalCodeAlteration/(day * 16);
+        double preWeight;
+        if(linesOfCodeAdded < linesOfCodeDeleted) {
+            totalCodeAlteration = (linesOfCodeAdded + (linesOfCodeDeleted / 4))/2;
+        } else {
+            totalCodeAlteration = linesOfCodeAdded + (linesOfCodeDeleted / 4);
         }
+        preWeight = totalCodeAlteration/(day * 16);
 
-        weight = round(weight, 3);
-
+        if (preWeight > 15) {
+            weight = 15;
+        } else {
+            weight = round(preWeight, 4);
+        }
+        //System.out.println("LOCD: " + linesOfCodeDeleted);
+        //System.out.println("LOCA: " + linesOfCodeAdded);
+        //System.out.println("TOTC: " + totalCodeAlteration);
+        //System.out.println("Day: " + day);
+        //System.out.println("Weight: " + weight);
         return weight;
     }
 
