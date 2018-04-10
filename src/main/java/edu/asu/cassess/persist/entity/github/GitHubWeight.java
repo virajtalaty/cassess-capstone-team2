@@ -13,7 +13,7 @@ public class GitHubWeight {
     GitHubPK gitHubPK;
 
     @Column(name="weight")
-    private int weight;
+    private double weight;
 
     @Column(name ="email")
     private String email;
@@ -22,7 +22,7 @@ public class GitHubWeight {
 
     }
 
-    public GitHubWeight(GitHubPK gitHubPK, String email, int weight) {
+    public GitHubWeight(GitHubPK gitHubPK, String email, double weight) {
         this.gitHubPK = gitHubPK;
         this.email = email;
         this.weight = weight;
@@ -36,11 +36,11 @@ public class GitHubWeight {
         this.gitHubPK = gitHubPK;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

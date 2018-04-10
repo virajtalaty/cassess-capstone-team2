@@ -81,7 +81,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Path: /studentProfile/" + email);
                 $location.path('/restProfile/' + email);
             }
-        }
+        };
 
         $scope.viewProfileAdmin = function (email, auth) {
                 //console.log("Email: " + email);
@@ -3619,19 +3619,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     }
 
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
             }
         } else {
-            window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
         }
         if (teamIndex == -1){
-            window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
         }
         if(course === null){
-            window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
         }
 
         $scope.setTeam = function() {
@@ -3919,11 +3919,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($rootScope.coursePackage.course === course) {
                 $scope.admins = $rootScope.coursePackage.admins;
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
 
             $scope.setClickedAdmin = function(index){
@@ -4137,11 +4137,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
 
             $scope.setClickedTeam = function(index){
@@ -4783,19 +4783,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         }
 
                     } else {
-                        window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+                        window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
                     }
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
             if (teamIndex == -1){
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_teams';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
             }
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu:8080/cassess/#/create_course';
+                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
             }
 
             $scope.tab = 5;

@@ -1,22 +1,44 @@
 package edu.asu.cassess.model.github;
 
-public class GitHubAnalytics {
-    public static int calculateWeight(int linesOfCodeAdded, int linesOfCodeDeleted){
-        int totalCodeAleration = linesOfCodeAdded + (linesOfCodeDeleted / 2);
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-        int weight;
+public class GitHubAnalytics {
+    public static double calculateWeight(int linesOfCodeAdded, int linesOfCodeDeleted){
+        Date now = new Date();
+
+        SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
+        System.out.println(simpleDateformat.format(now));
+
+        simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week spelled out completely
+        System.out.println(simpleDateformat.format(now));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        int totalCodeAlteration = linesOfCodeAdded + (linesOfCodeDeleted / 4);
+
+        double weight;
         if(linesOfCodeAdded < linesOfCodeDeleted){
-            weight = 2;
-        }else if(totalCodeAleration >= 250){
-            weight = 5;
-        }else if(totalCodeAleration >= 100 && totalCodeAleration < 250){
-            weight = 3;
-        }else if(totalCodeAleration < 100 && totalCodeAleration > 10){
-            weight = 2;
+            weight = 1;
         }else{
-          weight = 0;
+            weight = totalCodeAlteration/day;
         }
 
+        weight = round(weight, 3);
+
         return weight;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }
