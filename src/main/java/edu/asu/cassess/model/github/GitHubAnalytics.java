@@ -26,7 +26,7 @@ public class GitHubAnalytics {
         if(linesOfCodeAdded < linesOfCodeDeleted){
             weight = 1;
         }else{
-            weight = totalCodeAlteration/day;
+            weight = totalCodeAlteration/(day * 16);
         }
 
         weight = round(weight, 3);
