@@ -1342,7 +1342,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].weight);
 
                 valueset2.push(Date.parse(array[i].gitHubPK.date));
-                valueset2.push(2);
+                valueset2.push(4);
 
                 weight.push(valueset1);
                 expected.push(valueset2);
@@ -2158,7 +2158,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].weight);
 
                 valueset2.push(Date.parse(array[i].gitHubPK.date));
-                valueset2.push(2);
+                valueset2.push(4);
 
                 weight.push(valueset1);
                 expected.push(valueset2);
@@ -3274,7 +3274,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 valueset1.push(array[i].weight);
 
                 valueset2.push(Date.parse(array[i].gitHubPK.date));
-                valueset2.push(2);
+                valueset2.push(4);
 
                 weight.push(valueset1);
                 expected.push(valueset2);

@@ -25,14 +25,14 @@ public class GitHubAnalytics {
         double weight;
         double preWeight;
         if(linesOfCodeAdded < linesOfCodeDeleted) {
-            totalCodeAlteration = (linesOfCodeAdded + (linesOfCodeDeleted / 4))/2;
+            totalCodeAlteration = (linesOfCodeAdded + (linesOfCodeDeleted / 4))/4;
         } else {
             totalCodeAlteration = linesOfCodeAdded + (linesOfCodeDeleted / 4);
         }
         preWeight = totalCodeAlteration/(day * 16);
 
-        if (preWeight > 15) {
-            weight = 15;
+        if (preWeight > 13) {
+            weight = 13;
         } else {
             weight = round(preWeight, 4);
         }
