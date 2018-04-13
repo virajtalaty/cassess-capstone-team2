@@ -4130,11 +4130,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($rootScope.coursePackage.course === course) {
                 $scope.teams = $rootScope.coursePackage.teams;
                 for (var i in $rootScope.coursePackage.teams){
-                    console.log("Team: " + $rootScope.coursePackage.teams[i].team_name);
-                    console.log("TaigaHideOk: " + $rootScope.coursePackage.teams[i].hideTaigaOk);
-                    console.log("GitHubHideOk: " + $rootScope.coursePackage.teams[i].hideGitHubOk);
-                    console.log("TaigaHideRemove: " + $rootScope.coursePackage.teams[i].hideTaigaRemove);
-                    console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
+                    //console.log("Team: " + $rootScope.coursePackage.teams[i].team_name);
+                    //console.log("TaigaHideOk: " + $rootScope.coursePackage.teams[i].hideTaigaOk);
+                    //console.log("GitHubHideOk: " + $rootScope.coursePackage.teams[i].hideGitHubOk);
+                    //console.log("TaigaHideRemove: " + $rootScope.coursePackage.teams[i].hideTaigaRemove);
+                    //console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
                 }
             } else {
                 window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
@@ -4219,7 +4219,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         if(teamsArray[0].team_name != null && teamsArray[0].team_name != ''){
                             for (var i in teamsArray) {
                                 fromCSV = true;
-                                console.log(teamsArray[i].team_name);
+                                //console.log(teamsArray[i].team_name);
                                 $scope.enteredTeamName = teamsArray[i].team_name;
                                 $scope.enteredTaigaSlug = teamsArray[i].taiga_project_slug;
                                 $scope.enteredGitHubOwner = teamsArray[i].github_owner;
