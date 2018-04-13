@@ -44,7 +44,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     @Override
     @Transactional
     public List<GitHubWeight> getWeightsByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DATE_ADD(date, INTERVAL 7 DAY) as date, username, email, course, team, AVG(weight) as weight\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
                 "cassess.github_weight\n" +
                 "WHERE course = ?1\n" +
@@ -57,7 +57,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     @Override
     @Transactional
     public List<GitHubWeight> getWeightsByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DATE_ADD(date, INTERVAL 7 DAY) as date, username, email, course, team, AVG(weight) as weight\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
                 "cassess.github_weight\n" +
                 "WHERE course = ?1\n" +
@@ -72,7 +72,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     @Override
     @Transactional
     public List<GitHubWeight> getWeightsByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DATE_ADD(date, INTERVAL 7 DAY) as date, username, email, course, team, AVG(weight) as weight\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
                 "cassess.github_weight\n" +
                 "WHERE course = ?1\n" +
