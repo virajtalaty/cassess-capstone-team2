@@ -949,6 +949,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         //console.log("course: " + $scope.courseid);
 
+       $scope.commitMaxY = 0;
+
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
         $http({
             url: './check_courseaccess',
@@ -1201,8 +1203,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
-                $scope.dataForGitHubCourseCommits =  getDataForGitHubCourseCommitsCharts(response.data);
-                getGitHubWeightData();
+                processGitHubCommitMax(response.data);
             }, function (response) {
                 //fail case
                 console.log("didn't work");
@@ -1210,36 +1211,87 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
         }
 
-        $scope.optionsForGitHubCourseCommits = {
-
-            chart: {
-                type: 'multiBarChart',
-                height: 450,
-                margin : {
-                    top: 50,
-                    right: 150,
-                    bottom: 100,
-                    left:100
-                },
-
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
-
-                clipEdge: true,
-                duration: 500,
-                stacked: false,
-
-                xAxis: {
-                    axisLabel: 'Week Beginning On',
-                    showMaxMin: false
-                },
-
-                yAxis: {
-                    axisLabel: 'GitHub Commit Counts',
-                    axisLabelDistance: -10
-                }
+        function processGitHubCommitMax(array){
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
+            for (var i = 0; i < array.length; i++){
+                commits.push(array[i].commits);
+                linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
+                linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-        };
+            //console.log('Commits: ' + commits);
+            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
+            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
+            var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
+            //console.log('MaxArray: ' + maxArray);
+            var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
+            $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
+            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
+            $scope.dataForGitHubCourseCommits =  getDataForGitHubCourseCommitsCharts(array);
+            commitOptions();
+            getGitHubWeightData();
+        }
+
+        function getGitHubBarChartMax(gitHubBarChartMax){
+            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+            if(gitHubBarChartMax > 50){
+                return 50;
+            } else {
+                return gitHubBarChartMax;
+            }
+        }
+
+        function commitOptions() {
+
+            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
+
+            $scope.optionsForGitHubCourseCommits = {
+
+                chart: {
+                    type: 'multiBarChart',
+                    height: 450,
+                    margin: {
+                        top: 60,
+                        right: 150,
+                        bottom: 100,
+                        left: 100
+                    },
+
+                    legend: {
+                        margin: {
+                            top: 0,
+                            right: 0,
+                            bottom: 20,
+                            left: 0
+                        },
+                        maxKeyLength: 100
+                    },
+
+                    x: function (d) {
+                        return d[0];
+                    },
+                    y: function (d) {
+                        return d[1];
+                    },
+
+                    clipEdge: true,
+                    duration: 500,
+                    stacked: false,
+
+                    xAxis: {
+                        axisLabel: 'Week Beginning On',
+                        showMaxMin: false
+                    },
+
+                    yAxis: {
+                        axisLabel: 'GitHub Commit Counts',
+                        axisLabelDistance: -10
+                    },
+
+                    yDomain: [0, $scope.commitMaxY]
+                }
+            };
+
+        }
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
@@ -1667,6 +1719,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.teamid = "none";
         }
 
+        $scope.commitMaxY = 0;
+
         //console.log("team: " + $scope.teamid);
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
@@ -2017,8 +2071,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
-                $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(response.data);
-                getGitHubWeightData();
+                processGitHubCommitMax(response.data);
             }, function (response) {
                 //fail case
                 console.log("didn't work");
@@ -2026,36 +2079,87 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
         }
 
-        $scope.optionsForGitHubTeamCommits = {
-
-            chart: {
-                type: 'multiBarChart',
-                height: 450,
-                margin : {
-                    top: 50,
-                    right: 150,
-                    bottom: 100,
-                    left:100
-                },
-
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
-
-                clipEdge: true,
-                duration: 500,
-                stacked: false,
-
-                xAxis: {
-                    axisLabel: 'Week Beginning On',
-                    showMaxMin: false
-                },
-
-                yAxis: {
-                    axisLabel: 'GitHub Commit Counts',
-                    axisLabelDistance: -10
-                }
+        function processGitHubCommitMax(array){
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
+            for (var i = 0; i < array.length; i++){
+                commits.push(array[i].commits);
+                linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
+                linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-        };
+            //console.log('Commits: ' + commits);
+            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
+            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
+            var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
+            //console.log('MaxArray: ' + maxArray);
+            var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
+            $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
+            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
+            $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(array);
+            commitOptions();
+            getGitHubWeightData();
+        }
+
+        function getGitHubBarChartMax(gitHubBarChartMax){
+            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+            if(gitHubBarChartMax > 50){
+                return 50;
+            } else {
+                return gitHubBarChartMax;
+            }
+        }
+
+        function commitOptions() {
+
+            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
+
+            $scope.optionsForGitHubTeamCommits = {
+
+                chart: {
+                    type: 'multiBarChart',
+                    height: 450,
+                    margin: {
+                        top: 50,
+                        right: 150,
+                        bottom: 100,
+                        left: 100
+                    },
+
+                    legend: {
+                        margin: {
+                            top: 0,
+                            right: 0,
+                            bottom: 20,
+                            left: 0
+                        },
+                        maxKeyLength: 100
+                    },
+
+                    x: function (d) {
+                        return d[0];
+                    },
+                    y: function (d) {
+                        return d[1];
+                    },
+
+                    clipEdge: true,
+                    duration: 500,
+                    stacked: false,
+
+                    xAxis: {
+                        axisLabel: 'Week Beginning On',
+                        showMaxMin: false
+                    },
+
+                    yAxis: {
+                        axisLabel: 'GitHub Commit Counts',
+                        axisLabelDistance: -10
+                    },
+
+                    yDomain: [0, $scope.commitMaxY]
+
+                }
+            };
+        }
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
@@ -2584,6 +2688,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             studentemail = "none";
             //console.log("studentemail: " + studentemail);
         }
+
+        $scope.commitMaxY = 0;
 
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
         $http({
@@ -3133,8 +3239,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
-                $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(response.data);
-                getGitHubWeightData();
+                processGitHubCommitMax(response.data);
             }, function (response) {
                 //fail case
                 console.log("didn't work");
@@ -3142,36 +3247,87 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
         }
 
-        $scope.optionsForGitHubStudentCommits = {
-
-            chart: {
-                type: 'multiBarChart',
-                height: 450,
-                margin : {
-                    top: 50,
-                    right: 150,
-                    bottom: 100,
-                    left:100
-                },
-
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
-
-                clipEdge: true,
-                duration: 500,
-                stacked: false,
-
-                xAxis: {
-                    axisLabel: 'Week Beginning On',
-                    showMaxMin: false
-                },
-
-                yAxis: {
-                    axisLabel: 'GitHub Commit Counts',
-                    axisLabelDistance: -10
-                }
+        function processGitHubCommitMax(array){
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
+            for (var i = 0; i < array.length; i++){
+                commits.push(array[i].commits);
+                linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
+                linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-        };
+            //console.log('Commits: ' + commits);
+            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
+            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
+            var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
+            //console.log('MaxArray: ' + maxArray);
+            var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
+            $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
+            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
+            $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(array);
+            commitOptions();
+            getGitHubWeightData();
+        }
+
+        function getGitHubBarChartMax(gitHubBarChartMax){
+            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+            if(gitHubBarChartMax > 50){
+                return 50;
+            } else {
+                return gitHubBarChartMax;
+            }
+        }
+
+        function commitOptions() {
+
+            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
+
+            $scope.optionsForGitHubStudentCommits = {
+
+                chart: {
+                    type: 'multiBarChart',
+                    height: 450,
+                    margin: {
+                        top: 50,
+                        right: 150,
+                        bottom: 100,
+                        left: 100
+                    },
+
+                    legend: {
+                        margin: {
+                            top: 0,
+                            right: 0,
+                            bottom: 20,
+                            left: 0
+                        },
+                        maxKeyLength: 100
+                    },
+
+                    x: function (d) {
+                        return d[0];
+                    },
+                    y: function (d) {
+                        return d[1];
+                    },
+
+                    clipEdge: true,
+                    duration: 500,
+                    stacked: false,
+
+                    xAxis: {
+                        axisLabel: 'Week Beginning On',
+                        showMaxMin: false
+                    },
+
+                    yAxis: {
+                        axisLabel: 'GitHub Commit Counts',
+                        axisLabelDistance: -10
+                    },
+
+                    yDomain: [0, $scope.commitMaxY]
+
+                }
+            };
+        }
 
         ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
 
