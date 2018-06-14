@@ -78,22 +78,21 @@ public class GatherGitHubData implements IGatherGitHubData {
     public void fetchData(String owner, String projectName, String course, String team, String accessToken) {
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-        String formatted = df.format(new java.util.Date());
         java.util.Date current = new java.util.Date();
         try {
-            current = df.parse(formatted);
+            current = new SimpleDateFormat("yyyy-mm-dd").parse(String.valueOf(new java.util.Date()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        //System.out.println("Getting Stats for course: " + course + " & Team: " + team);
+        //System.out.println("CurrentDate: " + current);
+        //System.out.println("EndDate: " + tempCourse.getEnd_date());
         if (current.before(tempCourse.getEnd_date())) {
             this.projectName = projectName;
             this.owner = owner;
             url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
             getStats(course, team, accessToken);
         } else {
-            //System.out.println("*****************************************************Course Ended, no GH data Gathering");
+            ///System.out.println("*****************************************************Course Ended, no GH data Gathering");
         }
     }
 
@@ -119,7 +118,7 @@ public class GatherGitHubData implements IGatherGitHubData {
 
         List<GitHubContributors> contributors = null;
 
-        //System.out.println("contributors initialized");
+        System.out.println("contributors initialized");
 
         if(!json.startsWith("{}")) {
 

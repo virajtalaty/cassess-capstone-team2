@@ -74,7 +74,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByCourse(String beginDate, String endDate, String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
@@ -85,7 +85,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByTeam(String beginDate, String endDate, String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
@@ -97,7 +97,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM Cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
