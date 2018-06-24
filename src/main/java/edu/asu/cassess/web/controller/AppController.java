@@ -10,6 +10,7 @@ import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.model.Taiga.*;
+import edu.asu.cassess.model.github.PeriodicGithubActivity;
 import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.slack.DailyMessageTotals;
 import edu.asu.cassess.model.slack.WeeklyMessageTotals;
@@ -31,6 +32,7 @@ import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
 import edu.asu.cassess.service.taiga.ITaskDataService;
 import io.swagger.annotations.Api;
+import net.bytebuddy.agent.builder.AgentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,9 +43,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
 
 @Transactional
 @RestController
@@ -202,6 +210,8 @@ public class AppController {
 
         return studentService.listReadSingleStudent(course, team, email);
     }
+
+
     //End of New Student Course and Project list methods
 
 
@@ -388,7 +398,24 @@ public class AppController {
         List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) taskTotalService.twoWeekWeightFreqByCourse(course);
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
-
+    //Daily task totals for a course
+    @ResponseBody
+    @RequestMapping(value = "/github/course_tasks", method = RequestMethod.GET)
+    public ResponseEntity<List<CommitData>> getGithubAverageCourseTasks(@RequestHeader(name = "course", required = true) String course,
+                                                                       @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                                       @RequestHeader(name = "weekEnding", required = true) long weekEnding,
+                                                                       HttpServletRequest request, HttpServletResponse response) {
+        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfBegin.format(dateEnd);
+        System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
+        System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        List<CommitData> tasksList = (List<CommitData>) gitHubQueryDao.getCommitsByCourseWithinDate(course, formattedDateBegin, formattedDateEnd);
+        return new ResponseEntity<List<CommitData>>(tasksList, HttpStatus.OK);
+    }
     //Current and last week GH weight for a student
     @ResponseBody
     @RequestMapping(value = "/github/student_quickweightFreq", method = RequestMethod.GET)
@@ -804,7 +831,6 @@ public class AppController {
         List<GitHubWeight> weightList = gitHubWeightQueryDao.getWeightsByStudent(course, team, email);
         return new ResponseEntity<List<GitHubWeight>>(weightList, HttpStatus.OK);
     }
-
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/studentProfileDelTeam", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public

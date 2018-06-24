@@ -948,10 +948,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.courseid = "none";
         }
         //console.log("course: " + $scope.courseid);
-
+	
        $scope.commitMaxY = 0;
 
-        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
         $http({
             url: './check_courseaccess',
             method: "GET",
@@ -1089,6 +1089,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function getTaigaActivity() {
+            $scope.taigaMaxY = 0;
             $http({
                 url: './taiga/course_activity',
                 method: "GET",
@@ -1136,17 +1137,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 yAxis: {
                     axisLabel: 'Taiga Task Activity',
                     axisLabelDistance: 0,
-                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
                 },
 
-                yDomain:[0, 30]
+                yDomain:[0, $scope.taigaMaxY]
 
             }
         };
 
         function getDataForCourseTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];var maxArr=[];
 
             for (var i = 0; i < array.length; i++){
 
@@ -1168,7 +1168,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 toTest.push(valueset2);
                 done.push(valueset3);
                 expected.push(valueset4);
+				maxArr.push(array[i].inProgressActivity);
+                maxArr.push(array[i].toTestActivity);
+                maxArr.push(array[i].doneActivity);
+				
             }
+			var taigaLineChartMax = Math.ceil(Math.max.apply(Math, maxArr));
+            $scope.taigaMaxY = getTaigaLineChartMax(taigaLineChartMax);
 
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
@@ -1177,7 +1183,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             return data;
         }
-
+		function getTaigaLineChartMax(taigaLineChartMax){
+            if(taigaLineChartMax > 50){
+                return 50;
+            } else {
+                return taigaLineChartMax;
+            }
+        }
         function getTaigaIntervals() {
             $http({
                 url: './taiga/course_intervals',
@@ -1195,13 +1207,216 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             });
         }
 
-        function getGitHubCommitsData() {
+$scope.IntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.rawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            if ($scope.rawWeekEnding != null) {
+                $http({
+                    url: './taiga/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    //console.log("Worked, these are the averages for the week for weekBegin");
+                    //console.log(response.data);
+                    $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
+                });
+            }
+        };
+
+        $scope.IntervalChangedEnd = function (rawWeekEnding) {
+            $scope.rawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            if ($scope.rawWeekBeginning != null) {
+                $http({
+                    url: './taiga/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    //console.log("Worked, these are the averages for the week for weekEnd!");
+                    //console.log(response.data);
+                    $scope.courseTasks = response.data;
+                    $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
+                });
+            }
+        };
+
+        $scope.optionsForTaigaCourseTasks = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Taiga Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForTaigaCourseTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].date);
+                valueset1.push(array[i].inProgress);
+
+                valueset2.push(array[i].date);
+                valueset2.push(array[i].toTest);
+
+                valueset3.push(array[i].date);
+                valueset3.push(array[i].done);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress});
+            data.push({color: "#000000", key: "READY FOR TEST", values: toTest});
+            data.push({color: "#2E8B57", key: "CLOSED", values: done});
+
+            return data;
+        }
+        $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.rawWeekBeginning = rawWeekBeginning;
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            if ($scope.rawWeekEnding != null) {
+                $http({
+                    url: './github/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    //console.log("Worked, these are the averages for the week for weekBegin");
+                    //console.log(response.data);
+                    $scope.courseTasks = response.data;
+                    $scope.dataForGithubCourseTasks = getDataForGithubCourseTasks(response.data);
+                });
+            }
+        };
+
+        $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
+            $scope.rawWeekEnding = rawWeekEnding;
+            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            if ($scope.rawWeekBeginning != null) {
+                $http({
+                    url: './github/course_tasks',
+                    method: "GET",
+                    headers: {
+                        'course': $scope.courseid,
+                        'weekBeginning': $scope.rawWeekBeginning,
+                        'weekEnding': $scope.rawWeekEnding
+                    }
+                }).then(function (response) {
+                    console.log("Worked, these are the averages for the week for weekEnd!");
+                    console.log(response.data);
+                    $scope.courseTasks = response.data;
+                    $scope.dataForGithubCourseTasks = getDataForGithubCourseTasks(response.data);
+                });
+            }
+        };
+
+        $scope.optionsForGithubCourseTasks = {
+
+            chart: {
+                type: 'multiBarChart',
+                height: 450,
+                margin : {
+                    top: 50,
+                    right: 150,
+                    bottom: 100,
+                    left:100
+                },
+
+                x: function(d){ return d[0]; },
+                y: function(d){ return d[1]; },
+
+                clipEdge: true,
+                duration: 500,
+                stacked: false,
+
+                xAxis: {
+                    axisLabel: 'Days',
+                    showMaxMin: false
+                },
+
+                yAxis: {
+                    axisLabel: 'Github Task Totals',
+                    axisLabelDistance: -10
+                }
+            }
+        };
+
+        function getDataForGithubCourseTasks(array){
+
+            var data = []; var inProgress = []; var toTest = []; var done =[];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].commits);
+                valueset2.push(array[i].lines_of_code_added/100);
+               valueset3.push(array[i].lines_of_code_deleted/100);
+
+                inProgress.push(valueset1);
+                toTest.push(valueset2);
+                done.push(valueset3);
+            }
+            console.log(inProgress);
+            console.log(toTest);
+            console.log(done);
+            data.push({color: "#6799ee", key: "Commits", values: inProgress});
+            data.push({color: "#000000", key: "Lines of code added", values: toTest});
+            data.push({color: "#2E8B57", key: "lines of code deleted", values: done});
+
+            return data;
+        }
+        function getGithubCourseActivity(){
+            getGitHubCommitsData();
+        }
+
+                function getGitHubCommitsData() {
             $http({
                 url: './github/commits_course',
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-                //console.log("Worked This is what the GitHub Data is showing: !");
+               // console.log("Worked This is what the GitHub Data is showing1: !");
                 //console.log(response.data);
                 processGitHubCommitMax(response.data);
             }, function (response) {
@@ -1338,6 +1553,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //fail case
                 console.log("didn't work");
                 getSlackActivity();
+
             });
         }
 
@@ -1378,7 +1594,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             }
         };
-
 
         ////* Function to Parse GitHub Weight for Line Chart * ////
 
@@ -1708,7 +1923,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     }])
     .controller('TeamController', ['$scope', '$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
-        var course = courseService.getCourse();
+
+		var course = courseService.getCourse();
         $scope.courseid = courseService.getCourse();
         if (course == null) {
             course = "none";
@@ -1957,6 +2173,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
         function getTaigaActivity() {
+            $scope.taigaMaxY = 0;
             $http({
                 url: './taiga/team_activity',
                 method: "GET",
@@ -2004,17 +2221,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 yAxis: {
                     axisLabel: 'Taiga Task Activity',
                     axisLabelDistance: 0,
-                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+                    //tickValues:  [0, 5, 10, 15, 20, 25, 30]
                 },
 
-                yDomain:[0, 30]
+                yDomain:[0, $scope.taigaMaxY]
 
             }
         };
 
         function getDataForTeamTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];var maxArr=[];
 
             for (var i = 0; i < array.length; i++){
 
@@ -2036,16 +2253,26 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 toTest.push(valueset2);
                 done.push(valueset3);
                 expected.push(valueset4);
+				maxArr.push(array[i].inProgressActivity);
+                maxArr.push(array[i].toTestActivity);
+                maxArr.push(array[i].doneActivity);
             }
+			var taigaLineChartMax = Math.ceil(Math.max.apply(Math, maxArr));
+            $scope.taigaMaxY = getTaigaLineChartMax(taigaLineChartMax);
 
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
             data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
             data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
-
             return data;
         }
-
+		function getTaigaLineChartMax(taigaLineChartMax){
+            if(taigaLineChartMax > 50){
+                return 50;
+            } else {
+                return taigaLineChartMax;
+            }
+        }
         function getTaigaIntervals() {
             $http({
                 url: './taiga/team_intervals',
@@ -2072,10 +2299,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
                 processGitHubCommitMax(response.data);
-            }, function (response) {
+                }, function (response) {
                 //fail case
                 console.log("didn't work");
                 getGitHubWeightData();
+
             });
         }
 
@@ -2095,6 +2323,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
             //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
             $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(array);
+
             commitOptions();
             getGitHubWeightData();
         }
@@ -2156,7 +2385,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     },
 
                     yDomain: [0, $scope.commitMaxY]
-
                 }
             };
         }
@@ -2188,7 +2416,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             data.push({color: "#6799ee", key: "Commits", values: commits});
             data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
-
             return data;
         }
 
@@ -2276,7 +2503,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $scope.rawWeekBeginning = rawWeekBeginning;
-            //console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
             if ($scope.rawWeekEnding != null) {
                 $http({
                     url: './taiga/team_tasks',
@@ -2379,6 +2606,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function getTaigaActivity() {
+            $scope.taigaMaxY = 0;
             $http({
                 url: './taiga/team_activity',
                 method: "GET",
@@ -2425,11 +2653,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 yAxis: {
                     axisLabel: 'Taiga Task Activity',
-                    axisLabelDistance: 0,
-                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
+
+                    axisLabelDistance: 0
+                    //,tickValues:  [0, 5, 10, 15, 20, 25, 30, 35, 40]
                 },
 
-                yDomain:[0, 30]
+                yDomain:[0, $scope.taigaMaxY]
 
             }
         };
@@ -2437,35 +2666,51 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function getDataForTeamTaigaActivityCharts(array){
 
             var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+            var valueset1;var valueset2; var valueset3; var valueset4; var maxArr=[];
+            for (var i = 0; i < array.length; i++) {
 
-            for (var i = 0; i < array.length; i++){
+                valueset1 = [];
+                valueset2 = [];
+                valueset3 = [];
+                valueset4 = [];
 
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
-
-                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(array[i].rawWeekEnding * 1000);
                 valueset1.push(array[i].inProgressActivity);
 
-                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(array[i].rawWeekEnding * 1000);
                 valueset2.push(array[i].toTestActivity);
 
-                valueset3.push(array[i].rawWeekEnding*1000);
+                valueset3.push(array[i].rawWeekEnding * 1000);
                 valueset3.push(array[i].doneActivity);
 
-                valueset4.push(array[i].rawWeekEnding*1000);
+                valueset4.push(array[i].rawWeekEnding * 1000);
                 valueset4.push(3);
 
                 inProgress.push(valueset1);
                 toTest.push(valueset2);
                 done.push(valueset3);
                 expected.push(valueset4);
+                maxArr.push(array[i].inProgressActivity);
+                maxArr.push(array[i].toTestActivity);
+                maxArr.push(array[i].doneActivity);
             }
+
+            var taigaLineChartMax = Math.ceil(Math.max.apply(Math, maxArr));
+            $scope.taigaMaxY = getTaigaLineChartMax(taigaLineChartMax);
 
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
             data.push({color: "#2E8B57", key: "CLOSED", values: done, strokeWidth: 2});
             data.push({color: "#8f65b6", key: "EXPECTED", values: expected, classed: "dashed"});
-
             return data;
+
+        }
+        function getTaigaLineChartMax(taigaLineChartMax){
+            if(taigaLineChartMax > 50){
+                return 50;
+            } else {
+                return taigaLineChartMax;
+            }
         }
 
         function getSlackActivity() {
@@ -2500,7 +2745,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
             $scope.slackRawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+          //  console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
             if ($scope.slackRawWeekEnding != null) {
                 $http({
                     url: './slack/team_messages',
@@ -2522,7 +2767,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
             $scope.slackRawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+           // console.log("WeekEnding: " + $scope.slackRawWeekEnding);
             if ($scope.slackRawWeekBeginning != null) {
                 $http({
                     url: './slack/team_messages',
@@ -2669,8 +2914,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.studentid = $routeParams.student_id;
         $scope.courseid = courseService.getCourse();
         $scope.teamid = teamService.getTeam();
-
-        var course = courseService.getCourse();
+		var course = courseService.getCourse();
         var team = teamService.getTeam();
         var studentemail = studentService.getStudentEmail();
 
@@ -3015,6 +3259,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
         function getTaigaActivity() {
+            $scope.taigaMaxY = 0;
             $http({
                 url: './taiga/student_activity',
                 method: "GET",
@@ -3064,17 +3309,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 yAxis: {
                     axisLabel: 'Taiga Task Activity',
                     axisLabelDistance: 0,
-                    tickValues:  [0, 5, 10, 15, 20, 25, 30]
-                },
+                    },
 
-                yDomain:[0, 30]
+                yDomain:[0, $scope.taigaMaxY]
 
             }
         };
 
         function getDataForStudentTaigaActivityCharts(array){
 
-            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = [];
+            var data = []; var inProgress = []; var toTest = []; var done = [];var expected = []; var maxArr = [];
 
             for (var i = 0; i < array.length; i++){
 
@@ -3096,7 +3340,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 toTest.push(valueset2);
                 done.push(valueset3);
                 expected.push(valueset4);
-            }
+				maxArr.push(array[i].inProgressActivity);
+                maxArr.push(array[i].toTestActivity);
+                maxArr.push(array[i].doneActivity);
+			}
+			var taigaLineChartMax = Math.ceil(Math.max.apply(Math, maxArr));
+            $scope.taigaMaxY = getTaigaLineChartMax(taigaLineChartMax);
 
             data.push({color: "#6799ee", key: "IN PROGRESS", values: inProgress, strokeWidth: 2});
             data.push({color: "#000000", key: "READY FOR TEST", values: toTest, strokeWidth: 2});
@@ -3105,7 +3354,13 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             return data;
         }
-
+		function getTaigaLineChartMax(taigaLineChartMax){
+            if(taigaLineChartMax > 50){
+                return 50;
+            } else {
+                return taigaLineChartMax;
+            }
+        }
         function getTaigaIntervals() {
             $http({
                 url: './taiga/student_intervals',
@@ -3138,8 +3393,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked! Begin Changed: ");
-                    console.log(response.data);
+                   // console.log("Worked! Begin Changed: ");
+                    //console.log(response.data);
 
                     $scope.studentTasks = response.data;
                     $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
@@ -3162,9 +3417,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked!");
-                    console.log(response.data);
-
+                   // console.log("Worked!");
                     $scope.studentTasks = response.data;
                     $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
                 });
@@ -3240,14 +3493,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This is what the GitHub Data is showing: !");
                 //console.log(response.data);
                 processGitHubCommitMax(response.data);
-            }, function (response) {
+               }, function (response) {
                 //fail case
                 console.log("didn't work");
                 getGitHubWeightData();
+
             });
         }
 
-        function processGitHubCommitMax(array){
+       function processGitHubCommitMax(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
             for (var i = 0; i < array.length; i++){
                 commits.push(array[i].commits);
@@ -3333,7 +3587,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getDataForGitHubStudentCommitsCharts(array){
 
-            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; 
+            var data = [];
 
             for (var i = 0; i < array.length; i++){
 
@@ -3353,7 +3608,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeDeleted.push(valueset3);
             }
 
-            data.push({color: "#6799ee", key: "Commits", values: commits});
+            data.push({color: "#6799ee", key: "Commits", values: commits });
             data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
 
@@ -3478,7 +3733,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
             $scope.slackRawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+           // console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
             if ($scope.slackRawWeekEnding != null) {
                 $http({
                     url: './slack/student_messages',
@@ -3500,7 +3755,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
             $scope.slackRawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            //console.log("WeekEnding: " + $scope.slackRawWeekEnding);
             if ($scope.slackRawWeekBeginning != null) {
                 $http({
                     url: './slack/student_messages',
@@ -4644,7 +4899,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             var d = n.getDate();
             $scope.minDate = n;
 
-            console.log("minDate: " + $scope.minDate);
+            //console.log("minDate: " + $scope.minDate);
 
             $rootScope.provisionMode = true;
             if($rootScope.coursePackage.course != null && $rootScope.coursePackage.course != '')   {
