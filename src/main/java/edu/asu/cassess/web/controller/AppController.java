@@ -10,7 +10,6 @@ import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
 import edu.asu.cassess.model.Taiga.*;
-import edu.asu.cassess.model.github.PeriodicGithubActivity;
 import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.slack.DailyMessageTotals;
 import edu.asu.cassess.model.slack.WeeklyMessageTotals;

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.asu.cassess.model.rest.CourseList;
 import edu.asu.cassess.model.Taiga.TeamNames;
-import edu.asu.cassess.model.github.PeriodicGithubActivity;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;

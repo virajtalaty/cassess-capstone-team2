@@ -5,7 +5,6 @@
     import com.fasterxml.jackson.databind.ObjectWriter;
     import edu.asu.cassess.model.Taiga.Slugs;
     import edu.asu.cassess.model.Taiga.TeamNames;
-    import edu.asu.cassess.model.github.PeriodicGithubActivity;
     import edu.asu.cassess.persist.entity.rest.*;
     import edu.asu.cassess.persist.repo.rest.TeamRepo;
     import edu.asu.cassess.service.rest.IChannelService;
