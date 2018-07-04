@@ -1727,7 +1727,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     //console.log("SlackCourseMessages");
                     //console.log(response.data);
                     $scope.courseTasks = response.data;
-                    $scope.dataForSlackCourseMessages = getDataForSlackTeamMessages(response.data);
+                    $scope.dataForSlackCourseMessages = getDataForSlackCourseMessages(response.data);
                 });
             }
         };
