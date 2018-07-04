@@ -1,6 +1,7 @@
 package edu.asu.cassess.dao.github;
 
 import edu.asu.cassess.model.Taiga.WeeklyFreqWeight;
+import edu.asu.cassess.model.Taiga.WeeklyIntervals;
 import edu.asu.cassess.persist.entity.github.CommitData;
 import edu.asu.cassess.persist.entity.rest.RestResponse;
 import edu.asu.cassess.persist.entity.rest.Student;
@@ -33,14 +34,20 @@ public interface IGitHubCommitQueryDao {
     List<WeeklyFreqWeight> getWeightFreqByStudent(String course, String team, String email) throws DataAccessException;
 
     @Transactional
-    List<CommitData> getCommitsByCourse(String course) throws DataAccessException;
+    List<CommitData> getCommitsByCourse(String course, String beginDate, String endDate) throws DataAccessException;
 
     @Transactional
-    List<CommitData> getCommitsByCourseWithinDate(String course, String beginDate, String endDate) throws DataAccessException;
+    List<CommitData> getCommitsByTeam(String course, String teamString, String beginDate, String endDate) throws DataAccessException;
 
     @Transactional
-    List<CommitData> getCommitsByTeam(String course, String team) throws DataAccessException;
+    List<CommitData> getCommitsByStudent(String course, String team, String email, String beginDate, String endDate) throws DataAccessException;
 
     @Transactional
-    List<CommitData> getCommitsByStudent(String course, String team, String email) throws DataAccessException;
+    List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String email) throws DataAccessException;
+
+    @Transactional
+    List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException;
+
+    @Transactional
+    List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException;
 }

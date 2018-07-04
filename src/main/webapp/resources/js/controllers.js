@@ -1125,9 +1125,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -1199,15 +1199,23 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.courseIntervals = response.data;
-                getGitHubCommitsData();
+                if($scope.rawWeekBeginning == null && $scope.rawWeekEnding == null) {
+                    $scope.SelectedWeekBeginning = $scope.courseIntervals[$scope.courseIntervals.length-1];
+                    $scope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SelectedWeekEnding =  $scope.SelectedWeekBeginning;
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                }
+                getGitHubWeightData();
+                getGithubIntervals();
             }, function (response) {
                 //fail case
                 console.log("didn't work");
-                getGitHubCommitsData();
+                getGitHubWeightData();
+                getGithubIntervals();
             });
         }
 
-$scope.IntervalChangedBegin = function (rawWeekBeginning) {
+        $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $scope.rawWeekBeginning = rawWeekBeginning;
             console.log("WeekBeginning: " + $scope.rawWeekBeginning);
             if ($scope.rawWeekEnding != null) {
@@ -1220,8 +1228,8 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    //console.log("Worked, these are the averages for the week for weekBegin");
-                    //console.log(response.data);
+                    console.log("Worked, these are the Taiga averages for the week for weekBegin");
+                    console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -1241,8 +1249,8 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    //console.log("Worked, these are the averages for the week for weekEnd!");
-                    //console.log(response.data);
+                    console.log("Worked, these are the Taiga averages for the week for weekEnd!");
+                    console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -1269,13 +1277,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Taiga Task Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -1308,123 +1316,74 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
 
             return data;
         }
-        $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
-            $scope.rawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
-            if ($scope.rawWeekEnding != null) {
-                $http({
-                    url: './github/course_tasks',
-                    method: "GET",
-                    headers: {
-                        'course': $scope.courseid,
-                        'weekBeginning': $scope.rawWeekBeginning,
-                        'weekEnding': $scope.rawWeekEnding
-                    }
-                }).then(function (response) {
-                    //console.log("Worked, these are the averages for the week for weekBegin");
-                    //console.log(response.data);
-                    $scope.courseTasks = response.data;
-                    $scope.dataForGithubCourseTasks = getDataForGithubCourseTasks(response.data);
-                });
-            }
-        };
-
-        $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
-            $scope.rawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.rawWeekEnding);
-            if ($scope.rawWeekBeginning != null) {
-                $http({
-                    url: './github/course_tasks',
-                    method: "GET",
-                    headers: {
-                        'course': $scope.courseid,
-                        'weekBeginning': $scope.rawWeekBeginning,
-                        'weekEnding': $scope.rawWeekEnding
-                    }
-                }).then(function (response) {
-                    console.log("Worked, these are the averages for the week for weekEnd!");
-                    console.log(response.data);
-                    $scope.courseTasks = response.data;
-                    $scope.dataForGithubCourseTasks = getDataForGithubCourseTasks(response.data);
-                });
-            }
-        };
-
-        $scope.optionsForGithubCourseTasks = {
-
-            chart: {
-                type: 'multiBarChart',
-                height: 450,
-                margin : {
-                    top: 50,
-                    right: 150,
-                    bottom: 100,
-                    left:100
-                },
-
-                x: function(d){ return d[0]; },
-                y: function(d){ return d[1]; },
-
-                clipEdge: true,
-                duration: 500,
-                stacked: false,
-
-                xAxis: {
-                    axisLabel: 'Days',
-                    showMaxMin: false
-                },
-
-                yAxis: {
-                    axisLabel: 'Github Task Totals',
-                    axisLabelDistance: -10
-                }
-            }
-        };
-
-        function getDataForGithubCourseTasks(array){
-
-            var data = []; var inProgress = []; var toTest = []; var done =[];
-
-            for (var i = 0; i < array.length; i++){
-
-                var valueset1 = [];var valueset2 = [];var valueset3 = [];
-
-                valueset1.push(array[i].commits);
-                valueset2.push(array[i].lines_of_code_added/100);
-               valueset3.push(array[i].lines_of_code_deleted/100);
-
-                inProgress.push(valueset1);
-                toTest.push(valueset2);
-                done.push(valueset3);
-            }
-            console.log(inProgress);
-            console.log(toTest);
-            console.log(done);
-            data.push({color: "#6799ee", key: "Commits", values: inProgress});
-            data.push({color: "#000000", key: "Lines of code added", values: toTest});
-            data.push({color: "#2E8B57", key: "lines of code deleted", values: done});
-
-            return data;
-        }
-        function getGithubCourseActivity(){
-            getGitHubCommitsData();
-        }
-
-                function getGitHubCommitsData() {
+        function getGithubIntervals() {
             $http({
-                url: './github/commits_course',
+                url: './github/course_intervals',
                 method: "GET",
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
-               // console.log("Worked This is what the GitHub Data is showing1: !");
+                //console.log("Worked!");
                 //console.log(response.data);
-                processGitHubCommitMax(response.data);
-            }, function (response) {
+                $scope.githubCourseIntervals = response.data;
+                if($scope.githubRawWeekBeginning == null && $scope.githubRawWeekEnding == null) {
+                    $scope.GithubSelectedWeekBeginning = $scope.githubCourseIntervals[$scope.githubCourseIntervals.length-1];
+                    $scope.githubRawWeekBeginning = $scope.GithubSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.GithubSelectedWeekEnding =  $scope.GithubSelectedWeekBeginning;
+                    console.log('$scope.GithubSelectedWeekEnding '+$scope.GithubSelectedWeekEnding.rawWeekEnding);
+                    $scope.GithubIntervalChangedEnd($scope.GithubSelectedWeekEnding.rawWeekEnding);
+                }
+                }, function (response) {
                 //fail case
                 console.log("didn't work");
-                getGitHubWeightData();
             });
         }
+
+        $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
+                $scope.githubRawWeekBeginning = rawWeekBeginning;
+                if ($scope.githubRawWeekEnding != null) {
+                    $http({
+                        url: './github/commits_course',
+                        method: "GET",
+                        headers: {
+                            'course': $scope.courseid,
+                            'weekBeginning': $scope.githubRawWeekBeginning,
+                            'weekEnding': $scope.githubRawWeekEnding
+                        }
+                    }).then(function (response) {
+                        console.log("Worked This is what the GitHub Data is showing1: !");
+                        console.log(response.data);
+                        processGitHubCommitMax(response.data);
+
+                    }, function (response) {
+                        //fail case
+                        console.log("didn't work");
+
+                    });
+                }
+            }
+
+            $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
+                $scope.githubRawWeekEnding = rawWeekEnding;
+                console.log('$scope.githubRawWeekEnding '+ $scope.githubRawWeekEnding);
+                if ($scope.githubRawWeekBeginning != null) {
+                    $http({
+                        url: './github/commits_course',
+                        method: "GET",
+                        headers: {
+                            'course': $scope.courseid,
+                            'weekBeginning': $scope.githubRawWeekBeginning,
+                            'weekEnding': $scope.githubRawWeekEnding
+                        }
+                    }).then(function (response) {
+                        console.log("Worked This is what the GitHub Data is showing1: !");
+                        console.log(response.data);
+                        processGitHubCommitMax(response.data);
+                    }, function (response) {
+                        //fail case
+                        console.log("didn't work");
+                    });
+                }
+            }
 
         function processGitHubCommitMax(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
@@ -1454,11 +1413,7 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 return gitHubBarChartMax;
             }
         }
-
         function commitOptions() {
-
-            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
-
             $scope.optionsForGitHubCourseCommits = {
 
                 chart: {
@@ -1493,23 +1448,20 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                     stacked: false,
 
                     xAxis: {
-                        axisLabel: 'Week Beginning On',
+                        axisLabel: 'Date of Activity',
                         showMaxMin: false
                     },
 
                     yAxis: {
                         axisLabel: 'GitHub Commit Counts',
-                        axisLabelDistance: -10
+                        axisLabelDistance: 0
                     },
 
                     yDomain: [0, $scope.commitMaxY]
                 }
             };
-
         }
-
-        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
-
+       //* Function to Parse GitHub CommitData for MultiBar Chart * //
         function getDataForGitHubCourseCommitsCharts(array){
 
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
@@ -1575,9 +1527,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Beginning On',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -1683,13 +1635,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Taiga Task Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -1750,6 +1702,12 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 //console.log("Slack Course Intervals");
                 //console.log(response.data);
                 $scope.slackCourseIntervals = response.data;
+                if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
+                    $scope.SlackSelectedWeekBeginning = $scope.slackCourseIntervals[$scope.slackCourseIntervals.length-1];
+                    $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
+                    $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
+                }
             });
         }
 
@@ -1813,9 +1771,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -1882,13 +1840,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Slack Message Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -2209,9 +2167,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -2282,29 +2240,83 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.teamIntervals = response.data;
-                getGitHubCommitsData();
+                if($scope.rawWeekBeginning == null && $scope.rawWeekEnding == null) {
+                    $scope.SelectedWeekBeginning = $scope.teamIntervals[$scope.teamIntervals.length-1];
+                    $scope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SelectedWeekEnding =  $scope.SelectedWeekBeginning;
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                }
+                getGithubIntervals();
+                getGitHubWeightData();
             }, function (response) {
                 //fail case
                 console.log("didn't work");
-                getGitHubCommitsData();
+                getGithubIntervals();
+                getGitHubWeightData();
             });
         }
-
-        function getGitHubCommitsData() {
+        function getGithubIntervals() {
             $http({
-                url: './github/commits_team',
+                url: './github/team_intervals',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid}
             }).then(function (response) {
-                //console.log("Worked This is what the GitHub Data is showing: !");
+                //console.log("Worked!");
                 //console.log(response.data);
-                processGitHubCommitMax(response.data);
-                }, function (response) {
+                $scope.githubTeamIntervals = response.data;
+                if($scope.githubRawWeekBeginning == null && $scope.githubRawWeekEnding == null) {
+                    $scope.GithubSelectedWeekBeginning = $scope.githubTeamIntervals[$scope.githubTeamIntervals.length-1];
+                    $scope.githubRawWeekBeginning = $scope.GithubSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.GithubSelectedWeekEnding =  $scope.GithubSelectedWeekBeginning;
+                    $scope.GithubIntervalChangedEnd($scope.GithubSelectedWeekEnding.rawWeekEnding);
+                }
+            }, function (response) {
                 //fail case
                 console.log("didn't work");
-                getGitHubWeightData();
-
             });
+        }
+        $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
+            $scope.githubRawWeekBeginning = rawWeekBeginning;
+
+            if ($scope.githubRawWeekEnding != null) {
+
+                $http({
+                    url: './github/commits_team',
+                    method: "GET",
+                    headers: {
+                        'course': course, 'team': $scope.teamid, 'weekBeginning': $scope.githubRawWeekBeginning,
+                        'weekEnding': $scope.githubRawWeekEnding
+                    }
+                }).then(function (response) {
+                   // console.log("Worked This is what the GitHub Data is showing: !");
+                    //console.log(response.data);
+                    processGitHubCommitMax(response.data);
+                }, function (response) {
+                    //fail case
+                    console.log("didn't work");
+                });
+            }
+        }
+        $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
+            $scope.githubRawWeekEnding = rawWeekEnding;
+
+            if ($scope.githubRawWeekBeginning != null) {
+
+                $http({
+                    url: './github/commits_team',
+                    method: "GET",
+                    headers: {
+                        'course': course, 'team': $scope.teamid, 'weekBeginning': $scope.githubRawWeekBeginning,
+                        'weekEnding': $scope.githubRawWeekEnding
+                    }
+                }).then(function (response) {
+                    processGitHubCommitMax(response.data);
+                }, function (response) {
+                    //fail case
+                    console.log("didn't work");
+
+                });
+            }
         }
 
         function processGitHubCommitMax(array){
@@ -2375,13 +2387,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                     stacked: false,
 
                     xAxis: {
-                        axisLabel: 'Week Beginning On',
+                        axisLabel: 'Date of Activity',
                         showMaxMin: false
                     },
 
                     yAxis: {
                         axisLabel: 'GitHub Commit Counts',
-                        axisLabelDistance: -10
+                        axisLabelDistance: 0
                     },
 
                     yDomain: [0, $scope.commitMaxY]
@@ -2454,9 +2466,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Beginning On',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -2565,13 +2577,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Taiga Task Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -2642,9 +2654,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -2740,6 +2752,12 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 //console.log("Slack Team Intervals");
                 //console.log(response.data);
                 $scope.slackTeamIntervals = response.data;
+                if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
+                    $scope.SlackSelectedWeekBeginning = $scope.slackTeamIntervals[$scope.slackTeamIntervals.length-1];
+                    $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
+                    $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
+                }
             });
         }
 
@@ -2805,9 +2823,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -2873,13 +2891,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Slack Message Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -3297,9 +3315,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -3370,11 +3388,22 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 //console.log("Worked This shows the intervals!");
                 //console.log(response.data);
                 $scope.studentIntervals = response.data;
-                getGitHubCommitsData();
+                console.log('$scope.rawWeekBeginning '+$scope.rawWeekBeginning );
+                console.log(' ending '+$scope.rawWeekEnding);
+                if($scope.rawWeekBeginning == null && $scope.rawWeekEnding == null) {
+                    $scope.SelectedWeekBeginning = $scope.studentIntervals[$scope.studentIntervals.length-1];
+                    console.log('Length: '+$scope.studentIntervals.length-1);
+                    $scope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SelectedWeekEnding =  $scope.SelectedWeekBeginning;
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                }
+                getGithubIntervals();
+                getGitHubWeightData();
             }, function (response) {
                 //fail case
                 console.log("Didn't Work");
-                getGitHubCommitsData();
+                getGithubIntervals();
+                getGitHubWeightData();
             });
         }
 
@@ -3420,6 +3449,7 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                    // console.log("Worked!");
                     $scope.studentTasks = response.data;
                     $scope.dataForTaigaStudentTasks = getDataForTaigaStudentTasks(response.data);
+
                 });
             }
         };
@@ -3444,13 +3474,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Taiga Task Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
@@ -3483,23 +3513,76 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
 
             return data;
         }
-
-        function getGitHubCommitsData() {
+        function getGithubIntervals() {
             $http({
-                url: './github/commits_student',
+                url: './github/student_intervals',
                 method: "GET",
-                headers: {'course': course, 'team': team, 'email': studentemail}
+                headers: {'course': course,
+                    'team': team,
+                    'email': studentemail}
             }).then(function (response) {
-                //console.log("Worked This is what the GitHub Data is showing: !");
+                //console.log("Worked!");
                 //console.log(response.data);
-                processGitHubCommitMax(response.data);
-               }, function (response) {
+                $scope.githubStudentIntervals = response.data;
+                if($scope.githubRawWeekBeginning == null && $scope.githubRawWeekEnding == null) {
+                    $scope.GithubSelectedWeekBeginning = $scope.githubStudentIntervals[$scope.githubStudentIntervals.length-1];
+                    $scope.githubRawWeekBeginning = $scope.GithubSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.GithubSelectedWeekEnding =  $scope.GithubSelectedWeekBeginning;
+                    $scope.GithubIntervalChangedEnd($scope.GithubSelectedWeekEnding.rawWeekEnding);
+                }
+            }, function (response) {
                 //fail case
                 console.log("didn't work");
-                getGitHubWeightData();
-
             });
         }
+           $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
+                $scope.githubRawWeekBeginning = rawWeekBeginning;
+                if ($scope.githubRawWeekEnding != null) {
+                    $http({
+                        url: './github/commits_student',
+                        method: "GET",
+                        headers: {
+                            'course': course,
+                            'team': team,
+                            'email': studentemail,
+                            'weekBeginning': $scope.githubRawWeekBeginning,
+                            'weekEnding': $scope.githubRawWeekEnding
+                        }
+                    }).then(function (response) {
+                        //console.log("Worked This is what the GitHub Data is showing: !");
+                        //console.log(response.data);
+                        processGitHubCommitMax(response.data);
+                    }, function (response) {
+                        //fail case
+                        console.log("didn't work");
+                    });
+                }
+            }
+
+            $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
+                $scope.githubRawWeekEnding = rawWeekEnding;
+                console.log("WeekEnding: " + $scope.githubRawWeekEnding);
+                if ($scope.githubRawWeekBeginning != null) {
+                    $http({
+                        url: './github/commits_student',
+                        method: "GET",
+                        headers: {
+                            'course': course,
+                            'team': team,
+                            'email': studentemail,
+                            'weekBeginning': $scope.githubRawWeekBeginning,
+                            'weekEnding': $scope.githubRawWeekEnding
+                        }
+                    }).then(function (response) {
+                        //console.log("Worked This is what the GitHub Data is showing: !");
+                        //console.log(response.data);
+                        processGitHubCommitMax(response.data);
+                    }, function (response) {
+                        //fail case
+                        console.log("didn't work");
+                    });
+                }
+            }
 
        function processGitHubCommitMax(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
@@ -3568,13 +3651,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                     stacked: false,
 
                     xAxis: {
-                        axisLabel: 'Week Beginning On',
+                        axisLabel: 'Date of Activity',
                         showMaxMin: false
                     },
 
                     yAxis: {
                         axisLabel: 'GitHub Commit Counts',
-                        axisLabelDistance: -10
+                        axisLabelDistance: 0
                     },
 
                     yDomain: [0, $scope.commitMaxY]
@@ -3650,9 +3733,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Beginning On',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -3724,10 +3807,23 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 //console.log("Slack Student Intervals");
                 //console.log(response.data);
                 $scope.slackStudentIntervals = response.data;
+                if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
+                    $scope.SlackSelectedWeekBeginning = $scope.slackStudentIntervals[$scope.slackStudentIntervals.length-1];
+                    console.log(' $scope.SlackSelectedWeekBeginning: '+$scope.SlackSelectedWeekBeginning);
+                    $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
+                    $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
+                }
             }, function (response) {
                 //fail case
                 console.log("didn't work");
                 $scope.slackStudentIntervals = response.data;
+                if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
+                    $scope.SlackSelectedWeekBeginning = $scope.slackStudentIntervals[$scope.slackStudentIntervals.length-1];
+                    $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
+                    $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
+                    $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
+                }
             });
         }
 
@@ -3793,9 +3889,9 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 useInteractiveGuideline: true,
 
                 xAxis: {
-                    axisLabel: 'Week Of',
+                    axisLabel: 'Date of Activity',
                     tickFormat: function(d) {
-                        return d3.time.format('%m/%d/%y')(new Date(d))
+                        return d3.time.format('%Y-%m-%d')(new Date(d))
                     },
 
                     showMaxMin: false,
@@ -3857,13 +3953,13 @@ $scope.IntervalChangedBegin = function (rawWeekBeginning) {
                 stacked: false,
 
                 xAxis: {
-                    axisLabel: 'Days',
+                    axisLabel: 'Date of Activity',
                     showMaxMin: false
                 },
 
                 yAxis: {
                     axisLabel: 'Slack Message Totals',
-                    axisLabelDistance: -10
+                    axisLabelDistance: 0
                 }
             }
         };
