@@ -1171,7 +1171,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 				maxArr.push(array[i].inProgressActivity);
                 maxArr.push(array[i].toTestActivity);
                 maxArr.push(array[i].doneActivity);
-				
             }
 			var taigaLineChartMax = Math.ceil(Math.max.apply(Math, maxArr));
             $scope.taigaMaxY = getTaigaLineChartMax(taigaLineChartMax);
@@ -1228,8 +1227,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked, these are the Taiga averages for the week for weekBegin");
-                    console.log(response.data);
+                    //console.log("Worked, these are the Taiga averages for the week for weekBegin");
+                    //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -1249,8 +1248,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         'weekEnding': $scope.rawWeekEnding
                     }
                 }).then(function (response) {
-                    console.log("Worked, these are the Taiga averages for the week for weekEnd!");
-                    console.log(response.data);
+                    //console.log("Worked, these are the Taiga averages for the week for weekEnd!");
+                    //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForTaigaCourseTasks = getDataForTaigaCourseTasks(response.data);
                 });
@@ -1329,7 +1328,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.GithubSelectedWeekBeginning = $scope.githubCourseIntervals[$scope.githubCourseIntervals.length-1];
                     $scope.githubRawWeekBeginning = $scope.GithubSelectedWeekBeginning.rawWeekBeginning;
                     $scope.GithubSelectedWeekEnding =  $scope.GithubSelectedWeekBeginning;
-                    console.log('$scope.GithubSelectedWeekEnding '+$scope.GithubSelectedWeekEnding.rawWeekEnding);
                     $scope.GithubIntervalChangedEnd($scope.GithubSelectedWeekEnding.rawWeekEnding);
                 }
                 }, function (response) {
@@ -1350,8 +1348,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             'weekEnding': $scope.githubRawWeekEnding
                         }
                     }).then(function (response) {
-                        console.log("Worked This is what the GitHub Data is showing1: !");
-                        console.log(response.data);
+                        //console.log("Worked This is what the GitHub Data is showing1: !");
+                        //console.log(response.data);
                         processGitHubCommitMax(response.data);
 
                     }, function (response) {
@@ -1364,7 +1362,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
                 $scope.githubRawWeekEnding = rawWeekEnding;
-                console.log('$scope.githubRawWeekEnding '+ $scope.githubRawWeekEnding);
+                //console.log('$scope.githubRawWeekEnding '+ $scope.githubRawWeekEnding);
                 if ($scope.githubRawWeekBeginning != null) {
                     $http({
                         url: './github/commits_course',
@@ -1375,8 +1373,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                             'weekEnding': $scope.githubRawWeekEnding
                         }
                     }).then(function (response) {
-                        console.log("Worked This is what the GitHub Data is showing1: !");
-                        console.log(response.data);
+                        //console.log("Worked This is what the GitHub Data is showing1: !");
+                        //console.log(response.data);
                         processGitHubCommitMax(response.data);
                     }, function (response) {
                         //fail case
@@ -1392,21 +1390,16 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
                 linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-            //console.log('Commits: ' + commits);
-            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
-            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
             var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
-            //console.log('MaxArray: ' + maxArray);
             var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
             $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
-            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
             $scope.dataForGitHubCourseCommits =  getDataForGitHubCourseCommitsCharts(array);
             commitOptions();
             getGitHubWeightData();
         }
 
         function getGitHubBarChartMax(gitHubBarChartMax){
-            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+
             if(gitHubBarChartMax > 50){
                 return 50;
             } else {
@@ -1700,7 +1693,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': $scope.courseid}
             }).then(function (response) {
                 //console.log("Slack Course Intervals");
-                //console.log(response.data);
+                console.log(response.data);
                 $scope.slackCourseIntervals = response.data;
                 if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
                     $scope.SlackSelectedWeekBeginning = $scope.slackCourseIntervals[$scope.slackCourseIntervals.length-1];
@@ -1713,7 +1706,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
             $scope.slackRawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+
             if ($scope.slackRawWeekEnding != null) {
                 $http({
                     url: './slack/course_messages',
@@ -1728,13 +1721,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     //console.log(response.data);
                     $scope.courseTasks = response.data;
                     $scope.dataForSlackCourseMessages = getDataForSlackCourseMessages(response.data);
+                }, function (response) {
+                    //fail case
+                    console.log("didn't work");
                 });
             }
         };
 
         $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
             $scope.slackRawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            //console.log("Slack WeekEnding: " + $scope.slackRawWeekEnding);
+            //console.log("Slack Week Beginning: " + $scope.slackRawWeekBeginning);
             if ($scope.slackRawWeekBeginning != null) {
                 $http({
                     url: './slack/course_messages',
@@ -1749,7 +1746,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     //console.log(response.data);
                     $scope.courseMessages = response.data;
                     $scope.dataForSlackCourseMessages = getDataForSlackCourseMessages(response.data);
-                });
+                }, function (response) {
+                    //fail case
+                    console.log("didn't work");
+                    });
             }
         };
 
@@ -2326,14 +2326,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
                 linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-            //console.log('Commits: ' + commits);
-            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
-            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
             var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
-            //console.log('MaxArray: ' + maxArray);
             var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
             $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
-            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
             $scope.dataForGitHubTeamCommits =  getDataForGitHubTeamCommitsCharts(array);
 
             commitOptions();
@@ -2341,7 +2336,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function getGitHubBarChartMax(gitHubBarChartMax){
-            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+
             if(gitHubBarChartMax > 50){
                 return 50;
             } else {
@@ -2350,8 +2345,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function commitOptions() {
-
-            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
 
             $scope.optionsForGitHubTeamCommits = {
 
@@ -3191,9 +3184,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     plotPreviousWeek();
                 } else {
                     getTaigaActivity();
+                    getGithubIntervals();
                 }
             } else {
                 getTaigaActivity();
+                getGithubIntervals();
             }
         }
 
@@ -3292,6 +3287,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //fail case
                 console.log("Didn't Work");
                 getTaigaIntervals();
+
             });
         }
 
@@ -3388,11 +3384,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked This shows the intervals!");
                 //console.log(response.data);
                 $scope.studentIntervals = response.data;
-                console.log('$scope.rawWeekBeginning '+$scope.rawWeekBeginning );
-                console.log(' ending '+$scope.rawWeekEnding);
                 if($scope.rawWeekBeginning == null && $scope.rawWeekEnding == null) {
                     $scope.SelectedWeekBeginning = $scope.studentIntervals[$scope.studentIntervals.length-1];
-                    console.log('Length: '+$scope.studentIntervals.length-1);
+                    console.log('Length: '+ $scope.studentIntervals.length);
                     $scope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
                     $scope.SelectedWeekEnding =  $scope.SelectedWeekBeginning;
                     $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
@@ -3561,7 +3555,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
                 $scope.githubRawWeekEnding = rawWeekEnding;
-                console.log("WeekEnding: " + $scope.githubRawWeekEnding);
+
                 if ($scope.githubRawWeekBeginning != null) {
                     $http({
                         url: './github/commits_student',
@@ -3591,21 +3585,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeAdded.push(array[i].linesOfCodeAdded/100);
                 linesOfCodeDeleted.push(array[i].linesOfCodeDeleted/100);
             }
-            //console.log('Commits: ' + commits);
-            //console.log('LinesOfCodeAdded: ' + linesOfCodeAdded);
-            //console.log('LinesOfCodeDeleted: ' + linesOfCodeDeleted);
+
             var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted)];
-            //console.log('MaxArray: ' + maxArray);
             var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
             $scope.commitMaxY = getGitHubBarChartMax(gitHubBarChartMax);
-            //console.log('commitMaxYFirst: ' + $scope.commitMaxY);
             $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(array);
             commitOptions();
             getGitHubWeightData();
         }
 
         function getGitHubBarChartMax(gitHubBarChartMax){
-            //console.log('gitHubBarChartMax: ' + gitHubBarChartMax);
+
             if(gitHubBarChartMax > 50){
                 return 50;
             } else {
@@ -3614,8 +3604,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         function commitOptions() {
-
-            //console.log('commitMaxYSecond: ' + $scope.commitMaxY);
 
             $scope.optionsForGitHubStudentCommits = {
 
@@ -3666,7 +3654,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
         }
 
-        ////* Function to Parse GitHub CommitData for MultiBar Chart * ////
+        //* Function to Parse GitHub CommitData for MultiBar Chart * //
 
         function getDataForGitHubStudentCommitsCharts(array){
 
@@ -3809,7 +3797,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.slackStudentIntervals = response.data;
                 if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
                     $scope.SlackSelectedWeekBeginning = $scope.slackStudentIntervals[$scope.slackStudentIntervals.length-1];
-                    console.log(' $scope.SlackSelectedWeekBeginning: '+$scope.SlackSelectedWeekBeginning);
                     $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
                     $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
                     $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
@@ -3817,13 +3804,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }, function (response) {
                 //fail case
                 console.log("didn't work");
-                $scope.slackStudentIntervals = response.data;
-                if($scope.slackRawWeekBeginning == null && $scope.slackRawWeekEnding == null) {
-                    $scope.SlackSelectedWeekBeginning = $scope.slackStudentIntervals[$scope.slackStudentIntervals.length-1];
-                    $scope.slackRawWeekBeginning =  $scope.SlackSelectedWeekBeginning.rawWeekBeginning;
-                    $scope.SlackSelectedWeekEnding = $scope.SlackSelectedWeekBeginning;
-                    $scope.slackIntervalChangedEnd($scope.SlackSelectedWeekEnding.rawWeekEnding);
-                }
             });
         }
 
