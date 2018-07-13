@@ -31,6 +31,7 @@ import edu.asu.cassess.service.taiga.IMembersService;
 import edu.asu.cassess.service.taiga.IProjectService;
 import edu.asu.cassess.service.taiga.ITaskDataService;
 import io.swagger.annotations.Api;
+import net.bytebuddy.agent.builder.AgentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,9 +42,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
 
 @Transactional
 @RestController
@@ -202,6 +209,8 @@ public class AppController {
 
         return studentService.listReadSingleStudent(course, team, email);
     }
+
+
     //End of New Student Course and Project list methods
 
 
@@ -225,8 +234,6 @@ public class AppController {
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
         String formattedDateEnd = sdfBegin.format(dateEnd);
-        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
         List<DailyTaskTotals> tasksList = (List<DailyTaskTotals>) taskTotalService.getDailyTasksByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
         return new ResponseEntity<List<DailyTaskTotals>>(tasksList, HttpStatus.OK);
     }
@@ -418,8 +425,6 @@ public class AppController {
         List<WeeklyFreqWeight> weightFreqList = (List<WeeklyFreqWeight>) gitHubQueryDao.getWeightFreqByCourse(course);
         return new ResponseEntity<List<WeeklyFreqWeight>>(weightFreqList, HttpStatus.OK);
     }
-
-
     //Weekly task status averages for a student
     @ResponseBody
     @RequestMapping(value = "/taiga/student_average", method = RequestMethod.GET)
@@ -754,8 +759,16 @@ public class AppController {
     //GET the commits for the selected email
     @RequestMapping(value = "/github/commits_course", method = RequestMethod.GET)
     public ResponseEntity<List<CommitData>> getGitHubCommitsByCourse(@RequestHeader(name = "course") String course,
+                                                                     @RequestHeader(name = "weekBeginning",required = false) long weekBeginning,
+                                                                     @RequestHeader(name = "weekEnding", required = false) long weekEnding,
                                                                      HttpServletRequest request, HttpServletResponse response) {
-        List<CommitData> commitList = gitHubQueryDao.getCommitsByCourse(course);
+        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfEnd.format(dateEnd);
+        List<CommitData> commitList = gitHubQueryDao.getCommitsByCourse(course, formattedDateBegin, formattedDateEnd);
         return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);
     }
 
@@ -763,8 +776,16 @@ public class AppController {
     @RequestMapping(value = "/github/commits_team", method = RequestMethod.GET)
     public ResponseEntity<List<CommitData>> getGitHubCommitsByTeam(@RequestHeader(name = "course", required = true) String course,
                                                                    @RequestHeader(name = "team", required = true) String team,
+                                                                   @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                                   @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                    HttpServletRequest request, HttpServletResponse response) {
-        List<CommitData> commitList = gitHubQueryDao.getCommitsByTeam(course, team);
+        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfEnd.format(dateEnd);
+        List<CommitData> commitList = gitHubQueryDao.getCommitsByTeam(course, team, formattedDateBegin, formattedDateEnd);
         return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);
     }
 
@@ -773,9 +794,47 @@ public class AppController {
     public ResponseEntity<List<CommitData>> getGitHubCommitsByStudent(@RequestHeader(name = "course", required = true) String course,
                                                                       @RequestHeader(name = "team", required = true) String team,
                                                                       @RequestHeader(name = "email", required = true) String email,
+                                                                      @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
+                                                                      @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                       HttpServletRequest request, HttpServletResponse response) {
-        List<CommitData> commitList = gitHubQueryDao.getCommitsByStudent(course, team, email);
+        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfBegin.format(dateEnd);
+        List<CommitData> commitList = gitHubQueryDao.getCommitsByStudent(course, team, email,formattedDateBegin, formattedDateEnd);
         return new ResponseEntity<List<CommitData>>(commitList, HttpStatus.OK);
+    }
+
+    //Weekly Intervals for a project
+    @ResponseBody
+    @RequestMapping(value = "/github/course_intervals", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyIntervals>> getGithubCourseIntervals(@RequestHeader(name = "course", required = true) String course,
+                                                                          HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) gitHubQueryDao.getWeeklyIntervalsByCourse(course);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
+    }
+
+    //Weekly Intervals for a project
+    @ResponseBody
+    @RequestMapping(value = "/github/team_intervals", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyIntervals>> getGithubTeamIntervals(@RequestHeader(name = "course", required = true) String course,
+                                                                        @RequestHeader(name = "team", required = true) String team,
+                                                                        HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) gitHubQueryDao.getWeeklyIntervalsByTeam(course, team);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
+    }
+
+    //Weekly Intervals for a student
+    @ResponseBody
+    @RequestMapping(value = "/github/student_intervals", method = RequestMethod.GET)
+    public ResponseEntity<List<WeeklyIntervals>> getGithubStudentIntervals(@RequestHeader(name = "course", required = true) String course,
+                                                                           @RequestHeader(name = "team", required = true) String team,
+                                                                           @RequestHeader(name = "email", required = true) String email,
+                                                                           String weekEnding, HttpServletRequest request, HttpServletResponse response) {
+        List<WeeklyIntervals> intervalList = (List<WeeklyIntervals>) gitHubQueryDao.getWeeklyIntervalsByStudent(course, team, email);
+        return new ResponseEntity<List<WeeklyIntervals>>(intervalList, HttpStatus.OK);
     }
 
     //GET the commits for the selected email
@@ -804,7 +863,6 @@ public class AppController {
         List<GitHubWeight> weightList = gitHubWeightQueryDao.getWeightsByStudent(course, team, email);
         return new ResponseEntity<List<GitHubWeight>>(weightList, HttpStatus.OK);
     }
-
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/studentProfileDelTeam", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public
