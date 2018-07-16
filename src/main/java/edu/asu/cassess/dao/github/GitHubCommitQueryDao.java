@@ -44,7 +44,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyFreqWeight> getWeightFreqByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, DATE_ADD(date, INTERVAL 1 DAY) as weekBeginning, DATE_ADD(date, INTERVAL 7 DAY) as weekEnding,\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\n" +
                 "IF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\n" +
                 "IF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\n" +
                 "FROM\n" +
@@ -72,7 +72,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyFreqWeight> getWeightFreqByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, DATE_ADD(date, INTERVAL 1 DAY) as weekBeginning, DATE_ADD(date, INTERVAL 7 DAY) as weekEnding,\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\n" +
                 "IF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\n" +
                 "IF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\n" +
                 "FROM\n" +
@@ -102,7 +102,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyFreqWeight> getWeightFreqByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, DATE_ADD(date, INTERVAL 1 DAY) as weekBeginning, DATE_ADD(date, INTERVAL 7 DAY) as weekEnding,\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\n" +
                 "IF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\n" +
                 "IF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\n" +
                 "FROM\n" +
@@ -190,7 +190,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (1 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (7 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (0 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (6 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
@@ -201,7 +201,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (1 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (7 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 AND team = ?2 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (0 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (6 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 AND team = ?2 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         List<WeeklyIntervals> resultList = query.getResultList();
@@ -211,7 +211,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (1 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (7 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date + INTERVAL (0 - DAYOFWEEK(date)) DAY) as 'weekBeginning', DATE(date + INTERVAL (6 - DAYOFWEEK(date)) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         List<WeeklyIntervals> resultList = query.getResultList();
         return resultList;
