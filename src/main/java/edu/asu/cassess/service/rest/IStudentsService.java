@@ -46,4 +46,5 @@ public interface IStudentsService {
     List<CourseList> listGetCoursesForStudent(String email);
 
     List<TeamNames> listGetAssignedTeams(String email, String course);
-}
+
+	}

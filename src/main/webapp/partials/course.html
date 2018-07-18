@@ -53,34 +53,42 @@
                         <h2>Taiga Data</h2>
                         <br>
                         <h3>Average Task Totals</h3><br>
-                        <label style="color: black">Select Week Beginning:</label>
+                        <label style="color: black">Select Start Date: </label>
                         <select class="select_style"  ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in courseIntervals"
                                 ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)">
                         </select>
                         <br>
-                        <label style="color: black">Select Week Ending:</label>
+                        <label style="color: black">Select End Date: </label>
                         <select class="select_style"  ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in courseIntervals"
                                 ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)">
                         </select>
                         <br><br>
                         <div ng-controller='CourseController'>
                             <nvd3 options='optionsForTaigaCourseTasks' data='dataForTaigaCourseTasks'></nvd3>
-                        </div>
+                       <!-- </div>
 
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='CourseController'>
-                            <h3>Task Status Update Activity</h3><br>
+                           --> <h3>Task Status Update Activity</h3><br>
                             <nvd3 options='optionsForTaigaCourseActivity' data='dataForTaigaCourseActivity'></nvd3>
                         </div>
                     </div>
                     <div ng-if="isSet(3)">
                         <h3>GitHub Data</h3>
                         <br>
-                        <br>
                         <h3>GitHub Course Average Commit Activity</h3><br>
+                        <label style="color: black">Select Start Date</label>
+                        <select class="select_style"  ng-model="GithubSelectedWeekBeginning" ng-options="x.weekBeginning for x in githubCourseIntervals"
+                                ng-change="GithubIntervalChangedBegin(GithubSelectedWeekBeginning.rawWeekBeginning)">
+                        </select>
+                        <br>
+                        <label style="color: black">Select End Date:</label>
+                        <select class="select_style"  ng-model="GithubSelectedWeekEnding" ng-options="x.weekEnding for x in githubCourseIntervals"
+                                ng-change="GithubIntervalChangedEnd(GithubSelectedWeekEnding.rawWeekEnding)">
+                        </select>
+                        <br><br>
                         <div ng-controller='CourseController'>
                             <nvd3 options='optionsForGitHubCourseCommits' data='dataForGitHubCourseCommits'></nvd3>
-
-                            <h3>GitHub Course Average Weight Activity</h3><br>
+                        <h3>GitHub Course Average Weight Activity</h3><br>
                             <nvd3 options='optionsForGitHubCourseWeight' data='dataForGitHubCourseWeight'></nvd3>
                         </div>
                     </div>
@@ -88,21 +96,21 @@
                         <h2>Slack Data</h2>
                         <br>
                         <h3>Average Message Totals</h3><br>
-                        <label style="color: black">Select Week Beginning:</label>
+                        <label style="color: black">Select Start Date: </label>
                         <select class="select_style"  ng-model="SlackSelectedWeekBeginning" ng-options="x.weekBeginning for x in slackCourseIntervals"
                                 ng-change="slackIntervalChangedBegin(SlackSelectedWeekBeginning.rawWeekBeginning)">
                         </select>
                         <br>
-                        <label style="color: black">Select Week Ending:</label>
+                        <label style="color: black">Select End Date: </label>
                         <select class="select_style"  ng-model="SlackSelectedWeekEnding" ng-options="x.weekEnding for x in slackCourseIntervals"
                                 ng-change="slackIntervalChangedEnd(SlackSelectedWeekEnding.rawWeekEnding)">
                         </select>
                         <br><br>
                         <div ng-controller='CourseController'>
                             <nvd3 options='optionsForSlackCourseMessages' data='dataForSlackCourseMessages'></nvd3>
-                        </div>
+                       <!-- </div>
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='CourseController'>
-                            <h3>Average Message Activity</h3><br>
+                           --> <h3>Average Message Activity</h3><br>
                             <nvd3 options='optionsForSlackCourseActivity' data='dataForSlackCourseActivity'></nvd3>
                         </div>
                     </div>
