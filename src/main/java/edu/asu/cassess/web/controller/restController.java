@@ -15,12 +15,21 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @RestController
@@ -52,6 +61,9 @@ public class restController {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private TaskController taskController;
+
     @EJB
     private ITaskTotalsQueryDao taskTotalsDao;
 
@@ -70,6 +82,27 @@ public class restController {
 
 //-----------------------
 
+
+    //New CoursePackage REST API Operations
+    /*
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/testingData", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    public
+    @ResponseBody
+    ResponseEntity testingData(HttpServletRequest request, HttpServletResponse response) {
+        new Thread(() -> {
+            taskController.SlackMessages();
+        }).start();
+        new Thread(() -> {
+            taskController.TaigaTasks();
+        }).start();
+        new Thread(() -> {
+            taskController.GitHubCommits();
+        }).start();
+        return new ResponseEntity<>("Data Gathering Commenced, check log for completion details", HttpStatus.OK);
+    }
+    */
+
     //New CoursePackage REST API Operations
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/coursePackage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,10 +119,22 @@ public class restController {
             for (Team team : (coursePackage.getTeams())) {
                 usersService.createUsersByStudents(team.getStudents());
             }
+            java.util.Date newDate = new java.util.Date();
+            Date start_date = new Date(newDate.getTime());
+            coursePackage.setStart_date(start_date);
             Object object = courseService.create(coursePackage);
             projects.updateProjects(coursePackage.getCourse());
             members.updateMembership(coursePackage.getCourse());
             consumeUsers.updateSlackUsers(coursePackage.getCourse());
+            new Thread(() -> {
+                taskController.SlackMessages();
+            }).start();
+            new Thread(() -> {
+                taskController.TaigaTasks();
+            }).start();
+            new Thread(() -> {
+                taskController.GitHubCommits();
+            }).start();
             return object;
         }
     }

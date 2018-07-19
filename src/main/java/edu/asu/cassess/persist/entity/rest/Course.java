@@ -25,6 +25,9 @@ public class Course {
     @Column(name = "taiga_token")
     protected String taiga_token;
 
+    @Column(name = "start_date")
+    protected Date start_date;
+
     @Column(name = "end_date")
     protected Date end_date;
 
@@ -46,6 +49,14 @@ public class Course {
     public void setCourse(String course) {
         COURSE_STRING = course;
         this.course = COURSE_STRING;
+    }
+
+    public Date getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(Date start_date) {
+        this.start_date = start_date;
     }
 
     public Date getEnd_date() {
