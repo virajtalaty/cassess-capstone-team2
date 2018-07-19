@@ -210,21 +210,21 @@ public class ChannelHistoryService implements IChannelHistoryService {
         long unixCurrent = System.currentTimeMillis() / 1000L;
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-        String formatted = df.format(new Date());
-        Date current = new Date();
+        java.util.Date current = new java.util.Date();
         try {
-            current = df.parse(formatted);
+            current = new SimpleDateFormat("yyyy-mm-dd").parse(String.valueOf(new java.util.Date()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        //System.out.println("CurrentDate: " + current);
+        //System.out.println("EndDate: " + tempCourse.getEnd_date());
         if (current.before(tempCourse.getEnd_date())) {
             String token = tempCourse.getSlack_token();
             if(token != null) {
                 for (Team team : tempCourse.getTeams()) {
                     List<Channel> channels = channelService.listReadByTeam(team.getTeam_name(), course);
                     for (Channel channel : channels) {
-                        System.out.println("Channel: " + channel.getId());
+                        //System.out.println("Channel: " + channel.getId());
                         if(channel.getId().startsWith("C")){
                             getPublicMessages(channel.getId(), token, unixOldest, unixCurrent);
                             getMessageTotals(channel.getId(), course, team.getTeam_name());

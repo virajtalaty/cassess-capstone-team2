@@ -193,15 +193,16 @@ public class TaskDataService implements ITaskDataService {
         //System.out.println("Updating Tasks");
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-        String formatted = df.format(new Date());
-        Date current = new Date();
+        java.util.Date current = new java.util.Date();
         try {
-            current = df.parse(formatted);
+            current = new SimpleDateFormat("yyyy-mm-dd").parse(String.valueOf(new java.util.Date()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        //System.out.println("CurrentDate: " + current);
+        //System.out.println("EndDate: " + tempCourse.getEnd_date());
         if (current.before(tempCourse.getEnd_date())) {
+            //System.out.println("Course not ended, gathering data for Taiga");
             String token = tempCourse.getTaiga_token();
             List<Team> teams = teamsService.listReadByCourse(course);
             for(Team team : teams) {
@@ -222,6 +223,8 @@ public class TaskDataService implements ITaskDataService {
                 }
             }
 
+        } else {
+            System.out.println("Course Ended, no data gathering for Taiga");
         }
     }
 }
