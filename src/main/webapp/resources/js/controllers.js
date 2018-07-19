@@ -3399,7 +3399,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $scope.rawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.rawWeekBeginning);
+            //console.log("WeekBeginning: " + $scope.rawWeekBeginning);
             if ($scope.rawWeekEnding != null) {
                 $http({
                     url: './taiga/student_tasks',
@@ -3423,7 +3423,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $scope.rawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.rawWeekEnding);
+            //console.log("WeekEnding: " + $scope.rawWeekEnding);
             if ($scope.rawWeekBeginning != null) {
                 $http({
                     url: './taiga/student_tasks',
@@ -3527,7 +3527,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
            $scope.GithubIntervalChangedBegin = function (rawWeekBeginning) {
                 $scope.githubRawWeekBeginning = rawWeekBeginning;
-               console.log("GitHubRawWeekBeginning: " + $scope.githubRawWeekBeginning);
                 if ($scope.githubRawWeekEnding != null) {
                     $http({
                         url: './github/commits_student',
@@ -3552,7 +3551,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             $scope.GithubIntervalChangedEnd = function (rawWeekEnding) {
                 $scope.githubRawWeekEnding = rawWeekEnding;
-                console.log("GitHubRawWeekEnding: " + $scope.githubRawWeekEnding);
+
                 if ($scope.githubRawWeekBeginning != null) {
                     $http({
                         url: './github/commits_student',
@@ -3806,7 +3805,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedBegin = function (rawWeekBeginning) {
             $scope.slackRawWeekBeginning = rawWeekBeginning;
-            console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
+           // console.log("WeekBeginning: " + $scope.slackRawWeekBeginning);
             if ($scope.slackRawWeekEnding != null) {
                 $http({
                     url: './slack/student_messages',
@@ -3828,7 +3827,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.slackIntervalChangedEnd = function (rawWeekEnding) {
             $scope.slackRawWeekEnding = rawWeekEnding;
-            console.log("WeekEnding: " + $scope.slackRawWeekEnding);
+            //console.log("WeekEnding: " + $scope.slackRawWeekEnding);
             if ($scope.slackRawWeekBeginning != null) {
                 $http({
                     url: './slack/student_messages',

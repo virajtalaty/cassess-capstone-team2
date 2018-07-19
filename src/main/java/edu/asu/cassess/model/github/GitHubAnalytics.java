@@ -19,6 +19,7 @@ public class GitHubAnalytics {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
+        calendar.add(Calendar.DAY_OF_WEEK, 1);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
         int totalCodeAlteration;

@@ -28,12 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Date;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @Transactional
@@ -84,19 +81,19 @@ public class GatherGitHubData implements IGatherGitHubData {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        //System.out.println("CurrentDate: " + current);
-        //System.out.println("EndDate: " + tempCourse.getEnd_date());
+
+        System.out.println("Getting Stats for course: " + course + " & Team: " + team);
         if (current.before(tempCourse.getEnd_date())) {
             this.projectName = projectName;
             this.owner = owner;
             url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
-            getStats(course, team, accessToken);
+            getStats(course, team, accessToken, tempCourse);
         } else {
             ///System.out.println("*****************************************************Course Ended, no GH data Gathering");
         }
     }
 
-    private void getStats(String course, String team, String accessToken) {
+    private void getStats(String course, String team, String accessToken, Course tempCourse) {
         List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
         messageConverters.add(new FormHttpMessageConverter());
         messageConverters.add(new StringHttpMessageConverter());
@@ -130,14 +127,14 @@ public class GatherGitHubData implements IGatherGitHubData {
             }
             if(contributors != null) {
                 contributors.removeAll(Collections.singleton(null));
-                storeStats(contributors, accessToken, course, team);
+                storeStats(contributors, accessToken, course, team, tempCourse);
             }
         } else {
             //System.out.println("Response Empty");
         }
     }
 
-    private void storeStats(List<GitHubContributors> contributors, String accessToken, String course, String team) {
+    private void storeStats(List<GitHubContributors> contributors, String accessToken, String course, String team, Course tempCourse) {
         //System.out.println("Storing Stats for course: " + course + " & Team: " + team);
         Collections.reverse(contributors);
 
@@ -160,7 +157,25 @@ public class GatherGitHubData implements IGatherGitHubData {
                     lastDate = null;
                 }
             }
-            //System.out.println("*******************************************************LastDate: " + lastDate);
+
+            Date sqlStartDate = new Date();
+            Calendar startCal = Calendar.getInstance();
+            startCal.setTime(tempCourse.getStart_date());
+            System.out.println("StartCal: " + startCal.toString());
+            int weekDay = startCal.get (Calendar.DAY_OF_WEEK);
+            int weekSub = weekDay * -1;
+            //System.out.println("WeekDay: " +  weekDay);
+            //System.out.println("WeekSub: " +  weekSub);
+            if(weekDay == 7){
+                sqlStartDate = startCal.getTime();
+            } else {
+                startCal.add(Calendar.DAY_OF_WEEK, weekSub);
+                sqlStartDate = startCal.getTime();
+                //System.out.println("StartCalConverted: " + startCal.toString());
+            }
+
+            //System.out.println("*******************************************************SatStartDate: " + sqlStartDate);
+            //System.out.println("*******************************************************RealStartDate: " + tempCourse.getStart_date());
             //System.out.println("*******************************************************UserName: " + userName);
 
             boolean ghMatch = false;
@@ -196,20 +211,25 @@ public class GatherGitHubData implements IGatherGitHubData {
                     Date date = new Date(week.getW() * 1000L);
                     //System.out.print("*********************************************************ContribDate: " + date);
                     if (lastDate == null || !date.before(lastDate)) {
-                        //System.out.println("*****************************************************Inserting to DB");
-                        int linesAdded = week.getA();
-                        int linesDeleted = week.getD();
-                        int commits = week.getC();
 
-                        //System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
-                        commitDataRepo.save(new CommitData(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), linesAdded, linesDeleted, commits, projectName, owner));
+                        if (date.after(sqlStartDate) && date.before(tempCourse.getEnd_date())) {
+                            //System.out.println("*****************************************************Inserting to DB");
+                            int linesAdded = week.getA();
+                            int linesDeleted = week.getD();
+                            int commits = week.getC();
 
-                        double weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
-                        //System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
-                        GitHubWeight gitHubWeight = new GitHubWeight(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), weight);
-                        weightRepo.save(gitHubWeight);
+                            //System.out.println("Saving Commit Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
+                            commitDataRepo.save(new CommitData(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), linesAdded, linesDeleted, commits, projectName, owner));
+
+                            double weight = GitHubAnalytics.calculateWeight(linesAdded, linesDeleted);
+                            //System.out.println("Saving Weight Data for Course: " + course + " & Team: " + team + " & userName: " + userName);
+                            GitHubWeight gitHubWeight = new GitHubWeight(new GitHubPK(course, student.getTeam_name(), userName, date), student.getEmail(), weight);
+                            weightRepo.save(gitHubWeight);
+                        } else {
+                            //System.out.println("************Not Inserting to DB - contributions date not between course start end end dates");
+                        }
                     } else {
-                        //System.out.println("*****************************************************Not Inserting to DB");
+                        //System.out.println("*****************************************************Not Inserting to DB - complete record for week already exists");
                     }
                 }
             } else {
