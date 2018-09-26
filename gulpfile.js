@@ -84,18 +84,18 @@ gulp.task('lib-css-files', function () {
 
 
 //gulp.task('lib-css-files', function () {
-    //vendorCss = gulp.src(mainBowerFiles('**/*.css'), {base: 'bower_components'})
+//vendorCss = gulp.src(mainBowerFiles('**/*.css'), {base: 'bower_components'})
 
-        /*.pipe(uncss(options))
-        .pipe(debug({title: 'lib-css-files :'}))
-        .pipe(minify())
-        .pipe(concat('lib.min.css'))
-        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
+/*.pipe(uncss(options))
+.pipe(debug({title: 'lib-css-files :'}))
+.pipe(minify())
+.pipe(concat('lib.min.css'))
+.pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
 
-    vendorCss.pipe(clone())
-        .pipe(clone())
-        .pipe(gzip())
-        .pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
+vendorCss.pipe(clone())
+.pipe(clone())
+.pipe(gzip())
+.pipe(gulp.dest('src/main/webapp/resources/vendor/css'));
 });*/
 
 
