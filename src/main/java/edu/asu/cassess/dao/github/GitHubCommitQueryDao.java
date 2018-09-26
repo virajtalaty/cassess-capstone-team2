@@ -102,7 +102,7 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyFreqWeight> getWeightFreqByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\n" +
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week,date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\n" +
                 "IF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\n" +
                 "IF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\n" +
                 "FROM\n" +
@@ -211,9 +211,54 @@ public class GitHubCommitQueryDao implements IGitHubCommitQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date) as 'weekBeginning', DATE(date + INTERVAL (DAYOFWEEK(date) - 1) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 group by week(date)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(date) as 'weekBeginning', DATE(date + INTERVAL (DAYOFWEEK(date) - 1) DAY) as 'weekEnding' FROM cassess.commit_data WHERE course = ?1 group by week(date) order by weekBeginning) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         List<WeeklyIntervals> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<WeeklyFreqWeight> getWeeklyWeightFreqByCourse(String course, String beginDate, String endDate)
+            throws DataAccessException
+    {
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\nIF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\nIF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\nFROM\n(SELECT course, date,\nAVG(total_code) as TOTC, AVG(commits) as COMT, AVG(LOCA) AS LOCA, AVG(LOCD) AS LOCD\nFROM\n(SELECT students.email as email, students.course as course, students.team_name as team,\ncommit_data.lines_of_code_added + (commit_data.lines_of_code_deleted/4) as total_code, commit_data.lines_of_code_deleted as LOCD,\ncommit_data.lines_of_code_added as LOCA,\ncommit_data.commits as commits, commit_data.date as date\nFROM \n(students\ninner join\ncommit_data)\nWHERE students.email = commit_data.email)first,\n(select @rn \\:= 0) var\nWHERE course = ?1\nAND date >= ?2\nAND date <= ?3\nGROUP BY date)second\nORDER BY week", WeeklyFreqWeight.class);
+
+        query.setParameter(1, course);
+        query.setParameter(2, beginDate);
+        query.setParameter(3, endDate);
+        List<WeeklyFreqWeight> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<WeeklyFreqWeight> getWeeklyWeightFreqByTeam(String course, String team, String beginDate, String endDate)
+            throws DataAccessException
+    {
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week, date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\nIF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\nIF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\nFROM\n(SELECT course, date,\nAVG(total_code) as TOTC, AVG(commits) as COMT, AVG(LOCA) AS LOCA, AVG(LOCD) AS LOCD\nFROM\n(SELECT students.email as email, students.course as course, students.team_name as team,\ncommit_data.lines_of_code_added + (commit_data.lines_of_code_deleted/4) as total_code, commit_data.lines_of_code_deleted as LOCD,\ncommit_data.lines_of_code_added as LOCA,\ncommit_data.commits as commits, commit_data.date as date\nFROM \n(students\ninner join\ncommit_data)\nWHERE students.email = commit_data.email)first,\n(select @rn \\:= 0) var\nWHERE course = ?1\nAND team = ?2\nAND date >= ?3\nAND date <= ?4\nGROUP BY date)second\nORDER BY week", WeeklyFreqWeight.class);
+
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, beginDate);
+        query.setParameter(4, endDate);
+        List<WeeklyFreqWeight> resultList = query.getResultList();
+        return resultList;
+    }
+
+    @Override
+    @Transactional
+    public List<WeeklyFreqWeight> getWeeklyWeightFreqByStudent(String course, String team, String email, String beginDate, String endDate)
+            throws DataAccessException
+    {
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as week,date as weekBeginning, DATE_ADD(date, INTERVAL 6 DAY) as weekEnding,\nIF (LOCA < LOCD, 1, IF(TOTC/(DAYOFWEEK(CURDATE()) * 16) > 3, 3, ROUND(TOTC/(DAYOFWEEK(CURDATE()) * 16),3))) AS weight,\nIF(COMT/DAYOFWEEK(CURDATE()) > 3, 3, ROUND(COMT/DAYOFWEEK(CURDATE()),3)) AS frequency\nFROM\n(SELECT course, date,\ntotal_code as TOTC, commits as COMT, LOCA, LOCD\nFROM\n(SELECT students.email as email, students.course as course, students.team_name as team,\ncommit_data.lines_of_code_added + (commit_data.lines_of_code_deleted/4) as total_code, commit_data.lines_of_code_deleted as LOCD,\ncommit_data.lines_of_code_added as LOCA,\ncommit_data.commits as commits, commit_data.date as date\nFROM \n(students\ninner join\ncommit_data)\nWHERE students.email = commit_data.email)first,\n(select @rn \\:= 0) var\nWHERE course = ?1\nAND team = ?2\nAND email = ?3\nAND date >= ?4\nAND date <= ?5\nGROUP BY date)second\nORDER BY week", WeeklyFreqWeight.class);
+
+        query.setParameter(1, course);
+        query.setParameter(2, team);
+        query.setParameter(3, email);
+        query.setParameter(4, beginDate);
+        query.setParameter(5, endDate);
+        List<WeeklyFreqWeight> resultList = query.getResultList();
         return resultList;
     }
 }
