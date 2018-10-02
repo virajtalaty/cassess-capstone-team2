@@ -2636,6 +2636,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              * TODO: Re-implement sub-charting data below following Taiga AG integration and getting both AG tools on server
              */
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
+            $scope.dataForGitHubTeamTotalsDaily= getDataForGitHubTeamTotalsDaily(array);
+            console.log($scope.dataForGitHubTeamTotalsDaily);
             commitTotals();
         }
 
@@ -2688,6 +2690,53 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
         }
 
+
+
+        function getDataForGitHubTeamTotalsDaily(array) {
+            //Viraj add here
+            var dataDaily = [];
+            var student_name;
+            for (var i = 0; i < array.length; i++){
+
+                if(array[i].name!=null) {
+                    student_name = array[i].name;
+                }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
+                var commits = [];
+                var add = [];
+                var del = [];
+                var total = [];
+                var dateArr = [];
+
+                var dailyActivityLen = array[i].daily_activity.length;
+                for(var j=0;j<dailyActivityLen;j++)
+                {
+                    var commitDaily;
+                    commitDaily = array[i].daily_activity[j].commits;
+
+                    if(commitDaily != 0)
+                    {
+                        commits.push(array[i].daily_activity[j].commits);
+                        add.push(array[i].daily_activity[j].additions);
+                        del.push(array[i].daily_activity[j].deletions);
+                        total.push(array[i].daily_activity[j].total);
+                        var currentDate  = new Date(array[i].daily_activity[j].commit_details[0].timestamp);
+                        var dd = currentDate.getDate();
+                        var mm = currentDate.getMonth();
+                        var yyyy = currentDate.getFullYear();
+                        dateArr.push((mm+1) + "/" + dd + "/" + yyyy);
+                    }
+                }
+
+                dataDaily.push({student: student_name, commits: commits, add: add, del: del, total: total, dateArr: dateArr});
+            }
+
+            return dataDaily;
+        }
+
         function getDataForGitHubTeamCommitsSubCharts(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
             var totals = []; var student_name;
@@ -2698,6 +2747,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if(array[i].name!=null) {
                     student_name = array[i].name;
                 }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
                 valueset1.push(student_name);
                 valueset1.push(array[i].total_activity.commits);
 
@@ -2718,6 +2771,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/1000", values: linesOfCodeDeleted});
             data.push({color: "#900C3F", key: "Totals/1000", values: totals});
+
+
             return data;
         }
 
