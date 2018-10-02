@@ -2696,6 +2696,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             //Viraj add here
             var dataDaily = [];
             var student_name;
+            var daysOfWeek = [
+                "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
+            ];
             for (var i = 0; i < array.length; i++){
 
                 if(array[i].name!=null) {
@@ -2709,7 +2712,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var add = [];
                 var del = [];
                 var total = [];
-                var dateArr = [];
+                var day = [];
 
                 var dailyActivityLen = array[i].daily_activity.length;
                 for(var j=0;j<dailyActivityLen;j++)
@@ -2724,16 +2727,23 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         del.push(array[i].daily_activity[j].deletions);
                         total.push(array[i].daily_activity[j].total);
                         var currentDate  = new Date(array[i].daily_activity[j].commit_details[0].timestamp);
+
+                        var mm = currentDate.getMonth() + 1;
+                        if(mm<10) {
+                            mm = "0" + (mm);
+                        }
+
                         var dd = currentDate.getDate();
-                        var mm = currentDate.getMonth();
-                        var yyyy = currentDate.getFullYear();
-                        dateArr.push((mm+1) + "/" + dd + "/" + yyyy);
+                        if(dd<10) {
+                            dd = "0" + (dd);
+                        }
+
+                        day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
                     }
                 }
 
-                dataDaily.push({student: student_name, commits: commits, add: add, del: del, total: total, dateArr: dateArr});
+                dataDaily.push({student: student_name, commits: commits, add: add, del: del, total: total, day: day});
             }
-
             return dataDaily;
         }
 

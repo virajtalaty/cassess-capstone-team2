@@ -36,10 +36,15 @@
                     <li ng-class="{ active: isSet(4) }">
                         <a href="javascript:void(0)" ng-click="setTab(4)">Slack</a>
                     </li>
+                    <li ng-class="{ active: isSet(5) }" access="admin">
+                        <a href="javascript:void(0)" ng-click="setTab(5)">Autograding Data</a>
+                    </li>
                 </ul>
+
                 <ul class="nav" access="admin">
                     <li><a ng-href="{{autograder_url}}">Autograding Tool</a></li>
                 </ul>
+
                 <ul class="nav" access="super_user">
                     <li><a ng-href="{{autograder_url}}">Autograding Tool</a></li>
                 </ul>
@@ -84,58 +89,12 @@
                         <div id="githubChart1">
                             <nvd3 options='optionsForGitHubTeamCommits' data='dataForGitHubTeamCommits'></nvd3>
                         </div>
-                            <!-- Temporarily commenting out Autograder sourced chart -->
-                        Click here to view Autograding Helper Chart:
-                        <input type="checkbox" id="githubChart3" ng-model="ModelData.githubChart3" />
-                        <div ng-show="ModelData.githubChart3">
-                        <nvd3 options='optionsForGitHubTeamTotals' data='dataForGitHubTeamTotals'></nvd3>
-                        </div>
-
-                        <div ng-show="ModelData.githubChart3" ng-controller="TeamController" ng-repeat="dailyValues in dataForGitHubTeamTotalsDaily">
-                            <br>
-                            <h4 style="text-align:center">{{dailyValues.student}}</h4>
-                            <table style="width: 80%" align="center">
-
-                                <tr>
-                                    <th>
-                                        Date
-                                    </th>
-                                    <th>
-                                        Commits
-                                    </th>
-                                    <th>
-                                        Additions
-                                    </th>
-                                    <th>
-                                        Delete
-                                    </th>
-                                    <th>
-                                        Total
-                                    </th>
-                                </tr>
-
-
-                                <tr ng-repeat="src in dailyValues.dateArr track by $index">
-                                    <td>{{dailyValues.dateArr[$index]}}</td>
-                                    <td>{{dailyValues.commits[$index]}}</td>
-                                    <td>{{dailyValues.add[$index]}}</td>
-                                    <td>{{dailyValues.del[$index]}}</td>
-                                    <td>{{dailyValues.total[$index]}}</td>
-                                </tr>
-
-
-                            </table>
-
-                        </div>
-
 
                         <div id="githubChart2" ng-controller="TeamController">
                             <h3>GitHub Team Average Weight Activity</h3><br>
                              <nvd3 options='optionsForGitHubTeamWeight' data='dataForGitHubTeamWeight'></nvd3>
                          <!--   <nvd3 options='optionsForGitHubTeamSubWeight' data='dataForGitHubTeamSubWeight'></nvd3> -->
                         </div>
-
-
                     </div>
                     <div ng-if="isSet(4)">
                         <h2>Slack Data</h2>
@@ -150,6 +109,50 @@
                         <div id="slackChart2" ng-controller="TeamController">
                             <h3>Average Message Activity</h3><br>
                             <nvd3 options='optionsForSlackTeamActivity' data='dataForSlackTeamActivity'></nvd3>
+                        </div>
+                    </div>
+                    <div ng-if="isSet(5)">
+                        <h3>GitHub Team Daily Activity</h3><br>
+                        <br>
+
+                        <!--Click here to view Autograding Helper Chart:
+                        <input type="checkbox" id="githubChart3" />--> <!--ng-model="ModelData.githubChart3"-->
+                        <div>  <!--ng-show="ModelData.githubChart3"-->
+                            <nvd3 options='optionsForGitHubTeamTotals' data='dataForGitHubTeamTotals'></nvd3>
+                        </div>
+
+                        <div ng-controller="TeamController" ng-repeat="dailyValues in dataForGitHubTeamTotalsDaily">
+                            <br>
+                            <h4 style="text-align:center">{{dailyValues.student}}</h4>
+                            <table style="width: 80%" align="center" border="2">
+
+                                <tr>
+                                    <th>
+                                        <b>Day</b>
+                                    </th>
+                                    <th>
+                                        <b>Commits</b>
+                                    </th>
+                                    <th>
+                                        <b>Additions</b>
+                                    </th>
+                                    <th>
+                                        <b>Delete</b>
+                                    </th>
+                                    <th>
+                                        <b>Total</b>
+                                    </th>
+                                </tr>
+
+
+                                <tr ng-repeat="src in dailyValues.day track by $index" ng-class-odd="'daily_activity_striped'">
+                                    <td>{{dailyValues.day[$index]}}</td>
+                                    <td>{{dailyValues.commits[$index]}}</td>
+                                    <td>{{dailyValues.add[$index]}}</td>
+                                    <td>{{dailyValues.del[$index]}}</td>
+                                    <td>{{dailyValues.total[$index]}}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
