@@ -37,6 +37,9 @@
                     <li ng-class="{ active: isSet(4) }">
                         <a href="javascript:void(0)" ng-click="setTab(4)">Slack</a>
                     </li>
+                    <li ng-class="{ active: isSet(5) }">
+                        <a href="javascript:void(0)" ng-click="setTab(5)">Autograding Data</a>
+                    </li>
                 </ul>
                 <ul class="nav" access="admin">
                     <li><a ng-href="{{autograder_url}}">Autograding Tool</a></li>
@@ -104,6 +107,49 @@
                             <nvd3 options='optionsForSlackStudentActivity' data='dataForSlackStudentActivity'></nvd3>
                         </div>
                     </div>
+
+
+                    <div ng-if="isSet(5)">
+                        <h3>GitHub Team Daily Activity</h3><br>
+                        <br>
+
+                        <div ng-controller="StudentController" ng-repeat="dailyValues in dataForGitHubTotalsDaily">
+                            <br>
+                            <h4 style="text-align:center">{{dailyValues.student}}</h4>
+                            <table style="width: 80%" align="center" border="2">
+
+                                <tr>
+                                    <th>
+                                        <b>Day</b>
+                                    </th>
+                                    <th>
+                                        <b>Commits</b>
+                                    </th>
+                                    <th>
+                                        <b>Additions</b>
+                                    </th>
+                                    <th>
+                                        <b>Delete</b>
+                                    </th>
+                                    <th>
+                                        <b>Total</b>
+                                    </th>
+                                </tr>
+
+
+                                <tr ng-repeat="src in dailyValues.day track by $index" ng-class-odd="'daily_activity_striped'">
+                                    <td>{{dailyValues.day[$index]}}</td>
+                                    <td>{{dailyValues.commits[$index]}}</td>
+                                    <td>{{dailyValues.add[$index]}}</td>
+                                    <td>{{dailyValues.del[$index]}}</td>
+                                    <td>{{dailyValues.total[$index]}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>

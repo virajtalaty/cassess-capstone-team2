@@ -76,11 +76,14 @@ public class GatherGitHubData implements IGatherGitHubData {
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
         java.util.Date current = new java.util.Date();
-        try {
+
+        //TODO : Why is this code even there
+        /*try {
             current = new SimpleDateFormat("yyyy-mm-dd").parse(String.valueOf(new java.util.Date()));
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
+
 
         System.out.println("Getting Stats for course: " + course + " & Team: " + team);
         if (current.before(tempCourse.getEnd_date())) {
@@ -89,7 +92,7 @@ public class GatherGitHubData implements IGatherGitHubData {
             url = "https://api.github.com/repos/" + owner + "/" + projectName + "/";
             getStats(course, team, accessToken, tempCourse);
         } else {
-            ///System.out.println("*****************************************************Course Ended, no GH data Gathering");
+            //System.out.println("*****************************************************Course Ended, no GH data Gathering");
         }
     }
 
@@ -107,10 +110,14 @@ public class GatherGitHubData implements IGatherGitHubData {
                 .queryParam("access_token", accessToken + "&scope=&token_type=bearer");
         String urlPath = builder.build().toUriString();
 
-        //System.out.println("GitHub URL: " + urlPath);
-
-        String json = restTemplate.getForObject(urlPath, String.class);
-
+        //Added try catch because if there is an issue the function goes in loops
+        String json = "";
+        try {
+            json = restTemplate.getForObject(urlPath, String.class);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return;
+        }
         //System.out.println("Read as String");
 
         List<GitHubContributors> contributors = null;
@@ -211,8 +218,8 @@ public class GatherGitHubData implements IGatherGitHubData {
                     Date date = new Date(week.getW() * 1000L);
                     //System.out.print("*********************************************************ContribDate: " + date);
                     if (lastDate == null || !date.before(lastDate)) {
-
-                        if (date.after(sqlStartDate) && date.before(tempCourse.getEnd_date())) {
+                        // Added the first condition  because if we are fetching data for the first time, we need to fetch all the data from beginning
+                        if (lastDate == null || (date.after(sqlStartDate) && date.before(tempCourse.getEnd_date()))) {
                             //System.out.println("*****************************************************Inserting to DB");
                             int linesAdded = week.getA();
                             int linesDeleted = week.getD();

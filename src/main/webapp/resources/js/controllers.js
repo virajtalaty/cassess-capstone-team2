@@ -2636,7 +2636,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              * TODO: Re-implement sub-charting data below following Taiga AG integration and getting both AG tools on server
              */
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
-            $scope.dataForGitHubTeamTotalsDaily= getDataForGitHubTeamTotalsDaily(array);
+            $scope.dataForGitHubTeamTotalsDaily = getDataForGitHubTeamTotalsDaily(array);
             console.log($scope.dataForGitHubTeamTotalsDaily);
             commitTotals();
         }
@@ -3912,6 +3912,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
             });
             getSlackActivity();
+
+
         }
 
         $scope.optionsForTaigaStudentTasks = {
@@ -3988,7 +3990,84 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(array);
             commitOptions();
             getGitHubWeightData();
+
+            //5th tab
+            //console.log("viraj");
+           $scope.dataForGitHubTotalsDaily = getDataForGitHubTotalsDaily(array);
         }
+
+        function getDataForGitHubTotalsDaily(array){
+
+            var student_name;
+            var daysOfWeek = [
+                "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
+            ];
+
+
+            if(array[0].gitHubPK.username!=null) {
+                student_name = array[0].gitHubPK.username;
+            }
+            var dataDaily = [];
+            if(student_name != null)
+            {
+                var commits = [];
+                var add = [];
+                var del = [];
+                var total = [];
+                var day = [];
+
+                for (var i = 0; i < array.length; i++){
+                    commits.push(array[i].commits);
+                    add.push(array[i].linesOfCodeAdded);
+                    del.push(array[i].linesOfCodeDeleted);
+                    total.push(array[i].linesOfCodeAdded + array[i].linesOfCodeDeleted);
+
+                    var currentDate = new Date(array[i].gitHubPK.date);
+                    var mm = currentDate.getMonth() + 1;
+                    if(mm<10) {
+                        mm = "0" + (mm);
+                    }
+                    var dd = currentDate.getDate();
+                    if(dd<10) {
+                        dd = "0" + (dd);
+                    }
+
+                    day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
+                }
+
+                dataDaily.push({student: student_name, commits: commits, add: add, del: del,total: total, day: day});
+                return dataDaily;
+            }
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
+            var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].gitHubPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].gitHubPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/100);
+
+                valueset3.push(array[i].gitHubPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits });
+            data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+
 
         function getGitHubBarChartMax(gitHubBarChartMax){
 
@@ -4412,6 +4491,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         var nextIndex = -1;
 
+        var url = "http://cassess.fulton.asu.edu/cassess/#/";
+        //var url = "http://localhost:8090/#/";
+
         $scope.student = {};
 
         $scope.students = [];
@@ -4435,19 +4517,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     }
 
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                    window.location.href = url+'create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                window.location.href = url+'create_teams';
             }
         } else {
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+            window.location.href = url+'create_course';
         }
         if (teamIndex == -1){
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+            window.location.href = url+'create_teams';
         }
         if(course === null){
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+            window.location.href = url+'create_course';
         }
 
         $scope.setTeam = function() {
@@ -4724,6 +4806,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var course = courseCreateService.getCourse();
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             $scope.currentCourse = course;
 
             $scope.admin = {};
@@ -4735,11 +4820,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($rootScope.coursePackage.course === course) {
                 $scope.admins = $rootScope.coursePackage.admins;
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.setClickedAdmin = function(index){
@@ -4943,6 +5028,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var taigaInfoChanged = false;
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             if ($rootScope.coursePackage.course === course) {
                 $scope.teams = $rootScope.coursePackage.teams;
                 for (var i in $rootScope.coursePackage.teams){
@@ -4953,11 +5041,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     //console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.setClickedTeam = function(index){
@@ -5576,6 +5664,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var nextIndex = -1;
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             $scope.channel = {};
 
             $scope.channels = [];
@@ -5599,19 +5690,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         }
 
                     } else {
-                        window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                        window.location.href = url + 'create_teams';
                     }
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                    window.location.href = url + 'create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
             if (teamIndex == -1){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                window.location.href = url + 'create_teams';
             }
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.tab = 5;
