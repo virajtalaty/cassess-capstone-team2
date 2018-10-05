@@ -123,7 +123,51 @@
 
                         <div ng-controller="TeamController" ng-repeat="dailyValues in dataForGitHubTeamTotalsDaily">
                             <br>
-                            <h4 style="text-align:center">{{dailyValues.student}}</h4>
+                            <h2 style="text-align:center">{{dailyValues.student}}</h2>
+
+                            <h4>Overall Stats</h4>
+                            <table style="width: 80%" align="center" border="2">
+
+                                <tr>
+                                    <th><b>Branch</b></th>
+                                    <th><b>Commits</b></th>
+                                    <th><b>Additions</b></th>
+                                    <th><b>Delete</b></th>
+                                    <th><b>Total Changes</b></th>
+                                </tr>
+                                <tr>
+                                    <th>Master Branch</th>
+                                    <th>{{dailyValues.master_activity[0].commits}}</th>
+                                    <th>{{dailyValues.master_activity[0].additions}}</th>
+                                    <th>{{dailyValues.master_activity[0].deletions}}</th>
+                                    <th>{{dailyValues.master_activity[0].total}}</th>
+                                </tr>
+                                <tr>
+                                    <th>All Branches</th>
+                                    <th>{{dailyValues.total_activity[0].commits}}</th>
+                                    <th>{{dailyValues.total_activity[0].additions}}</th>
+                                    <th>{{dailyValues.total_activity[0].deletions}}</th>
+                                    <th>{{dailyValues.total_activity[0].total}}</th>
+                                </tr>
+                            </table>
+                            <br>
+                            <h4>Inactivity Streaks</h4>
+                            <table style="width: 80%" align="center" border="2">
+                                <tr>
+                                    <th>Longest Period of Inactivity : </th>
+                                    <th>{{dailyValues.inactivity_streak[0].max}}</th>
+                                </tr>
+                                <tr>
+                                    <th>All Inactivity Periods : </th>
+                                    <th>{{dailyValues.inactivity_streak[0].inactivity}}</th>
+                                </tr>
+                                <tr>
+                                    <th>Total Inactive Days : </th>
+                                    <th>{{dailyValues.inactivity_streak[0].sum}}</th>
+                                </tr>
+                            </table>
+
+                                <h4>Daily Activity</h4>
                             <table style="width: 80%" align="center" border="2">
 
                                 <tr>
@@ -144,14 +188,53 @@
                                     </th>
                                 </tr>
 
+                                <tbody ng-repeat="src in dailyValues.day" ng-init="outerIndex=$index">
+                                <tr  ng-class-odd="'daily_activity_striped'"  ng-click="expanded = !expanded" expand>
+                                    <td>{{dailyValues.day[outerIndex]}}</td>
 
-                                <tr ng-repeat="src in dailyValues.day track by $index" ng-class-odd="'daily_activity_striped'">
-                                    <td>{{dailyValues.day[$index]}}</td>
-                                    <td>{{dailyValues.commits[$index]}}</td>
-                                    <td>{{dailyValues.add[$index]}}</td>
-                                    <td>{{dailyValues.del[$index]}}</td>
-                                    <td>{{dailyValues.total[$index]}}</td>
+                                    <td>{{dailyValues.commits[outerIndex]}}</td>
+                                    <td>{{dailyValues.add[outerIndex]}}</td>
+                                    <td>{{dailyValues.del[outerIndex]}}</td>
+
+                                    <td ng-if="dailyValues.total_color[outerIndex] == 0" >{{dailyValues.total[outerIndex]}}</td>
+                                    <td ng-if="dailyValues.total_color[outerIndex] == 1" style = "color: red;" >{{dailyValues.total[outerIndex]}}</td>
+
                                 </tr>
+
+
+                                <tr ng-repeat-end ng-show="expanded">
+                                    <td colspan="5">
+                                        <table class="table table-condensed table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Message</th>
+                                                <th>Additions</th>
+                                                <th>Deletions</th>
+                                                <th>Total Changes</th>
+                                                <th>Link</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="details in dailyValues.html_url[outerIndex]" ng-init="innerIndex=$index">
+                                                <td>{{dailyValues.branch[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.message[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.add_commit[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.del_commit[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.total_commit[outerIndex][innerIndex]}}</td>
+                                                <td><a href={{dailyValues.html_url[outerIndex][innerIndex]}} target="_blank"> View Commit </a></td>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+
+
+
+
+
+
+                                </tbody>
                             </table>
                         </div>
                     </div>

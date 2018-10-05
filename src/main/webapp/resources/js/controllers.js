@@ -2637,6 +2637,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              */
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
             $scope.dataForGitHubTeamTotalsDaily = getDataForGitHubTeamTotalsDaily(array);
+
+
+
             console.log($scope.dataForGitHubTeamTotalsDaily);
             commitTotals();
         }
@@ -2693,8 +2696,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
         function getDataForGitHubTeamTotalsDaily(array) {
-            //Viraj add here
             var dataDaily = [];
+
             var student_name;
             var daysOfWeek = [
                 "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
@@ -2708,41 +2711,120 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     student_name = array[i].userid;
                 }
 
-                var commits = [];
-                var add = [];
-                var del = [];
-                var total = [];
-                var day = [];
+                // Start - Getting Daily activity log
+                var commits = []; //commits per day
+                var add = []; //additions per day
+                var del = []; // deletions per day
+                var total = []; // total changes per day
+                var day = []; //date
+                var total_color = [];//change text color based on total lines count commit
+
+
+                //There can be multiple commits on a day, the below captures individual commit details for a day
+                var message = []; // message for a single commit
+                var html_url = []; // html url for a single commit
+                var branch = []; //branch details for a single commit
+                var add_commit = []; // additions of lines for an individual commit
+                var del_commit = []; // deletion of lines for an individual commit
+                var total_commit = []; // total changes of lines for an individual commit
 
                 var dailyActivityLen = array[i].daily_activity.length;
+                var prevDate = new Date($scope.SelectedWeekBeginning.rawWeekBeginning * 1000);
+
+
                 for(var j=0;j<dailyActivityLen;j++)
                 {
-                    var commitDaily;
-                    commitDaily = array[i].daily_activity[j].commits;
 
-                    if(commitDaily != 0)
+                    commits.push(array[i].daily_activity[j].commits);
+                    add.push(array[i].daily_activity[j].additions);
+                    del.push(array[i].daily_activity[j].deletions);
+                    total.push(array[i].daily_activity[j].total);
+
+                    if(array[i].daily_activity[j].commit_details.length==0)
                     {
-                        commits.push(array[i].daily_activity[j].commits);
-                        add.push(array[i].daily_activity[j].additions);
-                        del.push(array[i].daily_activity[j].deletions);
-                        total.push(array[i].daily_activity[j].total);
-                        var currentDate  = new Date(array[i].daily_activity[j].commit_details[0].timestamp);
+                        var currentDate = new Date(prevDate);
+                        prevDate.setDate(prevDate.getDate() + 1);
+                        html_url.push(null);
+                        message.push(null);
+                        branch.push(null);
 
-                        var mm = currentDate.getMonth() + 1;
-                        if(mm<10) {
-                            mm = "0" + (mm);
+                        add_commit.push(null);
+                        del_commit.push(null);
+                        total_commit.push(null);
+                    }
+                    else {
+                        var currentDate = new Date(array[i].daily_activity[j].commit_details[0].timestamp);
+                        prevDate.setDate(currentDate.getDate() + 1);
+
+                        var html_url_arr = [];
+                        var message_arr = [];
+                        var branch_arr = [];
+                        var addition_arr = [];
+                        var deletions_arr = [];
+                        var total_arr = [];
+                        for(var k=0; k<array[i].daily_activity[j].commit_details.length;k++)
+                        {
+                            html_url_arr.push(array[i].daily_activity[j].commit_details[k].html_url);
+                            message_arr.push(array[i].daily_activity[j].commit_details[k].message);
+                            branch_arr.push(array[i].daily_activity[j].commit_details[k].branch);
+                            addition_arr.push(array[i].daily_activity[j].commit_details[k].additions);
+                            deletions_arr.push(array[i].daily_activity[j].commit_details[k].deletions);
+                            total_arr.push(array[i].daily_activity[j].commit_details[k].total);
                         }
+                        html_url.push(html_url_arr);
+                        message.push(message_arr);
+                        branch.push(branch_arr);
+                        add_commit.push(addition_arr);
+                        del_commit.push(deletions_arr);
+                        total_commit.push(total_arr);
+                    }
+                    var mm = currentDate.getMonth() + 1;
+                    if(mm<10) {
+                        mm = "0" + (mm);
+                    }
 
-                        var dd = currentDate.getDate();
-                        if(dd<10) {
-                            dd = "0" + (dd);
-                        }
+                    var dd = currentDate.getDate();
+                    if(dd<10) {
+                        dd = "0" + (dd);
+                    }
 
-                        day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
+                    day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
+
+                }
+
+                // End - Getting Daily activity log
+
+
+
+
+                //total_color
+                var total_sum = Math.max.apply(null, total);
+                for (var j = 0; j < total.length; j++) {
+                    if(total[j]/total_sum > 0.5)
+                    {
+                        total_color.push(1);
+                    }
+                    else
+                    {
+                        total_color.push(0);
                     }
                 }
 
-                dataDaily.push({student: student_name, commits: commits, add: add, del: del, total: total, day: day});
+                var total_activity = [];
+                var master_activity = [];
+                var inactivity_streak = [];
+
+
+                var inactivity = array[i].inactivity_streaks;
+                var inactivity_max = Math.max.apply(null, inactivity);
+                var inactivity_sum = inactivity.reduce(function(a, b) { return a + b; }, 0);
+
+                inactivity_streak.push({inactivity : inactivity, max : inactivity_max, sum : inactivity_sum});
+                total_activity.push({commits:array[i].total_activity.commits , additions:array[i].total_activity.additions , deletions:array[i].total_activity.deletions , total:array[i].total_activity.total });
+                master_activity.push({commits:array[i].master_activity.commits , additions:array[i].master_activity.additions , deletions:array[i].master_activity.deletions , total:array[i].master_activity.total });
+
+                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, total_activity:total_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
+                console.log(dataDaily);
             }
             return dataDaily;
         }
