@@ -155,7 +155,7 @@
                             <table style="width: 80%" align="center" border="2">
                                 <tr>
                                     <th>Longest Period of Inactivity : </th>
-                                    <th>{{dailyValues.inactivity_streak[0].max}}</th>
+                                    <th style = "color: red;">{{dailyValues.inactivity_streak[0].max}}</th>
                                 </tr>
                                 <tr>
                                     <th>All Inactivity Periods : </th>
@@ -163,7 +163,7 @@
                                 </tr>
                                 <tr>
                                     <th>Total Inactive Days : </th>
-                                    <th>{{dailyValues.inactivity_streak[0].sum}}</th>
+                                    <th style = "color: red;"><b>{{dailyValues.inactivity_streak[0].sum}}</b></th>
                                 </tr>
                             </table>
 
@@ -192,7 +192,10 @@
                                 <tr  ng-class-odd="'daily_activity_striped'"  ng-click="expanded = !expanded" expand>
                                     <td>{{dailyValues.day[outerIndex]}}</td>
 
-                                    <td>{{dailyValues.commits[outerIndex]}}</td>
+                                    <td ng-if="dailyValues.commits[outerIndex] != 0" >{{dailyValues.commits[outerIndex]}}</td>
+                                    <td ng-if="dailyValues.commits[outerIndex] == 0" style = "color: red;" >{{dailyValues.commits[outerIndex]}}</td>
+
+
                                     <td>{{dailyValues.add[outerIndex]}}</td>
                                     <td>{{dailyValues.del[outerIndex]}}</td>
 

@@ -2610,7 +2610,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './github/daily_activity_json',
                 method: "GET",
-                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$scope.githubStartDate,'weekEnding':$scope.githubEndDate}
+                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$rootScope.rawWeekBeginning,'weekEnding':$rootScope.rawWeekEnding}
             }).then(function (response) {
                 console.log(response.data);
                 processGitHubCommitTotals(response.data);
