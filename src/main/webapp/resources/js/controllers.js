@@ -2610,7 +2610,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './github/daily_activity_json',
                 method: "GET",
-                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$rootScope.rawWeekBeginning,'weekEnding':$rootScope.rawWeekEnding}
+                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$scope.githubStartDate,'weekEnding':$scope.githubEndDate}
             }).then(function (response) {
                 console.log(response.data);
                 processGitHubCommitTotals(response.data);
@@ -2637,10 +2637,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              */
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
             $scope.dataForGitHubTeamTotalsDaily = getDataForGitHubTeamTotalsDaily(array);
-
-
-
-            console.log($scope.dataForGitHubTeamTotalsDaily);
             commitTotals();
         }
 
@@ -2824,7 +2820,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 master_activity.push({commits:array[i].master_activity.commits , additions:array[i].master_activity.additions , deletions:array[i].master_activity.deletions , total:array[i].master_activity.total });
 
                 dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, total_activity:total_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
-                console.log(dataDaily);
+
             }
             return dataDaily;
         }
@@ -2832,6 +2828,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         function getDataForGitHubTeamCommitsSubCharts(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
             var totals = []; var student_name;
+
+            console.log(array);
             for (var i = 0; i < array.length; i++){
 
                 var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
