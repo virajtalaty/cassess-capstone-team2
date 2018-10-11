@@ -1369,6 +1369,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $rootScope.rawWeekBeginning = rawWeekBeginning;
+
              if ($rootScope.rawWeekEnding != null) {
                 console.log('Calling data');
                 getAllTabsData();
@@ -1376,6 +1377,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $rootScope.rawWeekEnding = rawWeekEnding;
+
             if ($rootScope.rawWeekBeginning != null) {
                 getAllTabsData();
             }}
@@ -1820,6 +1822,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     }])
     .controller('TeamController', ['$scope', '$rootScope','$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $rootScope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
+        $scope.loading = true;
         var initial;
         var course = courseService.getCourse();
         $scope.courseid = courseService.getCourse();
@@ -2344,6 +2347,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $rootScope.rawWeekBeginning = rawWeekBeginning;
+            $scope.loading = true;
             console.log("WeekBeginning: " + $rootScope.rawWeekBeginning);
             if ($rootScope.rawWeekEnding != null) {
                 getAllTeamTabsData();
@@ -2351,6 +2355,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $rootScope.rawWeekEnding = rawWeekEnding;
+            $scope.loading = true;
             //console.log("WeekEnding: " + $rootScope.rawWeekEnding);
             if ($rootScope.rawWeekBeginning != null) {
                getAllTeamTabsData();
@@ -2613,19 +2618,83 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$scope.githubStartDate,'weekEnding':$scope.githubEndDate}
             }).then(function (response) {
                 console.log(response.data);
+                $scope.loading = false;
+
                 processGitHubCommitTotals(response.data);
             }, function (response) {
                 //fail case
                    console.log("didn't work");
             });
         }
+
+        function getGitHubCommitSummary(array)
+        {
+            var githubSummary = new Map();
+            for (var i = 0; i < array.length; i++)
+            {
+                var outerMap = new Map();
+                for (var j = 0; j < array[i].daily_activity.length; j++)
+                {
+                    for(var k = 0; k < array[i].daily_activity[j].commit_details.length; k++)
+                    {
+                        var branch =     array[i].daily_activity[j].commit_details[k].branch;
+                        if(outerMap.has(branch))
+                        {
+                            var temp = outerMap.get(branch);
+                            temp.set("commits",temp.get("commits") + 1);
+                            temp.set("additions",temp.get("additions") + array[i].daily_activity[j].commit_details[k].additions);
+                            temp.set("deletions",temp.get("deletions") + array[i].daily_activity[j].commit_details[k].deletions);
+                            temp.set("total",temp.get("total") + array[i].daily_activity[j].commit_details[k].total);
+                            outerMap.set(branch,temp);
+                        }
+                        else
+                        {
+                            var innerMap = new Map();
+                            innerMap.set("commits",1);
+                            innerMap.set("additions",array[i].daily_activity[j].commit_details[k].additions);
+                            innerMap.set("deletions",array[i].daily_activity[j].commit_details[k].deletions);
+                            innerMap.set("total",array[i].daily_activity[j].commit_details[k].total);
+                            outerMap.set(branch,innerMap);
+                        }
+
+                    }
+                }//j loop
+
+                var student_name = "";
+                if(array[i].name!=null) {
+                    student_name = array[i].name;
+                }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
+                githubSummary.set(student_name,outerMap);
+
+            }//i loop
+
+            return githubSummary;
+        }
+
+
         function processGitHubCommitTotals(array){
+
+
+
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var totals = [];
             for (var i = 0; i < array.length; i++){
-                commits.push(array[i].total_activity.commits);
-                linesOfCodeAdded.push(array[i].total_activity.additions/1000);
-                linesOfCodeDeleted.push(array[i].total_activity.deletions/1000);
-                totals.push(array[i].total_activity.total/1000);
+
+                var gitHubSummary = getGitHubCommitSummary(array);
+
+                gitHubSummary.forEach(function(valueStudentMap, keyStudentMap) {
+                    valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
+                        commits.push(valueBranchMap.get("commits"));
+                        linesOfCodeAdded.push(valueBranchMap.get("additions"));
+                        linesOfCodeDeleted.push(valueBranchMap.get("deletions"));
+                        totals.push(valueBranchMap.get("total")/1000);
+
+                    });
+                });
+
             }
             var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted),Math.max.apply(Math, totals)];
             var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
@@ -2635,6 +2704,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              * Temporarily commenting out the sub-charts for GitHub data  from the AutoGrader Tool
              * TODO: Re-implement sub-charting data below following Taiga AG integration and getting both AG tools on server
              */
+
+            console.log(array);
+
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
             $scope.dataForGitHubTeamTotalsDaily = getDataForGitHubTeamTotalsDaily(array);
             commitTotals();
@@ -2693,7 +2765,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         function getDataForGitHubTeamTotalsDaily(array) {
             var dataDaily = [];
-
+            var gitHubSummary = getGitHubCommitSummary(array);
             var student_name;
             var daysOfWeek = [
                 "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
@@ -2806,7 +2878,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     }
                 }
 
-                var total_activity = [];
+                var other_activity = [];
                 var master_activity = [];
                 var inactivity_streak = [];
 
@@ -2816,21 +2888,38 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var inactivity_sum = inactivity.reduce(function(a, b) { return a + b; }, 0);
 
                 inactivity_streak.push({inactivity : inactivity, max : inactivity_max, sum : inactivity_sum});
-                total_activity.push({commits:array[i].total_activity.commits , additions:array[i].total_activity.additions , deletions:array[i].total_activity.deletions , total:array[i].total_activity.total });
-                master_activity.push({commits:array[i].master_activity.commits , additions:array[i].master_activity.additions , deletions:array[i].master_activity.deletions , total:array[i].master_activity.total });
 
-                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, total_activity:total_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
+                var valueStudentMap = gitHubSummary.get(student_name);
+                valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
 
+                    if(keyBranchMap == "master")
+                    {
+                        master_activity.push({commits:valueBranchMap.get("commits") , additions:valueBranchMap.get("additions"), deletions:valueBranchMap.get("deletions") , total:valueBranchMap.get("total") });
+                    }
+                    else
+                    {
+                        other_activity.push({branchNameStudent:keyBranchMap, commitStudent:valueBranchMap.get("commits"), addedStudent:valueBranchMap.get("additions"),
+                            deletedStudent:valueBranchMap.get("deletions"), totalStudent:valueBranchMap.get("total")})
+                    }
+                });
+
+                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, other_activity:other_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
             }
+
             return dataDaily;
         }
 
         function getDataForGitHubTeamCommitsSubCharts(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
             var totals = []; var student_name;
-
-            console.log(array);
+            var gitHubSummary = getGitHubCommitSummary(array);
             for (var i = 0; i < array.length; i++){
+
+                var commitStudent = 0;
+                var addedStudent = 0;
+                var deletedStudent = 0;
+                var totalStudent = 0;
+
 
                 var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
@@ -2841,17 +2930,27 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     student_name = array[i].userid;
                 }
 
+                var valueStudentMap = gitHubSummary.get(student_name);
+                valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
+                    commitStudent = commitStudent + valueBranchMap.get("commits");
+                    addedStudent = addedStudent + valueBranchMap.get("additions");
+                    deletedStudent = deletedStudent + valueBranchMap.get("deletions");
+                    totalStudent =  totalStudent + valueBranchMap.get("total");
+
+                });
+
+
                 valueset1.push(student_name);
-                valueset1.push(array[i].total_activity.commits);
+                valueset1.push(commitStudent);
 
                 valueset2.push(student_name);
-                valueset2.push(array[i].total_activity.additions/1000);
+                valueset2.push(addedStudent/1000);
 
                 valueset3.push(student_name);
-                valueset3.push(array[i].total_activity.deletions/1000);
+                valueset3.push(deletedStudent/1000);
 
                 valueset4.push(student_name);
-                valueset4.push(array[i].total_activity.total/1000);
+                valueset4.push(totalStudent/1000);
                 commits.push(valueset1);
                 linesOfCodeAdded.push(valueset2);
                 linesOfCodeDeleted.push(valueset3);
@@ -2859,7 +2958,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
             data.push({color: "#6799ee", key: "Commits", values: commits});
             data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/1000", values: linesOfCodeDeleted});
+            data.push({color: "#2E857E", key: "Lines Of Code Deleted/1000", values: linesOfCodeDeleted});
             data.push({color: "#900C3F", key: "Totals/1000", values: totals});
 
 

@@ -115,7 +115,7 @@
                         </div>
                     </div>
                     <div ng-if="isSet(5)">
-                        <h3>GitHub Team Daily Activity</h3><br>
+                        <h3 >GitHub Team Daily Activity</h3> <h3 ng-if="loading">Loading Data. Please wait</h3>  <br>
                         <br>
 
                         <!--Click here to view Autograding Helper Chart:
@@ -145,13 +145,17 @@
                                     <th>{{dailyValues.master_activity[0].deletions}}</th>
                                     <th>{{dailyValues.master_activity[0].total}}</th>
                                 </tr>
-                                <tr>
-                                    <th>All Branches</th>
-                                    <th>{{dailyValues.total_activity[0].commits}}</th>
-                                    <th>{{dailyValues.total_activity[0].additions}}</th>
-                                    <th>{{dailyValues.total_activity[0].deletions}}</th>
-                                    <th>{{dailyValues.total_activity[0].total}}</th>
+
+
+                                <tbody ng-repeat="src in dailyValues.other_activity" ng-init="loopIndex=$index">
+                                    <tr ng-if="dailyValues.other_activity[loopIndex].commitStudent != 0" >
+                                    <th>{{dailyValues.other_activity[loopIndex].branchNameStudent}}</th>
+                                    <th style="width: 40%">{{dailyValues.other_activity[loopIndex].commitStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].addedStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].deletedStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].totalStudent}}</th>
                                 </tr>
+
                             </table>
                             <br>
                             <h4>Inactivity Streaks</h4>

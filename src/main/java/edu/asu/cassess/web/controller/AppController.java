@@ -207,6 +207,7 @@ public class AppController {
                 }
                 in.close();
                 jsonData = response1.toString();
+
                 teamService.updateGithubAG(jsonURL,jsonData);
              } catch (Exception e) {
                 System.out.println("Unsuccessful");
