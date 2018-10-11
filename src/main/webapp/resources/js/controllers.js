@@ -1369,6 +1369,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $rootScope.rawWeekBeginning = rawWeekBeginning;
+
              if ($rootScope.rawWeekEnding != null) {
                 console.log('Calling data');
                 getAllTabsData();
@@ -1376,6 +1377,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $rootScope.rawWeekEnding = rawWeekEnding;
+
             if ($rootScope.rawWeekBeginning != null) {
                 getAllTabsData();
             }}
@@ -1820,6 +1822,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     }])
     .controller('TeamController', ['$scope', '$rootScope','$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $rootScope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
+        $scope.loading = true;
         var initial;
         var course = courseService.getCourse();
         $scope.courseid = courseService.getCourse();
@@ -2344,6 +2347,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         $scope.IntervalChangedBegin = function (rawWeekBeginning) {
             $rootScope.rawWeekBeginning = rawWeekBeginning;
+            $scope.loading = true;
             console.log("WeekBeginning: " + $rootScope.rawWeekBeginning);
             if ($rootScope.rawWeekEnding != null) {
                 getAllTeamTabsData();
@@ -2351,6 +2355,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         };
         $scope.IntervalChangedEnd = function (rawWeekEnding) {
             $rootScope.rawWeekEnding = rawWeekEnding;
+            $scope.loading = true;
             //console.log("WeekEnding: " + $rootScope.rawWeekEnding);
             if ($rootScope.rawWeekBeginning != null) {
                getAllTeamTabsData();
@@ -2613,19 +2618,83 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$scope.githubStartDate,'weekEnding':$scope.githubEndDate}
             }).then(function (response) {
                 console.log(response.data);
+                $scope.loading = false;
+
                 processGitHubCommitTotals(response.data);
             }, function (response) {
                 //fail case
                    console.log("didn't work");
             });
         }
+
+        function getGitHubCommitSummary(array)
+        {
+            var githubSummary = new Map();
+            for (var i = 0; i < array.length; i++)
+            {
+                var outerMap = new Map();
+                for (var j = 0; j < array[i].daily_activity.length; j++)
+                {
+                    for(var k = 0; k < array[i].daily_activity[j].commit_details.length; k++)
+                    {
+                        var branch =     array[i].daily_activity[j].commit_details[k].branch;
+                        if(outerMap.has(branch))
+                        {
+                            var temp = outerMap.get(branch);
+                            temp.set("commits",temp.get("commits") + 1);
+                            temp.set("additions",temp.get("additions") + array[i].daily_activity[j].commit_details[k].additions);
+                            temp.set("deletions",temp.get("deletions") + array[i].daily_activity[j].commit_details[k].deletions);
+                            temp.set("total",temp.get("total") + array[i].daily_activity[j].commit_details[k].total);
+                            outerMap.set(branch,temp);
+                        }
+                        else
+                        {
+                            var innerMap = new Map();
+                            innerMap.set("commits",1);
+                            innerMap.set("additions",array[i].daily_activity[j].commit_details[k].additions);
+                            innerMap.set("deletions",array[i].daily_activity[j].commit_details[k].deletions);
+                            innerMap.set("total",array[i].daily_activity[j].commit_details[k].total);
+                            outerMap.set(branch,innerMap);
+                        }
+
+                    }
+                }//j loop
+
+                var student_name = "";
+                if(array[i].name!=null) {
+                    student_name = array[i].name;
+                }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
+                githubSummary.set(student_name,outerMap);
+
+            }//i loop
+
+            return githubSummary;
+        }
+
+
         function processGitHubCommitTotals(array){
+
+
+
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var totals = [];
             for (var i = 0; i < array.length; i++){
-                commits.push(array[i].total_activity.commits);
-                linesOfCodeAdded.push(array[i].total_activity.additions/1000);
-                linesOfCodeDeleted.push(array[i].total_activity.deletions/1000);
-                totals.push(array[i].total_activity.total/1000);
+
+                var gitHubSummary = getGitHubCommitSummary(array);
+
+                gitHubSummary.forEach(function(valueStudentMap, keyStudentMap) {
+                    valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
+                        commits.push(valueBranchMap.get("commits"));
+                        linesOfCodeAdded.push(valueBranchMap.get("additions"));
+                        linesOfCodeDeleted.push(valueBranchMap.get("deletions"));
+                        totals.push(valueBranchMap.get("total")/1000);
+
+                    });
+                });
+
             }
             var maxArray = [Math.max.apply(Math, commits), Math.max.apply(Math, linesOfCodeAdded), Math.max.apply(Math, linesOfCodeDeleted),Math.max.apply(Math, totals)];
             var gitHubBarChartMax = Math.ceil(Math.max.apply(Math, maxArray));
@@ -2635,7 +2704,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
              * Temporarily commenting out the sub-charts for GitHub data  from the AutoGrader Tool
              * TODO: Re-implement sub-charting data below following Taiga AG integration and getting both AG tools on server
              */
+
+            console.log(array);
+
             $scope.dataForGitHubTeamTotals =  getDataForGitHubTeamCommitsSubCharts(array);
+            $scope.dataForGitHubTeamTotalsDaily = getDataForGitHubTeamTotalsDaily(array);
             commitTotals();
         }
 
@@ -2688,27 +2761,196 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             };
         }
 
+
+
+        function getDataForGitHubTeamTotalsDaily(array) {
+            var dataDaily = [];
+            var gitHubSummary = getGitHubCommitSummary(array);
+            var student_name;
+            var daysOfWeek = [
+                "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
+            ];
+            for (var i = 0; i < array.length; i++){
+
+                if(array[i].name!=null) {
+                    student_name = array[i].name;
+                }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
+                // Start - Getting Daily activity log
+                var commits = []; //commits per day
+                var add = []; //additions per day
+                var del = []; // deletions per day
+                var total = []; // total changes per day
+                var day = []; //date
+                var total_color = [];//change text color based on total lines count commit
+
+
+                //There can be multiple commits on a day, the below captures individual commit details for a day
+                var message = []; // message for a single commit
+                var html_url = []; // html url for a single commit
+                var branch = []; //branch details for a single commit
+                var add_commit = []; // additions of lines for an individual commit
+                var del_commit = []; // deletion of lines for an individual commit
+                var total_commit = []; // total changes of lines for an individual commit
+
+                var dailyActivityLen = array[i].daily_activity.length;
+                var prevDate = new Date($scope.SelectedWeekBeginning.rawWeekBeginning * 1000);
+
+
+                for(var j=0;j<dailyActivityLen;j++)
+                {
+
+                    commits.push(array[i].daily_activity[j].commits);
+                    add.push(array[i].daily_activity[j].additions);
+                    del.push(array[i].daily_activity[j].deletions);
+                    total.push(array[i].daily_activity[j].total);
+
+                    if(array[i].daily_activity[j].commit_details.length==0)
+                    {
+                        var currentDate = new Date(prevDate);
+                        prevDate.setDate(prevDate.getDate() + 1);
+                        html_url.push(null);
+                        message.push(null);
+                        branch.push(null);
+
+                        add_commit.push(null);
+                        del_commit.push(null);
+                        total_commit.push(null);
+                    }
+                    else {
+                        var currentDate = new Date(array[i].daily_activity[j].commit_details[0].timestamp);
+                        prevDate.setDate(currentDate.getDate() + 1);
+
+                        var html_url_arr = [];
+                        var message_arr = [];
+                        var branch_arr = [];
+                        var addition_arr = [];
+                        var deletions_arr = [];
+                        var total_arr = [];
+                        for(var k=0; k<array[i].daily_activity[j].commit_details.length;k++)
+                        {
+                            html_url_arr.push(array[i].daily_activity[j].commit_details[k].html_url);
+                            message_arr.push(array[i].daily_activity[j].commit_details[k].message);
+                            branch_arr.push(array[i].daily_activity[j].commit_details[k].branch);
+                            addition_arr.push(array[i].daily_activity[j].commit_details[k].additions);
+                            deletions_arr.push(array[i].daily_activity[j].commit_details[k].deletions);
+                            total_arr.push(array[i].daily_activity[j].commit_details[k].total);
+                        }
+                        html_url.push(html_url_arr);
+                        message.push(message_arr);
+                        branch.push(branch_arr);
+                        add_commit.push(addition_arr);
+                        del_commit.push(deletions_arr);
+                        total_commit.push(total_arr);
+                    }
+                    var mm = currentDate.getMonth() + 1;
+                    if(mm<10) {
+                        mm = "0" + (mm);
+                    }
+
+                    var dd = currentDate.getDate();
+                    if(dd<10) {
+                        dd = "0" + (dd);
+                    }
+
+                    day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
+
+                }
+
+                // End - Getting Daily activity log
+
+
+
+
+                //total_color
+                var total_sum = Math.max.apply(null, total);
+                for (var j = 0; j < total.length; j++) {
+                    if(total[j]/total_sum > 0.5)
+                    {
+                        total_color.push(1);
+                    }
+                    else
+                    {
+                        total_color.push(0);
+                    }
+                }
+
+                var other_activity = [];
+                var master_activity = [];
+                var inactivity_streak = [];
+
+
+                var inactivity = array[i].inactivity_streaks;
+                var inactivity_max = Math.max.apply(null, inactivity);
+                var inactivity_sum = inactivity.reduce(function(a, b) { return a + b; }, 0);
+
+                inactivity_streak.push({inactivity : inactivity, max : inactivity_max, sum : inactivity_sum});
+
+                var valueStudentMap = gitHubSummary.get(student_name);
+                valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
+
+                    if(keyBranchMap == "master")
+                    {
+                        master_activity.push({commits:valueBranchMap.get("commits") , additions:valueBranchMap.get("additions"), deletions:valueBranchMap.get("deletions") , total:valueBranchMap.get("total") });
+                    }
+                    else
+                    {
+                        other_activity.push({branchNameStudent:keyBranchMap, commitStudent:valueBranchMap.get("commits"), addedStudent:valueBranchMap.get("additions"),
+                            deletedStudent:valueBranchMap.get("deletions"), totalStudent:valueBranchMap.get("total")})
+                    }
+                });
+
+                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, other_activity:other_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
+            }
+
+            return dataDaily;
+        }
+
         function getDataForGitHubTeamCommitsSubCharts(array){
             var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = []; var data = [];
             var totals = []; var student_name;
+            var gitHubSummary = getGitHubCommitSummary(array);
             for (var i = 0; i < array.length; i++){
+
+                var commitStudent = 0;
+                var addedStudent = 0;
+                var deletedStudent = 0;
+                var totalStudent = 0;
+
 
                 var valueset1 = [];var valueset2 = [];var valueset3 = [];var valueset4 = [];
 
                 if(array[i].name!=null) {
                     student_name = array[i].name;
                 }
+                else if(array[i].userid!=null) {
+                    student_name = array[i].userid;
+                }
+
+                var valueStudentMap = gitHubSummary.get(student_name);
+                valueStudentMap.forEach(function(valueBranchMap, keyBranchMap) {
+                    commitStudent = commitStudent + valueBranchMap.get("commits");
+                    addedStudent = addedStudent + valueBranchMap.get("additions");
+                    deletedStudent = deletedStudent + valueBranchMap.get("deletions");
+                    totalStudent =  totalStudent + valueBranchMap.get("total");
+
+                });
+
+
                 valueset1.push(student_name);
-                valueset1.push(array[i].total_activity.commits);
+                valueset1.push(commitStudent);
 
                 valueset2.push(student_name);
-                valueset2.push(array[i].total_activity.additions/1000);
+                valueset2.push(addedStudent/1000);
 
                 valueset3.push(student_name);
-                valueset3.push(array[i].total_activity.deletions/1000);
+                valueset3.push(deletedStudent/1000);
 
                 valueset4.push(student_name);
-                valueset4.push(array[i].total_activity.total/1000);
+                valueset4.push(totalStudent/1000);
                 commits.push(valueset1);
                 linesOfCodeAdded.push(valueset2);
                 linesOfCodeDeleted.push(valueset3);
@@ -2716,8 +2958,10 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }
             data.push({color: "#6799ee", key: "Commits", values: commits});
             data.push({color: "#000000", key: "Lines Of Code Added/1000", values: linesOfCodeAdded});
-            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/1000", values: linesOfCodeDeleted});
+            data.push({color: "#2E857E", key: "Lines Of Code Deleted/1000", values: linesOfCodeDeleted});
             data.push({color: "#900C3F", key: "Totals/1000", values: totals});
+
+
             return data;
         }
 
@@ -3825,7 +4069,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
-                //console.log(response.data);
                 processGitHubCommitMax(response.data);
             }, function (response) {
                 //fail case
@@ -3847,6 +4090,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.dataForSlackStudentMessages = getDataForSlackStudentMessages(response.data);
             });
             getSlackActivity();
+
+
         }
 
         $scope.optionsForTaigaStudentTasks = {
@@ -3923,7 +4168,82 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.dataForGitHubStudentCommits =  getDataForGitHubStudentCommitsCharts(array);
             commitOptions();
             getGitHubWeightData();
+
+           $scope.dataForGitHubTotalsDaily = getDataForGitHubTotalsDaily(array);
         }
+
+        function getDataForGitHubTotalsDaily(array){
+
+            var student_name;
+            var daysOfWeek = [
+                "Sun","Mon","Tues","Wed","Thur","Fri","Sat"
+            ];
+
+
+            if(array[0].gitHubPK.username!=null) {
+                student_name = array[0].gitHubPK.username;
+            }
+            var dataDaily = [];
+            if(student_name != null)
+            {
+                var commits = [];
+                var add = [];
+                var del = [];
+                var total = [];
+                var day = [];
+
+                for (var i = 0; i < array.length; i++){
+                    commits.push(array[i].commits);
+                    add.push(array[i].linesOfCodeAdded);
+                    del.push(array[i].linesOfCodeDeleted);
+                    total.push(array[i].linesOfCodeAdded + array[i].linesOfCodeDeleted);
+
+                    var currentDate = new Date(array[i].gitHubPK.date);
+                    var mm = currentDate.getMonth() + 1;
+                    if(mm<10) {
+                        mm = "0" + (mm);
+                    }
+                    var dd = currentDate.getDate();
+                    if(dd<10) {
+                        dd = "0" + (dd);
+                    }
+
+                    day.push(mm + "/" + dd + "/" + currentDate.getFullYear() + " (" + daysOfWeek[currentDate.getDay()] + ") ");
+                }
+
+                dataDaily.push({student: student_name, commits: commits, add: add, del: del,total: total, day: day});
+                return dataDaily;
+            }
+
+            var commits = []; var linesOfCodeAdded = []; var linesOfCodeDeleted = [];
+            var data = [];
+
+            for (var i = 0; i < array.length; i++){
+
+                var valueset1 = [];var valueset2 = [];var valueset3 = [];
+
+                valueset1.push(array[i].gitHubPK.date);
+                valueset1.push(array[i].commits);
+
+                valueset2.push(array[i].gitHubPK.date);
+                valueset2.push(array[i].linesOfCodeAdded/100);
+
+                valueset3.push(array[i].gitHubPK.date);
+                valueset3.push(array[i].linesOfCodeDeleted/100);
+
+                commits.push(valueset1);
+                linesOfCodeAdded.push(valueset2);
+                linesOfCodeDeleted.push(valueset3);
+            }
+
+            data.push({color: "#6799ee", key: "Commits", values: commits });
+            data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
+            data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
+
+            return data;
+        }
+
+
 
         function getGitHubBarChartMax(gitHubBarChartMax){
 
@@ -4347,6 +4667,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         var nextIndex = -1;
 
+        var url = "http://cassess.fulton.asu.edu/cassess/#/";
+        //var url = "http://localhost:8090/#/";
+
         $scope.student = {};
 
         $scope.students = [];
@@ -4370,19 +4693,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     }
 
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                    window.location.href = url+'create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                window.location.href = url+'create_teams';
             }
         } else {
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+            window.location.href = url+'create_course';
         }
         if (teamIndex == -1){
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+            window.location.href = url+'create_teams';
         }
         if(course === null){
-            window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+            window.location.href = url+'create_course';
         }
 
         $scope.setTeam = function() {
@@ -4659,6 +4982,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var course = courseCreateService.getCourse();
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             $scope.currentCourse = course;
 
             $scope.admin = {};
@@ -4670,11 +4996,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             if ($rootScope.coursePackage.course === course) {
                 $scope.admins = $rootScope.coursePackage.admins;
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.setClickedAdmin = function(index){
@@ -4878,6 +5204,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var taigaInfoChanged = false;
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             if ($rootScope.coursePackage.course === course) {
                 $scope.teams = $rootScope.coursePackage.teams;
                 for (var i in $rootScope.coursePackage.teams){
@@ -4888,11 +5217,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     //console.log("GitHubHideRemove: " + $rootScope.coursePackage.teams[i].hideGitHubRemove);
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.setClickedTeam = function(index){
@@ -5511,6 +5840,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             var nextIndex = -1;
 
+            var url = "http://cassess.fulton.asu.edu/cassess/#/";
+            //var url = "http://localhost:8090/#/";
+
             $scope.channel = {};
 
             $scope.channels = [];
@@ -5534,19 +5866,19 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         }
 
                     } else {
-                        window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                        window.location.href = url + 'create_teams';
                     }
                 } else {
-                    window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                    window.location.href = url + 'create_teams';
                 }
             } else {
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
             if (teamIndex == -1){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_teams';
+                window.location.href = url + 'create_teams';
             }
             if(course === null){
-                window.location.href = 'http://cassess.fulton.asu.edu/cassess/#/create_course';
+                window.location.href = url + 'create_course';
             }
 
             $scope.tab = 5;

@@ -179,9 +179,21 @@ public class AppController {
                                                @RequestHeader(name = "weekEnding", required = true) String weekEnding,
                                                HttpServletRequest request, HttpServletResponse response) {
         PeriodicGithubActivity weightList = teamService.listGetDetailedGithubActivityURL(course, team);
+
+/*
+        Date dateBegin = new Date(weekBeginning * 1000L);
+        Date dateEnd = new Date(weekEnding * 1000L);
+        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDateBegin = sdfBegin.format(dateBegin);
+        String formattedDateEnd = sdfEnd.format(dateEnd);
+*/
+
         String jsonURL = weightList.getGithub_activity_URL()+"&start_date="+weekBeginning+"&end_date="+weekEnding;
         StringBuffer response1 = new StringBuffer();
+        System.out.println("URL - Created - " + jsonURL);
         String jsonData = teamService.getAGGithubData(jsonURL);
+
         if(jsonData.equals("-1")) {
             try {
                 URL obj = new URL(jsonURL);
@@ -196,6 +208,7 @@ public class AppController {
                 }
                 in.close();
                 jsonData = response1.toString();
+
                 teamService.updateGithubAG(jsonURL,jsonData);
              } catch (Exception e) {
                 System.out.println("Unsuccessful");

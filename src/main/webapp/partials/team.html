@@ -36,10 +36,18 @@
                     <li ng-class="{ active: isSet(4) }">
                         <a href="javascript:void(0)" ng-click="setTab(4)">Slack</a>
                     </li>
+                    <li ng-class="{ active: isSet(5) }" access="admin">
+                        <a href="javascript:void(0)" ng-click="setTab(5)">Autograding Data</a>
+                    </li>
+                    <li ng-class="{ active: isSet(5) }" access="super_user">
+                        <a href="javascript:void(0)" ng-click="setTab(5)">Autograding Data</a>
+                    </li>
                 </ul>
+
                 <ul class="nav" access="admin">
                     <li><a ng-href="{{autograder_url}}">Autograding Tool</a></li>
                 </ul>
+
                 <ul class="nav" access="super_user">
                     <li><a ng-href="{{autograder_url}}">Autograding Tool</a></li>
                 </ul>
@@ -84,12 +92,7 @@
                         <div id="githubChart1">
                             <nvd3 options='optionsForGitHubTeamCommits' data='dataForGitHubTeamCommits'></nvd3>
                         </div>
-                            <!-- Temporarily commenting out Autograder sourced chart -->
-                        Click here to view Autograding Helper Chart: <input type="checkbox" id="githubChart3" ng-model="ModelData.githubChart3" />
-                        <div ng-show="ModelData.githubChart3">
-                        <nvd3 options='optionsForGitHubTeamTotals' data='dataForGitHubTeamTotals'></nvd3>
-                        </div>
-                            <br>
+
                         <div id="githubChart2" ng-controller="TeamController">
                             <h3>GitHub Team Average Weight Activity</h3><br>
                              <nvd3 options='optionsForGitHubTeamWeight' data='dataForGitHubTeamWeight'></nvd3>
@@ -109,6 +112,141 @@
                         <div id="slackChart2" ng-controller="TeamController">
                             <h3>Average Message Activity</h3><br>
                             <nvd3 options='optionsForSlackTeamActivity' data='dataForSlackTeamActivity'></nvd3>
+                        </div>
+                    </div>
+                    <div ng-if="isSet(5)">
+                        <h3 >GitHub Team Daily Activity</h3> <br>
+                        <h3 style = "color: red;" ng-if="loading">Loading Data. Please wait</h3>  <br>
+                        <br>
+
+                        <!--Click here to view Autograding Helper Chart:
+                        <input type="checkbox" id="githubChart3" />--> <!--ng-model="ModelData.githubChart3"-->
+                        <div>  <!--ng-show="ModelData.githubChart3"-->
+                            <nvd3 options='optionsForGitHubTeamTotals' data='dataForGitHubTeamTotals'></nvd3>
+                        </div>
+
+                        <div ng-controller="TeamController" ng-repeat="dailyValues in dataForGitHubTeamTotalsDaily">
+                            <br>
+                            <h2 style="text-align:center">{{dailyValues.student}}</h2>
+
+                            <h4>Overall Stats</h4>
+                            <table style="width: 80%" align="center" border="2">
+
+                                <tr>
+                                    <th><b>Branch</b></th>
+                                    <th><b>Commits</b></th>
+                                    <th><b>Additions</b></th>
+                                    <th><b>Delete</b></th>
+                                    <th><b>Total Changes</b></th>
+                                </tr>
+                                <tr>
+                                    <th>Master Branch</th>
+                                    <th>{{dailyValues.master_activity[0].commits}}</th>
+                                    <th>{{dailyValues.master_activity[0].additions}}</th>
+                                    <th>{{dailyValues.master_activity[0].deletions}}</th>
+                                    <th>{{dailyValues.master_activity[0].total}}</th>
+                                </tr>
+
+
+                                <tbody ng-repeat="src in dailyValues.other_activity" ng-init="loopIndex=$index">
+                                    <tr ng-if="dailyValues.other_activity[loopIndex].commitStudent != 0" >
+                                    <th>{{dailyValues.other_activity[loopIndex].branchNameStudent}}</th>
+                                    <th style="width: 40%">{{dailyValues.other_activity[loopIndex].commitStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].addedStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].deletedStudent}}</th>
+                                    <th>{{dailyValues.other_activity[loopIndex].totalStudent}}</th>
+                                </tr>
+
+                            </table>
+                            <br>
+                            <h4>Inactivity Streaks</h4>
+                            <table style="width: 80%" align="center" border="2">
+                                <tr>
+                                    <th>Longest Period of Inactivity : </th>
+                                    <th style = "color: red;">{{dailyValues.inactivity_streak[0].max}}</th>
+                                </tr>
+                                <tr>
+                                    <th>All Inactivity Periods : </th>
+                                    <th>{{dailyValues.inactivity_streak[0].inactivity}}</th>
+                                </tr>
+                                <tr>
+                                    <th>Total Inactive Days : </th>
+                                    <th style = "color: red;"><b>{{dailyValues.inactivity_streak[0].sum}}</b></th>
+                                </tr>
+                            </table>
+
+                                <h4>Daily Activity</h4>
+                            <table style="width: 80%" align="center" border="2">
+
+                                <tr>
+                                    <th>
+                                        <b>Day</b>
+                                    </th>
+                                    <th>
+                                        <b>Commits</b>
+                                    </th>
+                                    <th>
+                                        <b>Additions</b>
+                                    </th>
+                                    <th>
+                                        <b>Delete</b>
+                                    </th>
+                                    <th>
+                                        <b>Total</b>
+                                    </th>
+                                </tr>
+
+                                <tbody ng-repeat="src in dailyValues.day" ng-init="outerIndex=$index">
+                                <tr  ng-class-odd="'daily_activity_striped'"  ng-click="expanded = !expanded" expand>
+                                    <td>{{dailyValues.day[outerIndex]}}</td>
+
+                                    <td ng-if="dailyValues.commits[outerIndex] != 0" >{{dailyValues.commits[outerIndex]}}</td>
+                                    <td ng-if="dailyValues.commits[outerIndex] == 0" style = "color: red;" >{{dailyValues.commits[outerIndex]}}</td>
+
+
+                                    <td>{{dailyValues.add[outerIndex]}}</td>
+                                    <td>{{dailyValues.del[outerIndex]}}</td>
+
+                                    <td ng-if="dailyValues.total_color[outerIndex] == 0" >{{dailyValues.total[outerIndex]}}</td>
+                                    <td ng-if="dailyValues.total_color[outerIndex] == 1" style = "color: red;" >{{dailyValues.total[outerIndex]}}</td>
+
+                                </tr>
+
+
+                                <tr ng-repeat-end ng-show="expanded">
+                                    <td colspan="5">
+                                        <table class="table table-condensed table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Message</th>
+                                                <th>Additions</th>
+                                                <th>Deletions</th>
+                                                <th>Total Changes</th>
+                                                <th>Link</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="details in dailyValues.html_url[outerIndex]" ng-init="innerIndex=$index">
+                                                <td>{{dailyValues.branch[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.message[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.add_commit[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.del_commit[outerIndex][innerIndex]}}</td>
+                                                <td>{{dailyValues.total_commit[outerIndex][innerIndex]}}</td>
+                                                <td><a href={{dailyValues.html_url[outerIndex][innerIndex]}} target="_blank"> View Commit </a></td>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+
+
+
+
+
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

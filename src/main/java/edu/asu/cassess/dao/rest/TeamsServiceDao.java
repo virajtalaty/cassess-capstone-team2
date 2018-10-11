@@ -278,7 +278,7 @@
             }
         }
         public void updateGithubAG(String jsonURL, String jsonData){
-            System.out.println("[LOG]: URL "+jsonURL + " DATA "+jsonData);
+            System.out.println("[LOG]: URL "+jsonURL); // + " DATA "+jsonData);
             Query query = getEntityManager().createNativeQuery("insert into github_ag select ?1,?2 from dual where not exists (select 1 from github_ag where URL=?1)");
             query.setParameter(1,jsonURL);
             query.setParameter(2,jsonData);
