@@ -191,6 +191,7 @@ public class AppController {
 
         String jsonURL = weightList.getGithub_activity_URL()+"&start_date="+weekBeginning+"&end_date="+weekEnding;
         StringBuffer response1 = new StringBuffer();
+        System.out.println("URL - Created - " + jsonURL);
         String jsonData = teamService.getAGGithubData(jsonURL);
 
         if(jsonData.equals("-1")) {

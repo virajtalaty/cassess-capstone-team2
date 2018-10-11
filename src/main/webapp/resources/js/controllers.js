@@ -4069,7 +4069,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 }
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
-                //console.log(response.data);
                 processGitHubCommitMax(response.data);
             }, function (response) {
                 //fail case
@@ -4170,8 +4169,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             commitOptions();
             getGitHubWeightData();
 
-            //5th tab
-            //console.log("viraj");
            $scope.dataForGitHubTotalsDaily = getDataForGitHubTotalsDaily(array);
         }
 
