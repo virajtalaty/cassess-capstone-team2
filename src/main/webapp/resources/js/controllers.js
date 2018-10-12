@@ -2619,7 +2619,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             }).then(function (response) {
                 console.log(response.data);
                 $scope.loading = false;
-
+                $scope.showZeros = true;
                 processGitHubCommitTotals(response.data);
             }, function (response) {
                 //fail case

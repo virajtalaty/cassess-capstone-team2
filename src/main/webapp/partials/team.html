@@ -175,7 +175,11 @@
                                 </tr>
                             </table>
 
+                            <br>
+
                                 <h4>Daily Activity</h4>
+                            <input type="checkbox" checked ng-init="showZeros = true" ng-model="showZeros">Show Zeros
+
                             <table style="width: 80%" align="center" border="2">
 
                                 <tr>
@@ -197,7 +201,7 @@
                                 </tr>
 
                                 <tbody ng-repeat="src in dailyValues.day" ng-init="outerIndex=$index">
-                                <tr  ng-class-odd="'daily_activity_striped'"  ng-click="expanded = !expanded" expand>
+                                <tr  ng-show="showZeros || dailyValues.commits[outerIndex] != 0" ng-click="expanded = !expanded" expand>
                                     <td>{{dailyValues.day[outerIndex]}}</td>
 
                                     <td ng-if="dailyValues.commits[outerIndex] != 0" >{{dailyValues.commits[outerIndex]}}</td>
@@ -213,7 +217,7 @@
                                 </tr>
 
 
-                                <tr ng-repeat-end ng-show="expanded">
+                                <tr ng-show="(showZeros || dailyValues.commits[outerIndex] != 0 ) && expanded " ng-repeat-end >
                                     <td colspan="5">
                                         <table class="table table-condensed table-bordered">
                                             <thead>
@@ -238,11 +242,7 @@
                                         </table>
                                     </td>
                                 </tr>
-
-
-
-
-
+                                </div>
 
 
                                 </tbody>
