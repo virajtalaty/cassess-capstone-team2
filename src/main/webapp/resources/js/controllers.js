@@ -1337,7 +1337,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.courseIntervals = response.data;
                 if ($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
-                    $scope.SelectedWeekBeginning = $scope.courseIntervals[0];
+                    $scope.SelectedWeekBeginning = $scope.courseIntervals[$scope.courseIntervals.length - 1];
                     $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
                     $scope.SelectedWeekEnding = $scope.courseIntervals[$scope.courseIntervals.length - 1];
                     $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
@@ -2316,7 +2316,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.teamIntervals = response.data;
                 if($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
-                    $scope.SelectedWeekBeginning = $scope.teamIntervals[0];
+                    $scope.SelectedWeekBeginning = $scope.teamIntervals[$scope.teamIntervals.length-1];
                     $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
                     $scope.SelectedWeekEnding =  $scope.teamIntervals[$scope.teamIntervals.length-1];
                     $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
@@ -3993,7 +3993,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log(response.data);
                 $scope.studentIntervals = response.data;
                 if($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
-                    $scope.SelectedWeekBeginning = $scope.studentIntervals[0];
+                    $scope.SelectedWeekBeginning = $scope.studentIntervals[$scope.studentIntervals.length-1];
                     $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
                     $scope.SelectedWeekEnding =  $scope.studentIntervals[$scope.studentIntervals.length-1];
                     $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
