@@ -34,17 +34,32 @@ public class DBConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 
+        try {
+            Properties dbProperties = new Properties();
+            dbProperties.load(ServiceConfig.class.getClassLoader().getResourceAsStream("/database.properties"));
 
+            dataSource.setUrl(dbProperties.getProperty("db_url"));
+            dataSource.setUsername(dbProperties.getProperty("db_username"));
+            dataSource.setPassword(dbProperties.getProperty("db_password"));
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+        }
+
+        /*
         //Connection Parameters for Local Deployment
         dataSource.setUrl("jdbc:mysql://localhost/cassess");
         dataSource.setUsername("root");
         dataSource.setPassword("root123");
-/*
+
+
         //Connection Parameters for ASU RHEL Server Deployment
         dataSource.setUrl("jdbc:mysql://localhost/cassess");
         dataSource.setUsername("root");
         dataSource.setPassword("root123");
-
+*/
+/*
         dataSource.setUrl("jdbc:mysql://cassess.fulton.asu.edu/cassess");
         dataSource.setUsername("cassess");
         dataSource.setPassword("4qHb!9d3");
