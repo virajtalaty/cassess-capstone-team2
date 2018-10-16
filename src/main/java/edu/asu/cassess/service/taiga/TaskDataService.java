@@ -194,11 +194,15 @@ public class TaskDataService implements ITaskDataService {
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
         java.util.Date current = new java.util.Date();
-        try {
+
+
+        //TODO : Why is this code even there
+        /*try {
             current = new SimpleDateFormat("yyyy-mm-dd").parse(String.valueOf(new java.util.Date()));
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
+
         //System.out.println("CurrentDate: " + current);
         //System.out.println("EndDate: " + tempCourse.getEnd_date());
         if (current.before(tempCourse.getEnd_date())) {
