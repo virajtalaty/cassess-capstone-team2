@@ -689,6 +689,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     $rootScope.provisionMode = false;
     // init form
     $scope.isLoading = false;
+    $scope.loadingText = "Loading Data. Please wait";
     $scope.url = $scope.swaggerUrl = 'v2/api-docs';
     // error management
     $scope.myErrorHandler = function (data, status) {
@@ -2988,8 +2989,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 linesOfCodeAdded.push(valueset2);
                 linesOfCodeDeleted.push(valueset3);
             }
-            $scope.githubStartDate = array[0].gitHubPK.date;
-            $scope.githubEndDate = array[array.length-1].gitHubPK.date;
+            try
+            {
+                $scope.githubStartDate = array[0].gitHubPK.date;
+                $scope.githubEndDate = array[array.length-1].gitHubPK.date;
+            }
+            catch(err)
+            {
+                $scope.loadingText = "Cannot fetch data for the following team";
+            }
             data.push({color: "#6799ee", key: "Commits", values: commits});
             data.push({color: "#000000", key: "Lines Of Code Added/100", values: linesOfCodeAdded});
             data.push({color: "#2E8B57", key: "Lines Of Code Deleted/100", values: linesOfCodeDeleted});
