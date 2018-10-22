@@ -200,10 +200,10 @@ public class UserServiceDao {
     }
 
     public User deleteUser(User user) {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.users_authority WHERE id_user = ?1");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM users_authority WHERE id_user = ?1");
         query.setParameter(1, user.getId());
         query.executeUpdate();
-        Query queryDelete = getEntityManager().createNativeQuery("DELETE FROM cassess.users WHERE e_mail = ?1");
+        Query queryDelete = getEntityManager().createNativeQuery("DELETE FROM users WHERE e_mail = ?1");
         queryDelete.setParameter(1, user.getEmail());
         queryDelete.executeUpdate();
         return user;
@@ -212,12 +212,12 @@ public class UserServiceDao {
     public Course courseDelete(Course course) {
         if (course.getAdmins() != null) {
             for (Admin admin : course.getAdmins()) {
-                Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'Total' FROM cassess.admins WHERE email = ?1", AdminCount.class);
+                Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'Total' FROM admins WHERE email = ?1", AdminCount.class);
                 query.setParameter(1, admin.getEmail());
                 AdminCount adminCount = (AdminCount) query.getSingleResult();
                 int result = adminCount.getTotal();
                 if (result == 1) {
-                    Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                    Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                     queryDelete.setParameter(1, admin.getEmail());
                     User user = (User) queryDelete.getSingleResult();
                     deleteUser(user);
@@ -227,12 +227,12 @@ public class UserServiceDao {
         if (course.getTeams() != null) {
             for (Team team : course.getTeams()) {
                 for (Student student : team.getStudents()) {
-                    Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM cassess.students WHERE email = ?1", StudentCount.class);
+                    Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM students WHERE email = ?1", StudentCount.class);
                     query.setParameter(1, student.getEmail());
                     StudentCount studentCount = (StudentCount) query.getSingleResult();
                     int result = studentCount.getTotal();
                     if (result == 1) {
-                        Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                        Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                         queryDelete.setParameter(1, student.getEmail());
                         User user = (User) queryDelete.getSingleResult();
                         deleteUser(user);
@@ -246,7 +246,7 @@ public class UserServiceDao {
     public Course courseUpdate(Course course) {
         if (course.getAdmins() != null) {
             for (Admin admin : course.getAdmins()) {
-                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                 query.setParameter(1, admin.getEmail());
                 User user = (User) query.getSingleResult();
                 if (user != null) {
@@ -257,7 +257,7 @@ public class UserServiceDao {
         if (course.getTeams() != null) {
             for (Team team : course.getTeams()) {
                 for (Student student : team.getStudents()) {
-                    Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                    Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                     query.setParameter(1, student.getEmail());
                     User user = (User) query.getSingleResult();
                     if (user != null) {
@@ -272,7 +272,7 @@ public class UserServiceDao {
     public Team teamUpdate(Team team) {
         if (team.getStudents() != null) {
             for (Student student : team.getStudents()) {
-                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                 query.setParameter(1, student.getEmail());
                 User user = (User) query.getSingleResult();
                 if (user != null) {
@@ -286,12 +286,12 @@ public class UserServiceDao {
     public Team teamDelete(Team team) {
         if (team.getStudents() != null) {
             for (Student student : team.getStudents()) {
-                Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM cassess.students WHERE email = ?1", StudentCount.class);
+                Query query = getEntityManager().createNativeQuery("SELECT COUNT(email) AS 'total' FROM students WHERE email = ?1", StudentCount.class);
                 query.setParameter(1, student.getEmail());
                 StudentCount studentCount = (StudentCount) query.getSingleResult();
                 int result = studentCount.getTotal();
                 if (result == 1) {
-                    Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.users WHERE e_mail = ?1", User.class);
+                    Query queryDelete = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM users WHERE e_mail = ?1", User.class);
                     queryDelete.setParameter(1, student.getEmail());
                     User user = (User) queryDelete.getSingleResult();
                     deleteUser(user);

@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
-@Subselect(value = "SELECT retrievalDate, tasksClosed, tasksOpen, tasksInProgress, tasksReadyForTest, tasksNew FROM cassess.tasktotals WHERE fullName = ?1")
+@Subselect(value = "SELECT retrievalDate, tasksClosed, tasksOpen, tasksInProgress, tasksReadyForTest, tasksNew FROM tasktotals WHERE fullName = ?1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DisplayAllTasks {
 

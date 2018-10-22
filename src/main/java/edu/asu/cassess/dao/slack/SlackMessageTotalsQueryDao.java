@@ -36,7 +36,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
     @Override
     @Transactional
     public RestResponse deleteMessagesByStudent(Student student) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.slack_messagetotals WHERE course = ?1 AND team = ?2 AND email = ?3");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM slack_messagetotals WHERE course = ?1 AND team = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());
         query.setParameter(3, student.getEmail());
@@ -50,7 +50,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(messageCount) as total\n" +
                 "FROM \n" +
                 "(SELECT retrievalDate, email, fullName, course, team, channel_id, SUM(messageCount) as messageCount\n" +
-                "FROM cassess.slack_messagetotals\n" +
+                "FROM slack_messagetotals\n" +
                 "WHERE retrievalDate >= ?1\n" +
                 "AND retrievalDate <= ?2\n" +
                 "AND course = ?3\n" +
@@ -69,7 +69,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(messageCount) as total\n" +
                 "FROM \n" +
                 "(SELECT retrievalDate, email, fullName, course, team, channel_id, SUM(messageCount) as messageCount\n" +
-                "FROM cassess.slack_messagetotals\n" +
+                "FROM slack_messagetotals\n" +
                 "WHERE retrievalDate >= ?1\n" +
                 "AND retrievalDate <= ?2\n" +
                 "AND course = ?3\n" +
@@ -90,7 +90,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
         Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', messageCount as total\n" +
                 "FROM \n" +
                 "(SELECT retrievalDate, email, fullName, course, team, channel_id, SUM(messageCount) as messageCount\n" +
-                "FROM cassess.slack_messagetotals\n" +
+                "FROM slack_messagetotals\n" +
                 "WHERE retrievalDate >= ?1\n" +
                 "AND retrievalDate <= ?2\n" +
                 "AND course = ?3\n" +
@@ -110,7 +110,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.slack_messagetotals WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM slack_messagetotals WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
@@ -121,7 +121,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.slack_messagetotals WHERE course = ?1 AND team = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM slack_messagetotals WHERE course = ?1 AND team = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         List<WeeklyIntervals> resultList = query.getResultList();
@@ -131,7 +131,7 @@ public class SlackMessageTotalsQueryDao implements ISlackMessageTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.slack_messagetotals WHERE course = ?1 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM slack_messagetotals WHERE course = ?1 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         List<WeeklyIntervals> resultList = query.getResultList();
         return resultList;

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tasktotals")
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SQLDelete(sql = "DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2")
+@SQLDelete(sql = "DELETE FROM tasktotals WHERE course = ?1 AND team = ?2")
 public class TaskTotals {
 
     @EmbeddedId

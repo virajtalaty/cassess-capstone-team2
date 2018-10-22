@@ -28,7 +28,7 @@ public class UserQueryDao implements IUserQueryDao {
 
     @Override
     public UserID getUserID() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT COALESCE(MAX(id), 1) AS 'Max' FROM cassess.users", UserID.class);
+        Query query = getEntityManager().createNativeQuery("SELECT COALESCE(MAX(id), 1) AS 'Max' FROM users", UserID.class);
         UserID result = (UserID) query.getSingleResult();
         return result;
     }

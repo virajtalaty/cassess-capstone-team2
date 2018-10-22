@@ -33,7 +33,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     @Override
     @Transactional
     public RestResponse deleteWeightsByStudent(Student student) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.github_weight WHERE course = ?1 AND team = ?2 AND email = ?3");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM github_weight WHERE course = ?1 AND team = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());
         query.setParameter(3, student.getEmail());
@@ -46,7 +46,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     public List<GitHubWeight> getWeightsByCourse(String course) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
-                "cassess.github_weight\n" +
+                "github_weight\n" +
                 "WHERE course = ?1\n" +
                 "GROUP BY date", GitHubWeight.class);
         query.setParameter(1, course);
@@ -59,7 +59,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     public List<GitHubWeight> getWeightsByTeam(String course, String team) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
-                "cassess.github_weight\n" +
+                "github_weight\n" +
                 "WHERE course = ?1\n" +
                 "AND team = ?2\n" +
                 "GROUP BY date", GitHubWeight.class);
@@ -74,7 +74,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     public List<GitHubWeight> getWeightsByStudent(String course, String team, String email) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT date, username, email, course, team, AVG(weight) as weight\n" +
                 "FROM\n" +
-                "cassess.github_weight\n" +
+                "github_weight\n" +
                 "WHERE course = ?1\n" +
                 "AND team = ?2\n" +
                 "AND email = ?3\n" +
@@ -91,7 +91,7 @@ public class GitHubWeightQueryDao implements IGitHubWeightQueryDao {
     public GitHubWeight getlastDate(String course, String team, String username) throws DataAccessException {
         Query query = getEntityManager().createNativeQuery("SELECT course, " +
                 "DATE_SUB(max(date), INTERVAL 7 DAY) as date, team, username, email, weight " +
-                "FROM cassess.github_weight\n" +
+                "FROM github_weight\n" +
                 "WHERE course = ?1\n" +
                 "AND team = ?2\n" +
                 "AND username = ?3\n", GitHubWeight.class);

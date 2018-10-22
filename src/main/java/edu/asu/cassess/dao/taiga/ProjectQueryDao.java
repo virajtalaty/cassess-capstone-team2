@@ -39,7 +39,7 @@ public class ProjectQueryDao implements IProjectQueryDao {
     @Override
     public RestResponse deleteTaigaProjectByCourse(Course course) {
         for (Team team : course.getTeams()) {
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.project WHERE slug = ?1");
+            Query query = getEntityManager().createNativeQuery("DELETE FROM project WHERE slug = ?1");
             query.setParameter(1, team.getTaiga_project_slug());
             query.executeUpdate();
         }
@@ -48,21 +48,21 @@ public class ProjectQueryDao implements IProjectQueryDao {
 
     @Override
     public RestResponse deleteTaigaProjectByTeam(Team team) {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.project WHERE slug = ?1");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM project WHERE slug = ?1");
         query.setParameter(1, team.getTaiga_project_slug());
         query.executeUpdate();
         return new RestResponse("taiga projects for team: " + team.getTeam_name() + " have been removed from the database");
     }
 
     public List<Project> getAllTaigaProjects() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.project");
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM project");
         List<Project> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
     public <T> Object getTaigaProject(String slug) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.project WHERE slug = ?1", Project.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM project WHERE slug = ?1", Project.class);
         query.setParameter(1, slug);
         List<Project> resultList = query.getResultList();
         if(!resultList.isEmpty()){

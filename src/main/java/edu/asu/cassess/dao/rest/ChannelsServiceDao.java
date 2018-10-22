@@ -37,7 +37,7 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object create(Channel channelInput) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
         preQuery.setParameter(1, channelInput.getCourse());
         preQuery.setParameter(2, channelInput.getTeam_name());
         preQuery.setParameter(3, channelInput.getId());
@@ -51,7 +51,7 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object update(Channel channelInput) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
         preQuery.setParameter(1, channelInput.getCourse());
         preQuery.setParameter(2, channelInput.getTeam_name());
         preQuery.setParameter(3, channelInput.getId());
@@ -65,7 +65,7 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object find(String id, String team, String course) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
         preQuery.setParameter(1, course);
         preQuery.setParameter(2, team);
         preQuery.setParameter(3, id);
@@ -78,7 +78,7 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object delete(Channel channel) {
-        Query preQuery = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+        Query preQuery = getEntityManager().createNativeQuery("DELETE FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
         preQuery.setParameter(1, channel.getCourse());
         preQuery.setParameter(2, channel.getTeam_name());
         preQuery.setParameter(3, channel.getId());
@@ -87,13 +87,13 @@ public class ChannelsServiceDao {
     }
 
     public List<Channel> listRead() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.channels", Channel.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM channels", Channel.class);
         List<Channel> resultList = query.getResultList();
         return resultList;
     }
 
     public List<Channel> listReadByTeam(String team_name, String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2", Channel.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM channels WHERE course = ?1 AND team_name = ?2", Channel.class);
         query.setParameter(1, course);
         query.setParameter(2, team_name);
         List<Channel> resultList = query.getResultList();
@@ -106,7 +106,7 @@ public class ChannelsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Channel channelInput : channels) {
-            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
             preQuery.setParameter(3, channelInput.getId());
@@ -137,7 +137,7 @@ public class ChannelsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Channel channelInput : channels) {
-            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
+            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM channels WHERE course = ?1 AND team_name = ?2 AND id = ?3", Channel.class);
             preQuery.setParameter(1, channelInput.getCourse());
             preQuery.setParameter(2, channelInput.getTeam_name());
             preQuery.setParameter(3, channelInput.getId());
@@ -164,7 +164,7 @@ public class ChannelsServiceDao {
     }
 
     public <T> Object deleteByTeam(Team team) {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.channels WHERE course = ?1 AND team_name = ?2");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM channels WHERE course = ?1 AND team_name = ?2");
         query.setParameter(1, team.getCourse());
         query.setParameter(2, team.getTeam_name());
         query.executeUpdate();

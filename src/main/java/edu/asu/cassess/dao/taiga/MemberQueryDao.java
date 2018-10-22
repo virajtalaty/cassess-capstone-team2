@@ -38,7 +38,7 @@ public class MemberQueryDao implements IMemberQueryDao {
 
     @Override
     public RestResponse deleteMembersByCourse(Course course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM memberdata WHERE course = ?1");
         query.setParameter(1, course.getCourse());
         query.executeUpdate();
         return new RestResponse("Taiga Members for course: " + course.getCourse() + " have been removed from the database");
@@ -46,7 +46,7 @@ public class MemberQueryDao implements IMemberQueryDao {
 
     @Override
     public RestResponse deleteMembersByTeam(Team team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM memberdata WHERE course = ?1 AND team = ?2");
         query.setParameter(1, team.getCourse());
         query.setParameter(2, team.getTeam_name());
         query.executeUpdate();
@@ -55,7 +55,7 @@ public class MemberQueryDao implements IMemberQueryDao {
 
     @Override
     public RestResponse deleteMembersByStudent(Student student) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.memberdata WHERE course = ?1 AND team = ?2 AND email = ?3");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM memberdata WHERE course = ?1 AND team = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());
         query.setParameter(3, student.getEmail());
@@ -65,7 +65,7 @@ public class MemberQueryDao implements IMemberQueryDao {
 
     @Override
     public List<MemberData> getMembers(String roleName, String project_slug) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.memberdata WHERE roleName != ?1 AND project_slug = ?2", MemberData.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM memberdata WHERE roleName != ?1 AND project_slug = ?2", MemberData.class);
         query.setParameter(1, roleName);
         query.setParameter(2, project_slug);
         List<MemberData> resultList = query.getResultList();

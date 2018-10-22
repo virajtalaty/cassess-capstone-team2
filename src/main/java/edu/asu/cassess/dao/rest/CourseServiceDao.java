@@ -75,7 +75,7 @@ public class CourseServiceDao {
      */
     @Transactional
     public <T> Object update(Course courseInput) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM courses WHERE course = ?1", Course.class);
         query.setParameter(1, courseInput.getCourse());
         List<Team> teams = courseInput.getTeams();
         List<Admin> admins = courseInput.getAdmins();
@@ -103,7 +103,7 @@ public class CourseServiceDao {
      */
     @Transactional
     public <T> Object find(String courseName) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses WHERE course = ?1", Course.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM courses WHERE course = ?1", Course.class);
         query.setParameter(1, courseName);
         List<Course> results = query.getResultList();
         if (!results.isEmpty()) {
@@ -124,7 +124,7 @@ public class CourseServiceDao {
         if (course != null) {
             adminsService.deleteByCourse(course);
             teamsService.deleteByCourse(course);
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.courses WHERE course = ?1");
+            Query query = getEntityManager().createNativeQuery("DELETE FROM courses WHERE course = ?1");
             query.setParameter(1, course.getCourse());
             query.executeUpdate();
             return new RestResponse(course.getCourse() + " has been removed from the database");
@@ -141,7 +141,7 @@ public class CourseServiceDao {
      */
     @Transactional
     public List<Course> listRead() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.courses", Course.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM courses", Course.class);
         List<Course> resultList = query.getResultList();
         return resultList;
     }
@@ -154,7 +154,7 @@ public class CourseServiceDao {
      */
     @Transactional
     public List<CourseList> listGetCourses() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.courses", CourseList.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM courses", CourseList.class);
         List<CourseList> resultList = query.getResultList();
         return resultList;
     }
