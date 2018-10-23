@@ -689,7 +689,6 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     $rootScope.provisionMode = false;
     // init form
     $scope.isLoading = false;
-    $scope.loadingText = "Loading Data. Please wait";
     $scope.url = $scope.swaggerUrl = 'v2/api-docs';
     // error management
     $scope.myErrorHandler = function (data, status) {
@@ -1823,6 +1822,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
     }])
     .controller('TeamController', ['$scope', '$rootScope','$location', '$routeParams', 'courseService', 'teamService', 'userService', '$http', function ($scope, $rootScope, $location, $routeParams, courseService, teamService, userService, $http) {
         $scope.teamid = $routeParams.team_id;
+        $scope.loadingText = "Loading Data. Please wait";
         $scope.loading = true;
         var initial;
         var course = courseService.getCourse();
@@ -2993,6 +2993,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             {
                 $scope.githubStartDate = array[0].gitHubPK.date;
                 $scope.githubEndDate = array[array.length-1].gitHubPK.date;
+                $scope.loadingText = "Loading Data. Please wait";
             }
             catch(err)
             {
