@@ -2765,6 +2765,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
         function getDataForGitHubTeamTotalsDaily(array) {
+
             var dataDaily = [];
             var gitHubSummary = getGitHubCommitSummary(array);
             var student_name;
@@ -2796,7 +2797,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var add_commit = []; // additions of lines for an individual commit
                 var del_commit = []; // deletion of lines for an individual commit
                 var total_commit = []; // total changes of lines for an individual commit
-
+                var total_active_days = 0;
                 var dailyActivityLen = array[i].daily_activity.length;
                 var prevDate = new Date($scope.SelectedWeekBeginning.rawWeekBeginning * 1000);
 
@@ -2844,6 +2845,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                         message.push(message_arr);
                         branch.push(branch_arr);
                         add_commit.push(addition_arr);
+                        total_active_days = total_active_days + 1;
                         del_commit.push(deletions_arr);
                         total_commit.push(total_arr);
                     }
@@ -2904,10 +2906,54 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     }
                 });
 
-                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, other_activity:other_activity, master_activity:master_activity, inactivity_streak:inactivity_streak});
+
+                //getting activity streak
+                var activity_streak = getActivityStreak(commits,day)
+                var activity_max = Math.max.apply(null, activity_streak);
+
+                dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, other_activity:other_activity, master_activity:master_activity, inactivity_streak:inactivity_streak, total_active_days:total_active_days, activity_streak:activity_streak, activity_max:activity_max});
             }
 
             return dataDaily;
+        }
+
+        function getActivityStreak(commits,day){
+            var activity_streak = [];
+            var streak = 0;
+            var prev_date = null;
+            for (var i = 0; i < commits.length; i++) {
+                console.log(day[i]);
+                if(commits[i]!=0)
+                {
+                    if(prev_date==null)
+                    {
+                        var parts = day[i].split('/');
+                        prev_date = new Date(parts[2].substring(0, 4), parts[0] - 1, parts[1]);
+                        streak = streak + 1;
+                    }
+                    else
+                    {
+                        var parts = day[i].split('/');
+                        var current_date = new Date(parts[2].substring(0, 4), parts[0] - 1, parts[1]);
+                        var timeDiff = Math.abs(current_date.getTime() - prev_date.getTime());
+                        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                        if(diffDays<=1)
+                        {
+                            prev_date = current_date;
+                            streak = streak + 1;
+                        }
+                        else
+                        {
+                            activity_streak.push(streak);
+                            prev_date = current_date;
+                            streak = 1;
+                        }
+                    }
+                }
+            }
+            activity_streak.push(streak);
+
+            return activity_streak;
         }
 
         function getDataForGitHubTeamCommitsSubCharts(array){
