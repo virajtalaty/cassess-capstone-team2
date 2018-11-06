@@ -44,7 +44,7 @@
 
         @Transactional
         public <T> Object create(Team teamInput) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, teamInput.getCourse());
             query.setParameter(2, teamInput.getTeam_name());
             List results = query.getResultList();
@@ -64,7 +64,7 @@
 
         @Transactional
         public <T> Object update(Team teamInput) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, teamInput.getCourse());
             query.setParameter(2, teamInput.getTeam_name());
             List results = query.getResultList();
@@ -85,7 +85,7 @@
 
         @Transactional
         public <T> Object find(String team_name, String course) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, course);
             query.setParameter(2, team_name);
             List<Team> resultList = query.getResultList();
@@ -113,14 +113,14 @@
 
         @Transactional
         public List<Team> listReadAll() throws DataAccessException {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams", Team.class);
             List<Team> resultList = query.getResultList();
             return resultList;
         }
 
         @Transactional
         public List<Team> listReadByCourse(String course) throws DataAccessException {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1", Team.class);
             query.setParameter(1, course);
             List<Team> resultList = query.getResultList();
             return resultList;
@@ -128,7 +128,7 @@
 
         @Transactional
         public List<Slugs> listGetSlugs(String course) throws DataAccessException {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT taiga_project_slug FROM cassess.teams WHERE course = ?1", Slugs.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT taiga_project_slug FROM teams WHERE course = ?1", Slugs.class);
             query.setParameter(1, course);
             List<Slugs> resultList = query.getResultList();
             return resultList;
@@ -136,7 +136,7 @@
 
         @Transactional
         public List<TeamNames> listGetTeamNames(String course) throws DataAccessException {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.teams WHERE course = ?1", TeamNames.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM teams WHERE course = ?1", TeamNames.class);
             query.setParameter(1, course);
             List<TeamNames> resultList = query.getResultList();
             return resultList;
@@ -144,7 +144,7 @@
 
         @Transactional
         public <T> Object findOne(String team_name, String course) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
             query.setParameter(1, course);
             query.setParameter(2, team_name);
             List<Team> results = query.getResultList();
@@ -162,7 +162,7 @@
             JSONArray successArray = new JSONArray();
             JSONArray failureArray = new JSONArray();
             for (Team teamInput : teams) {
-                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
                 query.setParameter(1, teamInput.getCourse());
                 query.setParameter(2, teamInput.getTeam_name());
                 List<Student> students = teamInput.getStudents();
@@ -197,7 +197,7 @@
             JSONArray successArray = new JSONArray();
             JSONArray failureArray = new JSONArray();
             for (Team teamInput : teams) {
-                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.teams WHERE course = ?1 AND team_name = ?2", Team.class);
+                Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM teams WHERE course = ?1 AND team_name = ?2", Team.class);
                 query.setParameter(1, teamInput.getCourse());
                 query.setParameter(2, teamInput.getTeam_name());
                 List results = query.getResultList();
@@ -226,7 +226,7 @@
 
         @Transactional
         public <T> Object deleteByCourse(Course course) {
-            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.teams WHERE course = ?1 ", Team.class);
+            Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM teams WHERE course = ?1 ", Team.class);
             preQuery.setParameter(1, course.getCourse());
             List results = preQuery.getResultList();
             if (!results.isEmpty()) {
@@ -235,7 +235,7 @@
                     studentsService.deleteByTeam(team);
                     channelsService.deleteByTeam(team);
                 }
-                Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.teams WHERE course = ?1");
+                Query query = getEntityManager().createNativeQuery("DELETE FROM teams WHERE course = ?1");
                 query.setParameter(1, course.getCourse());
                 query.executeUpdate();
                 return new RestResponse("All teams in course " + course.getCourse() + " have been removed from the database");

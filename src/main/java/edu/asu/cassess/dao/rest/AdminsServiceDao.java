@@ -39,7 +39,7 @@ public class AdminsServiceDao {
     }
 
     public <T> Object create(Admin adminInput) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, adminInput.getCourse());
         query.setParameter(2, adminInput.getEmail());
         List results = query.getResultList();
@@ -52,7 +52,7 @@ public class AdminsServiceDao {
     }
 
     public <T> Object update(Admin adminInput) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, adminInput.getCourse());
         query.setParameter(2, adminInput.getEmail());
         List results = query.getResultList();
@@ -66,7 +66,7 @@ public class AdminsServiceDao {
     }
 
     public <T> Object find(String email, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, course);
         query.setParameter(2, email);
         List results = query.getResultList();
@@ -79,7 +79,7 @@ public class AdminsServiceDao {
     }
 
     public <T> Object delete(Admin admin) {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+        Query query = getEntityManager().createNativeQuery("DELETE FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
         query.setParameter(1, admin.getCourse());
         query.setParameter(2, admin.getEmail());
         query.executeUpdate();
@@ -87,13 +87,13 @@ public class AdminsServiceDao {
     }
 
     public List<Admin> listReadAll() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins", Admin.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins", Admin.class);
         List<Admin> resultList = query.getResultList();
         return resultList;
     }
 
     public List<Admin> listReadByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1", Admin.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1", Admin.class);
         query.setParameter(1, course);
         List<Admin> resultList = query.getResultList();
         return resultList;
@@ -105,7 +105,7 @@ public class AdminsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Admin adminInput : admins) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
             query.setParameter(1, adminInput.getCourse());
             query.setParameter(2, adminInput.getEmail());
             List results = query.getResultList();
@@ -135,7 +135,7 @@ public class AdminsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Admin adminInput : admins) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.admins WHERE course = ?1 AND email = ?2", Admin.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM admins WHERE course = ?1 AND email = ?2", Admin.class);
             query.setParameter(1, adminInput.getCourse());
             query.setParameter(2, adminInput.getEmail());
             List results = query.getResultList();
@@ -162,11 +162,11 @@ public class AdminsServiceDao {
     }
 
     public <T> Object deleteByCourse(Course course) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.admins WHERE course = ?1 LIMIT 1", Admin.class);
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM admins WHERE course = ?1 LIMIT 1", Admin.class);
         preQuery.setParameter(1, course);
         List results = preQuery.getResultList();
         if (!results.isEmpty()) {
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.admins WHERE course = ?1");
+            Query query = getEntityManager().createNativeQuery("DELETE FROM admins WHERE course = ?1");
             query.setParameter(1, course);
             query.executeUpdate();
             return new RestResponse("All admin in course " + course + " have been removed from the database");
@@ -176,7 +176,7 @@ public class AdminsServiceDao {
     }
 
     public List<CourseList> listGetCoursesForAdmin(String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.admins WHERE email = ?1", CourseList.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM admins WHERE email = ?1", CourseList.class);
         query.setParameter(1, email);
         List<CourseList> resultList = query.getResultList();
         return resultList;

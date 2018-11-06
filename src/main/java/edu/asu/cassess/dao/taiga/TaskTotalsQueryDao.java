@@ -35,7 +35,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<TaskTotals> getTaskTotals() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT * FROM cassess.tasktotals", TaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT * FROM tasktotals", TaskTotals.class);
         List<TaskTotals> resultList = query.getResultList();
         return resultList;
     }
@@ -44,7 +44,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Transactional
     @Modifying
     public RestResponse deleteTaskTotalsByCourse(Course course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM tasktotals WHERE course = ?1");
         query.setParameter(1, course.getCourse());
         query.executeUpdate();
         return new RestResponse("tasktotals for course: " + course.getCourse() + " have been removed from the database");
@@ -53,7 +53,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public RestResponse deleteTaskTotalsByProject(Team team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM tasktotals WHERE course = ?1 AND team = ?2");
         query.setParameter(1, team.getCourse());
         query.setParameter(2, team.getTeam_name());
         query.executeUpdate();
@@ -63,7 +63,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public RestResponse deleteTaskTotalsByStudent(Student student) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());
         query.setParameter(3, student.getEmail());
@@ -74,7 +74,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByCourse(String beginDate, String endDate, String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
@@ -85,7 +85,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByTeam(String beginDate, String endDate, String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', AVG(tasksInProgress) as 'InProgress', AVG(tasksReadyForTest) as 'ToTest', AVG(tasksClosed) as 'Done' FROM tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
@@ -97,7 +97,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<DailyTaskTotals> getDailyTasksByStudent(String beginDate, String endDate, String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM cassess.tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT retrievalDate as'Date', tasksInProgress as 'InProgress', tasksReadyForTest as 'ToTest', tasksClosed as 'Done' FROM tasktotals WHERE retrievalDate >= ?1 AND retrievalDate <= ?2 AND course = ?3 AND team = ?4 AND email = ?5 GROUP BY retrievalDate", DailyTaskTotals.class);
         query.setParameter(1, beginDate);
         query.setParameter(2, endDate);
         query.setParameter(3, course);
@@ -110,7 +110,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM tasktotals WHERE course = ?1 AND team = ?2 AND email = ?3 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
@@ -121,7 +121,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByTeam(String course, String team) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 AND team = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM tasktotals WHERE course = ?1 AND team = ?2 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         List<WeeklyIntervals> resultList = query.getResultList();
@@ -131,7 +131,7 @@ public class TaskTotalsQueryDao implements ITaskTotalsQueryDao {
     @Override
     @Transactional
     public List<WeeklyIntervals> getWeeklyIntervalsByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM cassess.tasktotals WHERE course = ?1 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
+        Query query = getEntityManager().createNativeQuery("SELECT (@rn \\:= @rn + 1) as 'week', weekBeginning, weekEnding, UNIX_TIMESTAMP(weekBeginning) AS rawWeekBeginning, UNIX_TIMESTAMP(weekEnding) AS rawWeekEnding FROM (SELECT DATE(retrievalDate + INTERVAL (0 - DAYOFWEEK(retrievalDate)) DAY) as 'weekBeginning', DATE(retrievalDate + INTERVAL (6 - DAYOFWEEK(retrievalDate)) DAY) as 'weekEnding' FROM tasktotals WHERE course = ?1 group by week(retrievalDate)) w1, (select @rn \\:= 0) vars", WeeklyIntervals.class);
         query.setParameter(1, course);
         List<WeeklyIntervals> resultList = query.getResultList();
         return resultList;

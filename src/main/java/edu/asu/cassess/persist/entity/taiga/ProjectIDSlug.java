@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 
 @Entity
-@Subselect("SELECT id, slug FROM cassess.project INNER JOIN cassess.students ON cassess.project.slug=cassess.students.taiga_project_slug AND course=?1")
+@Subselect("SELECT id, slug FROM project INNER JOIN cassess.students ON cassess.project.slug=cassess.students.taiga_project_slug AND course=?1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProjectIDSlug {
 

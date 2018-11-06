@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 
 @Entity
-@Subselect("SELECT project_name AS 'team' FROM cassess.students WHERE course = ?1")
+@Subselect("SELECT project_name AS 'team' FROM students WHERE course = ?1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TeamNames {
 

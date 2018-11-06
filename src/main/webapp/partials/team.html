@@ -158,6 +158,7 @@
                                 </tr>
 
                             </table>
+
                             <br>
                             <h4>Inactivity Streaks</h4>
                             <table style="width: 80%" align="center" border="2">
@@ -174,10 +175,29 @@
                                     <th style = "color: red;"><b>{{dailyValues.inactivity_streak[0].sum}}</b></th>
                                 </tr>
                             </table>
+                            <br>
+
+                            <h4>Activity Streaks</h4>
+                            <table style="width: 80%" align="center" border="2">
+                                <tr>
+                                    <th>Longest Period of Activity : </th>
+                                    <th style = "color: green;">{{dailyValues.activity_max}}</th>
+                                </tr>
+                                <tr>
+                                    <th>All Activity Periods : </th>
+                                    <th style = "color: black;"><b>{{dailyValues.activity_streak}}</b></th>
+                                </tr>
+                                <tr>
+                                    <th>Total Active Days : </th>
+                                    <th style = "color: green;"><b>{{dailyValues.total_active_days}}</b></th>
+                                </tr>
+
+                            </table>
 
                             <br>
 
-                                <h4>Daily Activity</h4>
+
+                            <h4>Daily Activity</h4>
                             <input type="checkbox" checked ng-init="showZeros = true" ng-model="showZeros">Show Zeros
 
                             <table style="width: 80%" align="center" border="2">

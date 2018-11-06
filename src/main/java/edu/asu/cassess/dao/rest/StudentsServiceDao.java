@@ -52,7 +52,7 @@ public class StudentsServiceDao {
      */
     @Transactional
     public <T> Object create(Student studentInput) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
         query.setParameter(1, studentInput.getCourse());
         query.setParameter(2, studentInput.getTeam_name());
         query.setParameter(3, studentInput.getEmail());
@@ -74,7 +74,7 @@ public class StudentsServiceDao {
      */
     @Transactional
     public <T> Object update(Student studentInput) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
         query.setParameter(1, studentInput.getCourse());
         query.setParameter(2, studentInput.getTeam_name());
         query.setParameter(3, studentInput.getEmail());
@@ -96,7 +96,7 @@ public class StudentsServiceDao {
      */
     @Transactional
     public <T> Object find(String email, String team, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
@@ -111,7 +111,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object findGitHubUser(String github_username, String team, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND github_username = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND github_username = ?3", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, github_username);
@@ -126,7 +126,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object findTaigaUser(String taiga_username, String team, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND taiga_username = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND taiga_username = ?3", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, taiga_username);
@@ -141,7 +141,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object findSlackUser(String slack_username, String team, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND slack_username = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND slack_username = ?3", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, slack_username);
@@ -156,7 +156,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public <T> Object find(String email, String course) {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND email = ?2", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND email = ?2", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, email);
         List results = query.getResultList();
@@ -177,7 +177,7 @@ public class StudentsServiceDao {
      */
     @Transactional
     public <T> Object delete(Student student) {
-        Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3");
+        Query query = getEntityManager().createNativeQuery("DELETE FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3");
         query.setParameter(1, student.getCourse());
         query.setParameter(2, student.getTeam_name());
         query.setParameter(3, student.getEmail());
@@ -192,7 +192,7 @@ public class StudentsServiceDao {
      * @throws DataAccessException
      */
     public List<Student> listReadAll() throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students", Student.class);
         List<Student> resultList = query.getResultList();
         return resultList;
     }
@@ -205,7 +205,7 @@ public class StudentsServiceDao {
      * @throws DataAccessException
      */
     public List<Student> listReadByTeam(String course, String team_name) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team_name);
         List<Student> resultList = query.getResultList();
@@ -213,7 +213,7 @@ public class StudentsServiceDao {
     }
 
     public List<Student> listReadByCourse(String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1", Student.class);
         query.setParameter(1, course);
         List<Student> resultList = query.getResultList();
         return resultList;
@@ -221,7 +221,7 @@ public class StudentsServiceDao {
 
 
     public List<Student> listReadStudent(String course, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND email = ?2", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND email = ?2", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, email);
         List<Student> resultList = query.getResultList();
@@ -230,7 +230,7 @@ public class StudentsServiceDao {
     }
 
     public List<Student> listReadSingleStudent(String course, String team, String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
         query.setParameter(1, course);
         query.setParameter(2, team);
         query.setParameter(3, email);
@@ -251,7 +251,7 @@ public class StudentsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Student studentInput : students) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
             query.setParameter(1, studentInput.getCourse());
             query.setParameter(2, studentInput.getTeam_name());
             query.setParameter(3, studentInput.getEmail());
@@ -289,7 +289,7 @@ public class StudentsServiceDao {
         JSONArray successArray = new JSONArray();
         JSONArray failureArray = new JSONArray();
         for (Student studentInput : students) {
-            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
+            Query query = getEntityManager().createNativeQuery("SELECT DISTINCT * FROM students WHERE course = ?1 AND team_name = ?2 AND email = ?3", Student.class);
             query.setParameter(1, studentInput.getCourse());
             query.setParameter(2, studentInput.getTeam_name());
             query.setParameter(3, studentInput.getEmail());
@@ -323,12 +323,12 @@ public class StudentsServiceDao {
      * @return RestResponse indicating success or failure
      */
     public <T> Object deleteByTeam(Team team) {
-        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM cassess.students WHERE course = ?1 AND team_name = ?2 LIMIT 1", Student.class);
+        Query preQuery = getEntityManager().createNativeQuery("SELECT * FROM students WHERE course = ?1 AND team_name = ?2 LIMIT 1", Student.class);
         preQuery.setParameter(1, team.getCourse());
         preQuery.setParameter(2, team.getTeam_name());
         List results = preQuery.getResultList();
         if (!results.isEmpty()) {
-            Query query = getEntityManager().createNativeQuery("DELETE FROM cassess.students WHERE course = ?1 AND team_name = ?2");
+            Query query = getEntityManager().createNativeQuery("DELETE FROM students WHERE course = ?1 AND team_name = ?2");
             query.setParameter(1, team.getCourse());
             query.setParameter(2, team.getTeam_name());
             query.executeUpdate();
@@ -339,7 +339,7 @@ public class StudentsServiceDao {
     }
 
     public List<CourseList> listGetCoursesForStudent(String email) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM cassess.students WHERE email = ?1", CourseList.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT course FROM students WHERE email = ?1", CourseList.class);
         query.setParameter(1, email);
         List<CourseList> resultList = query.getResultList();
         return resultList;
@@ -347,7 +347,7 @@ public class StudentsServiceDao {
 
     @Transactional
     public List<TeamNames> listGetAssignedTeams(String email, String course) throws DataAccessException {
-        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM cassess.students WHERE email = ?1 AND course = ?2", TeamNames.class);
+        Query query = getEntityManager().createNativeQuery("SELECT DISTINCT team_name AS 'team' FROM students WHERE email = ?1 AND course = ?2", TeamNames.class);
         query.setParameter(1, email);
         query.setParameter(2, course);
         List<TeamNames> resultList = query.getResultList();

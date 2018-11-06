@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 
 @Entity
-@Subselect("SELECT taiga_project_slug AS 'slugs' FROM cassess.students WHERE course = ?1")
+@Subselect("SELECT taiga_project_slug AS 'slugs' FROM students WHERE course = ?1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Slugs {
 

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 
 @Entity
-@Subselect("SELECT course AS 'course' FROM cassess.students")
+@Subselect("SELECT course AS 'course' FROM students")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseList {
 
