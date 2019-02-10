@@ -45,43 +45,49 @@ public class MembersService implements IMembersService {
     public List<TaigaMember> getMembers(Long projectId, String token, int page, String team, String course) {
 
         HttpHeaders headers = new HttpHeaders();
-
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
-        headers.set("Authorization", "Bearer " + token);
 
-        //System.out.println("Headers: " + headers);
+        System.out.println("Headers: " + headers);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
+        try {
+            System.out.println(membershipListURL + projectId + "&page=" + page);
+            ResponseEntity<List<TaigaMember>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
+                    HttpMethod.GET,
+                    request,
+                    new ParameterizedTypeReference<List<TaigaMember>>() {
+                    });
 
-        ResponseEntity<List<TaigaMember>> memberList = restTemplate.exchange(membershipListURL + projectId + "&page=" + page,
-                HttpMethod.GET,
-                request,
-                new ParameterizedTypeReference<List<TaigaMember>>() {
-                });
 
-        //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
+            List<TaigaMember> members = memberList.getBody();
 
-        List<TaigaMember> members = memberList.getBody();
-
-        for (int i = 0; i < members.size(); i++) {
-            if(members.get(i).getUser_email() != null) {
-                members.get(i).setTeam(team);
-                members.get(i).setCourse(course);
-                System.out.println(members.get(i).getId());
-                MemberDao.save(new MemberData(new MemberDataID(members.get(i).getId(), members.get(i).getUser_email(), members.get(i).getTeam(), course), members.get(i).getFull_name(),
-                        members.get(i).getProject_name(), members.get(i).getProject_slug(), members.get(i).getRole_name()));
+            for (int i = 0; i < members.size(); i++) {
+                if (members.get(i).getUser_email() != null) {
+                    members.get(i).setTeam(team);
+                    members.get(i).setCourse(course);
+                    System.out.println(members.get(i).getId());
+                    MemberDao.save(new MemberData(new MemberDataID(members.get(i).getId(), members.get(i).getUser_email(), members.get(i).getTeam(), course), members.get(i).getFull_name(),
+                            members.get(i).getProject_name(), members.get(i).getProject_slug(), members.get(i).getRole_name()));
+                }
             }
-        }
 
-        if (memberList.getHeaders().containsKey("x-pagination-next")) {
-            page++;
-            return getMembers(projectId, token, page, team, course);
-        } else {
+            if (memberList.getHeaders().containsKey("x-pagination-next")) {
+                page++;
+                return getMembers(projectId, token, page, team, course);
+            } else {
 
-            return members;
+                return members;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+        return null;
+        //ResponseEntity<List<MemberData>> memberList = restTemplate.getForEntity(membershipListURL, List<>.class, request);
     }
+
 
     /* Method to provide single operation on
     updating the member_data table based on the course, student and project tables
