@@ -180,8 +180,8 @@ public class AppController {
                                                HttpServletRequest request, HttpServletResponse response) {
         PeriodicGithubActivity weightList = teamService.listGetDetailedGithubActivityURL(course, team);
 
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -278,8 +278,8 @@ public class AppController {
                                                                  @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                  @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -295,8 +295,8 @@ public class AppController {
                                                                      @RequestHeader(name = "team", required = true) String team,
                                                                      @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                      @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -314,8 +314,8 @@ public class AppController {
                                                                        @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                        @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                        HttpServletRequest request, HttpServletResponse response) {
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -397,8 +397,8 @@ public class AppController {
                                                                             HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -444,8 +444,8 @@ public class AppController {
                                                                      HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -490,8 +490,8 @@ public class AppController {
                                                                        HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -568,8 +568,8 @@ public class AppController {
                                                                              HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -614,8 +614,8 @@ public class AppController {
                                                                              HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -659,8 +659,8 @@ public class AppController {
                                                                             HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -826,8 +826,8 @@ public class AppController {
                                                                                 @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                                 @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -846,8 +846,8 @@ public class AppController {
                                                                               @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                               @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -867,8 +867,8 @@ public class AppController {
                                                                                  @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                                  @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -944,8 +944,8 @@ public class AppController {
     public ResponseEntity<List<WeeklyFreqWeight>> getSlackStudentWeightFreq(@RequestHeader(name="course", required=true) String course, @RequestHeader(name="team", required=true) String team, @RequestHeader(name="email", required=true) String email, @RequestHeader(name="weekBeginning", required=true) long weekBeginning, @RequestHeader(name="weekEnding", required=true) long weekEnding, HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -985,8 +985,8 @@ public class AppController {
     public ResponseEntity<List<WeeklyFreqWeight>> getSlackTeamWeightFreq(@RequestHeader(name="course", required=true) String course, @RequestHeader(name="team", required=true) String team, @RequestHeader(name="weekBeginning", required=true) long weekBeginning, @RequestHeader(name="weekEnding", required=true) long weekEnding, HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -1029,8 +1029,8 @@ public class AppController {
                                                                            HttpServletRequest request, HttpServletResponse response)
     {
         Course courseObj = (Course)this.courseService.read(course);
-        Date dateBegin = new Date(weekBeginning * 1000L);
-        Date dateEnd = new Date(weekEnding * 1000L);
+        Date dateBegin = new Date(weekBeginning);
+        Date dateEnd = new Date(weekEnding);
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -1128,8 +1128,8 @@ public class AppController {
                                                                      @RequestHeader(name = "weekBeginning",required = false) long weekBeginning,
                                                                      @RequestHeader(name = "weekEnding", required = false) long weekEnding,
                                                                      HttpServletRequest request, HttpServletResponse response) {
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning ); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -1145,8 +1145,8 @@ public class AppController {
                                                                    @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                    @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                    HttpServletRequest request, HttpServletResponse response) {
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);
@@ -1163,8 +1163,8 @@ public class AppController {
                                                                       @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                       @RequestHeader(name = "weekEnding", required = true) long weekEnding,
                                                                       HttpServletRequest request, HttpServletResponse response) {
-        Date dateBegin = new Date(weekBeginning * 1000L); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding * 1000L); // *1000 is to convert seconds to milliseconds
+        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
+        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
         SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
         String formattedDateBegin = sdfBegin.format(dateBegin);

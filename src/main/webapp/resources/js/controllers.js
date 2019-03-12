@@ -929,7 +929,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     'password': $scope.password, 'role': $scope.selectedRole.value.name
                 }
             }).then(function (response) {
-                //console.log("Worked!");
+                console.log("Worked!");
                 $scope.responseData = console.log(response.data);
                 $scope.message = "User Successfully Registered";
                 $window.alert($scope.message);
@@ -938,7 +938,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //fail case
                 //console.log("Role: " + $scope.selectedRole.value.name);
                 //console.log("Didn't work");
-                //console.log(response);
+                console.log(response);
                 $scope.responseData = console.log(response.data);
                 $scope.message = "User Not Registered, Duplicate User or Incorrect Information";
                 $window.alert($scope.message);
@@ -995,8 +995,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {
                     'course': $scope.courseid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
@@ -1013,8 +1013,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {
                     'course': $scope.courseid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
@@ -1032,8 +1032,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 method: "GET",
                 headers: {
                     'course': $scope.courseid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
@@ -1336,11 +1336,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 //console.log("Worked!");
                 //console.log(response.data);
                 $scope.courseIntervals = response.data;
+                console.log("Intervals: "+$scope.courseIntervals);
                 if ($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
                     $scope.SelectedWeekBeginning = $scope.courseIntervals[$scope.courseIntervals.length - 1];
-                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning*1000;
                     $scope.SelectedWeekEnding = $scope.courseIntervals[$scope.courseIntervals.length - 1];
-                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding*1000);
                 }
                 else {
                     $scope.SelectedWeekBeginning = $scope.courseIntervals.find(function(element) {
@@ -1388,8 +1389,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     method: "GET",
                     headers: {
                         'course': $scope.courseid,
-                        'weekBeginning': $rootScope.rawWeekBeginning,
-                        'weekEnding': $rootScope.rawWeekEnding
+                        'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                        'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                     }
                 }).then(function (response) {
                     //console.log("Worked, these are the Taiga averages for the week for weekBegin");
@@ -1403,8 +1404,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     method: "GET",
                     headers: {
                         'course': $scope.courseid,
-                        'weekBeginning': $rootScope.rawWeekBeginning,
-                        'weekEnding': $rootScope.rawWeekEnding
+                        'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                        'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                     }
                 }).then(function (response) {
                     //console.log("Worked This is what the GitHub Data is showing1: !");
@@ -1420,8 +1421,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     method: "GET",
                     headers: {
                         'course': $scope.courseid,
-                        'weekBeginning': $rootScope.rawWeekBeginning,
-                        'weekEnding': $rootScope.rawWeekEnding
+                        'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                        'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                     }
                 }).then(function (response) {
                     //console.log("SlackCourseMessages");
@@ -1882,8 +1883,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
@@ -1900,8 +1901,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
@@ -1918,8 +1919,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './slack/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
@@ -1936,8 +1937,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArrayTG = response.data;
@@ -1954,8 +1955,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
@@ -1972,8 +1973,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './slack/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': $scope.teamid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArraySK = response.data;
@@ -2370,8 +2371,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {
                     'course': course,
                     'team': $scope.teamid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 //console.log("Worked!");
@@ -2384,8 +2385,9 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/commits_team',
                 method: "GET",
                 headers: {
-                    'course': course, 'team': $scope.teamid, 'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'course': course, 'team': $scope.teamid, 
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 // console.log("Worked This is what the GitHub Data is showing: !");
@@ -2401,8 +2403,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {
                     'course': course,
                     'team': $scope.teamid,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 //console.log("SlackTeamMessages");
@@ -2616,7 +2618,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './github/daily_activity_json',
                 method: "GET",
-                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$rootScope.rawWeekBeginning,'weekEnding':$rootScope.rawWeekEnding}
+                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':$rootScope.rawWeekBeginning.valueOf(),'weekEnding':$rootScope.rawWeekEnding.valueOf()}
             }).then(function (response) {
                 console.log(response.data);
                 $scope.loading = false;
@@ -3143,7 +3145,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $http({
                 url: './github/daily_activity_json',
                 method: "GET",
-                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':startDate,'weekEnding':endDate}
+                headers: {'course': course,'team': $scope.teamid, 'weekBeginning':startDate.valueOf(),'weekEnding':endDate.valueOf()}
             }).then(function (response) {
                 $scope.dataForGitHubTeamSubWeight= getDataForGitHubTeamSubWeightCharts(response.data);
                 getSlackActivity();
@@ -3425,8 +3427,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayTG = response.data;
@@ -3443,8 +3445,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArrayGH = response.data;
@@ -3461,8 +3463,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './slack/course_weightFreq',
                 method: "GET",
                 headers: {'course': course,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.courseArraySK = response.data;
@@ -3479,8 +3481,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArrayTG = response.data;
@@ -3497,8 +3499,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArrayGH = response.data;
@@ -3515,8 +3517,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './slack/team_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.teamArraySK = response.data;
@@ -3533,8 +3535,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './taiga/student_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.studentArrayTG = response.data;
@@ -3551,8 +3553,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './github/student_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 $scope.studentArrayGH = response.data;
@@ -3569,8 +3571,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 url: './slack/student_weightFreq',
                 method: "GET",
                 headers: {'course': course, 'team': team, 'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 //console.log("Slack");
@@ -4101,8 +4103,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     'course': course,
                     'team': team,
                     'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                // console.log("Worked! Begin Changed: ");
@@ -4119,8 +4121,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     'course': course,
                     'team': team,
                     'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 //console.log("Worked This is what the GitHub Data is showing: !");
@@ -4135,8 +4137,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 headers: {'course': course,
                     'team': team,
                     'email': studentemail,
-                    'weekBeginning': $rootScope.rawWeekBeginning,
-                    'weekEnding': $rootScope.rawWeekEnding
+                    'weekBeginning': new Date($rootScope.rawWeekBeginning).valueOf(),
+                    'weekending': new Date($rootScope.rawWeekEnding).valueOf()
                 }
             }).then(function (response) {
                 //console.log("SlackStudentMessages");
