@@ -26,6 +26,7 @@ import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
 import edu.asu.cassess.security.SecurityUtils;
 import edu.asu.cassess.service.github.IGatherGitHubData;
+import edu.asu.cassess.service.github.agReplacement.Github;
 import edu.asu.cassess.service.rest.*;
 import edu.asu.cassess.service.security.IUserService;
 import edu.asu.cassess.service.slack.IChannelHistoryService;
@@ -194,7 +195,7 @@ public class AppController {
 
         if(jsonData.equals("-1")) {
             try {
-                URL obj = new URL(jsonURL);
+                /*URL obj = new URL(jsonURL);
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("GET");
                 con.setRequestProperty("User-Agent", USER_AGENT);
@@ -205,7 +206,11 @@ public class AppController {
                     response1.append(inputLine);
                 }
                 in.close();
-                jsonData = response1.toString();
+                jsonData = response1.toString();*/
+                String[] parts = teamService.GetAgParts(course,team);
+                Github gitData = new Github(parts[2],parts[3],parts[0],parts[1].split("%2C"));
+                jsonData = gitData.getComitDataAll(formattedDateBegin,formattedDateEnd);
+
 
                 teamService.updateGithubAG(jsonURL,jsonData);
              } catch (Exception e) {
