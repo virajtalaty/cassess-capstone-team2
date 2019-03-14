@@ -2,6 +2,7 @@ package edu.asu.cassess.service.github.agReplacement;
 
 import org.json.JSONObject;
 
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 class Commit {
@@ -27,8 +28,10 @@ class Commit {
                 '}';
     }
     public Commit(JSONObject obj, String branch){
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         this. sha = obj.getString("sha");
-        this.message = obj.getJSONObject("commit").getString("message").replaceAll("\r\n|\r|\n"," ");
+        this.message = obj.getJSONObject("commit").getString("message").replaceAll("\r\n|\r|\n","\\\\n");
+        message = message.replaceAll("\\t","\\\\t");
         Pattern quote = Pattern.compile("\"");
         message = message.replaceAll(quote.pattern(),"\\\\\"");
         this.html_url = obj.getString("html_url");
@@ -37,8 +40,8 @@ class Commit {
         this.deletions = stats.getInt("deletions");
         this.total = stats.getInt("total");
         this.timestamp = obj.getJSONObject("commit").getJSONObject("author").getString("date");
+        timestamp =formatter.format(formatter.parse(timestamp));
         this.branch = branch;
-        System.out.println(message);
     }
 
     public Commit(String timestamp, String message, String html_url, String branch, int additions, int deletions, int total, String sha) {

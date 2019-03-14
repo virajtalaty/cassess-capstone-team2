@@ -2640,7 +2640,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 {
                     for(var k = 0; k < array[i].daily_activity[j].commit_details.length; k++)
                     {
-                        var branch =     array[i].daily_activity[j].commit_details[k].branch;
+                        var branch = array[i].daily_activity[j].commit_details[k].branch;
                         if(outerMap.has(branch))
                         {
                             var temp = outerMap.get(branch);
@@ -2801,7 +2801,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 var total_commit = []; // total changes of lines for an individual commit
                 var total_active_days = 0;
                 var dailyActivityLen = array[i].daily_activity.length;
-                var prevDate = new Date($scope.SelectedWeekBeginning.rawWeekBeginning * 1000);
+                var prevDate = new Date($rootScope.rawWeekBeginning);
 
 
                 for(var j=0;j<dailyActivityLen;j++)
@@ -2910,7 +2910,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
 
                 //getting activity streak
-                var activity_streak = getActivityStreak(commits,day)
+                var activity_streak = getActivityStreak(commits,day);
                 var activity_max = Math.max.apply(null, activity_streak);
 
                 dataDaily.push({total_color: total_color, student: student_name, add_commit:add_commit, del_commit:del_commit, total_commit:total_commit, message:message, html_url:html_url, branch:branch, commits: commits, add: add, del: del, total: total, day: day, other_activity:other_activity, master_activity:master_activity, inactivity_streak:inactivity_streak, total_active_days:total_active_days, activity_streak:activity_streak, activity_max:activity_max});
