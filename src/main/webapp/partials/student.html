@@ -12,13 +12,13 @@
     <h1 class="page-header">{{studentid}} Data</h1>
     <div style="color:black; float:right; padding-right: 130px;" >
         <label style="color:black;">Select Start Date: </label>
-        <input id="SelectedStart" type="date" ng-model="SelectedWeekBeginning.weekBeginning" ng-change="IntervalChangedBegin(SelectedWeekBeginning.weekBeginning)">
+        <input id="SelectedStart" type="date" ng-model="SelectedWeekBeginning.weekBeginning" ng-change="IntervalChangedBegin(SelectedWeekBeginning.weekBeginning)" ng-init="SelectedWeekBeginning.weekBeginning=newDate(courseIntervals[courseIntervals.length - 1].rawWeekBeginning*1000)">
         <!--<select class="select_style"  ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in courseIntervals"
                 ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)" ng-init="SelectedWeekBeginning=courseIntervals[courseIntervals.length - 1].weekBeginning">
         </select>-->
         <br>
         <label style="color:black;">  Select End Date: </label>
-        <input id="SelectedEnd" type="date" ng-model="SelectedWeekEnding.weekEnding" ng-change="IntervalChangedEnd(SelectedWeekEnding.weekEnding)">
+        <input id="SelectedEnd" type="date" ng-model="SelectedWeekEnding.weekEnding" ng-change="IntervalChangedEnd(SelectedWeekEnding.weekEnding)" ng-init="SelectedWeekEnding.weekEnding=newDate(courseIntervals[courseIntervals.length - 1].rawWeekEnding*1000)">
         <!--<select class="select_style"  ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in courseIntervals"
                 ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)" ng-init="SelectedWeekEnding=courseIntervals[courseIntervals.length - 1].weekEnding">
         </select>-->

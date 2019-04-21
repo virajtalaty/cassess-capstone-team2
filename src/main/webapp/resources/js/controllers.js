@@ -50,8 +50,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.selectedCourseChanged = function () {
                 $scope.course = $scope.adminCourse.value.course;
                 adminService.setCourse($scope.adminCourse.value.course);
-                $rootScope.rawWeekBeginning = null;
-                $rootScope.rawWeekEnding = null;
+                $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.weekBeginning;
+                $rootScope.rawWeekEnding = $scope.SelectedWeekEnding.weekEnding;
                 $http({
                     url: './course_students',
                     method: "GET",
@@ -1341,15 +1341,15 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $scope.SelectedWeekBeginning = $scope.courseIntervals[$scope.courseIntervals.length - 1];
                     $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning*1000;
                     $scope.SelectedWeekEnding = $scope.courseIntervals[$scope.courseIntervals.length - 1];
-                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding*1000);
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.weekEnding);//*1000);
                 }
                 else {
-                    $scope.SelectedWeekBeginning = $scope.courseIntervals.find(function(element) {
+                    $scope.SelectedWeekBeginning.weekBeginning = $rootScope.rawWeekBeginning/*$scope.courseIntervals.find(function(element) {
                         return element.rawWeekBeginning == $rootScope.rawWeekBeginning;
-                    });
-                    $scope.SelectedWeekEnding = $scope.courseIntervals.find(function(element) {
+                    });*/
+                    $scope.SelectedWeekEnding.weekEnding = $rootScope.rawWeekEnding/*$scope.courseIntervals.find(function(element) {
                         return element.rawWeekEnding == $rootScope.rawWeekEnding;
-                    });
+                    });*/
                     $scope.IntervalChangedEnd($rootScope.rawWeekEnding);
                 }
                 $('select option')
@@ -2319,17 +2319,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.teamIntervals = response.data;
                 if($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
                     $scope.SelectedWeekBeginning = $scope.teamIntervals[$scope.teamIntervals.length-1];
-                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $rootScope.rawWeekBeginning = $scope. .weekBeginning;
                     $scope.SelectedWeekEnding =  $scope.teamIntervals[$scope.teamIntervals.length-1];
-                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.weekEnding);
                 }
                 else {
-                    $scope.SelectedWeekBeginning = $scope.teamIntervals.find(function(element) {
+                    $scope.SelectedWeekBeginning.weekBeginning = $rootScope.rawWeekBeginning/*$scope.teamIntervals.find(function(element) {
                         return element.rawWeekBeginning == $rootScope.rawWeekBeginning;
-                    });
-                    $scope.SelectedWeekEnding = $scope.teamIntervals.find(function(element) {
+                    });*/
+                    $scope.SelectedWeekEnding.weekEnding = $rootScope.rawWeekEnding/*$scope.teamIntervals.find(function(element) {
                         return element.rawWeekEnding == $rootScope.rawWeekEnding;
-                    });
+                    });*/
                     $scope.IntervalChangedEnd($rootScope.rawWeekEnding);
                 }
                 $('select option')
@@ -4051,17 +4051,17 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.studentIntervals = response.data;
                 if($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
                     $scope.SelectedWeekBeginning = $scope.studentIntervals[$scope.studentIntervals.length-1];
-                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.rawWeekBeginning;
+                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.weekBeginning;
                     $scope.SelectedWeekEnding =  $scope.studentIntervals[$scope.studentIntervals.length-1];
-                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.rawWeekEnding);
+                    $scope.IntervalChangedEnd($scope.SelectedWeekEnding.weekEnding);
                 }
                 else {
-                    $scope.SelectedWeekBeginning = $scope.studentIntervals.find(function(element) {
+                    $scope.SelectedWeekBeginning.weekBeginning = $rootScope.rawWeekBeginning/*$scope.studentIntervals.find(function(element) {
                         return element.rawWeekBeginning == $rootScope.rawWeekBeginning;
-                    });
-                    $scope.SelectedWeekEnding = $scope.studentIntervals.find(function(element) {
+                    });*/
+                    $scope.SelectedWeekEnding.weekEnding = $rootScope.rawWeekEnding/*$scope.studentIntervals.find(function(element) {
                         return element.rawWeekEnding == $rootScope.rawWeekEnding;
-                    });
+                    });*/
                     $scope.IntervalChangedEnd($rootScope.rawWeekEnding);
                 }
                 $('select option')
