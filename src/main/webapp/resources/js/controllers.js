@@ -2319,7 +2319,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.teamIntervals = response.data;
                 if($rootScope.rawWeekBeginning == null && $rootScope.rawWeekEnding == null) {
                     $scope.SelectedWeekBeginning = $scope.teamIntervals[$scope.teamIntervals.length-1];
-                    $rootScope.rawWeekBeginning = $scope. .weekBeginning;
+                    $rootScope.rawWeekBeginning = $scope.SelectedWeekBeginning.weekBeginning;
                     $scope.SelectedWeekEnding =  $scope.teamIntervals[$scope.teamIntervals.length-1];
                     $scope.IntervalChangedEnd($scope.SelectedWeekEnding.weekEnding);
                 }
