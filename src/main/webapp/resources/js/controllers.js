@@ -149,10 +149,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         $scope.selectedCourseChanged = function () {
-            /*$rootScope.rawWeekBeginning = null;
-            $rootScope.rawWeekEnding = null;*/
-            /*$rootScope.startWeek = null;
-            $rootScope.endWeek = null;*/
+            $rootScope.Period.start = null;
+            $rootScope.Period.end = null;
             $http({
                 url: './student_teams',
                 method: "GET",
@@ -603,10 +601,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.selectedCourseChanged = function () {
             $scope.course = $scope.adminCourse.value.course;
-            /*$rootScope.rawWeekBeginning = null;
-            $rootScope.rawWeekEnding = null;*/
-            /*$rootScope.startWeek = null;
-            $rootScope.endWeek = null;*/
+            $rootScope.Period.start = null;
+            $rootScope.Period.end = null;
         };
 
         $scope.adminCourseRemove = function () {
@@ -959,6 +955,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
         //console.log("course: " + $scope.courseid);
         var initial = true;
+
+        $http({
+            url:'/course_data',
+            method:"get",
+            headers: {'course':$scope.courseid}
+        }).then(function (response) {
+
+            $scope.startDate = response.data.start_date;
+            var end_date = response.data.end_date;
+            var now = new Date();
+            $scope.endDate = (end_date.value>now.value?now:end_date);
+        },function (response) {
+            console.log("Couldn't retrieve course data")
+        });
 
         $http({
             url: './ag_url',
@@ -1348,13 +1358,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 $scope.courseIntervals = response.data;
                 console.log("Intervals: "+$scope.courseIntervals);
 
-                console.log("Start: " + $rootScope.Period.start);
-                console.log("End: " + $rootScope.Period.end);
-
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    $scope.IntervalChangedEnd();//*1000);
+                    if($rootScope.Period.start.value<$scope.startDate.value)
+                        $rootScope.Period.start = $scope.startDate;
+                    if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;
+                    $scope.IntervalChangedEnd();
                 }
                 else {
                     $scope.IntervalChangedEnd();
@@ -1863,6 +1874,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         $http({
+            url:'/course_data',
+            method:"get",
+            headers: {'course':$scope.courseid}
+        }).then(function (response) {
+
+            $scope.startDate = response.data.start_date;
+            var end_date = response.data.end_date
+            var now = new Date();
+            $scope.endDate = (end_date.value>now.value?now:end_date);
+        },function (response) {
+            console.log("Couldn't retrieve course data")
+        });
+
+        $http({
             url: './ag_url',
             method: "GET"
         }).then(function (response) {
@@ -2361,7 +2386,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    $scope.IntervalChangedEnd();//*1000);
+                    if($rootScope.Period.start.value<$scope.startDate.value)
+                        $rootScope.Period.start = $scope.startDate;
+                    if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;
+                    $scope.IntervalChangedEnd();
                 }
                 else {
                     $scope.IntervalChangedEnd();
@@ -3443,6 +3472,20 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         $http({
+            url:'/course_data',
+            method:"get",
+            headers: {'course':$scope.courseid}
+        }).then(function (response) {
+
+            $scope.startDate = response.data.start_date;
+            var end_date = response.data.end_date
+            var now = new Date();
+            $scope.endDate = (end_date.value>now.value?now:end_date);
+        },function (response) {
+            console.log("Couldn't retrieve course data")
+        });
+
+        $http({
             url: './ag_url',
             method: "GET"
         }).then(function (response) {
@@ -4131,7 +4174,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    $scope.IntervalChangedEnd();//*1000);
+                    if($rootScope.Period.start.value<$scope.startDate.value)
+                        $rootScope.Period.start = $scope.startDate;
+                    if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;
+                    $scope.IntervalChangedEnd();
                 }
                 else {
                     $scope.IntervalChangedEnd();
@@ -4169,14 +4216,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         }
 
         $scope.IntervalChangedBegin = function () {
-            $rootScope.Period.start = rawWeekBeginning;
             //console.log("WeekBeginning: " + $rootScope.rawWeekBeginning);
             if ($rootScope.Period.end != null) {
                 getAllStudentTabsData();
             }
         };
         $scope.IntervalChangedEnd = function () {
-            $rootScope.Period.end = rawWeekEnding;
             //console.log("WeekEnding: " + $rootScope.rawWeekEnding);
             if ($rootScope.Period.start != null) {
                 getAllStudentTabsData();

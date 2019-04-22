@@ -158,6 +158,14 @@ public class AppController {
 
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/course_data", method = RequestMethod.GET)
+    public Course getCoursePeriod(@RequestHeader(name = "course", required = true) String course,
+                                           HttpServletRequest request, HttpServletResponse response) {
+        return (Course)courseService.read(course);
+
+    }
+
     //Previous Query Based method to obtain Teams assigned to a particular course
 
     //Gets the Teams/Projects which are assigned to a course
