@@ -11,13 +11,13 @@
     <h1 class="page-header">{{courseid}} Data</h1>
     <div style="color:black; float:right; padding-right: 130px;" >
         <label style="color:black;">Select Start Date: </label>
-        <input id="SelectedStart" type="date" ng-model="SelectedWeekBeginning.weekBeginning" ng-change="IntervalChangedBegin(SelectedWeekBeginning.weekBeginning)">
+        <input id="SelectedStart" type="date" ng-model="Period.start" ng-change="IntervalChangedBegin()">
         <!--<select class="select_style"  ng-model="SelectedWeekBeginning" ng-options="x.weekBeginning for x in courseIntervals"
                 ng-change="IntervalChangedBegin(SelectedWeekBeginning.rawWeekBeginning)" ng-init="SelectedWeekBeginning=courseIntervals[courseIntervals.length - 1].weekBeginning">
         </select>-->
         <br>
         <label style="color:black;">  Select End Date: </label>
-        <input id="SelectedEnd" type="date" ng-model="SelectedWeekEnding.weekEnding" ng-change="IntervalChangedEnd(SelectedWeekEnding.weekEnding)">
+        <input id="SelectedEnd" type="date" ng-model="Period.end" ng-change="IntervalChangedEnd()">
         <!--<select class="select_style"  ng-model="SelectedWeekEnding" ng-options="x.weekEnding for x in courseIntervals"
                 ng-change="IntervalChangedEnd(SelectedWeekEnding.rawWeekEnding)" ng-init="SelectedWeekEnding=courseIntervals[courseIntervals.length - 1].weekEnding">
         </select>-->
@@ -52,7 +52,7 @@
                         <h2>Taiga-Github-Slack Frequency/Impact</h2>
                         <br>
                         <br>
-                        <h3>Overall Averages For: {{SelectedWeekBeginning.weekBeginning.toDateString()}}  To  {{SelectedWeekEnding.weekEnding.toDateString()}}</h3><br>
+                        <h3>Overall Averages For: {{Period.start.toDateString()}}  To  {{Period.end.toDateString()}}</h3><br>
                         <div id="selectedOverall" ng-controller="CourseController" style="width:37.5em !important; height:33.333em !important;">
                             <canvas id="radarSelected" class="chart" style="width:100%; height:100%"></canvas>
                         </div>

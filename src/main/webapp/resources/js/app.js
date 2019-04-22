@@ -203,6 +203,8 @@ myapp.config(function ($routeProvider, USER_ROLES) {
 
 myapp.run(function ($rootScope, $location, $http, AuthSharedService, Session, USER_ROLES, $q, $timeout) {
 
+    $rootScope.Period = {start:null,end:null};
+
     $rootScope.$on('$routeChangeStart', function (event, next) {
 
         if (next.originalPath === "/login" && $rootScope.authenticated) {

@@ -28,7 +28,8 @@ class Commit {
                 '}';
     }
     public Commit(JSONObject obj, String branch){
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        DateTimeFormatter formatter1 = DateTimeFormatter.ISO_DATE_TIME;
+        DateTimeFormatter formatter2 = DateTimeFormatter.RFC_1123_DATE_TIME;
         this. sha = obj.getString("sha");
         this.message = obj.getJSONObject("commit").getString("message").replaceAll("\r\n|\r|\n","\\\\n");
         message = message.replaceAll("\\t","\\\\t");
@@ -40,7 +41,7 @@ class Commit {
         this.deletions = stats.getInt("deletions");
         this.total = stats.getInt("total");
         this.timestamp = obj.getJSONObject("commit").getJSONObject("author").getString("date");
-        timestamp =formatter.format(formatter.parse(timestamp));
+        timestamp =formatter2.format(formatter1.parse(timestamp));
         this.branch = branch;
     }
 

@@ -1,6 +1,8 @@
 package edu.asu.cassess.service.github.agReplacement;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 class UserCommits {
@@ -71,9 +73,14 @@ class UserCommits {
 
     protected void addCommit(Commit c){
         try{
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormatSymbols dfs = new DateFormatSymbols();
+            /*dfs.setWeekdays(new String[]{"unused","Sun","Mon","Tue","Wed","Thu","Fri","Sat"});
+            dfs.set*/
+            SimpleDateFormat df1 = new SimpleDateFormat("EEE, dd MMM yyyy");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
             CommitDay cd;
-            String date = df.format(df.parse(c.timestamp));
+
+            String date = df2.format(df1.parse(c.timestamp));
             cd = daily_activity.get(date);
             cd.addCommit(c);
             daily_activity.put(date,cd);
