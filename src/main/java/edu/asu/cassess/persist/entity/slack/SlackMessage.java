@@ -32,6 +32,13 @@ public class SlackMessage implements Serializable {
 
     }
 
+    public SlackMessage(double ts, String user, String type, String text) {
+        this.ts = ts;
+        this.user = user;
+        this.type = type;
+        this.text = text;
+    }
+
     public int getId() {
         return id;
     }

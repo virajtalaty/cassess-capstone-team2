@@ -1,9 +1,11 @@
 package edu.asu.cassess.service.slack;
 
+import edu.asu.cassess.dao.slack.ISlackMessageDao;
 import edu.asu.cassess.dao.slack.IUserObjectQueryDao;
 import edu.asu.cassess.model.slack.MessageList;
 import edu.asu.cassess.persist.entity.rest.*;
 import edu.asu.cassess.persist.entity.slack.*;
+import edu.asu.cassess.persist.repo.slack.SlackMessageRepo;
 import edu.asu.cassess.persist.repo.slack.SlackMessageTotalsRepo;
 import edu.asu.cassess.service.rest.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,12 @@ public class ChannelHistoryService implements IChannelHistoryService {
     @Autowired
     private SlackMessageTotalsRepo slackMessageTotalsRepo;
 
+    @Autowired
+    private SlackMessageRepo slackMessageRepo;
+
+    @Autowired
+    private ISlackMessageDao slackMessageDao;
+
     public ChannelHistoryService() {
         restTemplate = new RestTemplate();
 
@@ -75,9 +83,11 @@ public class ChannelHistoryService implements IChannelHistoryService {
         //System.out.println("Page: " + page);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-
+        System.out.println("1: "+channelHistoryURL + "?token=" + token + "&channel=" + channel +
+                "&oldest=" + unixOldest + "&latest=" + unixCurrent);
         ResponseEntity<MessageList> messageList = restTemplate.getForEntity(channelHistoryURL + "?token=" + token + "&channel=" + channel +
                 "&oldest=" + unixOldest + "&latest=" + unixCurrent, MessageList.class, request);
+        System.out.println("2");
 
         System.out.println(messageList.getBody());
 
@@ -91,6 +101,10 @@ public class ChannelHistoryService implements IChannelHistoryService {
             //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
 
             if(slackMessage.getText().length() > 20) {
+                System.out.println("3");
+                slackMessageRepo.save(slackMessage);
+                System.out.println("4");
+                System.out.println("Message: "+slackMessage.getText());
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
@@ -144,10 +158,12 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
         int index = 0;
         for(SlackMessage slackMessage:slackMessages){
-            //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
-            //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
+            System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
+            System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
 
             if(slackMessage.getText().length() > 20) {
+                System.out.println("Message: "+slackMessage.getText());
+                slackMessageRepo.save(slackMessage);
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
@@ -160,11 +176,11 @@ public class ChannelHistoryService implements IChannelHistoryService {
             index++;
             if(index == (slackMessages.length -1)){
                 nextUnixCurrent = (long) Math.floor(slackMessage.getTs());
-                //System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
+                System.out.println("----------------------------**********************************************=========NextUnixCurrent: " + nextUnixCurrent);
             }
         }
 
-        //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
+        System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
             return getPrivateMessages(channel, token, unixOldest, nextUnixCurrent);
@@ -184,8 +200,8 @@ public class ChannelHistoryService implements IChannelHistoryService {
                     if (countsMap.get(userObject.getId()) != null) {
                         messageCount = countsMap.get(userObject.getId()).get();
                     }
-                    //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
-                    //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
+                    System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
+                    System.out.println("----------------------------**********************************************=========Count: " + messageCount);
                     //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
                     if (student.getEnabled() != null) {
                         if (student.getEnabled() != false) {
@@ -212,6 +228,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
         Course tempCourse = (Course) courseService.read(course);
         java.util.Date current = new java.util.Date();
 
+
         //TODO : Why is this code even there
         /*
         try {
@@ -224,10 +241,11 @@ public class ChannelHistoryService implements IChannelHistoryService {
         if (current.before(tempCourse.getEnd_date())) {
             String token = tempCourse.getSlack_token();
             if(token != null) {
+                System.out.println("Token: "+token);
                 for (Team team : tempCourse.getTeams()) {
                     List<Channel> channels = channelService.listReadByTeam(team.getTeam_name(), course);
                     for (Channel channel : channels) {
-                        //System.out.println("Channel: " + channel.getId());
+                        System.out.println("Channel: " + channel.getId());
                         if(channel.getId().startsWith("C")){
                             getPublicMessages(channel.getId(), token, unixOldest, unixCurrent);
                             getMessageTotals(channel.getId(), course, team.getTeam_name());

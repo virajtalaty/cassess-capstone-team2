@@ -22,7 +22,7 @@ public class GitHubWeightDao implements IGitHubWeightDao {
     @Override
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager){
-        this.entityManager = entityManager;
+
     }
 
     @Override
