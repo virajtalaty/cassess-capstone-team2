@@ -6,6 +6,7 @@ import edu.asu.cassess.dao.github.IGitHubCommitQueryDao;
 import edu.asu.cassess.dao.github.IGitHubWeightDao;
 import edu.asu.cassess.dao.github.IGitHubWeightQueryDao;
 import edu.asu.cassess.dao.slack.IConsumeUsers;
+import edu.asu.cassess.dao.slack.ISlackMessageDao;
 import edu.asu.cassess.dao.slack.ISlackMessageTotalsQueryDao;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
@@ -133,6 +134,9 @@ public class AppController {
 
     @EJB
     private IProjectService projects;
+
+    @Autowired
+    ISlackMessageDao slackMessageDao;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -867,8 +871,11 @@ public class AppController {
         String formattedDateEnd = sdfBegin.format(dateEnd);
         //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
         //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
+        System.out.println("1");
         List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByTeam(formattedDateBegin, formattedDateEnd, course, team);
+        System.out.println("2");
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
+
     }
 
     //Daily Message Counts for a student

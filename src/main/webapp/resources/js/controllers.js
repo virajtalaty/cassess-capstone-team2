@@ -1363,8 +1363,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
                     if($rootScope.Period.start.value<$scope.startDate.value)
                         $rootScope.Period.start = $scope.startDate;
-                    if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;
+                    /*if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;*/
                     $scope.IntervalChangedEnd();
                 }
                 else {
@@ -2388,8 +2388,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
                     if($rootScope.Period.start.value<$scope.startDate.value)
                         $rootScope.Period.start = $scope.startDate;
-                    if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;
+                    /*if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;*/
                     $scope.IntervalChangedEnd();
                 }
                 else {
@@ -4176,8 +4176,8 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
                     if($rootScope.Period.start.value<$scope.startDate.value)
                         $rootScope.Period.start = $scope.startDate;
-                    if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;
+                    /*if($rootScope.Period.end.value>$scope.endDate.value)
+                        $rootScope.Period.end = $scope.endDate;*/
                     $scope.IntervalChangedEnd();
                 }
                 else {

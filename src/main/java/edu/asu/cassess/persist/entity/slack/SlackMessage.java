@@ -8,11 +8,11 @@ import java.io.Serializable;
 @Entity
 @Table(name = "slack_messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlackMessage implements Serializable {
+public class SlackMessage {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -28,15 +28,28 @@ public class SlackMessage implements Serializable {
     @Column(name="text")
     private String text;
 
+    @Column(name="channel_id")
+    private String channel_id;
+
+    @Column(name = "course")
+    private String course;
+
+    @Column(name = "team")
+    private String team;
+
     public SlackMessage() {
 
     }
 
-    public SlackMessage(double ts, String user, String type, String text) {
+    public SlackMessage(int id, double ts, String user, String type, String text, String channel_id, String course, String team) {
+        this.id = id;
         this.ts = ts;
         this.user = user;
         this.type = type;
         this.text = text;
+        this.channel_id = channel_id;
+        this.course = course;
+        this.team = team;
     }
 
     public int getId() {
@@ -92,5 +105,27 @@ public class SlackMessage implements Serializable {
         this.user = user;
     }
 
+    public String getChannel_id() {
+        return channel_id;
+    }
 
+    public void setChannel_id(String channel_id) {
+        this.channel_id = channel_id;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 }

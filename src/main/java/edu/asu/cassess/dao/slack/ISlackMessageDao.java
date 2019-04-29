@@ -1,5 +1,6 @@
 package edu.asu.cassess.dao.slack;
 
+import edu.asu.cassess.model.slack.DailyMessageTotals;
 import edu.asu.cassess.persist.entity.slack.SlackMessage;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,27 @@ public interface ISlackMessageDao {
     void setEntityManager(EntityManager entityManager);
 
     @Transactional
-    List<SlackMessage> getMessages(String user, Date start, Date end);
+    boolean getMessageExists(double ts);
 
     @Transactional
-    Date getTimeOfLastMessage();
+    double getTimeOfLastMessage(String channel);
 
     @Transactional
-    int getMessageCount(String user, Date start, Date end);
+    List<SlackMessage> getStudentMessages(String user, long start, long end);
+
+    @Transactional
+    int getStudentMessageCount(String user, long start, long end);
+
+    @Transactional
+    List<DailyMessageTotals> getStudentDailyTotals(String user, long start, long end);
+
+    @Transactional
+    List<SlackMessage> getTeamMessages(String team, long start, long end);
+
+    @Transactional
+    int getTeamMessageCount(String team, long start, long end);
+
+    @Transactional
+    List<DailyMessageTotals> getTeamDailyTotals(String team, long start, long end);
 
 }

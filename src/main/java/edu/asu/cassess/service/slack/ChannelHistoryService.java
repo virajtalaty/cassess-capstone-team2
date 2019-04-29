@@ -68,7 +68,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
     }
 
     @Override
-    public MessageList getPublicMessages(String channel, String token, long unixOldest, long unixCurrent) {
+    public MessageList getPublicMessages(String channel, String token, long unixOldest, long unixCurrent, String course, String team) {
 
         long nextUnixCurrent = 0;
 
@@ -83,12 +83,8 @@ public class ChannelHistoryService implements IChannelHistoryService {
         //System.out.println("Page: " + page);
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        System.out.println("1: "+channelHistoryURL + "?token=" + token + "&channel=" + channel +
-                "&oldest=" + unixOldest + "&latest=" + unixCurrent);
         ResponseEntity<MessageList> messageList = restTemplate.getForEntity(channelHistoryURL + "?token=" + token + "&channel=" + channel +
                 "&oldest=" + unixOldest + "&latest=" + unixCurrent, MessageList.class, request);
-        System.out.println("2");
-
         System.out.println(messageList.getBody());
 
         SlackMessage[] slackMessages = messageList.getBody().getMessages();
@@ -99,12 +95,13 @@ public class ChannelHistoryService implements IChannelHistoryService {
         for(SlackMessage slackMessage:slackMessages){
             //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
             //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
-
+            slackMessage.setChannel_id(channel);
+            slackMessage.setCourse(course);
+            slackMessage.setTeam(team);
             if(slackMessage.getText().length() > 20) {
-                System.out.println("3");
-                slackMessageRepo.save(slackMessage);
-                System.out.println("4");
-                System.out.println("Message: "+slackMessage.getText());
+                if(!slackMessageDao.getMessageExists(slackMessage.getTs()))
+                    slackMessageRepo.save(slackMessage);
+                //System.out.println("Message: "+slackMessage.getText());
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
@@ -124,14 +121,14 @@ public class ChannelHistoryService implements IChannelHistoryService {
         //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
-            return getPublicMessages(channel, token, unixOldest, nextUnixCurrent);
+            return getPublicMessages(channel, token, unixOldest, nextUnixCurrent, course, team);
         } else {
             return messageList.getBody();
         }
     }
 
     @Override
-    public MessageList getPrivateMessages(String channel, String token, long unixOldest, long unixCurrent) {
+    public MessageList getPrivateMessages(String channel, String token, long unixOldest, long unixCurrent, String course, String team) {
 
         long nextUnixCurrent = 0;
 
@@ -158,12 +155,15 @@ public class ChannelHistoryService implements IChannelHistoryService {
 
         int index = 0;
         for(SlackMessage slackMessage:slackMessages){
-            System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
-            System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
-
-            if(slackMessage.getText().length() > 20) {
+            //System.out.println("----------------------------**********************************************=========Ts: " + slackMessage.getTs());
+            //System.out.println("----------------------------**********************************************=========User: " + slackMessage.getUser());
+            slackMessage.setChannel_id(channel);
+            slackMessage.setCourse(course);
+            slackMessage.setTeam(team);
+            if(slackMessage.getText().length() > 0) {
                 System.out.println("Message: "+slackMessage.getText());
-                slackMessageRepo.save(slackMessage);
+                if(!slackMessageDao.getMessageExists(slackMessage.getTs()))
+                    slackMessageRepo.save(slackMessage);
                 MutableInt count = countsMap.get(slackMessage.getUser());
                 if (count == null) {
                     countsMap.put(slackMessage.getUser(), new MutableInt());
@@ -180,10 +180,10 @@ public class ChannelHistoryService implements IChannelHistoryService {
             }
         }
 
-        System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
+        //System.out.println("----------------------------**********************************************=========has_more: " + messageList.getBody().isHas_more());
 
         if (messageList.getBody().isHas_more()) {
-            return getPrivateMessages(channel, token, unixOldest, nextUnixCurrent);
+            return getPrivateMessages(channel, token, unixOldest, nextUnixCurrent, course,team);
         } else {
             return messageList.getBody();
         }
@@ -200,8 +200,8 @@ public class ChannelHistoryService implements IChannelHistoryService {
                     if (countsMap.get(userObject.getId()) != null) {
                         messageCount = countsMap.get(userObject.getId()).get();
                     }
-                    System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
-                    System.out.println("----------------------------**********************************************=========Count: " + messageCount);
+                    //System.out.println("----------------------------**********************************************=========User: " + userObject.getId());
+                    //System.out.println("----------------------------**********************************************=========Count: " + messageCount);
                     //int messageCount = slackMessageQueryDao.getMessageCount(userObject.getId());
                     if (student.getEnabled() != null) {
                         if (student.getEnabled() != false) {
@@ -222,7 +222,7 @@ public class ChannelHistoryService implements IChannelHistoryService {
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        long unixOldest = c.getTimeInMillis() / 1000;
+        long unixOldest;
         long unixCurrent = System.currentTimeMillis() / 1000L;
         if (courseService == null) courseService = new CourseService();
         Course tempCourse = (Course) courseService.read(course);
@@ -245,14 +245,15 @@ public class ChannelHistoryService implements IChannelHistoryService {
                 for (Team team : tempCourse.getTeams()) {
                     List<Channel> channels = channelService.listReadByTeam(team.getTeam_name(), course);
                     for (Channel channel : channels) {
+                        unixOldest = (long)slackMessageDao.getTimeOfLastMessage(channel.getId());
                         System.out.println("Channel: " + channel.getId());
                         if(channel.getId().startsWith("C")){
-                            getPublicMessages(channel.getId(), token, unixOldest, unixCurrent);
+                            getPublicMessages(channel.getId(), token, unixOldest, unixCurrent, course, team.getTeam_name());
                             getMessageTotals(channel.getId(), course, team.getTeam_name());
                             countsMap.clear();
                         }
                         if(channel.getId().startsWith("G")){
-                            getPrivateMessages(channel.getId(), token, unixOldest, unixCurrent);
+                            getPrivateMessages(channel.getId(), token, unixOldest, unixCurrent, course, team.getTeam_name());
                             getMessageTotals(channel.getId(), course, team.getTeam_name());
                             countsMap.clear();
                         }
