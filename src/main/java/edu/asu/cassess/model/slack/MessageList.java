@@ -2,13 +2,6 @@ package edu.asu.cassess.model.slack;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.asu.cassess.persist.entity.slack.SlackMessage;
-import org.hibernate.annotations.Subselect;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageList {

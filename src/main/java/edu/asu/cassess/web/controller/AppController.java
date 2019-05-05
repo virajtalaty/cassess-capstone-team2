@@ -8,6 +8,7 @@ import edu.asu.cassess.dao.github.IGitHubWeightQueryDao;
 import edu.asu.cassess.dao.slack.IConsumeUsers;
 import edu.asu.cassess.dao.slack.ISlackMessageDao;
 import edu.asu.cassess.dao.slack.ISlackMessageTotalsQueryDao;
+import edu.asu.cassess.dao.slack.IUserObjectQueryDao;
 import edu.asu.cassess.dao.taiga.IMemberQueryDao;
 import edu.asu.cassess.dao.taiga.IProjectQueryDao;
 import edu.asu.cassess.dao.taiga.ITaskTotalsQueryDao;
@@ -23,6 +24,7 @@ import edu.asu.cassess.persist.entity.rest.Course;
 import edu.asu.cassess.persist.entity.rest.Student;
 import edu.asu.cassess.persist.entity.rest.Team;
 import edu.asu.cassess.persist.entity.security.User;
+import edu.asu.cassess.persist.entity.slack.UserObject;
 import edu.asu.cassess.persist.repo.UserRepo;
 import edu.asu.cassess.persist.repo.rest.StudentRepo;
 import edu.asu.cassess.security.SecurityUtils;
@@ -137,6 +139,9 @@ public class AppController {
 
     @Autowired
     ISlackMessageDao slackMessageDao;
+
+    @Autowired
+    IUserObjectQueryDao userObjectQueryDao;
 
     //New Query Based method to retrieve the current User object, associated with the current login
     @ResponseBody
@@ -843,15 +848,7 @@ public class AppController {
                                                                                 @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                                 @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
-        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        String formattedDateBegin = sdfBegin.format(dateBegin);
-        String formattedDateEnd = sdfBegin.format(dateEnd);
-        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
-        List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByCourse(formattedDateBegin, formattedDateEnd, course);
+        List<DailyMessageTotals> countList = slackMessageDao.getCourseDailyTotals(course,weekBeginning,weekEnding);//(List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByCourse(formattedDateBegin, formattedDateEnd, course);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
     }
 
@@ -863,17 +860,7 @@ public class AppController {
                                                                               @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                               @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
-        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        String formattedDateBegin = sdfBegin.format(dateBegin);
-        String formattedDateEnd = sdfBegin.format(dateEnd);
-        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
-        System.out.println("1");
-        List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByTeam(formattedDateBegin, formattedDateEnd, course, team);
-        System.out.println("2");
+        List<DailyMessageTotals> countList = slackMessageDao.getTeamDailyTotals(course,team,weekBeginning,weekEnding);//List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByTeam(formattedDateBegin, formattedDateEnd, course, team);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
 
     }
@@ -887,15 +874,8 @@ public class AppController {
                                                                                  @RequestHeader(name = "weekBeginning", required = true) long weekBeginning,
                                                                                  @RequestHeader(name = "weekEnding", required = true) long weekEnding, HttpServletRequest request, HttpServletResponse response) {
 
-        Date dateBegin = new Date(weekBeginning); // *1000 is to convert seconds to milliseconds
-        Date dateEnd = new Date(weekEnding); // *1000 is to convert seconds to milliseconds
-        SimpleDateFormat sdfBegin = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        SimpleDateFormat sdfEnd = new SimpleDateFormat("yyyy-MM-dd"); // the format of your date
-        String formattedDateBegin = sdfBegin.format(dateBegin);
-        String formattedDateEnd = sdfBegin.format(dateEnd);
-        //System.out.print("-------------------------------------------------------------DateBeginning: " + formattedDateBegin);
-        //System.out.print("-------------------------------------------------------------DateEnd: " + formattedDateEnd);
-        List<DailyMessageTotals> countList = (List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
+        String student = ((UserObject)userObjectQueryDao.getUserByEmail(course,email)).getId();
+        List<DailyMessageTotals> countList = slackMessageDao.getStudentDailyTotals (course,team,student,weekBeginning,weekEnding);//List<DailyMessageTotals>) slackMessageTotalsService.getDailyCountsByStudent(formattedDateBegin, formattedDateEnd, course, team, email);
         return new ResponseEntity<List<DailyMessageTotals>>(countList, HttpStatus.OK);
     }
 
@@ -932,31 +912,34 @@ public class AppController {
     //Weekly Message Totals for a student
     @ResponseBody
     @RequestMapping(value = "/slack/student_totals", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyMessageTotals>> getStudentMessageTotals(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<DailyMessageTotals>> getStudentMessageTotals(@RequestHeader(name = "course", required = true) String course,
                                                                              @RequestHeader(name = "team", required = true) String team,
                                                                              @RequestHeader(name = "email", required = true) String email,
                                                                              HttpServletRequest request, HttpServletResponse response) {
-        List<WeeklyMessageTotals> activityList = (List<WeeklyMessageTotals>) slackMessageTotalsService.getWeeklyTotalsByStudent(course, team, email);
-        return new ResponseEntity<List<WeeklyMessageTotals>>(activityList, HttpStatus.OK);
+        Course c = (Course)courseService.read(course);
+        List<DailyMessageTotals> activityList = slackMessageDao.getStudentDailyTotals(course,team,email,c.getStart_date().getTime(),c.getEnd_date().getTime());
+        return new ResponseEntity<List<DailyMessageTotals>>(activityList, HttpStatus.OK);
     }
 
     //Weekly Message Totals for a team
     @ResponseBody
     @RequestMapping(value = "/slack/team_totals", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyMessageTotals>> getTeamMessageTotals(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<DailyMessageTotals>> getTeamMessageTotals(@RequestHeader(name = "course", required = true) String course,
                                                                           @RequestHeader(name = "team", required = true) String team,
                                                                           HttpServletRequest request, HttpServletResponse response) {
-        List<WeeklyMessageTotals> totalsList = (List<WeeklyMessageTotals>) slackMessageTotalsService.getWeeklyTotalsByTeam(course, team);
-        return new ResponseEntity<List<WeeklyMessageTotals>>(totalsList, HttpStatus.OK);
+        Course c = (Course)courseService.read(course);
+        List<DailyMessageTotals> totalsList = slackMessageDao.getTeamDailyTotals(course,team,c.getStart_date().getTime(),c.getEnd_date().getTime());
+        return new ResponseEntity<List<DailyMessageTotals>>(totalsList, HttpStatus.OK);
     }
 
     //Weekly Message Totals for a course
     @ResponseBody
     @RequestMapping(value = "/slack/course_totals", method = RequestMethod.GET)
-    public ResponseEntity<List<WeeklyMessageTotals>> getCourseMessageTotals(@RequestHeader(name = "course", required = true) String course,
+    public ResponseEntity<List<DailyMessageTotals>> getCourseMessageTotals(@RequestHeader(name = "course", required = true) String course,
                                                                             HttpServletRequest request, HttpServletResponse response) {
-        List<WeeklyMessageTotals> totalsList = (List<WeeklyMessageTotals>) slackMessageTotalsService.getWeeklyTotalsByCourse(course);
-        return new ResponseEntity<List<WeeklyMessageTotals>>(totalsList, HttpStatus.OK);
+        Course c = (Course)courseService.read(course);
+        List<DailyMessageTotals> totalsList = slackMessageDao.getCourseDailyTotals(course,c.getStart_date().getTime(),c.getEnd_date().getTime());
+        return new ResponseEntity<List<DailyMessageTotals>>(totalsList, HttpStatus.OK);
     }
 
     @ResponseBody

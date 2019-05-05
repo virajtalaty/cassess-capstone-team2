@@ -7,7 +7,7 @@ public interface IChannelHistoryService {
 
     MessageList getPrivateMessages(String channel, String token, long unixOldest, long unixCurrent, String course, String team);
 
-    void getMessageTotals(String channelID, String course, String team);
+    void getMessageTotals(String channelID, String course, String team,String date);
 
     void updateMessageTotals(String course);
 }

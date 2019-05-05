@@ -1,18 +1,22 @@
 package edu.asu.cassess.dao.slack;
 
 import edu.asu.cassess.model.slack.DailyMessageTotals;
-import edu.asu.cassess.persist.entity.slack.SlackMessage;
+import edu.asu.cassess.persist.entity.slack.SlackMessageTotals;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SlackMessageDao implements ISlackMessageDao {
 
     protected EntityManager entityManager;
+
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public EntityManager getEntityManager() {return entityManager;}
@@ -27,17 +31,15 @@ public class SlackMessageDao implements ISlackMessageDao {
 
     @Override
     @Transactional
-    public double getTimeOfLastMessage(String chanel) {
-        double dateStamp;
-
+    public long getTimeOfLastMessage(String chanel) {
+        long dateStamp;
         try {
-            dateStamp = (double) entityManager
-                    .createQuery("SELECT MAX(m.ts) FROM SlackMessage m where m.channel_id = ?1")
+            String date = (String) entityManager
+                    .createQuery("SELECT MAX(m.retrievalDate) FROM SlackMessageTotals m where m.channel_id = ?1")
                     .setParameter(1,chanel)
                     .getSingleResult();
-            System.out.println(dateStamp);
+            dateStamp = df.parse(date).getTime();
         }catch (Exception e){
-            System.out.println();
             dateStamp = 0;
         }
         return dateStamp;
@@ -45,116 +47,124 @@ public class SlackMessageDao implements ISlackMessageDao {
 
     @Override
     @Transactional
-    public boolean getMessageExists(double ts) {
-        boolean exists;
-        try{
-            List list = entityManager.createQuery("select m from SlackMessage m where m.ts = ?1")
-                    .setParameter(1, ts)
-                    .getResultList();
-            return list.size()>0;
-        }catch (Exception e){return false;}
-    }
-
-    @Override
-    @Transactional
-    public List<SlackMessage> getStudentMessages(String user, long start, long end) {
-        List<SlackMessage> messages;
+    public List<SlackMessageTotals> getStudentMessagesInf(String course, String team, String email, String day) {
+        List<SlackMessageTotals> messageTotals;
         try {
-            messages = (List<SlackMessage>) entityManager
-                    .createQuery("SELECT m FROM SlackMessage m WHERE m.user = ?1 and m.ts<=?2 and m.ts>?3")
-                    .setParameter(1, user)
-                    .setParameter(2, start)
-                    .setParameter(3, end)
+            messageTotals = (List<SlackMessageTotals>) entityManager
+                    .createQuery("SELECT m FROM SlackMessageTotals m WHERE m.course = ?1 and m.team = ?2 and m.compositeId.email = ?3 and m.compositeId.retrievalDate=?4")
+                    .setParameter(1,course)
+                    .setParameter(2,team)
+                    .setParameter(3,email)
+                    .setParameter(4, day)
                     .getResultList();
         }catch (Exception e){
-            messages = null;
+            e.printStackTrace();
+            messageTotals = null;
         }
-        return messages;
+        return messageTotals;
     }
 
     @Override
     @Transactional
-    public int getStudentMessageCount(String user, long start, long end) {
-        return (int)entityManager.createQuery("SELECT COUNT(m.id) FROM SlackMessage m where m.user = ?1 and m.ts<=?2 and m.ts>?3")
-                .setParameter(1, user)
-                .setParameter(2, start)
-                .setParameter(3, end)
-                .getSingleResult();
-    }
-
-    @Override
-    @Transactional
-    public List<DailyMessageTotals> getStudentDailyTotals(String user, long start, long end){
+    public List<DailyMessageTotals> getStudentDailyTotals(String course, String team, String email, long start, long end){
         List<DailyMessageTotals> totals = new ArrayList<DailyMessageTotals>();
 
-        long[] day = getDay(start);
-        while (day[0] <= end){
+        long day = start;
+        while (day <= end){
+            String dayString = df.format(new Date(day));
             DailyMessageTotals total = new DailyMessageTotals();
-            int cnt = getStudentMessageCount(user, day[0], day[1]);
-            total.setDate(new Date(day[0]).toString());
+            List<SlackMessageTotals> messageTotals = getStudentMessagesInf(course, team, email, dayString);
+            int cnt = 0;
+            if(messageTotals.size()>0) {
+                for (SlackMessageTotals messageTotal : messageTotals)
+                    cnt += messageTotal.getMessage_count();
+            }
+            total.setDate(dayString);
             total.setTotal(cnt);
             totals.add(total);
-            day = getDay(day[1]+1);
+            day += TimeUnit.DAYS.toMillis(1);
         }
         return totals;
     }
 
     @Override
     @Transactional
-    public List<SlackMessage> getTeamMessages(String team, long start, long end) {
-        List<SlackMessage> messages;
+    public List<SlackMessageTotals> getTeamMessagesInf(String course, String team, String day) {
+        List<SlackMessageTotals> messages;
+        System.out.println(day);
         try {
-            messages = (List<SlackMessage>) entityManager
-                    .createQuery("SELECT m FROM SlackMessage m WHERE m.team = ?1 and m.ts<=?2 and m.ts>?3")
-                    .setParameter(1, team)
-                    .setParameter(2, start)
-                    .setParameter(3, end)
+            messages = (List<SlackMessageTotals>) entityManager
+                    .createQuery("SELECT m FROM SlackMessageTotals m WHERE m.course = ?1 and m.team = ?2 and m.compositeId.retrievalDate=?3")
+                    .setParameter(1, course)
+                    .setParameter(2, team)
+                    .setParameter(3, day)
                     .getResultList();
         }catch (Exception e){
+            e.printStackTrace();
             messages = null;
         }
         return messages;
     }
 
     @Override
-    @Transactional
-    public int getTeamMessageCount(String team, long start, long end) {
-        return (int)entityManager.createQuery("SELECT COUNT(m.id) FROM SlackMessage m where m.team = ?1 and m.ts<=?2 and m.ts>?3")
-                .setParameter(1, team)
-                .setParameter(2, (double)start)
-                .setParameter(3, (double)end)
-                .getSingleResult();
-    }
-
-    @Override
-    public List<DailyMessageTotals> getTeamDailyTotals(String team, long start, long end) {
+    public List<DailyMessageTotals> getTeamDailyTotals(String course, String team, long start, long end) {
         List<DailyMessageTotals> totals = new ArrayList<DailyMessageTotals>();
-
-        long[] day = getDay(start);
-        while (day[0] <= end){
+        System.out.println("Start: "+start);
+        long day = start;
+        while (day <= end){
+            String dayString = df.format(new Date(day));
             DailyMessageTotals total = new DailyMessageTotals();
-            int cnt = getTeamMessageCount(team, day[0], day[1]);
-            total.setDate(new Date(day[0]).toString());
+            List<SlackMessageTotals> messageTotals = getTeamMessagesInf(course,team,dayString);
+            int cnt = 0;
+            if(messageTotals.size()>0) {
+                for (SlackMessageTotals messageTotal : messageTotals)
+                    cnt += messageTotal.getMessage_count();
+            }
+            total.setDate(dayString);
             total.setTotal(cnt);
             totals.add(total);
-            day = getDay(day[1]+1);
+            day += TimeUnit.DAYS.toMillis(1);
         }
         return totals;
     }
 
-    private long[] getDay(long start){
-        Calendar dayStart = new GregorianCalendar();
-        Calendar dayEnd = new GregorianCalendar();
-        dayStart.setTimeInMillis(start);
-        dayStart.set(Calendar.HOUR_OF_DAY,0);
-        dayStart.set(Calendar.MINUTE,0);
-        dayStart.set(Calendar.SECOND,0);
-        dayStart.set(Calendar.MILLISECOND,0);
-        dayEnd.setTimeInMillis(start);
-        dayEnd.set(Calendar.HOUR_OF_DAY,23);
-        dayEnd.set(Calendar.MINUTE,59);
-        dayEnd.set(Calendar.SECOND,59);
-        dayEnd.set(Calendar.MILLISECOND,999);
-        return new long[]{dayStart.getTimeInMillis(),dayEnd.getTimeInMillis()};
+    @Override
+    @Transactional
+    public List<SlackMessageTotals> getCourseMessagesInf(String course, String day) {
+        List<SlackMessageTotals> messageTotals;
+        try {
+            messageTotals = (List<SlackMessageTotals>) entityManager
+                    .createQuery("SELECT m FROM SlackMessageTotals m WHERE m.course = ?1 and m.compositeId.retrievalDate=?2")
+                    .setParameter(1, course)
+                    .setParameter(2, day)
+                    .getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+            messageTotals = null;
+        }
+        return messageTotals;
     }
+
+    @Override
+    public List<DailyMessageTotals> getCourseDailyTotals(String course, long start, long end) {
+        List<DailyMessageTotals> totals = new ArrayList<DailyMessageTotals>();
+
+        long day = start;
+        while (day <= end){
+            String dayString = df.format(new Date(day));
+            DailyMessageTotals total = new DailyMessageTotals();
+            List<SlackMessageTotals> messageTotals = getCourseMessagesInf(course,dayString);
+            int cnt = 0;
+            if(messageTotals.size()>0) {
+                for (SlackMessageTotals messageTotal : messageTotals)
+                    cnt += messageTotal.getMessage_count();
+            }
+            total.setDate(df.format(new Date(day)));
+            total.setTotal(cnt);
+            totals.add(total);
+            day += TimeUnit.DAYS.toMillis(1);
+        }
+        return totals;
+    }
+
 }

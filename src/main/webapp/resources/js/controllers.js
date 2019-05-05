@@ -1361,10 +1361,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    if($rootScope.Period.start.value<$scope.startDate.value)
-                        $rootScope.Period.start = $scope.startDate;
-                    /*if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;*/
+                    if($rootScope.Period.start.valueOf()<Date.parse($scope.startDate))
+                        $rootScope.Period.start = new Date(Date.parse($scope.startDate));
+                    console.log("initial end: "+$rootScope.Period.end.value);
+                    if($rootScope.Period.end.valueOf()>Date.parse($scope.endDate))
+                        $rootScope.Period.end = new Date(Date.parse($scope.endDate));
                     $scope.IntervalChangedEnd();
                 }
                 else {
@@ -1404,12 +1405,22 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
         $scope.IntervalChangedBegin = function () {
              if ($rootScope.Period.end != null) {
+                 if($rootScope.Period.end<$rootScope.Period.start){
+                     $rootScope.Period.end = $rootScope.Period.start;
+                     $rootScope.Period.end.setHours(23,59,59,999);
+                 }
+                 $rootScope.Period.start.setHours(0,0,0,0);
                 console.log('Calling data');
                 getAllTabsData();
             }
         }
         $scope.IntervalChangedEnd = function () {
             if ($rootScope.Period.start != null) {
+                if($rootScope.Period.start>$rootScope.Period.end){
+                    $rootScope.Period.start = $rootScope.Period.end;
+                    $rootScope.Period.start.setHours(0,0,0,0);
+                }
+                $rootScope.Period.end.setHours(23,59,59,999);
                 getAllTabsData();
             }}
         function getAllTabsData(){
@@ -1779,7 +1790,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = [];
 
-                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(Date.parse(array[i].date));
 
                 if(array[i]==null){
                     valueset1.push(0);
@@ -1787,7 +1798,7 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                     valueset1.push(array[i].total);
                 }
 
-                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(Date.parse(array[i].date));
                 valueset2.push(100);
 
                 total.push(valueset1);
@@ -2386,10 +2397,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
                     $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    if($rootScope.Period.start.value<$scope.startDate.value)
-                        $rootScope.Period.start = $scope.startDate;
-                    /*if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;*/
+                    if($rootScope.Period.start.valueOf()<Date.parse($scope.startDate))
+                        $rootScope.Period.start = new Date(Date.parse($scope.startDate));
+                    console.log("initial end: "+$rootScope.Period.end.value);
+                    if($rootScope.Period.end.valueOf()>Date.parse($scope.endDate))
+                        $rootScope.Period.end = new Date(Date.parse($scope.endDate));
                     $scope.IntervalChangedEnd();
                 }
                 else {
@@ -2430,6 +2442,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.loading = true;
             console.log("WeekBeginning: " + $rootScope.Period.start);
             if ($rootScope.Period.end != null) {
+                if($rootScope.Period.end<$rootScope.Period.start){
+                    $rootScope.Period.end = $rootScope.Period.start;
+                    $rootScope.Period.end.setHours(23,59,59,999);
+                }
+                $rootScope.Period.start.setHours(0,0,0,0);
                 getAllTeamTabsData();
             }
         };
@@ -2437,6 +2454,11 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
             $scope.loading = true;
             console.log("WeekEnding: " + $rootScope.Period.end);
             if ($rootScope.Period.start != null) {
+                if($rootScope.Period.start>$rootScope.Period.end){
+                    $rootScope.Period.start = $rootScope.Period.end;
+                    $rootScope.Period.start.setHours(0,0,0,0);
+                }
+                $rootScope.Period.end.setHours(23,59,59,999);
                getAllTeamTabsData();
             }
         };
@@ -3370,14 +3392,14 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 var valueset1 = [];var valueset2 = []
 
-                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(Date.parse(array[i].date));
                 if(array[i]==null){
                     valueset1.push(0);
                 }else{
                     valueset1.push(array[i].total);
                 }
 
-                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(Date.parse(array[i].date));
                 valueset2.push(100);
 
                 total.push(valueset1);
@@ -4173,11 +4195,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
                 if ($rootScope.Period.start == null && $rootScope.Period.end == null) {
                     $rootScope.Period.start = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekBeginning);
-                    $rootScope.Period.end = new Date($scope.courseIntervals[$scope.courseIntervals.length - 1].weekEnding);
-                    if($rootScope.Period.start.value<$scope.startDate.value)
-                        $rootScope.Period.start = $scope.startDate;
-                    /*if($rootScope.Period.end.value>$scope.endDate.value)
-                        $rootScope.Period.end = $scope.endDate;*/
+                    $rootScope.Period.end = new Date();
+                    if($rootScope.Period.start.valueOf()<Date.parse($scope.startDate))
+                        $rootScope.Period.start = new Date(Date.parse($scope.startDate));
+                    console.log("initial end: "+$rootScope.Period.end.value);
+                    if($rootScope.Period.end.valueOf()>Date.parse($scope.endDate))
+                        $rootScope.Period.end = new Date(Date.parse($scope.endDate));
                     $scope.IntervalChangedEnd();
                 }
                 else {
@@ -4218,12 +4241,22 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
         $scope.IntervalChangedBegin = function () {
             //console.log("WeekBeginning: " + $rootScope.rawWeekBeginning);
             if ($rootScope.Period.end != null) {
+                if($rootScope.Period.end<$rootScope.Period.start){
+                    $rootScope.Period.end = $rootScope.Period.start;
+                    $rootScope.Period.end.setHours(23,59,59,999);
+                }
+                $rootScope.Period.start.setHours(0,0,0,0);
                 getAllStudentTabsData();
             }
         };
         $scope.IntervalChangedEnd = function () {
             //console.log("WeekEnding: " + $rootScope.rawWeekEnding);
             if ($rootScope.Period.start != null) {
+                if($rootScope.Period.start>$rootScope.Period.end){
+                    $rootScope.Period.start = $rootScope.Period.end;
+                    $rootScope.Period.start.setHours(0,0,0,0);
+                }
+                $rootScope.Period.end.setHours(23,59,59,999);
                 getAllStudentTabsData();
             }
         };
@@ -4675,12 +4708,12 @@ myapp.controller('LoginController', function ($rootScope, $scope, AuthSharedServ
 
             for (var i = 0; i < array.length; i++){
 
-                var valueset1 = [];var valueset2 = []
+                var valueset1 = [];var valueset2 = [];
 
-                valueset1.push(array[i].rawWeekEnding*1000);
+                valueset1.push(Date.parse(array[i].date));//*1000);
                 valueset1.push(array[i].total);
 
-                valueset2.push(array[i].rawWeekEnding*1000);
+                valueset2.push(Date.parse(array[i].date));//*1000);
                 valueset2.push(100);
 
                 total.push(valueset1);

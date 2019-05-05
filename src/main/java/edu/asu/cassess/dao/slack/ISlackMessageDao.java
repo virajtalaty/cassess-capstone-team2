@@ -1,12 +1,11 @@
 package edu.asu.cassess.dao.slack;
 
 import edu.asu.cassess.model.slack.DailyMessageTotals;
-import edu.asu.cassess.persist.entity.slack.SlackMessage;
+import edu.asu.cassess.persist.entity.slack.SlackMessageTotals;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 import java.util.List;
 
 public interface ISlackMessageDao {
@@ -16,27 +15,24 @@ public interface ISlackMessageDao {
     void setEntityManager(EntityManager entityManager);
 
     @Transactional
-    boolean getMessageExists(double ts);
+    long getTimeOfLastMessage(String channel);
 
     @Transactional
-    double getTimeOfLastMessage(String channel);
+    List<SlackMessageTotals> getStudentMessagesInf(String course, String team, String user, String day);
 
     @Transactional
-    List<SlackMessage> getStudentMessages(String user, long start, long end);
+    List<DailyMessageTotals> getStudentDailyTotals(String course, String team, String user, long start, long end);
 
     @Transactional
-    int getStudentMessageCount(String user, long start, long end);
+    List<SlackMessageTotals> getTeamMessagesInf(String course, String team, String day);
 
     @Transactional
-    List<DailyMessageTotals> getStudentDailyTotals(String user, long start, long end);
+    List<DailyMessageTotals> getTeamDailyTotals(String course, String team, long start, long end);
 
     @Transactional
-    List<SlackMessage> getTeamMessages(String team, long start, long end);
+    List<SlackMessageTotals> getCourseMessagesInf(String course, String day);
 
     @Transactional
-    int getTeamMessageCount(String team, long start, long end);
-
-    @Transactional
-    List<DailyMessageTotals> getTeamDailyTotals(String team, long start, long end);
+    List<DailyMessageTotals> getCourseDailyTotals(String course, long start, long end);
 
 }
