@@ -68,6 +68,7 @@
                         <h2>Taiga Data</h2>
                         <br>
                         <h3>Average Task Totals</h3>
+                        <span>Daily granularity (ignores days with no data)</span>
                         <div id="taigaChart1">
                             <nvd3 options='optionsForTaigaTeamTasks' data='dataForTaigaTeamTasks'></nvd3>
                         </div>
@@ -75,7 +76,8 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='TeamController'>
                             -->
                         <div id="taigaChart2" ng-controller="TeamController">
-                            <h3>Task Status Update Activity</h3><br>
+                            <h3>Task Status Update Activity</h3>
+                            <span>Weekly granularity (each Friday)</span><br>
                             <nvd3 options='optionsForTaigaTeamActivity' data='dataForTaigaTeamActivity'></nvd3>
                         </div>
                     </div>
@@ -83,14 +85,16 @@
                         <h3>GitHub Data</h3>
                         <br>
                         <br>
-                        <h3>GitHub Team Average Commit Activity</h3><br>
+                        <h3>GitHub Team Average Commit Activity</h3>
+                        <span>Weekly granularity (each Saturday)</span><br>
                         <br>
                         <div id="githubChart1">
                             <nvd3 options='optionsForGitHubTeamCommits' data='dataForGitHubTeamCommits'></nvd3>
                         </div>
 
                         <div id="githubChart2" ng-controller="TeamController">
-                            <h3>GitHub Team Average Weight Activity</h3><br>
+                            <h3>GitHub Team Average Weight Activity</h3>
+                            <span>Weekly granularity (each Friday)</span><br>
                              <nvd3 options='optionsForGitHubTeamWeight' data='dataForGitHubTeamWeight'></nvd3>
                          <!--   <nvd3 options='optionsForGitHubTeamSubWeight' data='dataForGitHubTeamSubWeight'></nvd3> -->
                         </div>
@@ -98,7 +102,8 @@
                     <div ng-if="isSet(4)">
                         <h2>Slack Data</h2>
                         <br>
-                        <h3>Average Message Totals</h3><br>
+                        <h3>Average Message Totals</h3>
+                        <span>Daily granularity</span><br>
                         <div id="slackChart1">
                             <nvd3 options='optionsForSlackTeamMessages' data='dataForSlackTeamMessages'></nvd3>
                         </div>
@@ -106,7 +111,8 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='TeamController'>
                            -->
                         <div id="slackChart2" ng-controller="TeamController">
-                            <h3>Average Message Activity</h3><br>
+                            <h3>Average Message Activity</h3>
+                            <span>Daily granularity</span><br>
                             <nvd3 options='optionsForSlackTeamActivity' data='dataForSlackTeamActivity'></nvd3>
                         </div>
                     </div>

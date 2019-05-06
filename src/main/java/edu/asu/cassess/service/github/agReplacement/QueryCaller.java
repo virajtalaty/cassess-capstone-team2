@@ -22,7 +22,7 @@ class QueryCaller {
 
     public String getCommits(String user, String start, String end, String branch){
         return apiCall("/commits?access_token="+token+"&author="+user+
-                "&since="+start+"&until="+end+"&sha="+branch);
+                "&since="+start+"T00:00:00Z&until="+end+"T23:59:59&sha="+branch);
     }
     public String getCommit(String sha){
         return apiCall("/commits/"+sha+"?access_token="+token);

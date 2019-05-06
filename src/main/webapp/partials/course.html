@@ -59,7 +59,8 @@
                     <div ng-if="isSet(2)">
                         <h2>Taiga Data</h2>
                         <br>
-                        <h3>Average Task Totals</h3><br>
+                        <h3>Average Task Totals</h3>
+                        <span>Daily granularity (ignores days with no data)</span><br>
                         <br><br>
                         <div id="taigaChart1">
                             <nvd3 options='optionsForTaigaCourseTasks' data='dataForTaigaCourseTasks'></nvd3>
@@ -69,26 +70,30 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='CourseController'>
                            -->
                         <div id="taigaChart2" ng-controller="CourseController">
-                            <h3>Task Status Update Activity</h3><br>
+                            <h3>Task Status Update Activity</h3>
+                            <span>Weekly granularity (each Friday)</span><br>
                             <nvd3 options='optionsForTaigaCourseActivity' data='dataForTaigaCourseActivity'></nvd3>
                         </div>
                     </div>
                     <div ng-if="isSet(3)">
                         <h3>GitHub Data</h3>
                         <br>
-                        <h3>GitHub Course Average Commit Activity</h3><br>
+                        <h3>GitHub Course Average Commit Activity</h3>
+                        <span>Weekly granularity (each Saturday)</span><br>
                         <div id="githubChart1">
                             <nvd3 options='optionsForGitHubCourseCommits' data='dataForGitHubCourseCommits'></nvd3>
                         </div>
                         <div id="githubChart2" ng-controller="CourseController">
-                            <h3>GitHub Course Average Weight Activity</h3><br>
+                            <h3>GitHub Course Average Weight Activity</h3>
+                            <span>Weekly granularity (each Friday)</span><br>
                             <nvd3 options='optionsForGitHubCourseWeight' data='dataForGitHubCourseWeight'></nvd3>
                         </div>
                     </div>
                     <div ng-if="isSet(4)">
                         <h2>Slack Data</h2>
                         <br>
-                        <h3>Average Message Totals</h3><br>
+                        <h3>Average Message Totals</h3>
+                        <span>Daily granularity</span><br>
                         <div id="slackChart1">
                             <nvd3 options='optionsForSlackCourseMessages' data='dataForSlackCourseMessages'></nvd3>
                         </div>
@@ -96,7 +101,8 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='CourseController'>
                            -->
                         <div id="slackChart2" ng-controller="CourseController">
-                            <h3>Average Message Activity</h3><br>
+                            <h3>Average Message Activity</h3>
+                            <span>Daily granularity</span><br>
                             <nvd3 options='optionsForSlackCourseActivity' data='dataForSlackCourseActivity'></nvd3>
                         </div>
                     </div>

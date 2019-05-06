@@ -24,10 +24,10 @@ public class AggregateActivity {
     @Override
     public String toString() {
         return "\""+name+"\":{" +
-                "\"commits\":\"" + commits + '\"' +
-                ",\"additions\":\"" + additions + "\"" +
-                ",\"deletions\":\"" + deletions + "\"" +
-                ",\"total\":\"" + total + '\"' +
+                "\"commits\":" + commits  +
+                ",\"additions\":" + additions +
+                ",\"deletions\":" + deletions +
+                ",\"total\":" + total +
                 '}';
     }
 }

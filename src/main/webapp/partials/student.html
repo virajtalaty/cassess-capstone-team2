@@ -69,6 +69,7 @@
                         <h3>Taiga Data</h3>
                         <br>
                         <h3>Task Totals</h3>
+                        <p>Daily granularity (ignores days with no data)</p>
                         <div id="taigaChart1">
                             <nvd3 options='optionsForTaigaStudentTasks' data='dataForTaigaStudentTasks'></nvd3>
                         </div>
@@ -76,7 +77,8 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='StudentController'>
                         -->
                         <div id="taigaChart2" ng-controller="StudentController">
-                            <h3>Task Status Update Activity</h3><br>
+                            <h3>Task Status Update Activity</h3>
+                            <p>Weekly granularity (each Friday)</p><br>
                             <nvd3 options='optionsForTaigaStudentActivity' data='dataForTaigaStudentActivity'></nvd3>
                         </div>
                     </div>
@@ -85,11 +87,13 @@
                         <br>
                         <br>
                         <h3>GitHub Student Commit Activity:</h3>
+                        <span>Weekly granularity (each Saturday)</span>
                         <div id="githubChart1">
                             <nvd3 options='optionsForGitHubStudentCommits' data='dataForGitHubStudentCommits'></nvd3>
                         </div>
                         <div id="githubChart2" ng-controller="StudentController">
-                            <h3>GitHub Student Weight Activity</h3><br>
+                            <h3>GitHub Student Weight Activity</h3>
+                            <span>Weekly granularity (each Friday)</span><br>
                             <nvd3 options='optionsForGitHubStudentWeight' data='dataForGitHubStudentWeight'></nvd3>
                         </div>
                     </div>
@@ -97,6 +101,7 @@
                         <h2>Slack Data</h2>
                         <br>
                         <h3>Message Totals</h3>
+                        <span>Daily granularity</span>
                         <div id="slackChart1">
                             <nvd3 options='optionsForSlackStudentMessages' data='dataForSlackStudentMessages'></nvd3>
                         </div>
@@ -104,7 +109,8 @@
                         <div afterRender='fireRefreshEventOnWindow()' ng-controller='StudentController'>
                            -->
                         <div id="slackChart2" ng-controller="StudentController">
-                            <h3>Message Activity</h3><br>
+                            <h3>Message Activity</h3>
+                            <span>Daily Granularity</span><br>
                             <nvd3 options='optionsForSlackStudentActivity' data='dataForSlackStudentActivity'></nvd3>
                         </div>
                     </div>

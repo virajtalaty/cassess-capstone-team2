@@ -2,7 +2,6 @@ package edu.asu.cassess.service.github.agReplacement;
 
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 class UserCommits {
@@ -52,11 +51,11 @@ class UserCommits {
                 streak = 0;
             }
         }
+        if(streak>1)
+            inactivity.add(streak);
         Integer[] streaks = inactivity.toArray(new Integer[inactivity.size()]);
         String ret = "{" +
-                "\"userid\":\"" + userid + '\"' +
-                ",\"name\":\"" + name + '\"' +
-                ",\"daily_activity\":[";
+                "\"daily_activity\":[";
         for(CommitDay d:daily_activity.values()){
             ret+=d.toString()+",";
         }
@@ -67,7 +66,8 @@ class UserCommits {
         for(Integer i:streaks)
             ret+=i+",";
         ret=ret.substring(0,ret.length()-1);
-        ret +="]}";
+        ret +="],\"userid\":\"" + userid + '\"' +
+                ",\"name\":\"" + name + '\"'+ "}";
         return ret;
     }
 
