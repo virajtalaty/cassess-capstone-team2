@@ -267,6 +267,28 @@
             finalPOJO.setGithub_activity_URL(token,owner,repo_id,userids);
             return finalPOJO;
         }
+
+        public String[] GetAgParts(String course, String team) throws DataAccessException {
+            Query query = getEntityManager().createNativeQuery("select distinct team.github_token,student.github_username,commitdata.github_owner,team.github_repo_id " +
+                    "from teams team,students student, commit_data commitdata " +
+                    "where team.course = commitdata.course " +
+                    "and team.team_name=commitdata.team and commitdata.email=student.email " +
+                    "and team.course=?1 and team.team_name=?2");
+
+            query.setParameter(1, course);
+            query.setParameter(2, team);
+            List<Object[]> results = query.getResultList();
+            String userids = "",owner="",repo_id="",token="";
+            for(Object[] item : results) {
+                token=(String)item[0];
+                userids = userids + item[1] + "%2C";
+                owner=(String)item[2];
+                repo_id=(String)item[3];
+            }
+            userids=userids.substring(0,userids.length()-3);
+            return new String[]{token,userids,owner,repo_id};
+        }
+
         public String getAGGithubData(String jsonURL){
             Query query = getEntityManager().createNativeQuery("select ag_result from github_ag where url=?1");
             query.setParameter(1, jsonURL);

@@ -8,11 +8,11 @@ import java.io.Serializable;
 @Entity
 @Table(name = "slack_messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SlackMessage implements Serializable {
+public class SlackMessage {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -22,51 +22,30 @@ public class SlackMessage implements Serializable {
     @Column(name="user")
     private String user;
 
-    @Column(name="type")
-    private String type;
+    @Column(name = "text")
+    String text;
 
-    @Column(name="text")
-    private String text;
+    @Column(name = "type")
+    String type;
 
     public SlackMessage() {
 
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
+    public SlackMessage(int id, double ts, String user, String text, String type) {
         this.id = id;
-    }
-
-    /**
-     * @return the type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    public void setType(String type) {
+        this.ts = ts;
+        this.user = user;
+        this.text = text;
         this.type = type;
     }
 
-    /**
-     * @return the text
-     */
-    public String getText() {
-        return text;
+    public int getId() {
+        return id;
     }
 
-    /**
-     * @param text the text to set
-     */
-    public void setText(String text) {
-        int maxLength = (text.length() < 255)?text.length():255;
-        text = text.substring(0, maxLength);
-        this.text = text;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getTs() {
@@ -85,5 +64,19 @@ public class SlackMessage implements Serializable {
         this.user = user;
     }
 
+    public String getText() {
+        return text;
+    }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

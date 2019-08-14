@@ -91,4 +91,8 @@ public class TeamsService implements ITeamsService {
          teamsDao.updateGithubAG(jsonURL,jsonData);
          return;
     }
+    @Override
+    public String[] GetAgParts(String course, String team){
+        return teamsDao.GetAgParts(course,team);
+    }
 }

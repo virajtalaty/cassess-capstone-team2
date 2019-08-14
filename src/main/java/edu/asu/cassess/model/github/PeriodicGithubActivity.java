@@ -2,6 +2,8 @@ package edu.asu.cassess.model.github;
 
 import edu.asu.cassess.config.ServiceConfig;
 
+import java.util.Date;
+
 public class PeriodicGithubActivity {
 public PeriodicGithubActivity(String github_token, String github_owner, String github_repo_id, String github_username){
 	this.github_username = github_username;
@@ -36,6 +38,12 @@ public PeriodicGithubActivity(String github_token, String github_owner, String g
 	public void setGithub_activity_URL(String github_token,String github_owner,String github_repo_id,String github_username) {
 		this.github_activity_URL = ServiceConfig.getAG_URL() + "github-stats?token="+github_token
 				+"&owner="+github_owner+"&repo="+github_repo_id+"&userids="+github_username;
+	}
+
+	public String getPeriodicActivity(String github_owner, String github_repo_id, Date start, Date end){
+		//TODO github fetch
+
+		return "";
 	}
 
 	public void setGithub_owner(String github_owner) {

@@ -40,5 +40,7 @@ public interface ITeamsService {
 
     String getAGGithubData(String jsonURL);
 
+    String[] GetAgParts(String course, String team);
+
     void updateGithubAG(String jsonURL, String jsonData);
 }

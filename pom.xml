@@ -316,7 +316,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                     </execution>
-                    <execution>
+                    <!--<execution>
                         <id>bower install</id>
                         <goals>
                             <goal>bower</goal>
@@ -331,7 +331,7 @@
                             <goal>gulp</goal>
                         </goals>
                         <phase>generate-resources</phase>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
